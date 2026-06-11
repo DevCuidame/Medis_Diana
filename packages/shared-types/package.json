@@ -1,0 +1,17 @@
+{
+  "name": "@acaripole/shared-types",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint src --ext ts --report-unused-disable-directives --max-warnings 0",
+    "format": "prettier --write \"src/**/*.ts\""
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1"
+  }
+}

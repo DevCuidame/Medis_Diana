@@ -1,0 +1,27 @@
+{
+  "name": "acaripole-monorepo",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Modern, modular monorepo for Acaripole project with React frontend and Node.js backend",
+  "packageManager": "pnpm@9.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "build:frontend": "turbo run build --filter=frontend",
+    "build:backend": "turbo run build --filter=backend",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "setup": "pnpm install && pnpm run setup:db",
+    "setup:db": "echo 'Database setup placeholder'"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "typescript": "^5.4.0"
+    }
+  }
+}

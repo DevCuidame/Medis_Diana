@@ -1,0 +1,16 @@
+{
+  "name": "@acaripole/database",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "migrate": "node --loader tsx/esm src/migrations/runner.ts"
+  },
+  "dependencies": {
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "typescript": "^5.4.0",
+    "tsx": "^4.7.0"
+  }
+}

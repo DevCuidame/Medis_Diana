@@ -1,0 +1,115 @@
+# Dependency directories
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+**/dist/
+build/
+**/build/
+coverage/
+**/coverage/
+.nyc_output/
+**/.nyc_output/
+.turbo/
+**/.turbo/
+.cache/
+**/.cache/
+.vite/
+**/.vite/
+.parcel-cache/
+**/.parcel-cache/
+*.tsbuildinfo
+**/*.tsbuildinfo
+
+# Environment files and secrets (critical)
+.env
+.env.local
+.env.*.local
+.env.*
+**/.env
+**/.env.local
+**/.env.*.local
+**/.env.*
+!.env.example
+!**/.env.example
+.envrc
+**/.envrc
+.direnv/
+**/.direnv/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite-journal
+**/*.db
+**/*.sqlite
+**/*.sqlite-journal
+
+# Logs
+logs
+*.log
+*.pid
+*.pid.lock
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Package manager caches
+.npm/
+**/.npm/
+.pnpm-store/
+**/.pnpm-store/
+
+# Test artifacts
+*.lcov
+lcov.info
+test-results/
+**/test-results/
+playwright-report/
+**/playwright-report/
+
+# System & Editor files
+.DS_Store
+Thumbs.db
+.idea/
+**/.idea/
+.idea/*
+**/.idea/*
+.vscode/
+**/.vscode/
+.vscode/*
+**/.vscode/*
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Certificates / keys / private material
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+*.cer
+
+# Temporary / dev tools files
+tmp/
+**/tmp/
+temp/
+**/temp/
+.claude/
+**/.claude/
+.claude/*
+**/.claude/*
+.gemini/
+**/.gemini/
+.gemini/*
+**/.gemini/*
+.antigravity/
+**/.antigravity/
+.antigravity/*
+**/.antigravity/*

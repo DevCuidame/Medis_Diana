@@ -1,0 +1,3 @@
+# Inherits ignore rules from repository root .gitignore
+# Specific to this app (Vite SSR output)
+dist-ssr/
