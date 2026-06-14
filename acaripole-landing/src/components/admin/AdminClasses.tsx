@@ -27,11 +27,11 @@ const NAV_ITEMS = [
 ]
 
 const OFFER_TYPE_LABEL: Record<string, string> = {
-  class: 'Clase', open_pole: 'Práctica Libre', event: 'Evento', workshop: 'Taller',
+  appointment: 'Cita Individual', open_consultation: 'Consulta Abierta', workshop: 'Sesión Grupal', event: 'Evento',
 }
 const OFFER_COLORS = ['#8B5CF6', '#4A6FA5', '#7C6B8A', '#2563EB', '#059669', '#3B82F6']
 const TYPE_COLORS: Record<string, string> = {
-  class: '#8B5CF6', open_pole: '#7C3AED', event: '#2563EB', workshop: '#3B82F6',
+  appointment: '#2563EB', open_consultation: '#0EA5E9', workshop: '#8B5CF6', event: '#3B82F6',
 }
 const DAY_SHORT = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM']
 const MONTH_NAMES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
