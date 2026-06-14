@@ -16,10 +16,10 @@ const MONTH_NAMES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','A
 const DAY_SHORT   = ['LUN','MAR','MIÉ','JUE','VIE','SÁB','DOM']
 
 const TYPE_COLOR: Record<string, string> = {
-  class: '#8B5CF6', open_pole: '#7C3AED', event: '#2563EB', workshop: '#3B82F6',
+  appointment: '#2563EB', open_consultation: '#0EA5E9', workshop: '#8B5CF6', event: '#3B82F6',
 }
 const TYPE_LABEL: Record<string, string> = {
-  class: 'Clase', open_pole: 'Práctica Libre', event: 'Evento', workshop: 'Taller',
+  appointment: 'Cita Individual', open_consultation: 'Consulta Abierta', workshop: 'Sesión Grupal', event: 'Evento',
 }
 
 function authH(): HeadersInit {
@@ -102,7 +102,7 @@ export const ProfessionalClasses: React.FC<Props> = ({ me }) => {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 28, flexWrap: 'wrap', gap: 16 }}>
           <div>
             <p style={{ fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 6px' }}>Portal Profesional</p>
-            <h1 style={{ fontFamily: FONT_BODONI, fontSize: 36, fontWeight: 700, color: C.text, margin: 0, lineHeight: 1 }}>Mis Clases</h1>
+            <h1 style={{ fontFamily: FONT_BODONI, fontSize: 36, fontWeight: 700, color: C.text, margin: 0, lineHeight: 1 }}>Mi Agenda</h1>
             <p style={{ fontSize: 13, color: C.textMuted, margin: '8px 0 0', fontWeight: 500 }}>
               {loading ? 'Cargando…' : `${offers.length} sesión${offers.length !== 1 ? 'es' : ''} asignada${offers.length !== 1 ? 's' : ''} · ${upcoming.length} próxima${upcoming.length !== 1 ? 's' : ''}`}
             </p>
