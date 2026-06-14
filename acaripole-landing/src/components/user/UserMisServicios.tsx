@@ -12,8 +12,8 @@ const C = {
 const FONT_BODONI = '"Bodoni Moda", Georgia, serif'
 const FONT_INTER  = '"Hanken Grotesk", Inter, system-ui, sans-serif'
 const MONTH_NAMES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
-const TYPE_COLOR: Record<string, string> = { class: '#8B5CF6', open_pole: '#7C3AED', event: '#2563EB', workshop: '#3B82F6' }
-const TYPE_LABEL: Record<string, string> = { class: 'Clase', open_pole: 'Práctica Libre', event: 'Evento', workshop: 'Taller' }
+const TYPE_COLOR: Record<string, string> = { appointment: '#2563EB', open_consultation: '#0EA5E9', workshop: '#8B5CF6', event: '#3B82F6' }
+const TYPE_LABEL: Record<string, string> = { appointment: 'Cita Individual', open_consultation: 'Consulta Abierta', workshop: 'Sesión Grupal', event: 'Evento' }
 
 function authH(): HeadersInit {
   const t = localStorage.getItem('accessToken')
