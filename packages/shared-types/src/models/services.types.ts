@@ -9,7 +9,7 @@ export type DayOfWeek =
   | 'monday' | 'tuesday' | 'wednesday'
   | 'thursday' | 'friday' | 'saturday' | 'sunday';
 
-export type OfferType = 'class' | 'open_pole' | 'workshop' | 'event';
+export type OfferType = 'appointment' | 'open_consultation' | 'workshop' | 'event';
 
 export type OfferStatus = 'draft' | 'published' | 'cancelled' | 'completed';
 
