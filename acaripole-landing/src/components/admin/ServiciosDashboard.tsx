@@ -18,13 +18,13 @@ const DAY_NAMES_SHORT = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 const DAY_ORDER = [1, 2, 3, 4, 5, 6, 0]; // Mon→Sun display order
 
 const OFFER_TYPE_LABEL: Record<string, string> = {
-  class: 'Clase', open_pole: 'Práctica Libre', event: 'Evento', workshop: 'Taller',
+  appointment: 'Cita Individual', open_consultation: 'Consulta Abierta', workshop: 'Sesión Grupal', event: 'Evento',
 };
 const OFFER_TYPE_COLOR: Record<string, { bg: string; color: string }> = {
-  class:      { bg: 'rgba(139,92,246,0.1)',    color: '#8B5CF6' },
-  open_pole:  { bg: 'rgba(124,58,237,0.1)',  color: '#7C3AED' },
-  event:      { bg: 'rgba(59,130,246,0.1)',  color: '#2563EB' },
-  workshop:   { bg: 'rgba(236,72,153,0.1)',  color: '#3B82F6' },
+  appointment:       { bg: 'rgba(37,99,235,0.1)',  color: '#2563EB' },
+  open_consultation: { bg: 'rgba(14,165,233,0.1)', color: '#0EA5E9' },
+  workshop:          { bg: 'rgba(139,92,246,0.1)', color: '#8B5CF6' },
+  event:             { bg: 'rgba(59,130,246,0.1)', color: '#3B82F6' },
 };
 
 interface ServiceGroup {
@@ -202,7 +202,7 @@ export const ServiciosDashboard: React.FC = () => {
   // ── Edit group: map representative + full range ───────────────────────────
   const mapGroupToFormValues = (g: ServiceGroup) => {
     const s = g.representative;
-    let categoria = 'Clases de Pole'; let tipoServicio = '';
+    let categoria = 'Promoción y Prevención en Salud'; let tipoServicio = '';
     if (s.title) { const p = s.title.split(' — '); categoria = p[0]; tipoServicio = p[1] || ''; }
 
     const toDateStr = (d: Date) =>
@@ -213,11 +213,23 @@ export const ServiciosDashboard: React.FC = () => {
     const diasSemana = g.days.map(n => dayCodeByName[n]).filter(Boolean);
 
     let modalidad: string | undefined;
-    if (s.description?.includes('Modalidad:')) modalidad = s.description.replace('Modalidad:', '').trim();
+    let tipoAtencion: string | undefined;
+    if (s.description) {
+      for (const part of s.description.split(' | ')) {
+        const [key, value] = part.split(': ').map(p => p.trim());
+        if (key === 'Modalidad') modalidad = value;
+        if (key === 'Atención') tipoAtencion = value;
+      }
+    }
 
     return {
       locationId: s.locationId || '', roomId: s.roomId || '',
-      categoria: categoria as "Práctica Libre" | "Clases de Pole" | "Disciplinas Complementarias" | "Eventos" | "Otros",
+      categoria: categoria as
+        | "Promoción y Prevención en Salud"
+        | "Enfermedades No Transmisibles"
+        | "Sobrepeso y Obesidad"
+        | "Salud de la Mujer"
+        | "Salud Mental",
       tipoServicio,
       diasSemana: diasSemana.length ? diasSemana : ['lun'],
       fechaDesde: toDateStr(g.firstDate),
@@ -227,17 +239,15 @@ export const ServiciosDashboard: React.FC = () => {
       precio: g.price,
       modalidad: modalidad as "Grupal" | "Individual" | undefined,
       instructorId: s.professionalId || '',
-      nivelDificultad: undefined,
+      tipoAtencion: tipoAtencion as "Primera vez" | "Control o seguimiento" | "Urgencia" | undefined,
       capacidad: s.capacity,
     };
   };
 
   // ── Save (create or update group) ─────────────────────────────────────────
   const handleFormSuccess = async (data: any) => {
-    const offerTypeMap: Record<string, string> = {
-      'Clases de Pole': 'class', 'Disciplinas Complementarias': 'class',
-      'Práctica Libre': 'open_pole', 'Eventos': 'event', 'Otros': 'workshop',
-    };
+    const offerTypeMap = (modalidad: 'Grupal' | 'Individual'): string =>
+      modalidad === 'Grupal' ? 'workshop' : 'appointment';
     const headers = authH();
 
     const tempStart = new Date(`${data.fechaDesde}T${data.horaInicio}`);
@@ -247,9 +257,9 @@ export const ServiciosDashboard: React.FC = () => {
     const basePayload = {
       locationId:      data.locationId,
       roomId:          data.roomId || undefined,
-      offerType:       offerTypeMap[data.categoria] ?? 'class',
+      offerType:       offerTypeMap(data.modalidad),
       title:           `${data.categoria}${data.tipoServicio ? ` — ${data.tipoServicio}` : ''}`,
-      description:     data.modalidad ? `Modalidad: ${data.modalidad}` : undefined,
+      description:     `Modalidad: ${data.modalidad} | Atención: ${data.tipoAtencion}`,
       professionalId:  data.instructorId || undefined,
       capacity:        data.capacidad ?? (data.roomCapacity ?? 10),
       durationMinutes,
@@ -403,11 +413,11 @@ export const ServiciosDashboard: React.FC = () => {
                         <p style={{ fontSize: 10, fontWeight: 700, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 10px' }}>Tipo de servicio</p>
                         <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap', marginBottom: 14 }}>
                           {([
-                            { v: 'all',      label: 'Todos' },
-                            { v: 'class',     label: 'Clases' },
-                            { v: 'open_pole', label: 'Práctica Libre' },
-                            { v: 'event',     label: 'Eventos' },
-                            { v: 'workshop',  label: 'Talleres' },
+                            { v: 'all',               label: 'Todos' },
+                            { v: 'appointment',       label: 'Citas Individuales' },
+                            { v: 'open_consultation', label: 'Consultas Abiertas' },
+                            { v: 'workshop',          label: 'Sesiones Grupales' },
+                            { v: 'event',             label: 'Eventos' },
                           ] as const).map(opt => {
                             const tc = opt.v !== 'all' ? OFFER_TYPE_COLOR[opt.v] : null;
                             const sel = filterType === opt.v;
@@ -475,7 +485,7 @@ export const ServiciosDashboard: React.FC = () => {
                 ) : (
                   <>
                     <h3 style={{ fontFamily: FONT_BODONI, fontSize: 24, fontWeight: 700, color: C.text, marginBottom: 8 }}>No hay servicios programados</h3>
-                    <p style={{ color: C.textMedium, textAlign: 'center', maxWidth: 400, marginBottom: 24, lineHeight: 1.5 }}>Comienza a construir el catálogo de clases, prácticas libres o talleres de tu estudio.</p>
+                    <p style={{ color: C.textMedium, textAlign: 'center', maxWidth: 400, marginBottom: 24, lineHeight: 1.5 }}>Comienza a construir el catálogo de consultas y servicios de la clínica.</p>
                     <button onClick={() => { setEditingGroup(null); setIsFormOpen(true); }} style={{ color: C.gold, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4, background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 15, fontFamily: FONT_INTER }}>
                       Crear primer servicio <ChevronRight size={16} />
                     </button>
@@ -486,7 +496,7 @@ export const ServiciosDashboard: React.FC = () => {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 20 }}>
                 <AnimatePresence>
                   {groups.map((g, i) => {
-                    const tc = OFFER_TYPE_COLOR[g.offerType] ?? OFFER_TYPE_COLOR.class;
+                    const tc = OFFER_TYPE_COLOR[g.offerType] ?? OFFER_TYPE_COLOR.appointment;
                     const isDeleting = deletingKey === g.key;
                     const profName = g.professional ? `${g.professional.firstName} ${g.professional.lastName}` : null;
 
