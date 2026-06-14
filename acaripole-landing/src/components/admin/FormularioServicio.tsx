@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import type { ServicioFormValues } from './servicioSchema';
 import {
-  servicioSchema, categoriaEnum, modalidadEnum, nivelEnum,
+  servicioSchema, categoriaEnum, modalidadEnum, tipoAtencionEnum,
   DIA_LABELS, DIA_NOMBRES, DIAS_ORDEN, generateOccurrences,
 } from './servicioSchema';
 
@@ -26,11 +26,35 @@ const FONT_SERIF = '"Bodoni Moda", Georgia, serif';
 const FONT_SANS  = '"Hanken Grotesk", Inter, system-ui, sans-serif';
 
 const TIPOS_SERVICIO_POR_CATEGORIA: Record<string, string[]> = {
-  'Clase': [],
-  'Práctica Libre': [],
-  'Disciplinas Complementarias': [],
-  'Eventos': [],
-  'Otros': [],
+  'Promoción y Prevención en Salud': [
+    'Vacunación',
+    'Charlas educativas',
+    'Tamizaje / Detección temprana',
+    'Control de crecimiento y desarrollo',
+  ],
+  'Enfermedades No Transmisibles': [
+    'Control de Hipertensión Arterial (HTA)',
+    'Control de Diabetes (DM)',
+    'Riesgo Cardiovascular (RCV)',
+    'Control de Dislipidemia',
+  ],
+  'Sobrepeso y Obesidad': [
+    'Valoración nutricional',
+    'Plan de manejo de peso',
+    'Seguimiento de obesidad',
+  ],
+  'Salud de la Mujer': [
+    'Control prenatal',
+    'Citología / Tamizaje ginecológico',
+    'Planificación familiar',
+    'Climaterio y menopausia',
+  ],
+  'Salud Mental': [
+    'Valoración inicial de salud mental',
+    'Manejo de ansiedad',
+    'Manejo de depresión',
+    'Acompañamiento psicológico',
+  ],
 };
 
 const InputField = ({ label, icon: Icon, error, children }: any) => (
@@ -91,7 +115,7 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, editingOfferI
   const { register, handleSubmit, control, formState: { errors }, setValue, watch } = useForm<ServicioFormValues>({
     resolver: zodResolver(servicioSchema) as any,
     defaultValues: initialData || {
-      categoria: 'Clase',
+      categoria: 'Promoción y Prevención en Salud',
       precio: 0,
       diasSemana: [],
       fechaDesde: todayStr(),
@@ -102,6 +126,7 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, editingOfferI
   const locationId     = useWatch({ control, name: 'locationId' });
   const categoria      = useWatch({ control, name: 'categoria' });
   const modalidad      = useWatch({ control, name: 'modalidad' });
+  const tipoAtencion   = useWatch({ control, name: 'tipoAtencion' });
   const tipoServicio   = useWatch({ control, name: 'tipoServicio' });
   const instructorId   = useWatch({ control, name: 'instructorId' });
   const fechaDesde     = useWatch({ control, name: 'fechaDesde' });
@@ -110,7 +135,7 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, editingOfferI
   const horaFin        = useWatch({ control, name: 'horaFin' });
   const diasSemana     = useWatch({ control, name: 'diasSemana' }) ?? [];
 
-  const requiereInstructor = categoria === 'Clase' || categoria === 'Disciplinas Complementarias';
+  const requiereInstructor = true; // aplica a las 5 categorías médicas
 
   // Availability check (debounced 400ms)
   useEffect(() => {
@@ -241,13 +266,7 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, editingOfferI
       const cleaned: any = { ...data };
       const room = espacios.find(e => e.id === data.roomId);
       if (room) cleaned.roomCapacity = room.capacity;
-      if (!requiereInstructor) {
-        delete cleaned.modalidad;
-        delete cleaned.instructorId;
-        delete cleaned.nivelDificultad;
-        delete cleaned.capacidad;
-      } else if (cleaned.modalidad === 'Individual') {
-        delete cleaned.nivelDificultad;
+      if (cleaned.modalidad === 'Individual') {
         delete cleaned.capacidad;
       }
       await onSuccess(cleaned);
@@ -289,7 +308,7 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, editingOfferI
           <h2 style={{ fontFamily: FONT_SERIF, fontSize: 32, fontWeight: 700, color: C.text, margin: 0, letterSpacing: '-0.02em' }}>
             {initialData ? 'Editar Servicio' : 'Catálogo de Servicios'}
           </h2>
-          <p style={{ color: C.textMedium, fontSize: 14, marginTop: 6 }}>Configura una nueva experiencia de Pole Dance y disciplinas de forma fluida.</p>
+          <p style={{ color: C.textMedium, fontSize: 14, marginTop: 6 }}>Configura una nueva consulta o servicio para la agenda de la clínica.</p>
         </div>
 
         <form onSubmit={handleSubmit(handleFormSubmit as any)} style={{ padding: 40 }}>
@@ -389,7 +408,7 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, editingOfferI
                             value={newTipoText}
                             onChange={e => setNewTipoText(e.target.value)}
                             onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddTipo())}
-                            placeholder={`Ej: ${categoria === 'Clase' ? 'Exotic de fuerza' : categoria === 'Eventos' ? 'Showcasing' : 'Nuevo tipo'}...`}
+                            placeholder="Ej: Control de Hipertensión Arterial..."
                             style={{ ...inputStyle, flex: 1 }}
                             autoFocus
                           />
@@ -428,23 +447,32 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, editingOfferI
                       {errors.modalidad && <span style={{ color: C.red, fontSize: 11, marginTop: 6, display: 'block', fontWeight: 500 }}>{errors.modalidad.message}</span>}
                     </div>
 
+                    <div style={{ marginBottom: 24 }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600, color: C.textBrown, marginBottom: 12 }}>
+                        <Activity size={14} color={C.gold} /> Tipo de Atención
+                      </label>
+                      <div style={{ display: 'flex', gap: 12 }}>
+                        {tipoAtencionEnum.options.map(tipo => (
+                          <label key={tipo} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '14px 20px', borderRadius: 12, border: `1.5px solid ${tipoAtencion === tipo ? C.gold : C.borderLight}`, background: tipoAtencion === tipo ? 'rgba(139,92,246,0.06)' : C.white, color: tipoAtencion === tipo ? C.gold : C.textBrown, cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s' }}>
+                            <input type="radio" value={tipo} {...register('tipoAtencion')} style={{ display: 'none' }} />
+                            {tipo}
+                          </label>
+                        ))}
+                      </div>
+                      {errors.tipoAtencion && <span style={{ color: C.red, fontSize: 11, marginTop: 6, display: 'block', fontWeight: 500 }}>{errors.tipoAtencion.message}</span>}
+                    </div>
+
                     <AnimatePresence mode="wait">
                       {modalidad === 'Grupal' && (
-                        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
-                          <InputField label="Nivel de Dificultad" icon={Activity} error={errors.nivelDificultad}>
-                            <select {...register('nivelDificultad')} style={activeInputStyle(!!errors.nivelDificultad)}>
-                              <option value="">Seleccionar nivel...</option>
-                              {nivelEnum.options.map(n => <option key={n} value={n}>{n}</option>)}
-                            </select>
-                          </InputField>
-                          <InputField label="Capacidad (Alumnos)" icon={Users} error={errors.capacidad}>
-                            <input type="number" {...register('capacidad', { setValueAs: (v) => v === '' ? undefined : Number(v) })} style={activeInputStyle(!!errors.capacidad)} placeholder="Límite 2 a 5 alumnos" />
+                        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} style={{ marginBottom: 24 }}>
+                          <InputField label="Capacidad (Pacientes)" icon={Users} error={errors.capacidad}>
+                            <input type="number" {...register('capacidad', { setValueAs: (v) => v === '' ? undefined : Number(v) })} style={activeInputStyle(!!errors.capacidad)} placeholder="Entre 2 y 20 pacientes" />
                           </InputField>
                         </motion.div>
                       )}
                     </AnimatePresence>
 
-                    <InputField label="Instructor a cargo" icon={UserCheck} error={errors.instructorId}>
+                    <InputField label="Médico responsable" icon={UserCheck} error={errors.instructorId}>
                       <select {...register('instructorId')} style={activeInputStyle(!!errors.instructorId)}>
                         <option value="">Asignar profesional...</option>
                         {instructores.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
