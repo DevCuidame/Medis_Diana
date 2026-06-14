@@ -1,6 +1,6 @@
-﻿import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate, Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import { CalendarDays, LayoutGrid, BookOpen, CreditCard, Users, LogOut, ChevronRight, Sparkles } from 'lucide-react'
+import { CalendarDays, LayoutGrid, BookOpen, CreditCard, Users, LogOut, ChevronRight } from 'lucide-react'
 import { UserCalendario }    from './UserCalendario'
 import { UserServicios }     from './UserServicios'
 import { UserMisServicios }  from './UserMisServicios'
@@ -9,7 +9,6 @@ import { UserProfesionales } from './UserProfesionales'
 
 const C = {
   gold: '#8B5CF6', goldLight: '#3B82F6',
-  pink: '#8B5CF6', pinkLight: '#3B82F6',
   bgPanel: '#F3F0FB', white: '#FFFFFF',
   text: '#1B1C1C', textBrown: '#475569',
   textMedium: '#5E5E5E', textMuted: '#94A3B8',
@@ -26,8 +25,8 @@ function authH(): HeadersInit {
 }
 
 const NAV = [
-  { icon: CalendarDays, label: 'Calendario',     path: '/user/calendario',     desc: 'Tus clases inscritas' },
-  { icon: LayoutGrid,   label: 'Servicios',       path: '/user/servicios',      desc: 'Oferta del estudio' },
+  { icon: CalendarDays, label: 'Calendario',     path: '/user/calendario',     desc: 'Tus citas agendadas' },
+  { icon: LayoutGrid,   label: 'Servicios',       path: '/user/servicios',      desc: 'Oferta de la clínica' },
   { icon: BookOpen,     label: 'Mis Servicios',   path: '/user/mis-servicios',  desc: 'Tus inscripciones' },
   { icon: CreditCard,   label: 'Planes',      path: '/user/membresias',     desc: 'Planes disponibles' },
   { icon: Users,        label: 'Profesionales',   path: '/user/profesionales',  desc: 'El equipo' },
@@ -38,18 +37,12 @@ export const UserLayout: React.FC = () => {
   const location  = useLocation()
   const [me, setMe]         = useState<Me | null>(null)
   const [hovered, setHovered] = useState<number | null>(null)
-  const [hasInscription, setHasInscription] = useState<boolean | null>(null)
 
   useEffect(() => {
     fetch('/api/auth/me', { headers: authH() })
       .then(r => r.json())
       .then(d => { if (d.success) setMe(d.data.user) })
       .catch(() => {})
-
-    fetch('/api/user-memberships/me/inscription', { headers: authH() })
-      .then(r => r.json())
-      .then(d => setHasInscription(!!(d.success && d.data?.inscription)))
-      .catch(() => setHasInscription(true))
   }, [])
 
   const logout = () => {
@@ -92,7 +85,7 @@ export const UserLayout: React.FC = () => {
             <p style={{ fontFamily: FONT_BODONI, fontSize: 13, fontWeight: 600, color: C.text, margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {displayName}
             </p>
-            <p style={{ fontSize: 10, fontWeight: 600, color: C.gold, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '2px 0 0' }}>Alumna</p>
+            <p style={{ fontSize: 10, fontWeight: 600, color: C.gold, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '2px 0 0' }}>Paciente</p>
           </div>
         </div>
 
@@ -135,21 +128,6 @@ export const UserLayout: React.FC = () => {
 
       {/* ── CONTENT ── */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        {hasInscription === false && (
-          <button
-            onClick={() => navigate('/user/membresias', { state: { expandInscription: true } })}
-            style={{
-              flexShrink: 0, width: '100%', border: 'none', cursor: 'pointer',
-              background: `linear-gradient(90deg, ${C.pink}, ${C.pinkLight})`,
-              color: C.white, padding: '9px 20px',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-              fontSize: 12.5, fontWeight: 700, fontFamily: FONT_INTER, textAlign: 'center',
-            }}>
-            <Sparkles size={14} />
-            <span>Las inscritas en MEDIS desbloquean descuentos exclusivos en servicios</span>
-            <span style={{ textDecoration: 'underline', whiteSpace: 'nowrap' }}>Inscríbete →</span>
-          </button>
-        )}
         <Routes>
           <Route path="calendario"    element={<UserCalendario    userId={me?.id} />} />
           <Route path="servicios"     element={<UserServicios     userId={me?.id} />} />

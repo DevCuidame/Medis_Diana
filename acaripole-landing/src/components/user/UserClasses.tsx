@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, User as UserIcon, LogOut, Clock } from 'lucide-react';
 
@@ -71,7 +71,7 @@ export const UserClasses: React.FC = () => {
           </button>
           <button style={{ ...navBtnStyle, background: C.gold, color: C.white }}>
             <Calendar size={18} />
-            Inscribirse a Clases
+            Agendar Consulta
           </button>
         </nav>
 
@@ -87,7 +87,7 @@ export const UserClasses: React.FC = () => {
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflowY: 'auto' }}>
         {/* Top Header */}
         <header style={{ height: 80, background: C.white, borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 40px' }}>
-          <h2 style={{ fontFamily: FONT_BODONI, fontSize: 22, color: C.text, margin: 0, fontWeight: 600 }}>Clases Disponibles</h2>
+          <h2 style={{ fontFamily: FONT_BODONI, fontSize: 22, color: C.text, margin: 0, fontWeight: 600 }}>Horarios Disponibles</h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div style={{ width: 40, height: 40, borderRadius: '50%', background: C.gold, color: C.white, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
               U
@@ -100,9 +100,9 @@ export const UserClasses: React.FC = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
             
             {loading ? (
-              <p style={{ color: C.textMedium }}>Cargando clases...</p>
+              <p style={{ color: C.textMedium }}>Cargando consultas...</p>
             ) : classes.length === 0 ? (
-              <p style={{ color: C.textMedium }}>No hay clases disponibles en este momento.</p>
+              <p style={{ color: C.textMedium }}>No hay consultas disponibles en este momento.</p>
             ) : (
               classes.map((cls) => (
                 <div key={cls.id} style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 12, padding: 24, boxShadow: '0 4px 12px rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column' }}>

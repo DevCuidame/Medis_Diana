@@ -158,7 +158,7 @@ export const ProfessionalClasses: React.FC<Props> = ({ me }) => {
         ) : offers.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '80px 20px', background: C.white, borderRadius: 20, border: `2px dashed ${C.borderLight}` }}>
             <CalendarDays size={44} color={C.borderLight} style={{ marginBottom: 16 }} />
-            <p style={{ fontFamily: FONT_BODONI, fontSize: '1.3rem', color: C.textMuted, margin: '0 0 8px' }}>Sin clases asignadas</p>
+            <p style={{ fontFamily: FONT_BODONI, fontSize: '1.3rem', color: C.textMuted, margin: '0 0 8px' }}>Sin consultas  asignadas</p>
             <p style={{ fontSize: 13, color: C.textMuted, margin: 0 }}>El administrador aún no te ha asignado ningún servicio.</p>
           </div>
         ) : view === 'week' ? (

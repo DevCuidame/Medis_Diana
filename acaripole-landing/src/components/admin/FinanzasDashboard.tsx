@@ -1,11 +1,11 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Users, CalendarDays, DollarSign, LogOut,
   Briefcase, ChevronDown, ChevronRight, LayoutDashboard,
   TrendingUp, TrendingDown, CreditCard, Clock, Menu,
-  Bell, ArrowUpRight, ArrowDownRight, CheckCircle2,
+  Bell, CheckCircle2,
   Banknote, Wallet, Trash2,
 } from 'lucide-react';
 import './MainDashboard.css';
@@ -79,6 +79,98 @@ interface PendingServicePayment {
   user: { id: string; firstName: string; lastName: string; email: string };
 }
 
+// ── Animación: Stickman médica señalando el crecimiento financiero ─────────────
+const FinanzasStickmanAnimation = () => (
+  <div style={{ flexShrink: 0 }}>
+    <svg width="150" height="120" viewBox="0 0 150 120" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(139,92,246,0.12))' }}>
+      <defs>
+        <linearGradient id="finSkin" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="100%" stopColor="#f3f0fb" />
+        </linearGradient>
+        <linearGradient id="finCoat" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="rgba(255,255,255,0.8)" />
+          <stop offset="100%" stopColor="rgba(139,92,246,0.15)" />
+        </linearGradient>
+      </defs>
+
+      {/* Ejes del gráfico financiero */}
+      <line x1="70" y1="14" x2="70" y2="106" stroke={C.gold} strokeWidth="3" strokeLinecap="round" />
+      <line x1="70" y1="106" x2="144" y2="106" stroke={C.gold} strokeWidth="3" strokeLinecap="round" />
+
+      {/* Barras de ingresos creciendo */}
+      {[
+        { x: 78,  to: 18, delay: '0s' },
+        { x: 94,  to: 34, delay: '0.25s' },
+        { x: 110, to: 50, delay: '0.5s' },
+        { x: 126, to: 68, delay: '0.75s' },
+      ].map((bar, i) => (
+        <rect key={i} x={bar.x} width="10" rx="2" fill={i % 2 === 0 ? C.gold : C.goldLight} opacity="0.85">
+          <animate attributeName="height" values={`0;${bar.to};${bar.to};0;0`} keyTimes="0;0.3;0.7;0.95;1" dur="4s" begin={bar.delay} repeatCount="indefinite" />
+          <animate attributeName="y" values={`106;${106 - bar.to};${106 - bar.to};106;106`} keyTimes="0;0.3;0.7;0.95;1" dur="4s" begin={bar.delay} repeatCount="indefinite" />
+        </rect>
+      ))}
+
+      {/* Moneda "$" animada sobre la barra más alta */}
+      <g>
+        <animate attributeName="opacity" values="0; 0; 1; 1; 0; 0" keyTimes="0; 0.4; 0.5; 0.8; 0.9; 1" dur="4s" repeatCount="indefinite" />
+        <circle cx="131" cy="20" r="9" fill="#10B981" />
+        <text x="131" y="24" textAnchor="middle" fontSize="11" fill="#fff" fontWeight="800">$</text>
+      </g>
+
+      {/* Stickman médica señalando el gráfico financiero */}
+      <g transform="translate(28, 78)">
+
+        {/* Cuerpo central */}
+        <line x1="0" y1="-12" x2="0" y2="10" stroke={C.goldLight} strokeWidth="3" strokeLinecap="round" />
+
+        {/* Bata médica */}
+        <path d="M -3 -10 L -10 12 C -10 14 10 14 10 12 L 3 -10 Z" fill="url(#finCoat)" stroke={C.goldLight} strokeWidth="1.5" strokeLinejoin="round" />
+        <path d="M -3 -10 L 0 0 L 3 -10" fill="none" stroke={C.goldLight} strokeWidth="1" />
+        <line x1="-6" y1="5" x2="-4" y2="5" stroke={C.goldLight} strokeWidth="1.5" strokeLinecap="round" />
+
+        {/* Piernas */}
+        <path d="M 0 10 Q -2 20 -4 30" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+        <ellipse cx="-2" cy="30" rx="3.5" ry="1.5" fill={C.goldLight} />
+        <path d="M 0 10 Q 2 20 4 30" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+        <ellipse cx="6" cy="30" rx="3.5" ry="1.5" fill={C.goldLight} />
+
+        {/* Cabeza */}
+        <circle cx="0" cy="-20" r="8.5" fill="url(#finSkin)" stroke={C.goldLight} strokeWidth="2" />
+        {/* Cabello: cerquillo y coleta */}
+        <path d="M -7 -25 Q 0 -32 8 -24" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+        <path d="M -7 -25 Q -12 -28 -14 -22" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+
+        {/* Carita mirando hacia el gráfico */}
+        <circle cx="1" cy="-21" r="1.2" fill={C.goldLight} />
+        <circle cx="5.5" cy="-21" r="1.2" fill={C.goldLight} />
+        <circle cx="-0.5" cy="-19" r="1.5" fill="#f43f5e" opacity="0.4" />
+        <circle cx="7" cy="-19" r="1.5" fill="#f43f5e" opacity="0.4" />
+        <path d="M 1 -17 Q 3.5 -14.5 6 -17" fill="none" stroke={C.goldLight} strokeWidth="1.2" strokeLinecap="round" />
+
+        {/* Estetoscopio */}
+        <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#1B1C1C" strokeWidth="1.2" />
+        <circle cx="5" cy="-10" r="1.8" fill="#1B1C1C" />
+        <circle cx="5" cy="-10" r="0.8" fill="#fff" />
+
+        {/* Brazo izquierdo (maletín) */}
+        <g>
+          <path d="M 0 -5 Q -6 0 -8 7" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+          <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#1B1C1C" strokeWidth="1.5" />
+          <line x1="-10" y1="7" x2="-6" y2="7" stroke="#1B1C1C" strokeWidth="1.5" strokeLinecap="round" />
+          <circle cx="-8" cy="10.5" r="1" fill="#1B1C1C" />
+        </g>
+
+        {/* Brazo derecho: señala el gráfico financiero (animado) */}
+        <g>
+          <animateTransform attributeName="transform" type="rotate" values="68 0 -5; 68 0 -5; 12 0 -5; 12 0 -5; 68 0 -5" keyTimes="0; 0.2; 0.4; 0.8; 1" dur="4s" repeatCount="indefinite" />
+          <path d="M 0 -5 Q 16 -10 32 -15" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+          <circle cx="32" cy="-15" r="1.5" fill={C.goldLight} />
+        </g>
+      </g>
+    </svg>
+  </div>
+);
 
 export const FinanzasDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -245,15 +337,23 @@ export const FinanzasDashboard: React.FC = () => {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setKpis({ ingresos: 2580000, egresos: 1625000, balance: 955000, pendientes: 145000 });
-    }, 400);
     fetchActive();
     fetchPending();
     fetchPendingServices();
-
-  return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    const ingresosPlanes = activeMemberships.reduce((sum, m) => sum + (m.membership.price || 0), 0);
+    const pendientesPlanes = pendingPayments.reduce((sum, p) => sum + (p.membership.price || 0), 0);
+    const pendientesServicios = pendingServices.reduce((sum, s) => sum + (s.expectedAmount || 0), 0);
+    
+    setKpis({
+      ingresos: ingresosPlanes,
+      egresos: 0,
+      balance: ingresosPlanes,
+      pendientes: pendientesPlanes + pendientesServicios,
+    });
+  }, [activeMemberships, pendingPayments, pendingServices]);
 
   useEffect(() => {
     document.body.classList.remove('sidebar-collapsed');
@@ -496,110 +596,21 @@ export const FinanzasDashboard: React.FC = () => {
               <div>
                 <p style={{ fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.18em', textTransform: 'uppercase', margin: '0 0 6px', fontFamily: '"Hanken Grotesk", sans-serif' }}>Gestión Financiera</p>
                 <h1 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: '2.5rem', color: C.text, marginBottom: '0.4rem', lineHeight: 1.1 }}>Finanzas</h1>
-                <p style={{ color: C.textMuted, fontSize: '1rem', margin: 0 }}>Resumen financiero de Medis — Mayo 2026.</p>
+                <p style={{ color: C.textMuted, fontSize: '1rem', margin: 0 }}>
+                  Resumen financiero de Medis — {new Date().toLocaleDateString('es-CO', { month: 'long', year: 'numeric' }).replace(/^\w/, c => c.toUpperCase())}.
+                </p>
               </div>
 
-              {/* Pole dance coin/balance animation */}
-              <div style={{ flexShrink: 0, opacity: 0.9 }}>
-                <style>{`
-                  @keyframes fn_float   { 0%,100%{transform:translateY(0)}   50%{transform:translateY(-7px)} }
-                  @keyframes fn_spin    { 0%{transform:rotate(0deg) scaleX(1)} 25%{transform:rotate(0deg) scaleX(0.15)} 50%{transform:rotate(0deg) scaleX(-1)} 75%{transform:rotate(0deg) scaleX(0.15)} 100%{transform:rotate(0deg) scaleX(1)} }
-                  @keyframes fn_coinSpin{ 0%{transform:rotateY(0deg)}  100%{transform:rotateY(360deg)} }
-                  @keyframes fn_glow    { 0%,100%{filter:drop-shadow(0 0 3px rgba(59,130,246,0.5))} 50%{filter:drop-shadow(0 0 10px rgba(59,130,246,0.9))} }
-                  @keyframes fn_pulse   { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1.2)} }
-                  @keyframes fn_bodyWave{ 0%,100%{transform:rotate(-6deg)} 50%{transform:rotate(6deg)} }
-                  @keyframes fn_legBack { 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(-28deg)} }
-                  @keyframes fn_legFront{ 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(22deg)} }
-                  @keyframes fn_arm     { 0%,100%{transform:rotate(-12deg)} 50%{transform:rotate(20deg)} }
-                  @keyframes fn_coinBob { 0%,100%{transform:translateY(0) rotate(0deg)} 33%{transform:translateY(-10px) rotate(-8deg)} 66%{transform:translateY(-4px) rotate(5deg)} }
-                `}</style>
-                <svg width="170" height="130" viewBox="0 0 170 130" style={{ overflow: 'visible' }}>
-
-                  {/* ── Gold coins raining ── */}
-                  {[
-                    { x: 130, y: 15, d: '0s',   s: 14 },
-                    { x: 148, y: 38, d: '0.6s',  s: 11 },
-                    { x: 118, y: 55, d: '1.1s',  s: 9  },
-                    { x: 155, y: 70, d: '0.3s',  s: 12 },
-                  ].map((c, i) => (
-                    <g key={i} style={{ animation: `fn_coinBob 2.4s ease-in-out ${c.d} infinite` }}>
-                      <ellipse cx={c.x} cy={c.y} rx={c.s/2} ry={c.s*0.35} fill="none" stroke={C.goldLight} strokeWidth="2" opacity="0.5" />
-                      <ellipse cx={c.x} cy={c.y} rx={c.s/2 - 1} ry={c.s*0.3} fill={C.gold} opacity="0.35" />
-                      <text x={c.x} y={c.y + 3.5} textAnchor="middle" fontSize={c.s * 0.55} fill={C.goldLight} fontWeight="800" opacity="0.8">$</text>
-                    </g>
-                  ))}
-
-                  {/* ── Pole ── */}
-                  <line x1="55" y1="5" x2="55" y2="122" stroke={C.goldLight} strokeWidth="3" strokeLinecap="round"
-                    style={{ animation: 'fn_glow 2.5s ease-in-out infinite' }} />
-                  <circle cx="55" cy="7" r="4.5" fill={C.gold} style={{ animation: 'fn_pulse 2s ease-in-out infinite' }} />
-                  <circle cx="55" cy="120" r="3" fill={C.gold} opacity="0.4" />
-
-                  {/* ── Figure: standing → extended pose ── */}
-                  <g style={{ animation: 'fn_float 3s ease-in-out infinite' }}>
-                    <g style={{ transformOrigin: '55px 65px', animation: 'fn_bodyWave 2.8s ease-in-out infinite' }}>
-                      {/* Hair */}
-                      <path d="M55 30 Q64 22 68 16" stroke={C.text} strokeWidth="2" fill="none" opacity="0.75" />
-                      <path d="M55 30 Q60 20 66 13" stroke={C.text} strokeWidth="1.5" fill="none" opacity="0.5" />
-                      {/* Head */}
-                      <circle cx="55" cy="37" r="8" fill={C.text} opacity="0.85" />
-                      {/* Neck + torso */}
-                      <line x1="55" y1="45" x2="55" y2="52" stroke={C.text} strokeWidth="3.5" strokeLinecap="round" opacity="0.85" />
-                      <path d="M50 52 Q47 63 48 73 Q55 77 62 73 Q63 63 60 52Z" fill={C.text} opacity="0.85" />
-                      {/* Left arm (holding pole up) */}
-                      <line x1="50" y1="57" x2="55" y2="50" stroke={C.text} strokeWidth="3" strokeLinecap="round" opacity="0.85" />
-                      {/* Right arm (extended with coin) */}
-                      <g style={{ transformOrigin: '60px 58px', animation: 'fn_arm 2.5s ease-in-out infinite' }}>
-                        <line x1="60" y1="58" x2="82" y2="53" stroke={C.text} strokeWidth="3" strokeLinecap="round" opacity="0.85" />
-                        {/* Coin in hand */}
-                        <g style={{ animation: 'fn_coinBob 1.8s ease-in-out 0.2s infinite' }}>
-                          <circle cx="86" cy="52" r="7" fill={C.gold} opacity="0.9" />
-                          <circle cx="86" cy="52" r="5" fill="none" stroke={C.goldLight} strokeWidth="1.5" opacity="0.8" />
-                          <text x="86" y="55.5" textAnchor="middle" fontSize="7" fill={C.white} fontWeight="900" opacity="0.95">$</text>
-                        </g>
-                      </g>
-                      {/* Left leg */}
-                      <g style={{ transformOrigin: '50px 73px', animation: 'fn_legBack 3s ease-in-out infinite' }}>
-                        <line x1="50" y1="73" x2="43" y2="93" stroke={C.text} strokeWidth="3.5" strokeLinecap="round" opacity="0.85" />
-                        <line x1="43" y1="93" x2="38" y2="112" stroke={C.text} strokeWidth="3" strokeLinecap="round" opacity="0.85" />
-                        <circle cx="37" cy="114" r="2.5" fill={C.text} opacity="0.8" />
-                      </g>
-                      {/* Right leg */}
-                      <g style={{ transformOrigin: '60px 73px', animation: 'fn_legFront 3s ease-in-out infinite' }}>
-                        <line x1="60" y1="73" x2="67" y2="91" stroke={C.text} strokeWidth="3.5" strokeLinecap="round" opacity="0.85" />
-                        <line x1="67" y1="91" x2="72" y2="110" stroke={C.text} strokeWidth="3" strokeLinecap="round" opacity="0.85" />
-                        <circle cx="73" cy="112" r="2.5" fill={C.text} opacity="0.8" />
-                      </g>
-                      {/* Skirt accent */}
-                      <path d="M48 73 Q40 82 43 91" stroke={C.goldLight} strokeWidth="1.5" fill="none" opacity="0.5"
-                        style={{ animation: 'fn_legBack 3s ease-in-out infinite' }} />
-                      <path d="M62 73 Q70 80 67 89" stroke={C.goldLight} strokeWidth="1.5" fill="none" opacity="0.5"
-                        style={{ animation: 'fn_legFront 3s ease-in-out infinite' }} />
-                    </g>
-                  </g>
-
-                  {/* Sparkles */}
-                  {[
-                    { x: 20, y: 40, d: '0s'   },
-                    { x: 100, y: 105, d: '0.8s' },
-                    { x: 15, y: 90, d: '1.4s'  },
-                  ].map((s, i) => (
-                    <g key={i} style={{ animation: `fn_pulse 2s ease-in-out ${s.d} infinite` }}>
-                      <line x1={s.x-4} y1={s.y} x2={s.x+4} y2={s.y} stroke={C.goldLight} strokeWidth="1.5" />
-                      <line x1={s.x} y1={s.y-4} x2={s.x} y2={s.y+4} stroke={C.goldLight} strokeWidth="1.5" />
-                    </g>
-                  ))}
-                </svg>
-              </div>
+              <FinanzasStickmanAnimation />
             </motion.div>
 
             {/* ── KPI CARDS ── */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
               {[
-                { label: 'Ingresos del mes', value: kpis.ingresos, icon: TrendingUp, color: '#16A34A', bg: 'rgba(34,197,94,0.06)', trend: '+18% vs. abril', up: true },
-                { label: 'Egresos del mes', value: kpis.egresos, icon: TrendingDown, color: '#DC2626', bg: 'rgba(239,68,68,0.06)', trend: '+8% vs. abril', up: false },
-                { label: 'Balance neto', value: kpis.balance, icon: DollarSign, color: C.gold, bg: 'rgba(139,92,246,0.06)', trend: '+34% vs. abril', up: true },
-                { label: 'Cobros pendientes', value: kpis.pendientes, icon: Clock, color: '#B45309', bg: 'rgba(234,179,8,0.06)', trend: '2 transacciones', up: null },
+                { label: 'Ingresos del mes', value: kpis.ingresos, icon: TrendingUp, color: '#16A34A', bg: 'rgba(34,197,94,0.06)' },
+                { label: 'Egresos del mes', value: kpis.egresos, icon: TrendingDown, color: '#DC2626', bg: 'rgba(239,68,68,0.06)' },
+                { label: 'Balance neto', value: kpis.balance, icon: DollarSign, color: C.gold, bg: 'rgba(139,92,246,0.06)' },
+                { label: 'Cobros pendientes', value: kpis.pendientes, icon: Clock, color: '#B45309', bg: 'rgba(234,179,8,0.06)' },
               ].map((kpi, i) => {
                 const Icon = kpi.icon;
 
@@ -616,12 +627,6 @@ export const FinanzasDashboard: React.FC = () => {
                       <div style={{ width: 42, height: 42, borderRadius: 12, background: kpi.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Icon size={20} color={kpi.color} />
                       </div>
-                      {kpi.up !== null && (
-                        <span style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 11, fontWeight: 700, color: kpi.up ? '#16A34A' : '#DC2626' }}>
-                          {kpi.up ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
-                          {kpi.trend}
-                        </span>
-                      )}
                     </div>
                     <p style={{ fontSize: 11, fontWeight: 700, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>{kpi.label}</p>
                     <motion.p
@@ -633,9 +638,6 @@ export const FinanzasDashboard: React.FC = () => {
                     >
                       {fmt(kpi.value)}
                     </motion.p>
-                    {kpi.up === null && (
-                      <span style={{ fontSize: 11, color: '#B45309', fontWeight: 600, marginTop: 4, display: 'block' }}>{kpi.trend}</span>
-                    )}
                   </motion.div>
                 );
               })}
@@ -657,7 +659,7 @@ export const FinanzasDashboard: React.FC = () => {
                       padding: '10px 20px', borderRadius: 99,
                       border: isActive ? 'none' : `1.5px solid ${C.borderLight}`,
                       background: isActive
-                        ? `linear-gradient(90deg, ${tab.key === 'planes' ? `${C.gold}, ${C.goldLight}` : '#B45309, #D97706'})`
+                        ? `linear-gradient(90deg, ${tab.key === 'planes' ? `${C.gold}, ${C.goldLight}` : `${C.goldLight}, #38BDF8`})`
                         : C.white,
                       color: isActive ? C.white : C.textBrown,
                       fontSize: 13, fontWeight: 700, cursor: 'pointer',
@@ -717,7 +719,7 @@ export const FinanzasDashboard: React.FC = () => {
                 </p>
                 {activeMemberships.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '1.25rem 1rem', background: 'rgba(139,92,246,0.03)', borderRadius: 10, border: `1px dashed ${C.borderLight}` }}>
-                    <p style={{ fontSize: 13, color: C.textMuted, margin: 0 }}>Ningún alumno tiene un plan activo aún.</p>
+                    <p style={{ fontSize: 13, color: C.textMuted, margin: 0 }}>Ningún paciente tiene un plan activo aún.</p>
                   </div>
                 ) : (
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 10 }}>
@@ -752,7 +754,7 @@ export const FinanzasDashboard: React.FC = () => {
                             {am.classesRemaining !== null && (
                               <div style={{ textAlign: 'right' }}>
                                 <p style={{ fontSize: 15, fontWeight: 800, color: am.classesRemaining <= 2 ? '#DC2626' : C.gold, margin: 0 }}>{am.classesRemaining}</p>
-                                <p style={{ fontSize: 10, color: C.textMuted, margin: 0 }}>sesiones</p>
+                                <p style={{ fontSize: 10, color: C.textMuted, margin: 0 }}>consultas</p>
                               </div>
                             )}
                             {am.classesRemaining === null && (
@@ -853,32 +855,32 @@ export const FinanzasDashboard: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.42 }}
               className="glass-card"
-              style={{ padding: '1.5rem 1.75rem', marginBottom: '2rem', border: '1.5px solid rgba(180,83,9,0.2)' }}
+              style={{ padding: '1.5rem 1.75rem', marginBottom: '2rem', border: `1.5px solid rgba(59,130,246,0.2)` }}
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(180,83,9,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Briefcase size={20} color="#B45309" />
+                  <div style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Briefcase size={20} color={C.goldLight} />
                   </div>
                   <div>
                     <h2 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: '1.3rem', color: C.text, margin: 0 }}>Servicios Adicionales</h2>
                     <p style={{ fontSize: 12, color: C.textMuted, margin: 0 }}>
-                      Sesiones extra fuera del plan — pendientes de confirmación de pago
+                      Consultas o procedimientos fuera del plan — pendientes de confirmación de pago
                     </p>
                   </div>
                 </div>
                 {pendingServices.length > 0 && (
-                  <span style={{ background: '#FEF3C7', color: '#B45309', fontSize: 12, fontWeight: 700, padding: '4px 12px', borderRadius: 99 }}>
+                  <span style={{ background: 'rgba(59,130,246,0.1)', color: C.goldLight, fontSize: 12, fontWeight: 700, padding: '4px 12px', borderRadius: 99 }}>
                     {pendingServices.length} pendiente{pendingServices.length !== 1 ? 's' : ''}
                   </span>
                 )}
               </div>
 
               {pendingServices.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '2rem 1rem', background: 'rgba(180,83,9,0.03)', borderRadius: 12, border: `1px dashed ${C.borderLight}` }}>
+                <div style={{ textAlign: 'center', padding: '2rem 1rem', background: 'rgba(59,130,246,0.03)', borderRadius: 12, border: `1px dashed ${C.borderLight}` }}>
                   <CheckCircle2 size={32} color="#16A34A" style={{ margin: '0 auto 10px' }} />
                   <p style={{ fontSize: 14, fontWeight: 600, color: C.textMuted, margin: 0 }}>Sin servicios adicionales pendientes</p>
-                  <p style={{ fontSize: 12, color: C.textMuted, margin: '4px 0 0' }}>Cuando un alumno solicite sesiones extra con pago en efectivo, aparecerán aquí.</p>
+                  <p style={{ fontSize: 12, color: C.textMuted, margin: '4px 0 0' }}>Cuando un paciente solicite consultas o servicios adicionales con pago en efectivo, aparecerán aquí.</p>
                 </div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -905,7 +907,7 @@ export const FinanzasDashboard: React.FC = () => {
                           <div style={{ flex: 1, minWidth: 140 }}>
                             <p style={{ fontSize: 13, fontWeight: 600, color: C.text, margin: '0 0 2px' }}>{serviceTitle}</p>
                             <p style={{ fontSize: 12, color: C.textMuted, margin: 0 }}>
-                              {sv.sessionCount > 1 && <span style={{ fontWeight: 700, color: '#B45309' }}>{sv.sessionCount} sesiones · </span>}
+                              {sv.sessionCount > 1 && <span style={{ fontWeight: 700, color: C.goldLight }}>{sv.sessionCount} servicios · </span>}
                               {fmt(sv.expectedAmount)}
                               {sv.discountPct ? <span style={{ color: '#16A34A', fontWeight: 600 }}> (-{sv.discountPct}%)</span> : null}
                               {' · '}

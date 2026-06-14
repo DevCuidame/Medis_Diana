@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const links = [
@@ -52,7 +52,7 @@ export default function Navbar({ onLoginClick }: NavbarProps) {
           <img
             src="/Logo_Medis.jpeg"
             alt="Dra. Diana Cristina Medina Camargo"
-            style={{ height: '48px', width: 'auto', objectFit: 'contain', display: 'block' }}
+            style={{ height: '64px', width: 'auto', objectFit: 'contain', display: 'block' }}
           />
         </a>
 
@@ -109,7 +109,8 @@ export default function Navbar({ onLoginClick }: NavbarProps) {
 
         {/* CTA Button */}
         <motion.a
-          href="#contacto"
+          href="/login"
+          onClick={(e: React.MouseEvent) => { e.preventDefault(); if (onLoginClick) onLoginClick(); }}
           whileHover={{ scale: 1.04, boxShadow: '0 8px 30px rgba(139,92,246,0.35)' }}
           whileTap={{ scale: 0.97 }}
           className="brand-gradient desktop-cta"
@@ -225,8 +226,8 @@ export default function Navbar({ onLoginClick }: NavbarProps) {
               </button>
             )}
             <a
-              href="#contacto"
-              onClick={() => setMenuOpen(false)}
+              href="/login"
+              onClick={(e) => { e.preventDefault(); setMenuOpen(false); if (onLoginClick) onLoginClick(); }}
               className="brand-gradient"
               style={{
                 padding: '0.75rem',

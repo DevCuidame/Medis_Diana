@@ -100,6 +100,106 @@ function fmtDate(d: Date) {
   return d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
+// ── Animación: Stickman médico señalando el catálogo de servicios ──────────────
+const ServiciosStickmanAnimation = () => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', padding: '1.5rem 2rem', background: C.white, borderRadius: '1.25rem', border: `1px solid ${C.borderLight}`, marginBottom: '2rem', boxShadow: '0 4px 16px rgba(0,0,0,0.03)' }}>
+    <div style={{ flex: 1 }}>
+      <div style={{ fontFamily: FONT_BODONI, fontSize: '1.6rem', color: C.gold, fontWeight: 700, marginBottom: '0.25rem' }}>
+        Catálogo de Servicios 🩺
+      </div>
+      <div style={{ fontSize: '1rem', color: C.textBrown }}>
+        Crea y organiza las consultas, citas y servicios que ofrece la clínica.
+      </div>
+    </div>
+    <div style={{ flexShrink: 0 }}>
+      <svg width="150" height="120" viewBox="0 0 150 120" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(139,92,246,0.12))' }}>
+        <defs>
+          <linearGradient id="svcSkin" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="100%" stopColor="#f3f0fb" />
+          </linearGradient>
+          <linearGradient id="svcCoat" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.8)" />
+            <stop offset="100%" stopColor="rgba(139,92,246,0.15)" />
+          </linearGradient>
+        </defs>
+
+        {/* Tablero del catálogo */}
+        <rect x="68" y="14" width="58" height="92" rx="8" fill="rgba(139,92,246,0.05)" stroke={C.gold} strokeWidth="3" />
+        <rect x="87" y="8" width="20" height="10" rx="3" fill={C.white} stroke={C.gold} strokeWidth="2" />
+
+        {/* Filas del catálogo de servicios */}
+        <rect x="78" y="28" width="38" height="6" rx="3" fill="rgba(139,92,246,0.15)" />
+        <rect x="78" y="42" width="30" height="6" rx="3" fill="rgba(139,92,246,0.1)" />
+        <rect x="78" y="56" width="38" height="6" rx="3" fill="rgba(139,92,246,0.15)" />
+        <rect x="78" y="70" width="30" height="6" rx="3" fill="rgba(139,92,246,0.1)" />
+
+        {/* Fila destacada hacia donde señala el stickman */}
+        <rect x="78" y="84" width="38" height="6" rx="3" fill="rgba(139,92,246,0.25)" />
+
+        {/* Badge "+" animado: nuevo servicio agregado */}
+        <g>
+          <animate attributeName="opacity" values="0; 0; 1; 1; 0; 0" keyTimes="0; 0.4; 0.5; 0.8; 0.9; 1" dur="4s" repeatCount="indefinite" />
+          <circle cx="118" cy="22" r="8" fill="#10B981" />
+          <line x1="114" y1="22" x2="122" y2="22" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+          <line x1="118" y1="18" x2="118" y2="26" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+        </g>
+
+        {/* Stickman médico señalando el catálogo */}
+        <g transform="translate(30, 78)">
+
+          {/* Cuerpo central */}
+          <line x1="0" y1="-12" x2="0" y2="10" stroke={C.goldLight} strokeWidth="3" strokeLinecap="round" />
+
+          {/* Bata médica */}
+          <path d="M -3 -10 L -10 12 C -10 14 10 14 10 12 L 3 -10 Z" fill="url(#svcCoat)" stroke={C.goldLight} strokeWidth="1.5" strokeLinejoin="round" />
+          <path d="M -3 -10 L 0 0 L 3 -10" fill="none" stroke={C.goldLight} strokeWidth="1" />
+          <line x1="-6" y1="5" x2="-4" y2="5" stroke={C.goldLight} strokeWidth="1.5" strokeLinecap="round" />
+
+          {/* Piernas */}
+          <path d="M 0 10 Q -2 20 -4 30" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+          <ellipse cx="-2" cy="30" rx="3.5" ry="1.5" fill={C.goldLight} />
+          <path d="M 0 10 Q 2 20 4 30" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+          <ellipse cx="6" cy="30" rx="3.5" ry="1.5" fill={C.goldLight} />
+
+          {/* Cabeza */}
+          <circle cx="0" cy="-20" r="8.5" fill="url(#svcSkin)" stroke={C.goldLight} strokeWidth="2" />
+          {/* Cabello: cerquillo y coleta */}
+          <path d="M -7 -25 Q 0 -32 8 -24" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M -7 -25 Q -12 -28 -14 -22" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+
+          {/* Carita mirando hacia el catálogo */}
+          <circle cx="1" cy="-21" r="1.2" fill={C.goldLight} />
+          <circle cx="5.5" cy="-21" r="1.2" fill={C.goldLight} />
+          <circle cx="-0.5" cy="-19" r="1.5" fill="#f43f5e" opacity="0.4" />
+          <circle cx="7" cy="-19" r="1.5" fill="#f43f5e" opacity="0.4" />
+          <path d="M 1 -17 Q 3.5 -14.5 6 -17" fill="none" stroke={C.goldLight} strokeWidth="1.2" strokeLinecap="round" />
+
+          {/* Estetoscopio */}
+          <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#1B1C1C" strokeWidth="1.2" />
+          <circle cx="5" cy="-10" r="1.8" fill="#1B1C1C" />
+          <circle cx="5" cy="-10" r="0.8" fill="#fff" />
+
+          {/* Brazo izquierdo (maletín) */}
+          <g>
+            <path d="M 0 -5 Q -6 0 -8 7" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+            <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#1B1C1C" strokeWidth="1.5" />
+            <line x1="-10" y1="7" x2="-6" y2="7" stroke="#1B1C1C" strokeWidth="1.5" strokeLinecap="round" />
+            <circle cx="-8" cy="10.5" r="1" fill="#1B1C1C" />
+          </g>
+
+          {/* Brazo derecho: señala el catálogo (animado) */}
+          <g>
+            <animateTransform attributeName="transform" type="rotate" values="68 0 -5; 68 0 -5; 12 0 -5; 12 0 -5; 68 0 -5" keyTimes="0; 0.2; 0.4; 0.8; 1" dur="4s" repeatCount="indefinite" />
+            <path d="M 0 -5 Q 16 -10 32 -15" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx="32" cy="-15" r="1.5" fill={C.goldLight} />
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+);
+
 export const ServiciosDashboard: React.FC = () => {
   const [isFormOpen, setIsFormOpen]       = useState(false);
   const [editingGroup, setEditingGroup]   = useState<ServiceGroup | null>(null);
@@ -322,6 +422,9 @@ export const ServiciosDashboard: React.FC = () => {
       <AnimatePresence mode="wait">
         {!isFormOpen ? (
           <motion.div key="dashboard" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} style={{ maxWidth: 1140, margin: '0 auto' }}>
+
+            {/* ── ANIMACIÓN DE BIENVENIDA ── */}
+            <ServiciosStickmanAnimation />
 
             {/* ── HEADER ── */}
             <div style={{ marginBottom: 28, paddingBottom: 24, borderBottom: `1px solid ${C.borderLight}` }}>

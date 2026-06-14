@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -36,9 +37,10 @@ const SOCIAL = [
 ]
 
 export default function Footer() {
+  const ref = useRef<HTMLElement>(null)
+  const inView = useInView(ref, { once: true, margin: '-50px' })
+  const navigate = useNavigate()
   const year = new Date().getFullYear()
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
 
   return (
     <footer
@@ -113,15 +115,27 @@ export default function Footer() {
               Consultorio
             </h4>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {['Inicio', 'Sobre la Doctora', 'Servicios', 'Agendar Cita', 'Contacto'].map((item, i) => (
+              {[
+                { label: 'Inicio', href: '#inicio' },
+                { label: 'Sobre la Doctora', href: '#sobre-la-doctora' },
+                { label: 'Servicios', href: '#servicios' },
+                { label: 'Agendar Cita', href: '/login', isRoute: true },
+                { label: 'Contacto', href: '#contacto' }
+              ].map(({ label, href, isRoute }, i) => (
                 <motion.li
-                  key={item}
+                  key={label}
                   initial={{ opacity: 0, x: -10 }}
                   animate={inView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.45, delay: 0.2 + i * 0.06, ease: EASE }}
                 >
                   <a
-                    href="#"
+                    href={href}
+                    onClick={(e) => {
+                      if (isRoute) {
+                        e.preventDefault();
+                        navigate(href);
+                      }
+                    }}
                     className="luxury-link"
                     style={{
                       fontFamily: 'Inter, sans-serif', fontSize: '0.84rem',
@@ -131,7 +145,7 @@ export default function Footer() {
                     onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#8B5CF6')}
                     onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#475569')}
                   >
-                    {item}
+                    {label}
                   </a>
                 </motion.li>
               ))}
@@ -151,7 +165,7 @@ export default function Footer() {
               Servicios
             </h4>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {['Consulta Médica General', 'Control de Niño Sano', 'Control Prenatal', 'Enfermedades Crónicas', 'Medicina Preventiva', 'Certificados y Vacunación'].map((item, i) => (
+              {['Consulta Médica General', 'Promoción y Prevención', 'Enfermedades No Transmisibles', 'Sobrepeso y Obesidad', 'Salud de la Mujer', 'Salud Mental'].map((item, i) => (
                 <motion.li
                   key={item}
                   initial={{ opacity: 0, x: -10 }}
@@ -213,7 +227,8 @@ export default function Footer() {
 
             {/* CTA in footer */}
             <motion.a
-              href="#contacto"
+              href="/login"
+              onClick={(e) => { e.preventDefault(); navigate('/login'); }}
               initial={{ opacity: 0, y: 12 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.55, delay: 0.65, ease: EASE }}

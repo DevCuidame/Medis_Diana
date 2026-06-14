@@ -85,7 +85,7 @@ export default function ArtistLogin({
         transition={{ duration: 0.5, ease: EASE }}
         style={{ width: '100%', background: 'rgba(255,255,255,0.92)', borderBottom: `1px solid ${C.border}`, backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', position: 'sticky', top: 0, zIndex: 100 }}
       >
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', height: 80, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', height: 100, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           {/* Left: back + logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
             <motion.button
@@ -107,22 +107,29 @@ export default function ArtistLogin({
               src="/Logo_Medis.jpeg"
               alt="Dra. Diana Cristina Medina Camargo"
               onClick={onBackToHome}
-              style={{ height: 44, width: 'auto', objectFit: 'contain', cursor: 'pointer', display: 'block' }}
+              style={{ height: 90, width: 'auto', objectFit: 'contain', cursor: 'pointer', display: 'block' }}
             />
           </div>
 
           {/* Right: nav links */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
             {[
-              { label: 'Inicio', href: '#inicio' },
-              { label: 'Sobre la Doctora', href: '#sobre-la-doctora' },
-              { label: 'Servicios', href: '#servicios' },
-              { label: 'Contacto', href: '#contacto' },
+              { label: 'Inicio', hash: '#inicio' },
+              { label: 'Sobre la Doctora', hash: '#sobre-la-doctora' },
+              { label: 'Servicios', hash: '#servicios' },
+              { label: 'Contacto', hash: '#contacto' },
             ].map((item) => (
               <a
                 key={item.label}
-                href={item.href}
-                onClick={onBackToHome}
+                href={`/${item.hash}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  onBackToHome();
+                  setTimeout(() => {
+                    const el = document.querySelector(item.hash);
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }, 100);
+                }}
                 style={{ color: C.textMedium, fontSize: 12, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none', transition: 'color 0.2s ease' }}
                 onMouseEnter={(e) => ((e.target as HTMLElement).style.color = C.brand)}
                 onMouseLeave={(e) => ((e.target as HTMLElement).style.color = C.textMedium)}
@@ -285,7 +292,7 @@ export default function ArtistLogin({
             <div style={{ position: 'absolute', width: 256, height: 256, left: -128, bottom: -128, background: 'rgba(59,130,246,0.12)', filter: 'blur(64px)', borderRadius: '50%', pointerEvents: 'none' }} />
 
             {/* Content */}
-            <div style={{ maxWidth: 320, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', zIndex: 1 }}>
+            <div style={{ maxWidth: 400, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', zIndex: 1 }}>
 
               {/* Logo card */}
               <motion.div
@@ -294,7 +301,7 @@ export default function ArtistLogin({
                 transition={{ duration: 0.7, delay: 0.35, ease: EASE }}
                 style={{ padding: 32, background: C.white, borderRadius: 20, boxShadow: '0px 20px 25px -5px rgba(0,0,0,0.08), 0px 8px 10px -6px rgba(0,0,0,0.06)', marginBottom: 32 }}
               >
-                <div style={{ width: 192, height: 192, background: '#FFFFFF', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                <div style={{ width: 280, height: 280, background: '#FFFFFF', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                   <img
                     src="/Logo_Medis.jpeg"
                     alt="Dra. Diana Cristina Medina Camargo"

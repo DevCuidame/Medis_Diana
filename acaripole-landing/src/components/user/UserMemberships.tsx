@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -23,19 +23,21 @@ const FONT_BODONI = '"Bodoni Moda", Georgia, serif';
 const FONT_INTER = '"Hanken Grotesk", Inter, system-ui, sans-serif';
 
 const TYPE_LABELS: Record<string, string> = {
-  per_class: 'Por Clase',
-  monthly: 'Mensual',
-  annual: 'Anual',
-  private: 'Clase Privada',
-  pack: 'Pack de Clases',
+  per_consultation: 'Por Consulta',
+  monthly:          'Control Mensual',
+  annual:           'Programa Anual',
+  program:          'Programa Integral',
+  pack:             'Paquete de Consultas',
+  assessment:       'Valoración Inicial',
 };
 
 const TYPE_COLORS: Record<string, { bg: string; color: string; badge: string }> = {
-  per_class: { bg: 'rgba(139,92,246,0.06)', color: '#8B5CF6', badge: 'rgba(139,92,246,0.12)' },
-  monthly:   { bg: 'rgba(34,197,94,0.06)', color: '#16A34A', badge: 'rgba(34,197,94,0.12)' },
-  annual:    { bg: 'rgba(59,130,246,0.06)', color: '#2563EB', badge: 'rgba(59,130,246,0.12)' },
-  private:   { bg: 'rgba(168,85,247,0.06)', color: '#7C3AED', badge: 'rgba(168,85,247,0.12)' },
-  pack:      { bg: 'rgba(234,179,8,0.06)', color: '#B45309', badge: 'rgba(234,179,8,0.12)' },
+  per_consultation: { bg: 'rgba(139,92,246,0.06)', color: '#8B5CF6', badge: 'rgba(139,92,246,0.12)' },
+  monthly:          { bg: 'rgba(34,197,94,0.06)', color: '#16A34A', badge: 'rgba(34,197,94,0.12)' },
+  annual:           { bg: 'rgba(59,130,246,0.06)', color: '#2563EB', badge: 'rgba(59,130,246,0.12)' },
+  program:          { bg: 'rgba(168,85,247,0.06)', color: '#7C3AED', badge: 'rgba(168,85,247,0.12)' },
+  pack:             { bg: 'rgba(234,179,8,0.06)', color: '#B45309', badge: 'rgba(234,179,8,0.12)' },
+  assessment:       { bg: 'rgba(236,72,153,0.06)', color: '#EC4899', badge: 'rgba(236,72,153,0.12)' },
 };
 
 const fmt = (n: number) =>
@@ -85,15 +87,17 @@ const slideVariants = {
 function howItWorks(plan: Plan): { icon: string; title: string; desc: string } {
   switch (plan.type) {
     case 'monthly':
-      return { icon: '∞', title: 'Clases ilimitadas', desc: `Durante ${plan.durationDays ?? 30} días podrás reservar cualquier clase del catálogo sin costo adicional.` };
+      return { icon: '∞', title: 'Consultas mensuales', desc: `Durante ${plan.durationDays ?? 30} días tendrás cobertura en las consultas estipuladas.` };
     case 'annual':
-      return { icon: '∞', title: 'Clases ilimitadas todo el año', desc: `Durante ${plan.durationDays ?? 365} días podrás reservar cualquier clase del catálogo sin costo adicional.` };
-    case 'per_class':
-      return { icon: '🎫', title: '1 crédito de clase', desc: 'Úsalo para inscribirte a cualquier clase del catálogo. Se descuenta automáticamente al reservar.' };
+      return { icon: '∞', title: 'Cobertura Anual', desc: `Durante ${plan.durationDays ?? 365} días tendrás acceso a las consultas y controles incluidos.` };
+    case 'per_consultation':
+      return { icon: '🩺', title: '1 Consulta', desc: 'Úsalo para agendar una consulta médica. Se descuenta automáticamente al asistir.' };
     case 'pack':
-      return { icon: '🎫', title: `${plan.maxClasses ?? 10} créditos de clase`, desc: 'Úsalos para las clases que prefieras. Cada reserva descuenta un crédito automáticamente.' };
-    case 'private':
-      return { icon: '🎯', title: 'Sesión privada personalizada', desc: 'Una sesión individual con instructor dedicado, adaptada a tus objetivos y ritmo de práctica.' };
+      return { icon: '🩺', title: `${plan.maxClasses ?? 10} consultas`, desc: 'Úsalas para agendar tus controles. Cada cita descuenta una consulta automáticamente.' };
+    case 'program':
+      return { icon: '📋', title: 'Programa Especializado', desc: 'Un plan de tratamiento integral, adaptado a tus necesidades específicas (promoción y prevención, enfermedades no transmisibles, etc.).' };
+    case 'assessment':
+      return { icon: '🎯', title: 'Valoración Inicial', desc: 'Evaluación médica completa de tu estado de salud para definir un plan de manejo.' };
     default:
       return { icon: '✓', title: 'Plan activado', desc: 'Al activar este plan, podrás acceder a todos sus beneficios inmediatamente.' };
   }
@@ -180,8 +184,8 @@ export const UserMemberships: React.FC = () => {
 
   const activeBadge = () => {
     if (!active || !active.isActive || active.isExpired) return null;
-    if (active.coversFreeClasses) return { label: 'Clases ilimitadas activas', color: '#16A34A', bg: 'rgba(34,197,94,0.1)' };
-    if (active.hasClassCredits) return { label: `${active.classesRemaining} clases restantes`, color: '#2563EB', bg: 'rgba(59,130,246,0.1)' };
+    if (active.coversFreeClasses) return { label: 'Consultas ilimitadas activas', color: '#16A34A', bg: 'rgba(34,197,94,0.1)' };
+    if (active.hasClassCredits) return { label: `${active.classesRemaining} consultas restantes`, color: '#2563EB', bg: 'rgba(59,130,246,0.1)' };
     return null;
   };
 
@@ -202,7 +206,7 @@ export const UserMemberships: React.FC = () => {
             <UserIcon size={18} /> Mi Panel
           </button>
           <button onClick={() => navigate('/user/classes')} style={{ ...navBtn, color: C.textMedium }}>
-            <Calendar size={18} /> Inscribirse a Clases
+            <Calendar size={18} /> Agendar Consulta
           </button>
           <button style={{ ...navBtn, background: C.gold, color: C.white }}>
             <CreditCard size={18} /> Mis Planes
@@ -239,9 +243,9 @@ export const UserMemberships: React.FC = () => {
                 <h3 style={{ fontFamily: FONT_BODONI, fontSize: '1.5rem', margin: '0 0 4px' }}>{active.membership.name}</h3>
                 <p style={{ fontSize: 13, opacity: 0.85, margin: 0 }}>
                   {active.coversFreeClasses
-                    ? `Clases ilimitadas${active.expiresAt ? ` · Vence ${new Date(active.expiresAt).toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' })}` : ''}`
+                    ? `Consultas ilimitadas${active.expiresAt ? ` · Vence ${new Date(active.expiresAt).toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' })}` : ''}`
                     : active.hasClassCredits
-                      ? `${active.classesRemaining} clase${active.classesRemaining !== 1 ? 's' : ''} disponible${active.classesRemaining !== 1 ? 's' : ''}`
+                      ? `${active.classesRemaining} consulta${active.classesRemaining !== 1 ? 's' : ''} disponible${active.classesRemaining !== 1 ? 's' : ''}`
                       : 'Sin créditos disponibles'
                   }
                 </p>
@@ -251,7 +255,7 @@ export const UserMemberships: React.FC = () => {
                 <p style={{ fontSize: 14, fontWeight: 700, margin: 0 }}>{new Date(active.startedAt).toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                 {active.coversFreeClasses && (
                   <button onClick={() => navigate('/user/classes')} style={{ marginTop: 10, padding: '8px 18px', borderRadius: 8, border: `1.5px solid rgba(255,255,255,0.6)`, background: 'transparent', color: C.white, fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-                    Reservar clase →
+                    Reservar consulta →
                   </button>
                 )}
               </div>
@@ -277,7 +281,7 @@ export const UserMemberships: React.FC = () => {
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 24 }}>
               {plans.map((plan, i) => {
-                const tc = TYPE_COLORS[plan.type] ?? TYPE_COLORS.per_class;
+                const tc = TYPE_COLORS[plan.type] ?? TYPE_COLORS.per_consultation;
                 const isCurrentPlan = active?.membership.id === plan.id && active.isActive && !active.isExpired;
                 const isBuying = purchasing === plan.id;
                 const isUnlimited = plan.type === 'monthly' || plan.type === 'annual';
@@ -312,7 +316,7 @@ export const UserMemberships: React.FC = () => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: C.textMuted, fontWeight: 600, marginBottom: 14 }}>
                       {plan.durationDays
                         ? <><Clock size={13} color={C.goldLight} /> {plan.durationDays} días de vigencia</>
-                        : <><Infinity size={13} color={C.goldLight} /> {isUnlimited ? 'Clases ilimitadas' : 'Sin vencimiento'}</>
+                        : <><Infinity size={13} color={C.goldLight} /> {isUnlimited ? 'Consultas ilimitadas' : 'Sin vencimiento'}</>
                       }
                     </div>
 
@@ -362,7 +366,7 @@ export const UserMemberships: React.FC = () => {
       {/* ── CONFIRM WIZARD MODAL ── */}
       <AnimatePresence>
         {confirmPlan && (() => {
-          const tc = TYPE_COLORS[confirmPlan.type] ?? TYPE_COLORS.per_class;
+          const tc = TYPE_COLORS[confirmPlan.type] ?? TYPE_COLORS.per_consultation;
           const isUnlimited = confirmPlan.type === 'monthly' || confirmPlan.type === 'annual';
           const hw = howItWorks(confirmPlan);
           return (
@@ -478,7 +482,7 @@ export const UserMemberships: React.FC = () => {
                                   : <CreditCard size={16} color={C.goldLight} style={{ flexShrink: 0 }} />
                                 }
                                 <div>
-                                  <p style={{ fontSize: 10, fontWeight: 700, color: C.textMuted, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Clases</p>
+                                  <p style={{ fontSize: 10, fontWeight: 700, color: C.textMuted, margin: '0 0 2px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Consultas</p>
                                   <p style={{ fontSize: 14, fontWeight: 700, color: C.text, margin: 0 }}>
                                     {isUnlimited
                                       ? 'Ilimitadas'

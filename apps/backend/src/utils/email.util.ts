@@ -9,31 +9,32 @@ const transporter = nodemailer.createTransport({
   auth: { user: env.EMAIL_USER, pass: env.EMAIL_PASSWORD },
 });
 
-const GOLD   = '#775A00';
-const GOLD_L = '#B08D32';
-const GOLD_G = `linear-gradient(135deg, ${GOLD}, ${GOLD_L})`;
-const BG     = '#F5F3F1';
+const PRIMARY   = '#8B5CF6';
+const PRIMARY_L = '#3B82F6';
+const PRIMARY_G = `linear-gradient(135deg, ${PRIMARY}, ${PRIMARY_L})`;
+const BG     = '#F5F7FA';
 const WHITE  = '#FFFFFF';
 const TEXT   = '#1B1C1C';
-const MUTED  = '#7F7665';
+const MUTED  = '#5E5E5E';
+const BORDER = '#E2E8F0';
 
 const fmt = (n: number) =>
   new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(n);
 
 const TYPE_LABELS: Record<string, string> = {
-  per_class: 'Por Clase',
+  per_class: 'Por Consulta',
   monthly:   'Mensual',
   annual:    'Anual',
-  private:   'Clase Privada',
-  pack:      'Pack de Clases',
+  private:   'Consulta Privada',
+  pack:      'Pack de Consultas',
 };
 
 const TYPE_COLORS: Record<string, string> = {
-  per_class: GOLD,
+  per_class: PRIMARY,
   monthly:   '#16A34A',
   annual:    '#2563EB',
   private:   '#7C3AED',
-  pack:      '#B45309',
+  pack:      '#0EA5E9',
 };
 
 function base(content: string): string {
@@ -42,7 +43,7 @@ function base(content: string): string {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AcariPole Studio</title>
+  <title>MEDIS</title>
 </head>
 <body style="margin:0;padding:0;background:${BG};font-family:'Helvetica Neue',Arial,sans-serif;-webkit-font-smoothing:antialiased;">
   <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:${BG};padding:40px 20px;">
@@ -51,9 +52,9 @@ function base(content: string): string {
 
         <!-- HEADER -->
         <tr>
-          <td style="background:${GOLD_G};padding:36px 40px;border-radius:18px 18px 0 0;text-align:center;">
-            <p style="margin:0 0 4px;font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:3px;text-transform:uppercase;font-weight:600;">Studio</p>
-            <h1 style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:32px;font-style:italic;color:#FFFFFF;letter-spacing:3px;font-weight:700;">ACARIPOLE</h1>
+          <td style="background:${PRIMARY_G};padding:36px 40px;border-radius:18px 18px 0 0;text-align:center;">
+            <p style="margin:0 0 4px;font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:3px;text-transform:uppercase;font-weight:600;">Clínica</p>
+            <h1 style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:32px;font-style:italic;color:#FFFFFF;letter-spacing:3px;font-weight:700;">MEDIS</h1>
           </td>
         </tr>
 
@@ -68,7 +69,7 @@ function base(content: string): string {
         <tr>
           <td style="padding:24px 0 0;text-align:center;">
             <p style="margin:0;font-size:11px;color:${MUTED};line-height:1.6;">
-              © 2026 AcariPole Studio · Medellín, Colombia<br/>
+              © 2026 MEDIS · Medellín, Colombia<br/>
               Este correo fue generado automáticamente, no respondas a este mensaje.
             </p>
           </td>
@@ -95,7 +96,7 @@ interface AdminNotifParams {
 
 function adminNotifHtml(p: AdminNotifParams): string {
   const methodLabel = p.paymentMethod === 'cash' ? '💵 Efectivo' : '💳 Wompi';
-  const methodColor = p.paymentMethod === 'cash' ? GOLD : '#7C3AED';
+  const methodColor = p.paymentMethod === 'cash' ? PRIMARY : '#7C3AED';
   const url = (p.appUrl ?? 'http://localhost:5173') + '/admin/finances';
   const typeLabel = TYPE_LABELS[p.planType] ?? p.planType;
 
@@ -108,7 +109,7 @@ function adminNotifHtml(p: AdminNotifParams): string {
     </div>
 
     <!-- Info card -->
-    <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:${BG};border-radius:14px;margin-bottom:28px;border:1px solid #E8E3DA;">
+    <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:${BG};border-radius:14px;margin-bottom:28px;border:1px solid ${BORDER};">
       <tr>
         <td style="padding:22px 26px;">
           <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
@@ -122,7 +123,7 @@ function adminNotifHtml(p: AdminNotifParams): string {
               <td width="50%" style="padding-bottom:18px;vertical-align:top;">
                 <p style="margin:0 0 4px;font-size:10px;color:${MUTED};text-transform:uppercase;letter-spacing:1.5px;font-weight:700;">Plan solicitado</p>
                 <p style="margin:0 0 4px;font-size:14px;color:${TEXT};font-weight:700;">${p.planName}</p>
-                <span style="display:inline-block;padding:2px 10px;border-radius:99px;background:rgba(119,90,0,0.1);color:${GOLD};font-size:11px;font-weight:700;">${typeLabel}</span>
+                <span style="display:inline-block;padding:2px 10px;border-radius:99px;background:rgba(139,92,246,0.1);color:${PRIMARY};font-size:11px;font-weight:700;">${typeLabel}</span>
               </td>
             </tr>
             <!-- Row 2 -->
@@ -133,12 +134,12 @@ function adminNotifHtml(p: AdminNotifParams): string {
               </td>
               <td width="50%" style="vertical-align:top;">
                 <p style="margin:0 0 4px;font-size:10px;color:${MUTED};text-transform:uppercase;letter-spacing:1.5px;font-weight:700;">Valor</p>
-                <p style="margin:0;font-size:22px;color:${GOLD};font-family:Georgia,serif;font-weight:700;">${fmt(p.planPrice)}</p>
+                <p style="margin:0;font-size:22px;color:${PRIMARY};font-family:Georgia,serif;font-weight:700;">${fmt(p.planPrice)}</p>
               </td>
             </tr>
             <!-- Row 3 date -->
             <tr>
-              <td colspan="2" style="padding-top:14px;border-top:1px solid #E8E3DA;">
+              <td colspan="2" style="padding-top:14px;border-top:1px solid ${BORDER};">
                 <p style="margin:0;font-size:11px;color:${MUTED};">📅 Solicitud recibida el ${p.requestedAt}</p>
               </td>
             </tr>
@@ -150,12 +151,12 @@ function adminNotifHtml(p: AdminNotifParams): string {
     <!-- CTA -->
     <div style="text-align:center;margin-bottom:28px;">
       <a href="${url}"
-         style="display:inline-block;background:${GOLD_G};color:#fff;text-decoration:none;padding:15px 36px;border-radius:12px;font-weight:700;font-size:14px;letter-spacing:1px;">
+         style="display:inline-block;background:${PRIMARY_G};color:#fff;text-decoration:none;padding:15px 36px;border-radius:12px;font-weight:700;font-size:14px;letter-spacing:1px;">
         Confirmar pago en Finanzas &rarr;
       </a>
     </div>
 
-    <p style="margin:0;font-size:12px;color:#B0A99A;text-align:center;line-height:1.7;">
+    <p style="margin:0;font-size:12px;color:#94A3B8;text-align:center;line-height:1.7;">
       El plan del usuario permanecerá <strong>inactivo</strong> hasta que confirmes el pago.<br/>
       Puedes hacerlo desde el panel de Finanzas o desde la campana de notificaciones.
     </p>
@@ -177,15 +178,15 @@ interface UserConfirmParams {
 }
 
 function userConfirmHtml(p: UserConfirmParams): string {
-  const url = (p.appUrl ?? 'http://localhost:5173') + '/user/classes';
+  const url = (p.appUrl ?? 'http://localhost:5173') + '/user/calendario';
   const typeLabel = TYPE_LABELS[p.planType] ?? p.planType;
-  const typeColor = TYPE_COLORS[p.planType] ?? GOLD;
+  const typeColor = TYPE_COLORS[p.planType] ?? PRIMARY;
   const isUnlimited = p.planType === 'monthly' || p.planType === 'annual';
 
   const durLine = isUnlimited
-    ? `Clases ilimitadas durante ${p.durationDays ?? '∞'} días`
+    ? `Consultas ilimitadas durante ${p.durationDays ?? '∞'} días`
     : p.classesRemaining != null
-      ? `${p.classesRemaining} crédito${p.classesRemaining !== 1 ? 's' : ''} de clase incluido${p.classesRemaining !== 1 ? 's' : ''}`
+      ? `${p.classesRemaining} crédito${p.classesRemaining !== 1 ? 's' : ''} de consulta incluido${p.classesRemaining !== 1 ? 's' : ''}`
       : 'Sin vencimiento';
 
   const expLine = p.expiresAt
@@ -210,14 +211,14 @@ function userConfirmHtml(p: UserConfirmParams): string {
       <div style="display:inline-block;font-size:48px;margin-bottom:12px;line-height:1;">🎉</div>
       <h2 style="margin:0 0 8px;font-family:Georgia,serif;font-size:26px;color:${TEXT};font-weight:700;">¡Tu plan está activo!</h2>
       <p style="margin:0;font-size:14px;color:${MUTED};line-height:1.6;">
-        Hola <strong>${p.userName}</strong>, tu pago fue confirmado por el equipo de AcariPole.<br/>
-        Ya puedes reservar clases con tu membresía.
+        Hola <strong>${p.userName}</strong>, tu pago fue confirmado por el equipo de MEDIS.<br/>
+        Ya puedes agendar tus consultas y servicios con tu plan.
       </p>
     </div>
 
     <!-- Plan card -->
     <table width="100%" cellpadding="0" cellspacing="0" role="presentation"
-           style="background:${GOLD_G};border-radius:16px;margin-bottom:24px;">
+           style="background:${PRIMARY_G};border-radius:16px;margin-bottom:24px;">
       <tr>
         <td style="padding:26px 28px;">
           <p style="margin:0 0 4px;font-size:10px;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:2px;font-weight:700;">Plan activo</p>
@@ -242,13 +243,13 @@ function userConfirmHtml(p: UserConfirmParams): string {
     <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom:24px;">
       <tr>
         <td width="50%" style="padding-right:8px;">
-          <div style="background:${BG};border-radius:12px;padding:16px 18px;border:1px solid #E8E3DA;">
-            <p style="margin:0 0 4px;font-size:10px;color:${MUTED};text-transform:uppercase;letter-spacing:1.2px;font-weight:700;">Clases</p>
+          <div style="background:${BG};border-radius:12px;padding:16px 18px;border:1px solid ${BORDER};">
+            <p style="margin:0 0 4px;font-size:10px;color:${MUTED};text-transform:uppercase;letter-spacing:1.2px;font-weight:700;">Consultas</p>
             <p style="margin:0;font-size:14px;color:${typeColor};font-weight:700;">${durLine}</p>
           </div>
         </td>
         <td width="50%" style="padding-left:8px;">
-          <div style="background:${BG};border-radius:12px;padding:16px 18px;border:1px solid #E8E3DA;">
+          <div style="background:${BG};border-radius:12px;padding:16px 18px;border:1px solid ${BORDER};">
             <p style="margin:0 0 4px;font-size:10px;color:${MUTED};text-transform:uppercase;letter-spacing:1.2px;font-weight:700;">Vigencia</p>
             <p style="margin:0;font-size:13px;color:${TEXT};font-weight:600;">${expLine}</p>
           </div>
@@ -258,7 +259,7 @@ function userConfirmHtml(p: UserConfirmParams): string {
 
     ${benefitRows ? `
     <!-- Benefits -->
-    <div style="background:${BG};border-radius:14px;padding:20px 22px;margin-bottom:28px;border:1px solid #E8E3DA;">
+    <div style="background:${BG};border-radius:14px;padding:20px 22px;margin-bottom:28px;border:1px solid ${BORDER};">
       <p style="margin:0 0 12px;font-size:11px;color:${MUTED};text-transform:uppercase;letter-spacing:1.5px;font-weight:700;">Incluye</p>
       <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
         ${benefitRows}
@@ -268,14 +269,14 @@ function userConfirmHtml(p: UserConfirmParams): string {
     <!-- CTA -->
     <div style="text-align:center;margin-bottom:28px;">
       <a href="${url}"
-         style="display:inline-block;background:${GOLD_G};color:#fff;text-decoration:none;padding:16px 40px;border-radius:12px;font-weight:700;font-size:15px;letter-spacing:1px;">
-        Reservar una clase &rarr;
+         style="display:inline-block;background:${PRIMARY_G};color:#fff;text-decoration:none;padding:16px 40px;border-radius:12px;font-weight:700;font-size:15px;letter-spacing:1px;">
+        Agendar una cita &rarr;
       </a>
     </div>
 
     <p style="margin:0;font-size:13px;color:${MUTED};text-align:center;line-height:1.7;">
-      ¡Nos vemos en el estudio! 🥂<br/>
-      <span style="font-size:11px;color:#B0A99A;">El equipo de AcariPole Studio</span>
+      ¡Cuidamos de tu salud! 🩺<br/>
+      <span style="font-size:11px;color:#94A3B8;">El equipo de MEDIS</span>
     </p>
   `);
 }
@@ -293,7 +294,7 @@ interface ServiceConfirmParams {
 }
 
 function serviceConfirmHtml(p: ServiceConfirmParams): string {
-  const url = (p.appUrl ?? 'http://localhost:5173') + '/user/services';
+  const url = (p.appUrl ?? 'http://localhost:5173') + '/user/mis-servicios';
   const methodLabel = p.paymentMethod === 'cash' ? '💵 Efectivo' : '💳 Wompi';
   const dateLabel = p.scheduledAt
     ? new Date(p.scheduledAt).toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -303,16 +304,16 @@ function serviceConfirmHtml(p: ServiceConfirmParams): string {
     <!-- Celebration header -->
     <div style="text-align:center;margin-bottom:28px;">
       <div style="display:inline-block;font-size:48px;margin-bottom:12px;line-height:1;">🎉</div>
-      <h2 style="margin:0 0 8px;font-family:Georgia,serif;font-size:26px;color:${TEXT};font-weight:700;">¡Tu inscripción está confirmada!</h2>
+      <h2 style="margin:0 0 8px;font-family:Georgia,serif;font-size:26px;color:${TEXT};font-weight:700;">¡Tu servicio está confirmado!</h2>
       <p style="margin:0;font-size:14px;color:${MUTED};line-height:1.6;">
-        Hola <strong>${p.userName}</strong>, tu pago fue confirmado por el equipo de AcariPole.<br/>
-        Ya estás inscrita al servicio.
+        Hola <strong>${p.userName}</strong>, tu pago fue confirmado por el equipo de MEDIS.<br/>
+        Tu cita o servicio ya está confirmado.
       </p>
     </div>
 
     <!-- Service card -->
     <table width="100%" cellpadding="0" cellspacing="0" role="presentation"
-           style="background:${GOLD_G};border-radius:16px;margin-bottom:24px;">
+           style="background:${PRIMARY_G};border-radius:16px;margin-bottom:24px;">
       <tr>
         <td style="padding:26px 28px;">
           <p style="margin:0 0 4px;font-size:10px;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:2px;font-weight:700;">Servicio confirmado</p>
@@ -337,15 +338,15 @@ function serviceConfirmHtml(p: ServiceConfirmParams): string {
       <tr>
         ${p.sessionCount > 1 ? `
         <td width="50%" style="padding-right:8px;">
-          <div style="background:${BG};border-radius:12px;padding:16px 18px;border:1px solid #E8E3DA;">
+          <div style="background:${BG};border-radius:12px;padding:16px 18px;border:1px solid ${BORDER};">
             <p style="margin:0 0 4px;font-size:10px;color:${MUTED};text-transform:uppercase;letter-spacing:1.2px;font-weight:700;">Sesiones</p>
-            <p style="margin:0;font-size:14px;color:${GOLD};font-weight:700;">${p.sessionCount} sesiones</p>
+            <p style="margin:0;font-size:14px;color:${PRIMARY};font-weight:700;">${p.sessionCount} sesiones</p>
           </div>
         </td>` : ''}
         ${dateLabel ? `
         <td width="${p.sessionCount > 1 ? '50%' : '100%'}" style="${p.sessionCount > 1 ? 'padding-left:8px;' : ''}">
-          <div style="background:${BG};border-radius:12px;padding:16px 18px;border:1px solid #E8E3DA;">
-            <p style="margin:0 0 4px;font-size:10px;color:${MUTED};text-transform:uppercase;letter-spacing:1.2px;font-weight:700;">Primera sesión</p>
+          <div style="background:${BG};border-radius:12px;padding:16px 18px;border:1px solid ${BORDER};">
+            <p style="margin:0 0 4px;font-size:10px;color:${MUTED};text-transform:uppercase;letter-spacing:1.2px;font-weight:700;">Primera cita</p>
             <p style="margin:0;font-size:13px;color:${TEXT};font-weight:600;">${dateLabel}</p>
             ${p.locationName ? `<p style="margin:4px 0 0;font-size:12px;color:${MUTED};">📍 ${p.locationName}</p>` : ''}
           </div>
@@ -356,14 +357,14 @@ function serviceConfirmHtml(p: ServiceConfirmParams): string {
     <!-- CTA -->
     <div style="text-align:center;margin-bottom:28px;">
       <a href="${url}"
-         style="display:inline-block;background:${GOLD_G};color:#fff;text-decoration:none;padding:16px 40px;border-radius:12px;font-weight:700;font-size:15px;letter-spacing:1px;">
+         style="display:inline-block;background:${PRIMARY_G};color:#fff;text-decoration:none;padding:16px 40px;border-radius:12px;font-weight:700;font-size:15px;letter-spacing:1px;">
         Ver mis servicios &rarr;
       </a>
     </div>
 
     <p style="margin:0;font-size:13px;color:${MUTED};text-align:center;line-height:1.7;">
-      ¡Nos vemos en el estudio! 🥂<br/>
-      <span style="font-size:11px;color:#B0A99A;">El equipo de AcariPole Studio</span>
+      ¡Cuidamos de tu salud! 🩺<br/>
+      <span style="font-size:11px;color:#94A3B8;">El equipo de MEDIS</span>
     </p>
   `);
 }
@@ -375,9 +376,9 @@ export async function sendServicePaymentConfirmation(
 ): Promise<void> {
   if (!env.EMAIL_USER || !env.EMAIL_PASSWORD) return;
   await transporter.sendMail({
-    from: `"AcariPole Studio" <${env.EMAIL_FROM}>`,
+    from: `"MEDIS" <${env.EMAIL_FROM}>`,
     to: toEmail,
-    subject: `✅ ¡Tu inscripción a ${params.serviceName} está confirmada! — AcariPole`,
+    subject: `✅ ¡Tu servicio ${params.serviceName} está confirmado! — MEDIS`,
     html: serviceConfirmHtml(params),
   });
 }
@@ -385,7 +386,7 @@ export async function sendServicePaymentConfirmation(
 export async function sendAdminPaymentNotification(params: AdminNotifParams): Promise<void> {
   if (!env.EMAIL_USER || !env.EMAIL_PASSWORD) return;
   await transporter.sendMail({
-    from: `"AcariPole Studio" <${env.EMAIL_FROM}>`,
+    from: `"MEDIS" <${env.EMAIL_FROM}>`,
     to: env.ADMIN_EMAIL,
     subject: `🔔 Nuevo pago pendiente — ${params.planName} (${params.userName})`,
     html: adminNotifHtml(params),
@@ -398,9 +399,9 @@ export async function sendUserPaymentConfirmation(
 ): Promise<void> {
   if (!env.EMAIL_USER || !env.EMAIL_PASSWORD) return;
   await transporter.sendMail({
-    from: `"AcariPole Studio" <${env.EMAIL_FROM}>`,
+    from: `"MEDIS" <${env.EMAIL_FROM}>`,
     to: toEmail,
-    subject: `✅ ¡Tu plan ${params.planName} está activo! — AcariPole`,
+    subject: `✅ ¡Tu plan ${params.planName} está activo! — MEDIS`,
     html: userConfirmHtml(params),
   });
 }

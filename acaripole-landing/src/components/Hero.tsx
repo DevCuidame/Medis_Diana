@@ -1,5 +1,6 @@
-﻿import { useRef } from 'react'
+import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
@@ -36,6 +37,7 @@ function BrandOrb({ size, top, left, delay, blur }: { size: number; top: string;
 }
 
 export default function Hero() {
+  const navigate = useNavigate()
   const ref = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
   const videoY = useTransform(scrollYProgress, [0, 1], ['0%', '18%'])
@@ -49,19 +51,12 @@ export default function Hero() {
     >
       {/* ── Video Layer ─────────────────────────────── */}
       <motion.div style={{ y: videoY, position: 'absolute', inset: 0, zIndex: 0 }}>
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="hero-video"
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', transform: 'scale(1.18)', transformOrigin: 'center center' }}
-        >
-          <source
-            src="/videos/hero-clinic.mp4"
-            type="video/mp4"
-          />
-        </video>
+        <iframe
+          src="https://player.cloudinary.com/embed/?cloud_name=dasesxehg&public_id=___title_Consultorio_de_M_rrciwf&autoplay=true&loop=true&muted=true&controls=false"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none', pointerEvents: 'none', transform: 'scale(1.18)', transformOrigin: 'center center' }}
+          allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+          title="Hero Video"
+        />
       </motion.div>
 
       {/* ── Cinematic Overlay ────────────────────────── */}
@@ -203,7 +198,8 @@ export default function Hero() {
           >
             {/* Primary */}
             <motion.a
-              href="#contacto"
+              href="/login"
+              onClick={(e) => { e.preventDefault(); navigate('/login'); }}
               whileHover={{ scale: 1.05, boxShadow: '0 16px 48px rgba(139,92,246,0.50)' }}
               whileTap={{ scale: 0.97 }}
               className="brand-gradient"

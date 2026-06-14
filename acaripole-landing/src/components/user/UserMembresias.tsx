@@ -1,8 +1,8 @@
-﻿import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   CreditCard, CheckCircle2, Clock, Infinity as InfinityIcon,
-  Loader2, ChevronRight, ChevronLeft, ChevronDown, ChevronUp, X, ShieldCheck, Lock,
+  Loader2, ChevronRight, ChevronLeft, X,
 } from 'lucide-react'
 
 const C = {
@@ -11,7 +11,6 @@ const C = {
   text: '#1B1C1C', textBrown: '#475569',
   textMedium: '#5E5E5E', textMuted: '#94A3B8',
   border: '#DDD6FE', borderLight: '#DDD6FE',
-  pink: '#8B5CF6', pinkLight: '#3B82F6',
 }
 const FONT_BODONI = '"Bodoni Moda", Georgia, serif'
 const FONT_INTER  = '"Hanken Grotesk", Inter, system-ui, sans-serif'
@@ -30,7 +29,7 @@ function fmtDate(s: string) {
 }
 
 function classBadge(benefits: string[], maxClasses?: number | null): { label: string; isUnlimited: boolean } | null {
-  if (maxClasses) return { label: `${maxClasses} clases`, isUnlimited: false }
+  if (maxClasses) return { label: `${maxClasses} consultas`, isUnlimited: false }
   for (const b of benefits) {
     const lower = b.toLowerCase()
     if (lower.includes('ilimitad')) return { label: 'Ilimitadas', isUnlimited: true }
@@ -64,7 +63,6 @@ interface Props { userId?: string }
 export const UserMembresias: React.FC<Props> = () => {
   const [plans, setPlans]                 = useState<Plan[]>([])
   const [active, setActive]               = useState<ActiveMembership | null>(null)
-  const [inscription, setInscription]     = useState<ActiveMembership | null>(null)
   const [catalogMap, setCatalogMap]       = useState<Map<string, { type: string; value: number | null }>>(new Map())
   const [loading, setLoading]             = useState(true)
   const [confirmPlan, setConfirmPlan]     = useState<Plan | null>(null)
@@ -73,7 +71,6 @@ export const UserMembresias: React.FC<Props> = () => {
   const [payMethod, setPayMethod]         = useState<'cash' | 'wompi' | null>(null)
   const [purchasing, setPurchasing]       = useState(false)
   const [toast, setToast]                 = useState<{ msg: string; ok: boolean } | null>(null)
-  const [inscriptionExpanded, setInscriptionExpanded] = useState(true)
 
   const showToast = (msg: string, ok: boolean) => { setToast({ msg, ok }); setTimeout(() => setToast(null), 4000) }
 
@@ -81,12 +78,10 @@ export const UserMembresias: React.FC<Props> = () => {
     Promise.all([
       fetch('/api/memberships/active', { headers: authH() }).then(r => r.json()),
       fetch('/api/user-memberships/me', { headers: authH() }).then(r => r.json()).catch(() => ({ success: false })),
-      fetch('/api/user-memberships/me/inscription', { headers: authH() }).then(r => r.json()).catch(() => ({ success: false })),
       fetch('/api/benefits', { headers: authH() }).then(r => r.json()).catch(() => ({ success: false })),
-    ]).then(([plansData, activeData, inscData, benefitsData]) => {
+    ]).then(([plansData, activeData, benefitsData]) => {
       if (plansData.success) setPlans((plansData.data.memberships || []).filter((p: Plan) => p.isActive))
       if (activeData.success && activeData.data?.membership) setActive(activeData.data.membership)
-      if (inscData.success && inscData.data?.inscription) setInscription(inscData.data.inscription)
       if (benefitsData.success && benefitsData.data?.benefits) {
         const map = new Map<string, { type: string; value: number | null }>()
         for (const b of benefitsData.data.benefits) {
@@ -97,14 +92,7 @@ export const UserMembresias: React.FC<Props> = () => {
     }).catch(() => {}).finally(() => setLoading(false))
   }, [])
 
-  const inscriptionPlans = plans.filter(p => p.type === 'inscription')
-  const regularPlans     = plans.filter(p => p.type !== 'inscription')
-
   const openConfirm = (plan: Plan) => {
-    if (plan.type !== 'inscription' && !inscription) {
-      showToast('Necesitas una inscripción activa para adquirir planes.', false)
-      return
-    }
     setConfirmPlan(plan); setStep(0); setDirection(1); setPayMethod(null)
   }
 
@@ -170,51 +158,86 @@ export const UserMembresias: React.FC<Props> = () => {
         {/* Banner */}
         <div style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 28, background: `linear-gradient(135deg, ${C.gold}15, ${C.goldLight}10)`, border: `1px solid ${C.gold}30`, padding: '24px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20 }}>
           <div>
-            <p style={{ fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 6px', fontFamily: FONT_INTER }}>Academia MEDIS</p>
+            <p style={{ fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 6px', fontFamily: FONT_INTER }}>Mi Portal</p>
             <h1 style={{ fontFamily: FONT_BODONI, fontSize: 36, fontWeight: 700, color: C.text, margin: '0 0 6px' }}>Planes</h1>
-            <p style={{ fontSize: 13, color: C.textMuted, margin: 0, fontStyle: 'italic', fontFamily: FONT_BODONI }}>Accede al arte del pole dance sin límites.</p>
+            <p style={{ fontSize: 13, color: C.textMuted, margin: 0, fontStyle: 'italic', fontFamily: FONT_BODONI }}>Accede a tu bienestar y cuidado médico sin límites.</p>
           </div>
           <div style={{ flexShrink: 0 }}>
-            <style>{`
-              @keyframes aerialSpin   { 0%{transform:rotate(0deg)}   100%{transform:rotate(360deg)} }
-              @keyframes bodyInvert   { 0%,100%{transform:rotate(-10deg) translateY(0)} 50%{transform:rotate(10deg) translateY(-4px)} }
-              @keyframes legSplit     { 0%,100%{transform:rotate(0deg)}   50%{transform:rotate(-30deg)} }
-              @keyframes legSplitR    { 0%,100%{transform:rotate(0deg)}   50%{transform:rotate(30deg)} }
-              @keyframes starPulse    { 0%,100%{opacity:0.3;r:2}   50%{opacity:1;r:3.5} }
-              @keyframes ringRotate   { 0%{transform:rotate(0deg) scaleY(0.3)}  100%{transform:rotate(360deg) scaleY(0.3)} }
-              @keyframes shimmer      { 0%,100%{opacity:0.4}  50%{opacity:1} }
-            `}</style>
-            <svg width="120" height="160" viewBox="0 0 120 160" style={{ overflow: 'visible' }}>
-              <ellipse cx="60" cy="80" rx="30" ry="9" fill="none" stroke={C.goldLight} strokeWidth="2" opacity="0.5"
-                style={{ transformOrigin: '60px 80px', animation: 'ringRotate 4s linear infinite' }} />
-              <line x1="60" y1="8" x2="60" y2="152" stroke={C.goldLight} strokeWidth="3.5" strokeLinecap="round"
-                style={{ filter: `drop-shadow(0 0 4px ${C.goldLight}88)` }} />
-              <circle cx="60" cy="10" r="5" fill={C.gold} style={{ animation: 'shimmer 2s ease-in-out infinite' }} />
-              <circle cx="60" cy="150" r="4" fill={C.gold} opacity="0.5" />
-              <g style={{ transformOrigin: '60px 75px', animation: 'bodyInvert 3s ease-in-out infinite' }}>
-                <circle cx="60" cy="75" r="5" fill={C.text} opacity="0.15" />
-                <path d="M56 75 Q52 60 53 48 Q60 44 67 48 Q68 60 64 75Z" fill={C.text} opacity="0.82" />
-                <circle cx="60" cy="42" r="8.5" fill={C.text} opacity="0.82" />
-                <path d="M60 34 Q52 22 48 15" stroke={C.text} strokeWidth="2.5" fill="none" opacity="0.7"
-                  style={{ animation: 'legSplit 2.5s ease-in-out infinite' }} />
-                <path d="M60 34 Q68 20 72 14" stroke={C.text} strokeWidth="2" fill="none" opacity="0.5"
-                  style={{ animation: 'legSplitR 2.5s ease-in-out infinite' }} />
-                <line x1="56" y1="65" x2="60" y2="60" stroke={C.text} strokeWidth="3" strokeLinecap="round" opacity="0.82" />
-                <line x1="64" y1="65" x2="60" y2="60" stroke={C.text} strokeWidth="3" strokeLinecap="round" opacity="0.82" />
-                <g style={{ transformOrigin: '56px 75px', animation: 'legSplit 2.8s ease-in-out infinite' }}>
-                  <line x1="56" y1="75" x2="40" y2="95" stroke={C.text} strokeWidth="4" strokeLinecap="round" opacity="0.82" />
-                  <line x1="40" y1="95" x2="28" y2="115" stroke={C.text} strokeWidth="3.5" strokeLinecap="round" opacity="0.82" />
-                  <circle cx="27" cy="117" r="2.5" fill={C.text} opacity="0.75" />
+            <svg width="140" height="160" viewBox="0 0 140 160" xmlns="http://www.w3.org/2000/svg" style={{ overflow: 'visible' }}>
+              <defs>
+                <linearGradient id="stairSkin" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="100%" stopColor="#f3f0fb" />
+                </linearGradient>
+                <linearGradient id="stairBody" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor={C.gold} />
+                  <stop offset="100%" stopColor={C.goldLight} />
+                </linearGradient>
+              </defs>
+
+              {/* Escalera ascendente */}
+              <rect x="6"   y="128" width="26" height="26"  rx="4" fill="rgba(139,92,246,0.06)" stroke={C.borderLight} strokeWidth="1.5" />
+              <rect x="32"  y="102" width="26" height="52"  rx="4" fill="rgba(139,92,246,0.06)" stroke={C.borderLight} strokeWidth="1.5" />
+              <rect x="58"  y="76"  width="26" height="78"  rx="4" fill="rgba(139,92,246,0.06)" stroke={C.borderLight} strokeWidth="1.5" />
+              <rect x="84"  y="50"  width="26" height="104" rx="4" fill="rgba(139,92,246,0.06)" stroke={C.borderLight} strokeWidth="1.5" />
+              <rect x="110" y="24"  width="26" height="130" rx="4" fill="rgba(139,92,246,0.06)" stroke={C.borderLight} strokeWidth="1.5" />
+
+              {/* Estrella en la meta */}
+              <g transform="translate(123, 14)">
+                <circle r="9" fill="#FBBF24" opacity="0.18">
+                  <animate attributeName="r" values="9;13;9" dur="1.6s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0.25;0.05;0.25" dur="1.6s" repeatCount="indefinite" />
+                </circle>
+                <path d="M 0 -8 L 2 -2.75 L 7.61 -2.47 L 3.23 1.05 L 4.70 6.47 L 0 3.4 L -4.70 6.47 L -3.23 1.05 L -7.61 -2.47 L -2 -2.75 Z" fill="#FBBF24">
+                  <animate attributeName="opacity" values="0.6;1;0.6" dur="1.6s" repeatCount="indefinite" />
+                </path>
+              </g>
+
+              {/* Stickman subiendo las escaleras */}
+              <g>
+                <animateTransform attributeName="transform" type="translate"
+                  values="20,130; 20,130; 42,106; 64,82; 86,58; 108,34; 108,34; 86,58; 64,82; 42,106; 20,130; 20,130"
+                  keyTimes="0; 0.08; 0.2; 0.32; 0.44; 0.5; 0.58; 0.7; 0.82; 0.94; 0.99; 1"
+                  dur="8s" repeatCount="indefinite" />
+
+                {/* Brazo de atrás */}
+                <line x1="0" y1="-15" x2="-6" y2="-10" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+
+                {/* Cuerpo */}
+                <rect x="-6" y="-16" width="12" height="15" rx="6" fill="url(#stairBody)" />
+
+                {/* Cabeza */}
+                <circle cx="0" cy="-22" r="7" fill="url(#stairSkin)" stroke={C.goldLight} strokeWidth="1.8" />
+
+                {/* Coletita */}
+                <path d="M 5 -27 Q 11 -29 10 -23 Q 8 -25 5 -25 Z" fill={C.goldLight} />
+
+                {/* Carita feliz */}
+                <circle cx="-2" cy="-23" r="1" fill={C.text} />
+                <circle cx="2.5" cy="-23" r="1" fill={C.text} />
+                <circle cx="-4" cy="-21" r="1" fill="#f43f5e" opacity="0.4" />
+                <circle cx="4.5" cy="-21" r="1" fill="#f43f5e" opacity="0.4" />
+                <path d="M -2 -19.5 Q 0 -18 2.5 -19.5" fill="none" stroke={C.goldLight} strokeWidth="1" strokeLinecap="round" />
+
+                {/* Pierna izquierda */}
+                <g>
+                  <animateTransform attributeName="transform" type="rotate" values="-18 0 -9; 18 0 -9; -18 0 -9" dur="0.6s" repeatCount="indefinite" />
+                  <line x1="0" y1="-9" x2="-5" y2="1" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
                 </g>
-                <g style={{ transformOrigin: '64px 75px', animation: 'legSplitR 2.8s ease-in-out infinite' }}>
-                  <line x1="64" y1="75" x2="80" y2="93" stroke={C.text} strokeWidth="4" strokeLinecap="round" opacity="0.82" />
-                  <line x1="80" y1="93" x2="92" y2="112" stroke={C.text} strokeWidth="3.5" strokeLinecap="round" opacity="0.82" />
-                  <circle cx="93" cy="114" r="2.5" fill={C.text} opacity="0.75" />
+
+                {/* Pierna derecha */}
+                <g>
+                  <animateTransform attributeName="transform" type="rotate" values="18 0 -9; -18 0 -9; 18 0 -9" dur="0.6s" repeatCount="indefinite" />
+                  <line x1="0" y1="-9" x2="5" y2="1" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+                </g>
+
+                {/* Brazo que alcanza la meta */}
+                <g>
+                  <animateTransform attributeName="transform" type="rotate" values="-8 0 -15; 18 0 -15; -8 0 -15" dur="0.6s" repeatCount="indefinite" />
+                  <line x1="0" y1="-15" x2="9" y2="-21" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+                  <circle cx="9" cy="-21" r="1.5" fill={C.goldLight} />
                 </g>
               </g>
-              {[{cx:25,cy:30,d:'0s'},{cx:95,cy:45,d:'0.8s'},{cx:15,cy:110,d:'1.5s'},{cx:105,cy:120,d:'0.4s'},{cx:40,cy:145,d:'1.1s'},{cx:85,cy:20,d:'1.8s'}].map((s,i)=>(
-                <circle key={i} cx={s.cx} cy={s.cy} r="2" fill={C.goldLight} style={{ animation:`starPulse 2s ease-in-out ${s.d} infinite` }} />
-              ))}
             </svg>
           </div>
         </div>
@@ -226,97 +249,6 @@ export const UserMembresias: React.FC<Props> = () => {
           </div>
         ) : (
           <>
-            {/* ── INSCRIPCIÓN STATUS ── */}
-            {inscription ? (
-              /* User has active inscription */
-              <div style={{ marginBottom: 28, borderRadius: 18, overflow: 'hidden', border: `1.5px solid ${C.pink}40`, boxShadow: '0 6px 24px rgba(190,24,93,0.08)' }}>
-                <div style={{ background: `linear-gradient(135deg, ${C.pink}, ${C.pinkLight})`, padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <ShieldCheck size={18} color="rgba(255,255,255,0.9)" />
-                    <div>
-                      <p style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.8)', textTransform: 'uppercase', letterSpacing: '0.14em', margin: 0 }}>Inscripción activa</p>
-                      <p style={{ fontFamily: FONT_BODONI, fontSize: 17, fontWeight: 700, color: C.white, margin: '2px 0 0', lineHeight: 1.1 }}>{inscription.membership.name}</p>
-                    </div>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <span style={{ fontSize: 11, fontWeight: 700, padding: '4px 12px', borderRadius: 99, background: 'rgba(255,255,255,0.2)', color: C.white }}>✓ Activa</span>
-                    <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', margin: '6px 0 0' }}>Desde: <strong>{fmtDate(inscription.startedAt)}</strong></p>
-                  </div>
-                </div>
-                {/* Discount from inscription */}
-                {(() => {
-                  const disc = inscription.membership.benefits
-                    .map(b => catalogMap.get(b))
-                    .find(e => e?.type === 'discount_percent')
-                  if (!disc) return null
-                  return (
-                    <div style={{ background: `${C.pink}08`, padding: '12px 24px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: C.pink }}>🎉 {disc.value}% de descuento</span>
-                      <span style={{ fontSize: 12, color: C.textMuted }}>en servicios adicionales por ser miembro</span>
-                    </div>
-                  )
-                })()}
-              </div>
-            ) : inscriptionPlans.length > 0 ? (
-              /* No inscription — collapsible banner */
-              (() => {
-                const insc = inscriptionPlans[0]
-                const { discountPct } = getPlanMeta(insc)
-                return (
-                  <div style={{ marginBottom: 28, borderRadius: 18, overflow: 'hidden', border: `2px dashed ${C.pink}50`, background: `${C.pink}05` }}>
-                    {/* Collapsed header — always visible */}
-                    <button onClick={() => setInscriptionExpanded(e => !e)}
-                      style={{ width: '100%', padding: '18px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', fontFamily: FONT_INTER }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 14, minWidth: 0 }}>
-                        <div style={{ width: 44, height: 44, borderRadius: 12, background: `${C.pink}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                          <Lock size={20} color={C.pink} />
-                        </div>
-                        <div style={{ minWidth: 0 }}>
-                          <h3 style={{ fontFamily: FONT_BODONI, fontSize: 18, color: C.text, margin: '0 0 2px' }}>Inscríbete en MEDIS</h3>
-                          <p style={{ fontSize: 12, color: C.textMuted, margin: 0 }}>
-                            Pago único de <strong>{fmtPrice(insc.price)}</strong> · desbloquea{discountPct != null ? ` ${discountPct}% de descuento y` : ''} acceso a todos los planes
-                          </p>
-                        </div>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: C.pink, whiteSpace: 'nowrap' }}>{inscriptionExpanded ? 'Ver menos' : 'Ver detalles'}</span>
-                        {inscriptionExpanded ? <ChevronUp size={16} color={C.pink} /> : <ChevronDown size={16} color={C.pink} />}
-                      </div>
-                    </button>
-
-                    {/* Expanded details */}
-                    <AnimatePresence>
-                      {inscriptionExpanded && (
-                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} style={{ overflow: 'hidden' }}>
-                          <div style={{ padding: '0 24px 22px', borderTop: `1px dashed ${C.pink}30`, marginTop: 2, paddingTop: 18 }}>
-                            {insc.description && (
-                              <p style={{ fontSize: 12.5, color: C.textMuted, lineHeight: 1.7, margin: '0 0 16px' }}>{insc.description}</p>
-                            )}
-                            {insc.benefits.length > 0 && (
-                              <div style={{ marginBottom: 18 }}>
-                                <p style={{ fontSize: 11, fontWeight: 700, color: C.pink, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 10px' }}>Beneficios incluidos</p>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                                  {insc.benefits.map(b => (
-                                    <div key={b} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                      <CheckCircle2 size={14} color={C.pink} />
-                                      <span style={{ fontSize: 13, color: C.textBrown, fontWeight: 600 }}>{b}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                            <button onClick={() => openConfirm(insc)}
-                              style={{ padding: '11px 24px', borderRadius: 10, border: 'none', background: `linear-gradient(135deg, ${C.pink}, ${C.pinkLight})`, color: C.white, fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: FONT_INTER }}>
-                              Inscribirme ahora — {fmtPrice(insc.price)}
-                            </button>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                )
-              })()
-            ) : null}
 
             {/* ── PLAN ACTIVO ── */}
             {active && (
@@ -335,7 +267,7 @@ export const UserMembresias: React.FC<Props> = () => {
                   <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
                     <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)' }}>Desde: <strong>{fmtDate(active.startedAt)}</strong></span>
                     {active.expiresAt && <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)' }}>Vence: <strong>{fmtDate(active.expiresAt)}</strong></span>}
-                    {active.classesRemaining !== null && <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)' }}>Clases restantes: <strong>{active.classesRemaining}</strong></span>}
+                    {active.classesRemaining !== null && <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)' }}>Consultas restantes: <strong>{active.classesRemaining}</strong></span>}
                   </div>
                 </div>
                 {active.membership.benefits.length > 0 && (
@@ -356,28 +288,19 @@ export const UserMembresias: React.FC<Props> = () => {
             {/* ── PLANES DISPONIBLES ── */}
             <h2 style={{ fontFamily: FONT_BODONI, fontSize: 22, color: C.text, margin: '0 0 18px' }}>Planes disponibles</h2>
 
-            {regularPlans.filter(p => p.id !== active?.membershipId).length === 0 ? (
+            {plans.filter(p => p.id !== active?.membershipId).length === 0 ? (
               <div style={{ textAlign: 'center', padding: '60px 20px', background: C.white, borderRadius: 20, border: `2px dashed ${C.borderLight}` }}>
                 <p style={{ fontFamily: FONT_BODONI, fontSize: '1.2rem', color: C.textMuted, margin: 0 }}>Sin planes disponibles por ahora.</p>
               </div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 18 }}>
-                {regularPlans.filter(p => p.id !== active?.membershipId).map((plan, i) => {
+                {plans.filter(p => p.id !== active?.membershipId).map((plan, i) => {
                   const { sessionLabel, isUnlimited, discountPct } = getPlanMeta(plan)
-                  const blocked = !inscription
 
                   return (
                     <motion.div key={plan.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}
                       style={{ background: C.white, borderRadius: 18, overflow: 'hidden', border: `1.5px solid ${C.borderLight}`, boxShadow: '0 4px 16px rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column', position: 'relative' }}>
-                      {blocked && (
-                        <div style={{ position: 'absolute', inset: 0, borderRadius: 18, background: 'rgba(245,243,241,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}>
-                          <div style={{ background: C.white, borderRadius: 12, padding: '10px 18px', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', border: `1px solid ${C.pink}30` }}>
-                            <Lock size={14} color={C.pink} />
-                            <span style={{ fontSize: 12, fontWeight: 700, color: C.pink }}>Requiere inscripción</span>
-                          </div>
-                        </div>
-                      )}
-                      <div style={{ display: 'flex', flexDirection: 'column', flex: 1, filter: blocked ? 'blur(5px)' : 'none', pointerEvents: blocked ? 'none' : 'auto', userSelect: blocked ? 'none' : 'auto' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                       <div style={{ height: 4, background: `linear-gradient(90deg, ${C.gold}, ${C.goldLight})` }} />
                       <div style={{ padding: '20px 22px', flex: 1 }}>
                         <h3 style={{ fontFamily: FONT_BODONI, fontSize: 19, fontWeight: 700, color: C.text, margin: '0 0 4px' }}>{plan.name}</h3>
@@ -415,9 +338,9 @@ export const UserMembresias: React.FC<Props> = () => {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                           <span style={{ fontFamily: FONT_BODONI, fontSize: 22, fontWeight: 800, color: C.gold }}>{fmtPrice(plan.price)}</span>
                         </div>
-                        <button onClick={() => openConfirm(plan)} disabled={blocked}
-                          style={{ width: '100%', padding: '11px', borderRadius: 10, border: 'none', background: blocked ? C.borderLight : `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: blocked ? C.textMuted : C.white, fontSize: 13, fontWeight: 700, cursor: blocked ? 'not-allowed' : 'pointer', fontFamily: FONT_INTER }}>
-                          {blocked ? 'Inscríbete primero' : 'Adquirir plan'}
+                        <button onClick={() => openConfirm(plan)}
+                          style={{ width: '100%', padding: '11px', borderRadius: 10, border: 'none', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: FONT_INTER }}>
+                          Adquirir plan
                         </button>
                       </div>
                       </div>
@@ -432,8 +355,8 @@ export const UserMembresias: React.FC<Props> = () => {
         {/* Bottom decoration */}
         <div style={{ marginTop: 48, borderRadius: 20, overflow: 'hidden', background: `linear-gradient(135deg, ${C.text} 0%, #2D2B29 100%)`, padding: '32px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20 }}>
           <div style={{ flex: 1 }}>
-            <p style={{ fontFamily: FONT_BODONI, fontSize: 22, color: C.goldLight, margin: '0 0 8px', fontStyle: 'italic' }}>"La fuerza que no sabías que tenías."</p>
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: 0 }}>Tu salud es nuestra prioridad. — Academia MEDIS</p>
+            <p style={{ fontFamily: FONT_BODONI, fontSize: 22, color: C.goldLight, margin: '0 0 8px', fontStyle: 'italic' }}>"Cuidar tu salud hoy es invertir en tu bienestar de mañana."</p>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: 0 }}>Tu salud es nuestra prioridad. — Equipo MEDIS</p>
           </div>
         </div>
       </div>
@@ -451,9 +374,8 @@ export const UserMembresias: React.FC<Props> = () => {
 
                 {/* Step bar */}
                 {(() => {
-                  const isInscription = confirmPlan.type === 'inscription'
-                  const barColor = isInscription ? C.pink : C.gold
-                  const barColorLight = isInscription ? C.pinkLight : C.goldLight
+                  const barColor = C.gold
+                  const barColorLight = C.goldLight
                   return (
                     <>
                       <div style={{ background: `linear-gradient(90deg, ${barColor}, ${barColorLight})`, padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -478,12 +400,6 @@ export const UserMembresias: React.FC<Props> = () => {
                         <AnimatePresence custom={direction} mode="wait">
                           {step === 0 && (
                             <motion.div key="s0" custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.22 }}>
-                              {isInscription && (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 10, background: `${C.pink}10`, marginBottom: 14 }}>
-                                  <ShieldCheck size={14} color={C.pink} />
-                                  <span style={{ fontSize: 12, color: C.pink, fontWeight: 600 }}>Pago único · sin renovación automática</span>
-                                </div>
-                              )}
                               <h3 style={{ fontFamily: FONT_BODONI, fontSize: '1.4rem', color: C.text, margin: '0 0 6px' }}>{confirmPlan.name}</h3>
                               {confirmPlan.description && <p style={{ fontSize: 13, color: C.textMuted, margin: '0 0 16px', lineHeight: 1.5 }}>{confirmPlan.description}</p>}
                               {(() => {

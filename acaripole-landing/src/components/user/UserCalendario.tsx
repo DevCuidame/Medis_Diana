@@ -26,26 +26,126 @@ function getMonthGrid(year: number, month: number): (Date | null)[] {
 
 const MOTIVATIONAL = [
   {
-    img: 'https://www.sportlife.es/uploads/s1/11/21/86/41/pole-dancing-istock-638507266.jpeg',
-    quote: 'El pole dance no es solo fuerza. Es arte, disciplina y confianza en una sola barra.',
-    author: '— Academia MEDIS',
+    img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=600',
+    quote: 'La confianza en tu equipo médico es el primer paso hacia tu bienestar.',
+    author: '— Equipo MEDIS',
   },
   {
-    img: 'https://revistadiners.com.co/wp-content/uploads/2025/07/portada_poledance_1200x800.jpg',
-    quote: 'Cada vez que subes un poco más, te demuestras que puedes ir más lejos de lo que creías.',
-    author: '— Comunidad Pole',
+    img: 'https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?auto=format&fit=crop&q=80&w=600',
+    quote: 'Cada consulta es una oportunidad para cuidar de ti y de tu salud.',
+    author: '— Equipo MEDIS',
   },
   {
-    img: 'https://rollandfeel.smokingpaper.com/wp-content/uploads/2023/01/que-es-pole-dance.jpg',
-    quote: 'La disciplina supera al talento. Entrena, confía y brilla en cada giro.',
-    author: '— Academia MEDIS',
+    img: 'https://images.unsplash.com/photo-1576765608866-5b51046452be?auto=format&fit=crop&q=80&w=600',
+    quote: 'La prevención es el mejor tratamiento. Cuidarte hoy es tu mejor decisión.',
+    author: '— Equipo MEDIS',
   },
   {
-    img: 'https://nyamie.com/uploads/photos/medium/Entity-8v1SSH7kV2AOaPqx.jpg',
-    quote: 'Tu cuerpo es capaz de cosas increíbles. El pole dance te lo recuerda cada sesión.',
-    author: '— Pole Artists',
+    img: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=600',
+    quote: 'Tu salud, siempre acompañada y al alcance de un clic.',
+    author: '— Equipo MEDIS',
   },
 ]
+
+// ── Animación: Stickman doctora saludando ──────────────────────────
+const CalendarioStickmanAnimation = () => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', padding: '1.5rem 2rem', background: C.white, borderRadius: '1.25rem', border: `1px solid ${C.borderLight}`, marginBottom: '2rem', boxShadow: '0 4px 16px rgba(0,0,0,0.03)' }}>
+    <div style={{ flex: 1 }}>
+      <div style={{ fontFamily: FONT_BODONI, fontSize: '1.6rem', color: C.gold, fontWeight: 700, marginBottom: '0.25rem' }}>
+        ¡Hola! 👋
+      </div>
+      <div style={{ fontSize: '1rem', color: C.textBrown }}>
+        Aquí puedes revisar tus próximas citas y consultas médicas.
+      </div>
+    </div>
+    <div style={{ flexShrink: 0 }}>
+      <svg width="150" height="120" viewBox="0 0 150 120" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(139,92,246,0.12))' }}>
+        <defs>
+          <linearGradient id="calSkin" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="100%" stopColor="#f3f0fb" />
+          </linearGradient>
+          <linearGradient id="calCoat" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.8)" />
+            <stop offset="100%" stopColor="rgba(139,92,246,0.15)" />
+          </linearGradient>
+        </defs>
+
+        {/* Tarjeta de agenda */}
+        <rect x="68" y="14" width="58" height="92" rx="8" fill="rgba(139,92,246,0.05)" stroke={C.gold} strokeWidth="3" />
+
+        {/* Encabezado de la tarjeta (mes / fecha) */}
+        <rect x="78" y="24" width="38" height="8" rx="3" fill="rgba(139,92,246,0.25)" />
+
+        {/* Citas agendadas */}
+        <circle cx="83" cy="46" r="3" fill={C.goldLight} />
+        <rect x="90" y="43" width="26" height="6" rx="3" fill="rgba(139,92,246,0.15)" />
+        <circle cx="83" cy="62" r="3" fill={C.goldLight} />
+        <rect x="90" y="59" width="22" height="6" rx="3" fill="rgba(139,92,246,0.1)" />
+        <circle cx="83" cy="78" r="3" fill={C.goldLight} />
+        <rect x="90" y="75" width="26" height="6" rx="3" fill="rgba(139,92,246,0.15)" />
+
+        {/* Badge "✓" animado: cita confirmada */}
+        <g>
+          <animate attributeName="opacity" values="0; 0; 1; 1; 0; 0" keyTimes="0; 0.4; 0.5; 0.8; 0.9; 1" dur="4s" repeatCount="indefinite" />
+          <circle cx="118" cy="22" r="8" fill="#10B981" />
+          <path d="M 114.5 22 L 117 24.5 L 122 19" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+
+        {/* Stickman doctora saludando */}
+        <g transform="translate(30, 78)">
+
+          {/* Cuerpo central */}
+          <line x1="0" y1="-12" x2="0" y2="10" stroke={C.goldLight} strokeWidth="3" strokeLinecap="round" />
+
+          {/* Bata médica */}
+          <path d="M -3 -10 L -10 12 C -10 14 10 14 10 12 L 3 -10 Z" fill="url(#calCoat)" stroke={C.goldLight} strokeWidth="1.5" strokeLinejoin="round" />
+          <path d="M -3 -10 L 0 0 L 3 -10" fill="none" stroke={C.goldLight} strokeWidth="1" />
+          <line x1="-6" y1="5" x2="-4" y2="5" stroke={C.goldLight} strokeWidth="1.5" strokeLinecap="round" />
+
+          {/* Piernas */}
+          <path d="M 0 10 Q -2 20 -4 30" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+          <ellipse cx="-2" cy="30" rx="3.5" ry="1.5" fill={C.goldLight} />
+          <path d="M 0 10 Q 2 20 4 30" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+          <ellipse cx="6" cy="30" rx="3.5" ry="1.5" fill={C.goldLight} />
+
+          {/* Cabeza */}
+          <circle cx="0" cy="-20" r="8.5" fill="url(#calSkin)" stroke={C.goldLight} strokeWidth="2" />
+          {/* Cabello: cerquillo y coleta */}
+          <path d="M -7 -25 Q 0 -32 8 -24" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M -7 -25 Q -12 -28 -14 -22" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+
+          {/* Carita sonriente */}
+          <circle cx="1" cy="-21" r="1.2" fill={C.goldLight} />
+          <circle cx="5.5" cy="-21" r="1.2" fill={C.goldLight} />
+          <circle cx="-0.5" cy="-19" r="1.5" fill="#f43f5e" opacity="0.4" />
+          <circle cx="7" cy="-19" r="1.5" fill="#f43f5e" opacity="0.4" />
+          <path d="M 1 -17 Q 3.5 -14.5 6 -17" fill="none" stroke={C.goldLight} strokeWidth="1.2" strokeLinecap="round" />
+
+          {/* Estetoscopio */}
+          <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#1B1C1C" strokeWidth="1.2" />
+          <circle cx="5" cy="-10" r="1.8" fill="#1B1C1C" />
+          <circle cx="5" cy="-10" r="0.8" fill="#fff" />
+
+          {/* Brazo izquierdo (maletín) */}
+          <g>
+            <path d="M 0 -5 Q -6 0 -8 7" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+            <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#1B1C1C" strokeWidth="1.5" />
+            <line x1="-10" y1="7" x2="-6" y2="7" stroke="#1B1C1C" strokeWidth="1.5" strokeLinecap="round" />
+            <circle cx="-8" cy="10.5" r="1" fill="#1B1C1C" />
+          </g>
+
+          {/* Brazo derecho: saluda (animado) */}
+          <g>
+            <animateTransform attributeName="transform" type="rotate" values="-15 0 -5; 20 0 -5; -15 0 -5; 20 0 -5; -15 0 -5" keyTimes="0; 0.25; 0.5; 0.75; 1" dur="1.6s" repeatCount="indefinite" />
+            <path d="M 0 -5 Q 7 -16 4 -28" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx="4" cy="-28" r="1.8" fill={C.goldLight} />
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+)
 
 function authH(): HeadersInit {
   const t = localStorage.getItem('accessToken')
@@ -105,6 +205,8 @@ export const UserCalendario: React.FC<Props> = () => {
     <main style={{ flex: 1, overflowY: 'auto', background: C.bg }}>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '36px 28px' }}>
+
+        <CalendarioStickmanAnimation />
 
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 32, flexWrap: 'wrap', gap: 16 }}>
@@ -277,7 +379,7 @@ export const UserCalendario: React.FC<Props> = () => {
             <div style={{ marginBottom: 16 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
                 <div style={{ height: 1, flex: 1, background: C.borderLight }} />
-                <p style={{ fontFamily: FONT_BODONI, fontSize: 13, color: C.textMuted, fontStyle: 'italic', margin: 0, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Inspiración Pole Dance</p>
+                <p style={{ fontFamily: FONT_BODONI, fontSize: 13, color: C.textMuted, fontStyle: 'italic', margin: 0, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Tu Salud, Nuestra Prioridad</p>
                 <div style={{ height: 1, flex: 1, background: C.borderLight }} />
               </div>
 
@@ -287,7 +389,7 @@ export const UserCalendario: React.FC<Props> = () => {
                     style={{ borderRadius: 18, overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.1)', position: 'relative', cursor: 'default' }}>
                     {/* Image */}
                     <div style={{ height: 200, overflow: 'hidden', position: 'relative' }}>
-                      <img src={item.img} alt="pole dance inspiration"
+                      <img src={item.img} alt="inspiración de salud y bienestar"
                         style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease' }}
                         onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.06)')}
                         onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}

@@ -1,7 +1,9 @@
-﻿import { useRef } from 'react'
+import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 export default function FinalCTA() {
+  const navigate = useNavigate()
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
 
@@ -122,8 +124,9 @@ export default function FinalCTA() {
           style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}
         >
           <motion.a
-            href="#contacto"
-            whileHover={{ scale: 1.05, boxShadow: '0 20px 60px rgba(139,92,246,0.55)' }}
+            href="/login"
+            onClick={(e) => { e.preventDefault(); navigate('/login'); }}
+            whileHover={{ scale: 1.05, boxShadow: '0 16px 50px rgba(139,92,246,0.60)' }}
             whileTap={{ scale: 0.97 }}
             className="brand-gradient"
             style={{

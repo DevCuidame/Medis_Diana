@@ -1,66 +1,68 @@
-﻿import { useRef } from 'react'
+import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 const CLASSES = [
   {
     title: 'Consulta Médica General',
     level: 'Todas las edades',
     duration: '30 min',
-    description: 'Evaluación integral de tu salud, diagnóstico y tratamiento de enfermedades comunes. Primera puerta a una atención médica de calidad.',
+    description: 'Evaluación integral, diagnóstico y tratamiento de enfermedades comunes. La puerta de entrada a tu bienestar.',
     accent: '#A78BFA',
     tag: 'Más solicitada',
     gradient: 'linear-gradient(160deg, #1e1b4b 0%, #4c1d95 50%, #1e3a8a 100%)',
   },
   {
-    title: 'Control de Niño Sano',
-    level: 'Niños y adolescentes',
-    duration: '30 min',
-    description: 'Seguimiento del crecimiento y desarrollo, aplicación del esquema de vacunación y orientación integral a padres y cuidadores.',
+    title: 'Promoción y Prevención',
+    level: 'Todas las edades',
+    duration: '45 min',
+    description: 'Chequeos y orientación integral para identificar factores de riesgo y fomentar hábitos saludables a largo plazo.',
     accent: '#38BDF8',
-    tag: 'Pediatría',
+    tag: 'Preventivo',
     gradient: 'linear-gradient(160deg, #0f172a 0%, #1e3a8a 50%, #0c4a6e 100%)',
   },
   {
-    title: 'Control Prenatal',
-    level: 'Mujeres gestantes',
+    title: 'Enf. No Transmisibles',
+    level: 'Adultos',
     duration: '30 min',
-    description: 'Acompañamiento médico durante el embarazo para garantizar la salud de la madre y el bebé en cada etapa de la gestación.',
+    description: 'Atención y control especializado de Hipertensión (HTA), Diabetes (DM), Riesgo Cardiovascular (RCV) y Síndrome Metabólico.',
     accent: '#A78BFA',
-    tag: 'Materno',
+    tag: 'Crónicos',
     gradient: 'linear-gradient(160deg, #1e1b4b 0%, #312e81 50%, #1e3a8a 100%)',
   },
   {
-    title: 'Control de Enf. Crónicas',
-    level: 'Adultos',
-    duration: '30 min',
-    description: 'Seguimiento y manejo de hipertensión, diabetes y otras condiciones crónicas, con planes de tratamiento personalizados.',
+    title: 'Sobrepeso y Obesidad',
+    level: 'Jóvenes y Adultos',
+    duration: '40 min',
+    description: 'Acompañamiento médico integral para el manejo del peso, con un enfoque clínico seguro, sostenible y sin estigmas.',
     accent: '#38BDF8',
-    tag: 'Crónicos',
+    tag: 'Metabolismo',
     gradient: 'linear-gradient(160deg, #0c1445 0%, #1e3a8a 50%, #164e63 100%)',
   },
   {
-    title: 'Medicina Preventiva',
-    level: 'Todas las edades',
-    duration: '45 min',
-    description: 'Chequeos ejecutivos y valoraciones preventivas para detectar a tiempo posibles riesgos de salud antes de que se conviertan en problemas.',
+    title: 'Salud de la Mujer',
+    level: 'Mujeres',
+    duration: '30 min',
+    description: 'Atención integral para la mujer en todas sus etapas, incluyendo asesoría en planificación, prevención y bienestar femenino.',
     accent: '#A78BFA',
-    tag: 'Prevención',
+    tag: 'Bienestar',
     gradient: 'linear-gradient(160deg, #1e1b4b 0%, #4c1d95 50%, #0f172a 100%)',
   },
   {
-    title: 'Certificados y Vacunación',
-    level: 'Todas las edades',
-    duration: '20 min',
-    description: 'Emisión de certificados médicos de aptitud física, laboral y deportiva. Aplicación de vacunas del esquema nacional y viajero.',
+    title: 'Salud Mental',
+    level: 'Adolescentes y Adultos',
+    duration: '45 min',
+    description: 'Espacio de escucha activa y orientación clínica para el abordaje inicial de ansiedad, depresión y estrés.',
     accent: '#38BDF8',
-    tag: 'Trámites',
+    tag: 'Cuidado Integral',
     gradient: 'linear-gradient(160deg, #0f172a 0%, #1e3a8a 50%, #0c4a6e 100%)',
   },
 ]
 
-function ClassCard({ title, level, duration, description, accent, tag, gradient, delay }: typeof CLASSES[0] & { delay: number }) {
+function ClassCard({ title, level, duration, description, accent, tag, gradient, delay }: { title: string, level: string, duration: string, description: string, accent: string, tag?: string, gradient: string, delay: number }) {
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-60px' })
+  const inView = useInView(ref, { once: true, margin: '-50px' })
+  const navigate = useNavigate()
 
   return (
     <motion.div
@@ -142,8 +144,9 @@ function ClassCard({ title, level, duration, description, accent, tag, gradient,
 
           {/* Hover CTA */}
           <motion.div
-            whileHover={{ x: 6 }}
-            transition={{ duration: 0.3 }}
+            onClick={() => navigate('/login')}
+            whileHover={{ x: 5, color: '#fff' }}
+            transition={{ duration: 0.2 }}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -154,6 +157,7 @@ function ClassCard({ title, level, duration, description, accent, tag, gradient,
               textTransform: 'uppercase',
               color: accent === '#A78BFA' ? '#C4B5FD' : '#7DD3FC',
               fontWeight: 500,
+              cursor: 'pointer',
             }}
           >
             Agendar
@@ -168,6 +172,7 @@ function ClassCard({ title, level, duration, description, accent, tag, gradient,
 }
 
 export default function Classes() {
+  const navigate = useNavigate()
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-100px' })
 
@@ -206,7 +211,8 @@ export default function Classes() {
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
             transition={{ duration: 0.7, delay: 0.3 }}
-            href="#contacto"
+            href="/login"
+            onClick={(e) => { e.preventDefault(); navigate('/login'); }}
             whileHover={{ scale: 1.04, boxShadow: '0 8px 32px rgba(139,92,246,0.30)' }}
             className="brand-gradient"
             style={{

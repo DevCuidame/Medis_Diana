@@ -31,8 +31,8 @@ const STEP_TITLES: Record<number, string> = {
 }
 
 const DISCIPLINES = [
-  'Pole Exotic', 'Pole Sport', 'Flexibilidad',
-  'Core y Fuerza', 'Flow Principiante', 'Coreografía Sensual',
+  'Medicina General', 'Pediatría', 'Medicina Familiar',
+  'Ginecología y Obstetricia', 'Medicina Interna', 'Nutrición y Dietética',
 ]
 
 const DIAS = [
@@ -54,7 +54,7 @@ const ID_TYPES = [
   'RUC',
 ]
 
-const DEFAULT_AVATAR_URL = 'https://images.unsplash.com/photo-1518310383802-640c2de311b2?auto=format&fit=crop&q=80&w=600'
+const DEFAULT_AVATAR_URL = 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=600'
 
 type AccountRole = 'USER' | 'PROFESSIONAL' | 'ADMIN'
 
@@ -389,6 +389,89 @@ export function CreateProfessionalModal({ onClose, onSuccess }: Props) {
                         </button>
                       ))}
                     </div>
+
+                    {/* Horario — solo se despliega si es independiente */}
+                    <AnimatePresence>
+                      {professionalType === 'independiente' && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.25, ease: 'easeOut' }}
+                          style={{ overflow: 'hidden' }}
+                        >
+                          <div style={{ marginTop: 14 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                              <Clock size={14} color={C.gold} />
+                              <label style={{ ...LABEL, margin: 0 }}>Horario disponible</label>
+                              <span style={{ fontSize: 11, color: C.textMuted, fontWeight: 500 }}>(el profesional solo puede ser asignado en estos bloques)</span>
+                            </div>
+
+                            {/* Add slot form */}
+                            <div style={{ background: 'rgba(139,92,246,0.04)', border: `1.5px solid ${C.borderLight}`, borderRadius: 12, padding: '14px', marginBottom: 12 }}>
+                              {/* Day chips */}
+                              <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
+                                {DIAS.map(d => (
+                                  <button key={d.code} type="button" title={d.name}
+                                    onClick={() => setNewSlotDay(d.code)}
+                                    style={{ width: 34, height: 34, borderRadius: 8, border: `2px solid ${newSlotDay === d.code ? C.gold : C.border}`, background: newSlotDay === d.code ? `linear-gradient(135deg, ${C.gold}, ${C.goldLight})` : 'transparent', color: newSlotDay === d.code ? '#fff' : C.textMuted, fontWeight: 800, fontSize: 12, cursor: 'pointer', transition: 'all 0.15s', fontFamily: FONT_INTER }}>
+                                    {d.label}
+                                  </button>
+                                ))}
+                              </div>
+                              {/* Time range */}
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 8, alignItems: 'center' }}>
+                                <input type="time" value={newSlotStart} onChange={e => setNewSlotStart(e.target.value)}
+                                  style={{ ...INPUT(), padding: '10px 12px' }}
+                                  onFocus={e => (e.target.style.borderColor = C.gold)}
+                                  onBlur={e => (e.target.style.borderColor = C.border)}
+                                />
+                                <input type="time" value={newSlotEnd} onChange={e => setNewSlotEnd(e.target.value)}
+                                  style={{ ...INPUT(), padding: '10px 12px' }}
+                                  onFocus={e => (e.target.style.borderColor = C.gold)}
+                                  onBlur={e => (e.target.style.borderColor = C.border)}
+                                />
+                                <button type="button"
+                                  onClick={() => {
+                                    if (!newSlotStart || !newSlotEnd || newSlotEnd <= newSlotStart) return
+                                    setSchedule(s => [...s, { dayOfWeek: newSlotDay, startTime: newSlotStart, endTime: newSlotEnd }])
+                                    setNewSlotStart(''); setNewSlotEnd('')
+                                  }}
+                                  style={{ padding: '10px 14px', borderRadius: 9, border: 'none', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: '#fff', fontWeight: 700, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, fontFamily: FONT_INTER, whiteSpace: 'nowrap' }}>
+                                  <Plus size={13} strokeWidth={3} /> Agregar
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Slot list */}
+                            {schedule.length === 0 ? (
+                              <p style={{ fontSize: 12, color: C.textMuted, fontStyle: 'italic', margin: 0 }}>Sin horarios registrados. Agrega al menos un bloque.</p>
+                            ) : (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                                {schedule
+                                  .sort((a, b) => a.dayOfWeek - b.dayOfWeek || a.startTime.localeCompare(b.startTime))
+                                  .map((s, i) => {
+                                    const day = DIAS.find(d => d.code === s.dayOfWeek)
+                                    return (
+                                      <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: C.white, border: `1px solid ${C.borderLight}`, borderRadius: 9, padding: '8px 12px' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                          <span style={{ fontSize: 11, fontWeight: 800, color: C.gold, background: 'rgba(139,92,246,0.08)', padding: '3px 8px', borderRadius: 6 }}>{day?.name}</span>
+                                          <Clock size={12} color={C.textMuted} />
+                                          <span style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{s.startTime} – {s.endTime}</span>
+                                        </div>
+                                        <button type="button" onClick={() => setSchedule(sc => sc.filter((_, j) => j !== i))}
+                                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#DC2626', display: 'flex', alignItems: 'center', padding: 4, borderRadius: 6 }}>
+                                          <Trash2 size={13} />
+                                        </button>
+                                      </div>
+                                    )
+                                  })}
+                              </div>
+                            )}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 )}
 
@@ -570,79 +653,6 @@ export function CreateProfessionalModal({ onClose, onSuccess }: Props) {
                     />
                   </div>
                 </div>
-
-                {/* Schedule — only for independiente */}
-                {professionalType === 'independiente' && (
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-                      <Clock size={14} color={C.gold} />
-                      <label style={{ ...LABEL, margin: 0 }}>Horario disponible</label>
-                      <span style={{ fontSize: 11, color: C.textMuted, fontWeight: 500 }}>(el profesional solo puede ser asignado en estos bloques)</span>
-                    </div>
-
-                    {/* Add slot form */}
-                    <div style={{ background: 'rgba(139,92,246,0.04)', border: `1.5px solid ${C.borderLight}`, borderRadius: 12, padding: '14px', marginBottom: 12 }}>
-                      {/* Day chips */}
-                      <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
-                        {DIAS.map(d => (
-                          <button key={d.code} type="button" title={d.name}
-                            onClick={() => setNewSlotDay(d.code)}
-                            style={{ width: 34, height: 34, borderRadius: 8, border: `2px solid ${newSlotDay === d.code ? C.gold : C.border}`, background: newSlotDay === d.code ? `linear-gradient(135deg, ${C.gold}, ${C.goldLight})` : 'transparent', color: newSlotDay === d.code ? '#fff' : C.textMuted, fontWeight: 800, fontSize: 12, cursor: 'pointer', transition: 'all 0.15s', fontFamily: FONT_INTER }}>
-                            {d.label}
-                          </button>
-                        ))}
-                      </div>
-                      {/* Time range */}
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 8, alignItems: 'center' }}>
-                        <input type="time" value={newSlotStart} onChange={e => setNewSlotStart(e.target.value)}
-                          style={{ ...INPUT(), padding: '10px 12px' }}
-                          onFocus={e => (e.target.style.borderColor = C.gold)}
-                          onBlur={e => (e.target.style.borderColor = C.border)}
-                        />
-                        <input type="time" value={newSlotEnd} onChange={e => setNewSlotEnd(e.target.value)}
-                          style={{ ...INPUT(), padding: '10px 12px' }}
-                          onFocus={e => (e.target.style.borderColor = C.gold)}
-                          onBlur={e => (e.target.style.borderColor = C.border)}
-                        />
-                        <button type="button"
-                          onClick={() => {
-                            if (!newSlotStart || !newSlotEnd || newSlotEnd <= newSlotStart) return
-                            setSchedule(s => [...s, { dayOfWeek: newSlotDay, startTime: newSlotStart, endTime: newSlotEnd }])
-                            setNewSlotStart(''); setNewSlotEnd('')
-                          }}
-                          style={{ padding: '10px 14px', borderRadius: 9, border: 'none', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: '#fff', fontWeight: 700, fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, fontFamily: FONT_INTER, whiteSpace: 'nowrap' }}>
-                          <Plus size={13} strokeWidth={3} /> Agregar
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Slot list */}
-                    {schedule.length === 0 ? (
-                      <p style={{ fontSize: 12, color: C.textMuted, fontStyle: 'italic', margin: 0 }}>Sin horarios registrados. Agrega al menos un bloque.</p>
-                    ) : (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                        {schedule
-                          .sort((a, b) => a.dayOfWeek - b.dayOfWeek || a.startTime.localeCompare(b.startTime))
-                          .map((s, i) => {
-                            const day = DIAS.find(d => d.code === s.dayOfWeek)
-                            return (
-                              <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: C.white, border: `1px solid ${C.borderLight}`, borderRadius: 9, padding: '8px 12px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                  <span style={{ fontSize: 11, fontWeight: 800, color: C.gold, background: 'rgba(139,92,246,0.08)', padding: '3px 8px', borderRadius: 6 }}>{day?.name}</span>
-                                  <Clock size={12} color={C.textMuted} />
-                                  <span style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{s.startTime} – {s.endTime}</span>
-                                </div>
-                                <button type="button" onClick={() => setSchedule(sc => sc.filter((_, j) => j !== i))}
-                                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#DC2626', display: 'flex', alignItems: 'center', padding: 4, borderRadius: 6 }}>
-                                  <Trash2 size={13} />
-                                </button>
-                              </div>
-                            )
-                          })}
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
             )}
 
@@ -674,6 +684,7 @@ export function CreateProfessionalModal({ onClose, onSuccess }: Props) {
                     <Lock size={14} color={C.textMuted} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                     <input
                       type={showPass ? 'text' : 'password'} value={form.password} placeholder="Mínimo 8 caracteres"
+                      autoComplete="new-password" name="new-professional-password"
                       onChange={e => { set('password', e.target.value); clearErr('password') }}
                       onFocus={e => (e.target.style.borderColor = C.gold)}
                       onBlur={e => (e.target.style.borderColor = errors.password ? '#ef4444' : C.border)}
@@ -702,6 +713,7 @@ export function CreateProfessionalModal({ onClose, onSuccess }: Props) {
                     <Shield size={14} color={C.textMuted} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                     <input
                       type={showConf ? 'text' : 'password'} value={form.confirmPassword} placeholder="Repite la contraseña"
+                      autoComplete="new-password" name="new-professional-password-confirm"
                       onChange={e => { set('confirmPassword', e.target.value); clearErr('confirmPassword') }}
                       onFocus={e => (e.target.style.borderColor = C.gold)}
                       onBlur={e => (e.target.style.borderColor = errors.confirmPassword ? '#ef4444' : C.border)}

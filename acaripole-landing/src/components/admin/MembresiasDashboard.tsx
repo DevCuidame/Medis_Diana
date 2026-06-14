@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -66,28 +66,28 @@ interface Membership {
 }
 
 const TYPE_LABELS: Record<MembershipType, string> = {
-  per_class:   'Por Clase',
-  monthly:     'Mensual',
-  annual:      'Anual',
-  private:     'Clase Privada',
-  pack:        'Pack de Clases',
-  inscription: 'Inscripción',
+  per_consultation: 'Por Consulta',
+  monthly:          'Control Mensual',
+  annual:           'Programa Anual',
+  program:          'Programa Integral',
+  pack:             'Paquete de Consultas',
+  assessment:       'Valoración Inicial',
 };
 
 const TYPE_COLORS: Record<MembershipType, { bg: string; color: string }> = {
-  per_class:   { bg: 'rgba(139,92,246,0.1)',    color: '#8B5CF6' },
-  monthly:     { bg: 'rgba(34,197,94,0.1)',   color: '#16A34A' },
-  annual:      { bg: 'rgba(59,130,246,0.1)',  color: '#2563EB' },
-  private:     { bg: 'rgba(168,85,247,0.1)',  color: '#7C3AED' },
-  pack:        { bg: 'rgba(234,179,8,0.1)',   color: '#B45309' },
-  inscription: { bg: 'rgba(236,72,153,0.1)',  color: '#8B5CF6' },
+  per_consultation: { bg: 'rgba(139,92,246,0.1)',  color: '#8B5CF6' },
+  monthly:          { bg: 'rgba(34,197,94,0.1)',   color: '#16A34A' },
+  annual:           { bg: 'rgba(59,130,246,0.1)',  color: '#2563EB' },
+  program:          { bg: 'rgba(168,85,247,0.1)',  color: '#7C3AED' },
+  pack:             { bg: 'rgba(234,179,8,0.1)',   color: '#B45309' },
+  assessment:       { bg: 'rgba(236,72,153,0.1)',  color: '#EC4899' },
 };
 
 const EMPTY_FORM = {
   name: '',
   code: '',
   description: '',
-  type: 'per_class' as MembershipType,
+  type: 'per_consultation' as MembershipType,
   price: '',
   duration_days: '',
   is_active: true,
@@ -105,6 +105,107 @@ function authHeaders(): HeadersInit {
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 }
+
+// ── Animación: Stickman médica señalando los planes de la clínica ──────────────
+const PlanesStickmanAnimation = () => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', padding: '1.5rem 2rem', background: C.white, borderRadius: '1.25rem', border: `1px solid ${C.borderLight}`, marginBottom: '2rem', boxShadow: '0 4px 16px rgba(0,0,0,0.03)' }}>
+    <div style={{ flex: 1 }}>
+      <div style={{ fontFamily: FONT_BODONI, fontSize: '1.6rem', color: C.gold, fontWeight: 700, marginBottom: '0.25rem' }}>
+        Planes y Membresías 🩺
+      </div>
+      <div style={{ fontSize: '1rem', color: C.textBrown }}>
+        Define los planes, tarifas y beneficios disponibles para tus pacientes.
+      </div>
+    </div>
+    <div style={{ flexShrink: 0 }}>
+      <svg width="150" height="120" viewBox="0 0 150 120" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(139,92,246,0.12))' }}>
+        <defs>
+          <linearGradient id="planSkin" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="100%" stopColor="#f3f0fb" />
+          </linearGradient>
+          <linearGradient id="planCoat" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.8)" />
+            <stop offset="100%" stopColor="rgba(139,92,246,0.15)" />
+          </linearGradient>
+        </defs>
+
+        {/* Tarjeta de plan */}
+        <rect x="68" y="14" width="58" height="92" rx="8" fill="rgba(139,92,246,0.05)" stroke={C.gold} strokeWidth="3" />
+
+        {/* Encabezado de la tarjeta (nombre del plan) */}
+        <rect x="78" y="24" width="38" height="8" rx="3" fill="rgba(139,92,246,0.25)" />
+
+        {/* Beneficios incluidos */}
+        <rect x="78" y="44" width="38" height="6" rx="3" fill="rgba(139,92,246,0.15)" />
+        <rect x="78" y="58" width="30" height="6" rx="3" fill="rgba(139,92,246,0.1)" />
+        <rect x="78" y="72" width="38" height="6" rx="3" fill="rgba(139,92,246,0.15)" />
+
+        {/* Precio del plan */}
+        <rect x="78" y="88" width="26" height="10" rx="5" fill="rgba(139,92,246,0.2)" />
+        <text x="91" y="96" textAnchor="middle" fontSize="8" fill={C.gold} fontWeight="800">$</text>
+
+        {/* Badge "✓" animado: plan activo */}
+        <g>
+          <animate attributeName="opacity" values="0; 0; 1; 1; 0; 0" keyTimes="0; 0.4; 0.5; 0.8; 0.9; 1" dur="4s" repeatCount="indefinite" />
+          <circle cx="118" cy="22" r="8" fill="#10B981" />
+          <path d="M 114.5 22 L 117 24.5 L 122 19" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+
+        {/* Stickman médica señalando el plan */}
+        <g transform="translate(30, 78)">
+
+          {/* Cuerpo central */}
+          <line x1="0" y1="-12" x2="0" y2="10" stroke={C.goldLight} strokeWidth="3" strokeLinecap="round" />
+
+          {/* Bata médica */}
+          <path d="M -3 -10 L -10 12 C -10 14 10 14 10 12 L 3 -10 Z" fill="url(#planCoat)" stroke={C.goldLight} strokeWidth="1.5" strokeLinejoin="round" />
+          <path d="M -3 -10 L 0 0 L 3 -10" fill="none" stroke={C.goldLight} strokeWidth="1" />
+          <line x1="-6" y1="5" x2="-4" y2="5" stroke={C.goldLight} strokeWidth="1.5" strokeLinecap="round" />
+
+          {/* Piernas */}
+          <path d="M 0 10 Q -2 20 -4 30" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+          <ellipse cx="-2" cy="30" rx="3.5" ry="1.5" fill={C.goldLight} />
+          <path d="M 0 10 Q 2 20 4 30" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+          <ellipse cx="6" cy="30" rx="3.5" ry="1.5" fill={C.goldLight} />
+
+          {/* Cabeza */}
+          <circle cx="0" cy="-20" r="8.5" fill="url(#planSkin)" stroke={C.goldLight} strokeWidth="2" />
+          {/* Cabello: cerquillo y coleta */}
+          <path d="M -7 -25 Q 0 -32 8 -24" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M -7 -25 Q -12 -28 -14 -22" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+
+          {/* Carita mirando hacia el plan */}
+          <circle cx="1" cy="-21" r="1.2" fill={C.goldLight} />
+          <circle cx="5.5" cy="-21" r="1.2" fill={C.goldLight} />
+          <circle cx="-0.5" cy="-19" r="1.5" fill="#f43f5e" opacity="0.4" />
+          <circle cx="7" cy="-19" r="1.5" fill="#f43f5e" opacity="0.4" />
+          <path d="M 1 -17 Q 3.5 -14.5 6 -17" fill="none" stroke={C.goldLight} strokeWidth="1.2" strokeLinecap="round" />
+
+          {/* Estetoscopio */}
+          <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#1B1C1C" strokeWidth="1.2" />
+          <circle cx="5" cy="-10" r="1.8" fill="#1B1C1C" />
+          <circle cx="5" cy="-10" r="0.8" fill="#fff" />
+
+          {/* Brazo izquierdo (maletín) */}
+          <g>
+            <path d="M 0 -5 Q -6 0 -8 7" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+            <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#1B1C1C" strokeWidth="1.5" />
+            <line x1="-10" y1="7" x2="-6" y2="7" stroke="#1B1C1C" strokeWidth="1.5" strokeLinecap="round" />
+            <circle cx="-8" cy="10.5" r="1" fill="#1B1C1C" />
+          </g>
+
+          {/* Brazo derecho: señala el plan (animado) */}
+          <g>
+            <animateTransform attributeName="transform" type="rotate" values="68 0 -5; 68 0 -5; 12 0 -5; 12 0 -5; 68 0 -5" keyTimes="0; 0.2; 0.4; 0.8; 1" dur="4s" repeatCount="indefinite" />
+            <path d="M 0 -5 Q 16 -10 32 -15" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx="32" cy="-15" r="1.5" fill={C.goldLight} />
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+);
 
 export const MembresiasDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -307,7 +408,7 @@ export const MembresiasDashboard: React.FC = () => {
   };
 
   const hasDuration = form.type === 'monthly' || form.type === 'annual';
-  const tPreview = TYPE_COLORS[form.type] ?? TYPE_COLORS.per_class;
+  const tPreview = TYPE_COLORS[form.type] ?? TYPE_COLORS.per_consultation;
   const isInscriptionType = form.type === 'inscription';
 
   
@@ -424,6 +525,9 @@ export const MembresiasDashboard: React.FC = () => {
         <main style={{ flex: 1, overflowY: 'auto', padding: '2rem 1.5rem', background: 'radial-gradient(circle at top right, rgba(139,92,246,0.03), transparent 400px)' }}>
           <div style={{ maxWidth: 1100, margin: '0 auto' }}>
 
+            {/* ── ANIMACIÓN DE BIENVENIDA ── */}
+            <PlanesStickmanAnimation />
+
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: 16 }}>
               <div>
                 <h1 style={{ fontFamily: FONT_BODONI, fontSize: '2.5rem', color: C.text, marginBottom: '0.5rem', lineHeight: 1.2 }}>Gestión de Planes</h1>
@@ -492,7 +596,7 @@ export const MembresiasDashboard: React.FC = () => {
               const inscriptions = memberships.filter(m => m.type === 'inscription');
               const plans = memberships.filter(m => m.type !== 'inscription');
               const renderCard = (m: Membership, i: number) => {
-                    const tColor = TYPE_COLORS[m.type] ?? TYPE_COLORS.per_class;
+                    const tColor = TYPE_COLORS[m.type] ?? TYPE_COLORS.per_consultation;
                     return (
                       <motion.div key={m.id} layout initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ delay: i * 0.06 }} className="glass-card" style={{ padding: '1.5rem', opacity: m.isActive ? 1 : 0.65 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
@@ -751,7 +855,7 @@ export const MembresiasDashboard: React.FC = () => {
                               return (
                                 <button
                                   key={t} type="button"
-                                  onClick={() => setForm(f => ({ ...f, type: t, duration_days: (t === 'per_class' || t === 'private' || t === 'pack' || t === 'inscription') ? '' : f.duration_days }))}
+                                  onClick={() => setForm(f => ({ ...f, type: t, duration_days: (t === 'per_consultation' || t === 'program' || t === 'pack' || t === 'assessment') ? '' : f.duration_days }))}
                                   style={{ padding: '10px 6px', borderRadius: 10, border: `2px solid ${sel ? tc.color : C.borderLight}`, background: sel ? tc.bg : 'transparent', color: sel ? tc.color : C.textBrown, fontSize: 11, fontWeight: 700, cursor: 'pointer', transition: 'all 0.18s', letterSpacing: '0.04em' }}
                                 >
                                   {TYPE_LABELS[t]}

@@ -55,7 +55,7 @@ export const UserProfesionales: React.FC<Props> = () => {
       <div style={{ maxWidth: 1000, margin: '0 auto', padding: '32px 28px' }}>
 
         <div style={{ marginBottom: 28 }}>
-          <p style={{ fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 6px', fontFamily: FONT_INTER }}>Academia MEDIS</p>
+          <p style={{ fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 6px', fontFamily: FONT_INTER }}>Mi Portal</p>
           <h1 style={{ fontFamily: FONT_BODONI, fontSize: 36, fontWeight: 700, color: C.text, margin: 0 }}>Profesionales</h1>
           <p style={{ fontSize: 13, color: C.textMuted, margin: '8px 0 0' }}>El equipo de instructores del estudio</p>
         </div>

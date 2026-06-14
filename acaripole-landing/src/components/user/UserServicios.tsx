@@ -113,7 +113,6 @@ export const UserServicios: React.FC<Props> = () => {
   const [offers, setOffers]         = useState<any[]>([])
   const [loading, setLoading]       = useState(true)
   const [activeMembership, setActiveMembership] = useState<ActiveMembership | null>(null)
-  const [inscriptionDiscount, setInscriptionDiscount] = useState<number | null>(null)
   const [enrolledIds, setEnrolledIds] = useState<Set<string>>(new Set())
   const [pendingIds, setPendingIds]   = useState<Set<string>>(new Set())
   const [search, setSearch]     = useState('')
@@ -134,11 +133,9 @@ export const UserServicios: React.FC<Props> = () => {
       fetch('/api/services/offers?limit=200', { headers: authH() }).then(r => r.json()),
       fetch('/api/user-memberships/me', { headers: authH() }).then(r => r.json()).catch(() => ({ success: false })),
       fetch('/api/services/my-requests', { headers: authH() }).then(r => r.json()).catch(() => ({ success: false })),
-      fetch('/api/user-memberships/me/inscription', { headers: authH() }).then(r => r.json()).catch(() => ({ success: false })),
-    ]).then(([offersData, membershipData, bookingsData, inscData]) => {
+    ]).then(([offersData, membershipData, bookingsData]) => {
       if (offersData.success) setOffers((offersData.data.offers || []).filter((o: any) => o.status === 'published'))
       if (membershipData.success && membershipData.data?.membership) setActiveMembership(membershipData.data.membership)
-      if (inscData.success && inscData.data?.inscription) setInscriptionDiscount(inscData.data.inscription.discountPercent ?? null)
       if (bookingsData.success) {
         const requests: any[] = bookingsData.data.requests || []
         setEnrolledIds(new Set(requests.filter((r: any) => r.status === 'approved').map((r: any) => r.offerId)))
@@ -177,7 +174,7 @@ export const UserServicios: React.FC<Props> = () => {
     } finally { setEnrolling(null) }
   }
 
-  const effectiveDiscountPercent = activeMembership?.discountPercent ?? inscriptionDiscount
+  const effectiveDiscountPercent = activeMembership?.discountPercent ?? null
 
   const groups = groupOffers(offers)
 
@@ -196,88 +193,107 @@ export const UserServicios: React.FC<Props> = () => {
         {/* Header */}
         <div style={{ marginBottom: 28, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
           <div>
-            <p style={{ fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 6px', fontFamily: FONT_INTER }}>Academia MEDIS</p>
+            <p style={{ fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 6px', fontFamily: FONT_INTER }}>Mi Portal</p>
             <h1 style={{ fontFamily: FONT_BODONI, fontSize: 36, fontWeight: 700, color: C.text, margin: 0 }}>Servicios Disponibles</h1>
             <p style={{ fontSize: 13, color: C.textMuted, margin: '8px 0 0' }}>
               {loading ? 'Cargando…' : `${groups.length} servicio${groups.length !== 1 ? 's' : ''} · ${offers.length} sesiones`}
             </p>
           </div>
 
-          {/* Pole dancer animation */}
-          <div style={{ flexShrink: 0, opacity: 0.85 }}>
-            <style>{`
-              @keyframes poleFloat   { 0%,100%{transform:translateY(0)}  50%{transform:translateY(-6px)} }
-              @keyframes poleSpin    { 0%{transform:rotate(0deg)}  100%{transform:rotate(360deg)} }
-              @keyframes figureWave  { 0%,100%{transform:rotate(-8deg)} 50%{transform:rotate(8deg)} }
-              @keyframes legKick     { 0%,100%{transform:rotate(0deg)}  40%{transform:rotate(-40deg)} 80%{transform:rotate(20deg)} }
-              @keyframes armSwing    { 0%,100%{transform:rotate(-15deg)} 50%{transform:rotate(25deg)} }
-              @keyframes hairFlow    { 0%,100%{transform:rotate(-5deg)}  50%{transform:rotate(10deg)} }
-              @keyframes glitter     { 0%,100%{opacity:0;transform:scale(0.5)} 50%{opacity:1;transform:scale(1.2)} }
-              @keyframes poleGlow    { 0%,100%{filter:drop-shadow(0 0 3px rgba(59,130,246,0.4))} 50%{filter:drop-shadow(0 0 8px rgba(59,130,246,0.8))} }
-            `}</style>
-            <svg width="90" height="160" viewBox="0 0 90 160" style={{ animation: 'poleFloat 3s ease-in-out infinite', overflow: 'visible' }}>
-              {/* Pole */}
-              <line x1="45" y1="5" x2="45" y2="155" stroke={C.goldLight} strokeWidth="3.5" strokeLinecap="round"
-                style={{ animation: 'poleGlow 2s ease-in-out infinite' }} />
-              {/* Pole top cap */}
-              <circle cx="45" cy="8" r="5" fill={C.gold} />
+          {/* Stickman doctor chuleando los servicios */}
+          <div style={{ flexShrink: 0 }}>
+            <svg width="150" height="120" viewBox="0 0 150 120" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(139,92,246,0.12))' }}>
+              <defs>
+                <linearGradient id="usvSkin" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="100%" stopColor="#f3f0fb" />
+                </linearGradient>
+                <linearGradient id="usvCoat" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="rgba(255,255,255,0.8)" />
+                  <stop offset="100%" stopColor="rgba(139,92,246,0.15)" />
+                </linearGradient>
+              </defs>
 
-              {/* === Figure === */}
-              <g style={{ transformOrigin: '45px 80px', animation: 'figureWave 2.5s ease-in-out infinite' }}>
-                {/* Hair flowing */}
-                <path d="M45 35 Q58 28 60 22 Q55 32 52 38" fill={C.text} opacity="0.8"
-                  style={{ transformOrigin: '45px 35px', animation: 'hairFlow 2s ease-in-out infinite' }} />
-                <path d="M45 35 Q55 24 62 20" stroke={C.text} strokeWidth="2" fill="none" opacity="0.6"
-                  style={{ transformOrigin: '45px 35px', animation: 'hairFlow 2.2s ease-in-out infinite reverse' }} />
+              {/* Tablero de servicios */}
+              <rect x="68" y="14" width="58" height="92" rx="8" fill="rgba(139,92,246,0.05)" stroke={C.gold} strokeWidth="3" />
+              <rect x="87" y="8" width="20" height="10" rx="3" fill={C.white} stroke={C.gold} strokeWidth="2" />
 
-                {/* Head */}
-                <circle cx="45" cy="42" r="9" fill={C.text} opacity="0.85" />
+              {/* Encabezado del tablero */}
+              <rect x="78" y="24" width="38" height="8" rx="3" fill="rgba(139,92,246,0.25)" />
 
-                {/* Neck */}
-                <line x1="45" y1="51" x2="45" y2="57" stroke={C.text} strokeWidth="4" strokeLinecap="round" opacity="0.85" />
+              {/* Lista de servicios con casillas que se van chuleando */}
+              <rect x="78" y="40" width="8" height="8" rx="2" fill={C.white} stroke={C.goldLight} strokeWidth="1.5" />
+              <rect x="90" y="42" width="26" height="5" rx="2.5" fill="rgba(139,92,246,0.15)" />
+              <path d="M 79.5 44 L 81.5 46 L 85.5 41" fill="none" stroke="#10B981" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.1;0.18;0.9;0.97;1" dur="4.5s" repeatCount="indefinite" />
+              </path>
 
-                {/* Torso */}
-                <path d="M45 57 Q38 65 37 78 Q45 82 53 78 Q52 65 45 57Z" fill={C.text} opacity="0.85" />
+              <rect x="78" y="58" width="8" height="8" rx="2" fill={C.white} stroke={C.goldLight} strokeWidth="1.5" />
+              <rect x="90" y="60" width="22" height="5" rx="2.5" fill="rgba(139,92,246,0.1)" />
+              <path d="M 79.5 62 L 81.5 64 L 85.5 59" fill="none" stroke="#10B981" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.35;0.43;0.9;0.97;1" dur="4.5s" repeatCount="indefinite" />
+              </path>
 
-                {/* Left arm (holding pole) */}
-                <line x1="45" y1="62" x2="45" y2="55" stroke={C.text} strokeWidth="3.5" strokeLinecap="round" opacity="0.85" />
+              <rect x="78" y="76" width="8" height="8" rx="2" fill={C.white} stroke={C.goldLight} strokeWidth="1.5" />
+              <rect x="90" y="78" width="26" height="5" rx="2.5" fill="rgba(139,92,246,0.15)" />
+              <path d="M 79.5 80 L 81.5 82 L 85.5 77" fill="none" stroke="#10B981" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.6;0.68;0.9;0.97;1" dur="4.5s" repeatCount="indefinite" />
+              </path>
 
-                {/* Right arm extended */}
-                <g style={{ transformOrigin: '45px 63px', animation: 'armSwing 2s ease-in-out infinite' }}>
-                  <line x1="45" y1="63" x2="65" y2="58" stroke={C.text} strokeWidth="3" strokeLinecap="round" opacity="0.85" />
-                  {/* Right hand */}
-                  <circle cx="65" cy="58" r="3" fill={C.text} opacity="0.8" />
+              {/* Stickman doctor */}
+              <g transform="translate(30, 78)">
+
+                {/* Cuerpo central */}
+                <line x1="0" y1="-12" x2="0" y2="10" stroke={C.goldLight} strokeWidth="3" strokeLinecap="round" />
+
+                {/* Bata médica */}
+                <path d="M -3 -10 L -10 12 C -10 14 10 14 10 12 L 3 -10 Z" fill="url(#usvCoat)" stroke={C.goldLight} strokeWidth="1.5" strokeLinejoin="round" />
+                <path d="M -3 -10 L 0 0 L 3 -10" fill="none" stroke={C.goldLight} strokeWidth="1" />
+                {/* Corbata */}
+                <path d="M -1.5 -10 L 1.5 -10 L 0 -3 Z" fill={C.goldLight} />
+
+                {/* Piernas */}
+                <path d="M 0 10 Q -2 20 -4 30" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+                <ellipse cx="-2" cy="30" rx="3.5" ry="1.5" fill={C.goldLight} />
+                <path d="M 0 10 Q 2 20 4 30" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+                <ellipse cx="6" cy="30" rx="3.5" ry="1.5" fill={C.goldLight} />
+
+                {/* Cabeza */}
+                <circle cx="0" cy="-20" r="8.5" fill="url(#usvSkin)" stroke={C.goldLight} strokeWidth="2" />
+                {/* Cabello corto */}
+                <path d="M -8 -23 Q 0 -30.5 8 -23 Q 8 -26 0 -27 Q -8 -26 -8 -23 Z" fill={C.goldLight} />
+
+                {/* Carita sonriente */}
+                <circle cx="1" cy="-21" r="1.2" fill={C.goldLight} />
+                <circle cx="5.5" cy="-21" r="1.2" fill={C.goldLight} />
+                <circle cx="-0.5" cy="-19" r="1.5" fill="#f43f5e" opacity="0.4" />
+                <circle cx="7" cy="-19" r="1.5" fill="#f43f5e" opacity="0.4" />
+                <path d="M 1 -17 Q 3.5 -14.5 6 -17" fill="none" stroke={C.goldLight} strokeWidth="1.2" strokeLinecap="round" />
+
+                {/* Estetoscopio */}
+                <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#1B1C1C" strokeWidth="1.2" />
+                <circle cx="5" cy="-10" r="1.8" fill="#1B1C1C" />
+                <circle cx="5" cy="-10" r="0.8" fill="#fff" />
+
+                {/* Brazo izquierdo: sostiene libreta */}
+                <g>
+                  <path d="M 0 -5 Q -6 0 -8 7" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+                  <rect x="-14" y="4" width="10" height="12" rx="1.5" fill={C.white} stroke="#1B1C1C" strokeWidth="1.2" />
+                  <line x1="-12" y1="8" x2="-6" y2="8" stroke="#1B1C1C" strokeWidth="1" strokeLinecap="round" />
+                  <line x1="-12" y1="11" x2="-6" y2="11" stroke="#1B1C1C" strokeWidth="1" strokeLinecap="round" />
+                  <line x1="-12" y1="14" x2="-8" y2="14" stroke="#1B1C1C" strokeWidth="1" strokeLinecap="round" />
                 </g>
 
-                {/* Left leg */}
-                <g style={{ transformOrigin: '45px 78px', animation: 'legKick 2.5s ease-in-out infinite' }}>
-                  <line x1="45" y1="78" x2="36" y2="100" stroke={C.text} strokeWidth="4" strokeLinecap="round" opacity="0.85" />
-                  <line x1="36" y1="100" x2="30" y2="118" stroke={C.text} strokeWidth="3.5" strokeLinecap="round" opacity="0.85" />
-                  {/* Pointed toe */}
-                  <circle cx="29" cy="120" r="2.5" fill={C.text} opacity="0.8" />
+                {/* Brazo derecho: chulea los servicios (animado) */}
+                <g>
+                  <animateTransform attributeName="transform" type="rotate" values="-6 0 -5; 18 0 -5; -6 0 -5" keyTimes="0; 0.5; 1" dur="0.7s" repeatCount="indefinite" />
+                  <path d="M 0 -5 Q 12 -9 22 -6" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+                  <line x1="22" y1="-6" x2="28" y2="-2" stroke="#1B1C1C" strokeWidth="1.5" strokeLinecap="round" />
+                  <path d="M 24 -11 L 26.5 -8.5 L 31 -14" fill="none" stroke="#10B981" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.35;0.5;0.8;0.9;1" dur="0.7s" repeatCount="indefinite" />
+                  </path>
                 </g>
-
-                {/* Right leg (kick pose) */}
-                <g style={{ transformOrigin: '45px 78px', animation: 'legKick 2.5s ease-in-out infinite reverse' }}>
-                  <line x1="45" y1="78" x2="58" y2="95" stroke={C.text} strokeWidth="4" strokeLinecap="round" opacity="0.85" />
-                  <line x1="58" y1="95" x2="68" y2="112" stroke={C.text} strokeWidth="3.5" strokeLinecap="round" opacity="0.85" />
-                  <circle cx="69" cy="114" r="2.5" fill={C.text} opacity="0.8" />
-                </g>
-
-                {/* Skirt/tutu detail */}
-                <path d="M37 78 Q30 90 34 96" stroke={C.goldLight} strokeWidth="2" fill="none" opacity="0.7"
-                  style={{ animation: 'legKick 2.5s ease-in-out infinite' }} />
-                <path d="M53 78 Q60 88 56 95" stroke={C.goldLight} strokeWidth="2" fill="none" opacity="0.7"
-                  style={{ animation: 'legKick 2.5s ease-in-out infinite reverse' }} />
               </g>
-
-              {/* Sparkles */}
-              {[{ x: 22, y: 45, d: '0s' }, { x: 72, y: 60, d: '0.7s' }, { x: 18, y: 95, d: '1.3s' }, { x: 75, y: 30, d: '0.4s' }].map((s, i) => (
-                <g key={i} style={{ animation: `glitter 2s ease-in-out ${s.d} infinite` }}>
-                  <line x1={s.x - 4} y1={s.y} x2={s.x + 4} y2={s.y} stroke={C.goldLight} strokeWidth="1.5" />
-                  <line x1={s.x} y1={s.y - 4} x2={s.x} y2={s.y + 4} stroke={C.goldLight} strokeWidth="1.5" />
-                </g>
-              ))}
             </svg>
           </div>
         </div>
@@ -321,16 +337,6 @@ export const UserServicios: React.FC<Props> = () => {
                 )}
               </div>
             </div>
-          </div>
-        )}
-
-        {/* Inscription discount banner (members without a regular plan) */}
-        {!activeMembership && inscriptionDiscount != null && (
-          <div style={{ marginBottom: 20, padding: '14px 18px', borderRadius: 12, background: 'rgba(190,24,93,0.05)', border: '1.5px solid rgba(190,24,93,0.2)', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-            <span style={{ fontSize: 18, flexShrink: 0 }}>🎉</span>
-            <span style={{ fontSize: 13, fontWeight: 700, color: '#8B5CF6' }}>
-              Tu inscripción te da {inscriptionDiscount}% de descuento en servicios
-            </span>
           </div>
         )}
 
