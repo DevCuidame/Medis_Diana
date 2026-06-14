@@ -179,8 +179,8 @@ export const AdminProfessionals: React.FC = () => {
   })
 
   const metricCards = [
-    { value: stats ? String(stats.activeProfessionals) : '—', label: 'Instructoras Activas', icon: Users },
-    { value: stats ? `${Math.round(stats.avgSatisfaction)}%` : '—', label: 'Satisfacción de Clases', icon: Star },
+    { value: stats ? String(stats.activeProfessionals) : '—', label: 'Médicos Activos', icon: Users },
+    { value: stats ? `${Math.round(stats.avgSatisfaction)}%` : '—', label: 'Satisfacción Pacientes', icon: Star },
     { value: stats ? String(stats.weeklyBookings) : '—', label: 'Reservas esta Semana', icon: Calendar },
     { value: stats ? String(stats.totalDisciplines) : '—', label: 'Disciplinas', icon: CheckCircle2 },
   ]
@@ -222,7 +222,7 @@ export const AdminProfessionals: React.FC = () => {
               </div>
               <div>
                 <div style={{ fontFamily: FONT_BODONI, fontSize: 17, fontWeight: 600, color: C.gold, lineHeight: 1.2 }}>MEDIS</div>
-                <div style={{ fontFamily: FONT_INTER, fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 2 }}>Estudio Admin</div>
+                <div style={{ fontFamily: FONT_INTER, fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 2 }}>Panel Admin</div>
               </div>
             </div>
           </div>
@@ -427,7 +427,7 @@ export const AdminProfessionals: React.FC = () => {
                       Incorporar<br/>Usuario
                     </h3>
                     <p style={{ fontFamily: FONT_INTER, fontSize: 12, color: C.textMuted, lineHeight: 1.6, margin: 0, maxWidth: 180 }}>
-                      Añade una nueva cuenta al equipo elite del estudio.
+                      Añade una nueva cuenta al equipo médico del consultorio.
                     </p>
                   </div>
                 )}
@@ -531,7 +531,7 @@ export const AdminProfessionals: React.FC = () => {
               {/* Footer */}
               <div style={{ borderTop: `1px solid ${C.borderLight}`, paddingTop: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
                 <p style={{ fontFamily: FONT_INTER, fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0 }}>
-                  © 2026 MEDIS Estudio · Todos los derechos reservados
+                  © 2026 Medis · Todos los derechos reservados
                 </p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <span style={{ fontFamily: FONT_INTER, fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.1em', textTransform: 'uppercase' }}>

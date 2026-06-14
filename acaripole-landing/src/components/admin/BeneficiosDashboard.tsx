@@ -47,8 +47,8 @@ interface Benefit {
 
 const CATEGORY_META: Record<ServiceCategory, { label: string; desc: string; color: string; bg: string }> = {
   pole: {
-    label: 'Pole',
-    desc: 'Clases de pole dance',
+    label: 'Medicina',
+    desc: 'Consultas médicas',
     color: '#8B5CF6',
     bg: 'rgba(139,92,246,0.08)',
   },
@@ -60,7 +60,7 @@ const CATEGORY_META: Record<ServiceCategory, { label: string; desc: string; colo
   },
   general: {
     label: 'General',
-    desc: 'Cualquier tipo de clase',
+    desc: 'Cualquier tipo de consulta',
     color: '#16A34A',
     bg: 'rgba(34,197,94,0.08)',
   },
@@ -97,7 +97,7 @@ const TYPE_META: Record<BenefitType, { label: string; icon: React.ReactNode; col
     icon: <Infinity size={16} />,
     color: '#7C3AED',
     bg: 'rgba(124,58,237,0.08)',
-    hint: 'Acceso ilimitado a todos los servicios del estudio durante la vigencia del plan.',
+    hint: 'Acceso ilimitado a todos los servicios del consultorio durante la vigencia del plan.',
   },
 };
 
@@ -303,7 +303,7 @@ export const BeneficiosDashboard: React.FC = () => {
             </div>
             <div>
               <div style={{ fontFamily: FONT_BODONI, fontSize: 17, fontWeight: 600, color: C.gold, lineHeight: 1.2 }}>MEDIS</div>
-              <div style={{ fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 2 }}>Estudio Admin</div>
+              <div style={{ fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 2 }}>Panel Admin</div>
             </div>
           </div>
         </div>
@@ -585,7 +585,7 @@ export const BeneficiosDashboard: React.FC = () => {
                   {formType === 'free_classes' && (
                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
                       <label style={{ fontSize: 11, fontWeight: 700, color: C.textBrown, letterSpacing: '0.06em', textTransform: 'uppercase', display: 'block', marginBottom: 8 }}>
-                        Tipo de clase que cubre *
+                        Tipo de servicio que cubre *
                       </label>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
                         {(Object.entries(CATEGORY_META) as [ServiceCategory, typeof CATEGORY_META[ServiceCategory]][]).map(([cat, cm]) => (

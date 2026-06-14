@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
@@ -64,6 +64,84 @@ const SkeletonCard = () => (
     <div style={{ width: '60%', height: 16, borderRadius: 8, background: '#F3F0FB', animation: 'pulse 1.5s ease-in-out infinite' }} />
     <div style={{ width: '80%', height: 12, borderRadius: 8, background: '#F3F0FB', animation: 'pulse 1.5s ease-in-out infinite' }} />
     <div style={{ width: '40%', height: 24, borderRadius: 99, background: '#F3F0FB', animation: 'pulse 1.5s ease-in-out infinite' }} />
+  </div>
+)
+
+// ── Big Doctor Stickman Animation ──────────────────────────────────────────
+const BigDoctorStickman = () => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', padding: '1rem 2rem', background: C.white, borderRadius: '1.25rem', border: `1px solid ${C.borderLight}`, marginBottom: '2rem', boxShadow: '0 4px 16px rgba(0,0,0,0.03)' }}>
+    <div style={{ flex: 1 }}>
+      <div style={{ fontFamily: FONT_BODONI, fontSize: '1.6rem', color: C.gold, fontWeight: 700, marginBottom: '0.25rem' }}>
+        ¡Hola de nuevo! 👋
+      </div>
+      <div style={{ fontSize: '1rem', color: C.textBrown }}>
+        Administra todo tu equipo de trabajo desde este panel.
+      </div>
+    </div>
+    <div style={{ flexShrink: 0 }}>
+      {/* Big Waving Doctor SVG Premium */}
+      <svg viewBox="0 0 110 190" width="80" height="135" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 8px 16px rgba(139,92,246,0.15))' }}>
+        <defs>
+          <linearGradient id="coatGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="100%" stopColor="#f3f0fb" />
+          </linearGradient>
+          <linearGradient id="skinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="100%" stopColor="#fdfcff" />
+          </linearGradient>
+        </defs>
+
+        {/* Head */}
+        <circle cx="55" cy="22" r="16" fill="url(#skinGrad)" stroke="#8B5CF6" strokeWidth="2.5"/>
+        {/* Hair */}
+        <path d="M 42,20 Q 55,5 68,20" fill="none" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round"/>
+        <path d="M 42,20 Q 30,12 36,25" fill="none" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round"/>
+        {/* Blush */}
+        <circle cx="47" cy="23.5" r="2.5" fill="#f43f5e" opacity="0.3"/>
+        <circle cx="63" cy="23.5" r="2.5" fill="#f43f5e" opacity="0.3"/>
+        {/* Eyes */}
+        <circle cx="49" cy="19" r="2" fill="#8B5CF6"/>
+        <circle cx="61" cy="19" r="2" fill="#8B5CF6"/>
+        {/* Smile */}
+        <path d="M51,26 Q55,30 59,26" stroke="#8B5CF6" strokeWidth="2" fill="none" strokeLinecap="round"/>
+
+        {/* Doctor coat */}
+        <path d="M 33 40 L 77 40 L 75 98 C 75 102 35 102 35 98 Z" fill="url(#coatGrad)" stroke="#8B5CF6" strokeWidth="2"/>
+        {/* Lapels */}
+        <path d="M 55 40 L 45 55 L 55 65" fill="#EEF2FF" stroke="#8B5CF6" strokeWidth="1.5" strokeLinejoin="round"/>
+        <path d="M 55 40 L 65 55 L 55 65" fill="#EEF2FF" stroke="#8B5CF6" strokeWidth="1.5" strokeLinejoin="round"/>
+        {/* Cross */}
+        <rect x="52" y="72" width="6" height="16" rx="1.5" fill="#8B5CF6"/>
+        <rect x="47" y="77" width="16" height="6" rx="1.5" fill="#8B5CF6"/>
+
+        {/* Left arm (static) */}
+        <path d="M 35 52 Q 25 65 14 78" fill="none" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round"/>
+        <circle cx="12" cy="80" r="4" fill="white" stroke="#8B5CF6" strokeWidth="2"/>
+
+        {/* Right arm (WAVING) */}
+        <motion.g
+          style={{ transformOrigin: '75px 52px' }}
+          animate={{ rotate: [-25, 20, -25] }}
+          transition={{ duration: 0.9, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <path d="M 75 52 Q 85 40 96 28" fill="none" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round"/>
+          <circle cx="98" cy="26" r="4" fill="white" stroke="#8B5CF6" strokeWidth="2"/>
+        </motion.g>
+
+        {/* Stethoscope */}
+        <path d="M 44 52 Q 34 72 46 86 Q 58 100 68 82" stroke="#3B82F6" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+        <circle cx="68" cy="80" r="4.5" fill="#3B82F6"/>
+        <circle cx="68" cy="80" r="2" fill="#fff"/>
+
+        {/* Legs */}
+        <path d="M 46 98 Q 42 120 38 148" fill="none" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round"/>
+        <path d="M 64 98 Q 68 120 72 148" fill="none" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round"/>
+        {/* Shoes */}
+        <path d="M 38 148 C 30 148 26 153 38 153 Z" fill="#8B5CF6"/>
+        <path d="M 72 148 C 80 148 84 153 72 153 Z" fill="#8B5CF6"/>
+      </svg>
+    </div>
   </div>
 )
 
@@ -387,7 +465,7 @@ export const UsuariosDashboard: React.FC = () => {
               </div>
               <div>
                 <div style={{ fontFamily: FONT_BODONI, fontSize: 18, fontWeight: 700, color: C.gold, lineHeight: 1.2 }}>MEDIS</div>
-                <div style={{ fontSize: 10, fontWeight: 700, color: C.textMuted, letterSpacing: '0.14em', textTransform: 'uppercase', marginTop: 2 }}>Estudio Admin</div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: C.textMuted, letterSpacing: '0.14em', textTransform: 'uppercase', marginTop: 2 }}>Panel Admin</div>
               </div>
             </div>
           </div>
@@ -530,6 +608,9 @@ export const UsuariosDashboard: React.FC = () => {
           {/* SCROLL CONTENT */}
           <main style={{ flex: 1, overflowY: 'auto', padding: '2rem 1.75rem', background: 'radial-gradient(circle at top right, rgba(139,92,246,0.03), transparent 500px)' }}>
             <div style={{ maxWidth: '100%', margin: '0 auto' }}>
+
+              {/* ── Big Banner ── */}
+              <BigDoctorStickman />
 
               {/* ── Stats row ── */}
               <motion.div
@@ -755,7 +836,7 @@ export const UsuariosDashboard: React.FC = () => {
               {/* Footer */}
               <div style={{ borderTop: `1px solid ${C.borderLight}`, paddingTop: 20, paddingBottom: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
                 <p style={{ fontSize: 11, fontWeight: 600, color: C.textMuted, letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0 }}>
-                  © 2026 MEDIS Estudio · Todos los derechos reservados
+                  © 2026 Medis · Todos los derechos reservados
                 </p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <div style={{ width: 8, height: 8, borderRadius: '50%', background: error ? '#F43F5E' : loading ? '#F59E0B' : '#22C55E', boxShadow: `0 0 0 3px ${error ? 'rgba(244,63,94,0.15)' : loading ? 'rgba(245,158,11,0.15)' : 'rgba(34,197,94,0.15)'}` }} />

@@ -167,7 +167,6 @@ export const UserRepository = {
     await pool.query(`DELETE FROM booking_requests  WHERE user_id = $1`, [id]);
     await pool.query(`DELETE FROM user_memberships  WHERE user_id = $1`, [id]);
     await pool.query(`DELETE FROM refresh_tokens    WHERE user_id = $1`, [id]);
-    await pool.query(`DELETE FROM classes            WHERE professional_id = $1`, [id]);
 
     const { rowCount } = await pool.query(`DELETE FROM users WHERE id = $1`, [id]);
     return (rowCount ?? 0) > 0;

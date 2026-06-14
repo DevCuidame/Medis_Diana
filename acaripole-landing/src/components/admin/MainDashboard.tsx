@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -146,12 +146,10 @@ export const MainDashboard: React.FC = () => {
       <aside className={`sidebar ${isMobileMenuOpen ? 'open' : ''}`}>
         <div style={{ padding: '28px 20px 20px', borderBottom: `1px solid ${C.borderLight}` }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 38, height: 46, background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <span style={{ fontFamily: '"Bodoni Moda", Georgia, serif', fontSize: 20, fontStyle: 'italic', fontWeight: 700, color: C.white }}>A</span>
-            </div>
+            <img src="/Logo_Medis.jpeg" alt="Medis" style={{ width: 38, height: 46, objectFit: 'contain', borderRadius: 8, flexShrink: 0 }} />
             <div>
-              <div style={{ fontFamily: '"Bodoni Moda", Georgia, serif', fontSize: 17, fontWeight: 600, color: C.gold, lineHeight: 1.2 }}>MEDIS</div>
-              <div style={{ fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 2 }}>Estudio Admin</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: C.gold, lineHeight: 1.2, letterSpacing: '-0.01em' }}>Consultorio</div>
+              <div style={{ fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 2 }}>Panel Admin</div>
             </div>
           </div>
         </div>
@@ -286,55 +284,100 @@ export const MainDashboard: React.FC = () => {
                 <p style={{ color: C.textMuted, fontSize: '1.1rem' }}>Bienvenido/a al panel de administración del consultorio.</p>
               </div>
 
-              {/* Doctor Stickman */}
+              {/* Doctora Animada (Casa) */}
               <motion.div
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
                 style={{ flexShrink: 0 }}
               >
-                <svg viewBox="0 0 110 190" width="90" height="155" xmlns="http://www.w3.org/2000/svg">
-                  {/* Head */}
-                  <circle cx="55" cy="22" r="16" fill="white" stroke="#8B5CF6" strokeWidth="2.5"/>
-                  {/* Eyes */}
-                  <circle cx="49" cy="19" r="2" fill="#8B5CF6"/>
-                  <circle cx="61" cy="19" r="2" fill="#8B5CF6"/>
-                  {/* Smile */}
-                  <path d="M48,26 Q55,33 62,26" stroke="#8B5CF6" strokeWidth="2" fill="none" strokeLinecap="round"/>
+                <svg width="250" height="100" viewBox="0 0 250 100" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(139,92,246,0.12))' }}>
+                  <defs>
+                    <linearGradient id="skin" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#ffffff" />
+                      <stop offset="100%" stopColor="#f3f0fb" />
+                    </linearGradient>
+                    <linearGradient id="coat" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="rgba(255,255,255,0.8)" />
+                      <stop offset="100%" stopColor="rgba(139,92,246,0.15)" />
+                    </linearGradient>
+                  </defs>
 
-                  {/* Doctor coat */}
-                  <rect x="33" y="40" width="44" height="58" rx="5" fill="white" stroke="#8B5CF6" strokeWidth="2"/>
-                  {/* Lapels */}
-                  <path d="M55,40 L45,55 L55,60" fill="#EEF2FF" stroke="#8B5CF6" strokeWidth="1.5"/>
-                  <path d="M55,40 L65,55 L55,60" fill="#EEF2FF" stroke="#8B5CF6" strokeWidth="1.5"/>
-                  {/* Cross */}
-                  <rect x="52" y="68" width="6" height="16" rx="1.5" fill="#8B5CF6"/>
-                  <rect x="48" y="72" width="14" height="6" rx="1.5" fill="#8B5CF6"/>
+                  {/* CASA - Capa única */}
+                  <path d="M 170 90 L 170 40 L 205 15 L 240 40 L 240 90 Z" fill="rgba(139,92,246,0.03)" stroke={C.gold} strokeWidth="2.5" strokeLinejoin="round" />
+                  <path d="M 165 43 L 205 15 L 245 43" fill="none" stroke={C.gold} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  {/* Puerta */}
+                  <path d="M 190 90 L 190 55 L 220 55 L 220 90" fill="rgba(139,92,246,0.12)" stroke={C.gold} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="214" cy="75" r="2" fill={C.gold} />
 
-                  {/* Left arm (static) */}
-                  <line x1="33" y1="52" x2="14" y2="78" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round"/>
-                  <circle cx="12" cy="80" r="4" fill="white" stroke="#8B5CF6" strokeWidth="2"/>
+                  {/* DOCTORA STICKMAN */}
+                  <g>
+                    <animateTransform 
+                      attributeName="transform" 
+                      type="translate" 
+                      values="0,0; 125,0; 125,0; 125,0; 0,0" 
+                      keyTimes="0; 0.3; 0.5; 0.7; 1" 
+                      dur="8s" 
+                      repeatCount="indefinite" 
+                    />
+                    <g transform="translate(30, 45)">
+                      
+                      {/* Cuerpo central para unir extremidades */}
+                      <line x1="0" y1="-12" x2="0" y2="10" stroke={C.goldLight} strokeWidth="3" strokeLinecap="round" />
+                      
+                      {/* Bata médica premium */}
+                      <path d="M -3 -10 L -10 12 C -10 14 10 14 10 12 L 3 -10 Z" fill="url(#coat)" stroke={C.goldLight} strokeWidth="1.5" strokeLinejoin="round" />
+                      <path d="M -3 -10 L 0 0 L 3 -10" fill="none" stroke={C.goldLight} strokeWidth="1" />
+                      <line x1="-6" y1="5" x2="-4" y2="5" stroke={C.goldLight} strokeWidth="1.5" strokeLinecap="round" />
 
-                  {/* Right arm (WAVING) */}
-                  <motion.g
-                    style={{ transformOrigin: '77px 52px' }}
-                    animate={{ rotate: [-25, 20, -25] }}
-                    transition={{ duration: 0.9, repeat: Infinity, ease: 'easeInOut' }}
-                  >
-                    <line x1="77" y1="52" x2="96" y2="28" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round"/>
-                    <circle cx="98" cy="26" r="4" fill="white" stroke="#8B5CF6" strokeWidth="2"/>
-                  </motion.g>
+                      {/* Pierna izquierda animada */}
+                      <g>
+                        <animateTransform attributeName="transform" type="rotate" values="-25 0 10; 30 0 10; -25 0 10" dur="0.6s" repeatCount="indefinite" />
+                        <path d="M 0 10 Q -2 20 0 30" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+                        <ellipse cx="2" cy="30" rx="3.5" ry="1.5" fill={C.goldLight} />
+                      </g>
 
-                  {/* Stethoscope */}
-                  <path d="M44,52 Q34,72 46,84 Q58,96 68,80" stroke="#3B82F6" strokeWidth="2.2" fill="none" strokeLinecap="round"/>
-                  <circle cx="68" cy="78" r="4" fill="#3B82F6" opacity="0.8"/>
+                      {/* Pierna derecha animada */}
+                      <g>
+                        <animateTransform attributeName="transform" type="rotate" values="30 0 10; -25 0 10; 30 0 10" dur="0.6s" repeatCount="indefinite" />
+                        <path d="M 0 10 Q 2 20 0 30" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+                        <ellipse cx="2" cy="30" rx="3.5" ry="1.5" fill={C.goldLight} />
+                      </g>
 
-                  {/* Legs */}
-                  <line x1="46" y1="98" x2="36" y2="148" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round"/>
-                  <line x1="64" y1="98" x2="74" y2="148" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round"/>
-                  {/* Shoes */}
-                  <ellipse cx="33" cy="151" rx="9" ry="4" fill="#8B5CF6"/>
-                  <ellipse cx="77" cy="151" rx="9" ry="4" fill="#8B5CF6"/>
+                      {/* Cabeza Premium */}
+                      <circle cx="0" cy="-20" r="8.5" fill="url(#skin)" stroke={C.goldLight} strokeWidth="2" />
+                      {/* Cabello: cerquillo y coleta */}
+                      <path d="M -7 -25 Q 0 -32 8 -24" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+                      <path d="M -7 -25 Q -12 -28 -14 -22" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+                      
+                      {/* Carita mirando a la derecha */}
+                      <circle cx="1" cy="-21" r="1.2" fill={C.goldLight} />
+                      <circle cx="5.5" cy="-21" r="1.2" fill={C.goldLight} />
+                      <circle cx="-0.5" cy="-19" r="1.5" fill="#f43f5e" opacity="0.4" />
+                      <circle cx="7" cy="-19" r="1.5" fill="#f43f5e" opacity="0.4" />
+                      <path d="M 1 -17 Q 3.5 -14.5 6 -17" fill="none" stroke={C.goldLight} strokeWidth="1.2" strokeLinecap="round" />
+
+                      {/* Estetoscopio */}
+                      <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#1B1C1C" strokeWidth="1.2" />
+                      <circle cx="5" cy="-10" r="1.8" fill="#1B1C1C" />
+                      <circle cx="5" cy="-10" r="0.8" fill="#fff" />
+
+                      {/* Brazo izquierdo (con maletín elegante) */}
+                      <g>
+                        <path d="M 0 -5 Q -6 0 -8 7" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+                        <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#1B1C1C" strokeWidth="1.5" />
+                        <line x1="-10" y1="7" x2="-6" y2="7" stroke="#1B1C1C" strokeWidth="1.5" strokeLinecap="round" />
+                        <circle cx="-8" cy="10.5" r="1" fill="#1B1C1C" />
+                      </g>
+
+                      {/* Brazo derecho animado (Golpea la casa) */}
+                      <g>
+                        <animateTransform attributeName="transform" type="rotate" values="50 0 -5; 0 0 -5; -30 0 -5; 0 0 -5; -30 0 -5; 50 0 -5" keyTimes="0; 0.15; 0.3; 0.45; 0.6; 1" dur="2.5s" repeatCount="indefinite" />
+                        <path d="M 0 -5 Q 8 -5 15 -5" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+                        <circle cx="15" cy="-5" r="1.5" fill={C.goldLight} />
+                      </g>
+                    </g>
+                  </g>
                 </svg>
               </motion.div>
             </motion.div>

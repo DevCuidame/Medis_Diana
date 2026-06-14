@@ -297,7 +297,7 @@ export const FinanzasDashboard: React.FC = () => {
             </div>
             <div>
               <div style={{ fontFamily: '"Bodoni Moda", Georgia, serif', fontSize: 17, fontWeight: 600, color: C.gold, lineHeight: 1.2 }}>MEDIS</div>
-              <div style={{ fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 2 }}>Estudio Admin</div>
+              <div style={{ fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 2 }}>Panel Admin</div>
             </div>
           </div>
         </div>
@@ -496,7 +496,7 @@ export const FinanzasDashboard: React.FC = () => {
               <div>
                 <p style={{ fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.18em', textTransform: 'uppercase', margin: '0 0 6px', fontFamily: '"Hanken Grotesk", sans-serif' }}>Gestión Financiera</p>
                 <h1 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: '2.5rem', color: C.text, marginBottom: '0.4rem', lineHeight: 1.1 }}>Finanzas</h1>
-                <p style={{ color: C.textMuted, fontSize: '1rem', margin: 0 }}>Resumen financiero de MEDIS Studio — Mayo 2026.</p>
+                <p style={{ color: C.textMuted, fontSize: '1rem', margin: 0 }}>Resumen financiero de Medis — Mayo 2026.</p>
               </div>
 
               {/* Pole dance coin/balance animation */}

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Users, CalendarDays, DollarSign, CreditCard, CircleHelp, LogOut,
@@ -90,6 +90,107 @@ function offersForDay(offers: any[], day: Date) {
   return offers.filter(o => isSameDay(new Date(o.scheduledAt), day))
     .sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime())
 }
+
+// ── Animation ─────────────────────────────────────────────────────────────────
+const CalendarStickmanAnimation = () => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', padding: '1.5rem 2rem', background: C.white, borderRadius: '1.25rem', border: `1px solid ${C.borderLight}`, marginBottom: '2rem', boxShadow: '0 4px 16px rgba(0,0,0,0.03)' }}>
+    <div style={{ flex: 1 }}>
+      <div style={{ fontFamily: FONT_BODONI, fontSize: '1.6rem', color: C.gold, fontWeight: 700, marginBottom: '0.25rem' }}>
+        Programación 📅
+      </div>
+      <div style={{ fontSize: '1rem', color: C.textBrown }}>
+        Organiza las citas y horarios del consultorio.
+      </div>
+    </div>
+    <div style={{ flexShrink: 0 }}>
+      <svg width="150" height="120" viewBox="0 0 150 120" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(139,92,246,0.12))' }}>
+        <defs>
+          <linearGradient id="skin" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="100%" stopColor="#f3f0fb" />
+          </linearGradient>
+          <linearGradient id="coat" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.8)" />
+            <stop offset="100%" stopColor="rgba(139,92,246,0.15)" />
+          </linearGradient>
+        </defs>
+
+        {/* Calendario Fondo */}
+        <rect x="65" y="30" width="60" height="70" rx="8" fill="rgba(139,92,246,0.05)" stroke={C.gold} strokeWidth="3" />
+        <path d="M 65 55 L 125 55" stroke={C.gold} strokeWidth="3" />
+        <path d="M 80 20 L 80 40" stroke={C.gold} strokeWidth="4" strokeLinecap="round" />
+        <path d="M 110 20 L 110 40" stroke={C.gold} strokeWidth="4" strokeLinecap="round" />
+        
+        {/* Celdas del calendario */}
+        <rect x="75" y="65" width="10" height="10" rx="2" fill="rgba(139,92,246,0.1)" />
+        <rect x="90" y="65" width="10" height="10" rx="2" fill="rgba(139,92,246,0.1)" />
+        <rect x="105" y="65" width="10" height="10" rx="2" fill="rgba(139,92,246,0.1)" />
+        <rect x="75" y="80" width="10" height="10" rx="2" fill="rgba(139,92,246,0.1)" />
+        <rect x="105" y="80" width="10" height="10" rx="2" fill="rgba(139,92,246,0.1)" />
+        
+        {/* Celda objetivo (donde señala) */}
+        <rect x="90" y="80" width="10" height="10" rx="2" fill="rgba(139,92,246,0.2)" />
+        
+        {/* Checkmark animado */}
+        <g>
+          <animate attributeName="opacity" values="0; 0; 1; 1; 0; 0" keyTimes="0; 0.4; 0.5; 0.8; 0.9; 1" dur="4s" repeatCount="indefinite" />
+          <path d="M 88 85 L 93 90 L 100 78" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+
+        {/* Stickman */}
+        <g transform="translate(30, 60)">
+          
+          {/* Cuerpo central para unir extremidades */}
+          <line x1="0" y1="-12" x2="0" y2="10" stroke={C.goldLight} strokeWidth="3" strokeLinecap="round" />
+          
+          {/* Bata médica premium */}
+          <path d="M -3 -10 L -10 12 C -10 14 10 14 10 12 L 3 -10 Z" fill="url(#coat)" stroke={C.goldLight} strokeWidth="1.5" strokeLinejoin="round" />
+          <path d="M -3 -10 L 0 0 L 3 -10" fill="none" stroke={C.goldLight} strokeWidth="1" />
+          <line x1="-6" y1="5" x2="-4" y2="5" stroke={C.goldLight} strokeWidth="1.5" strokeLinecap="round" />
+
+          {/* Piernas */}
+          <path d="M 0 10 Q -2 20 -4 30" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+          <ellipse cx="-2" cy="30" rx="3.5" ry="1.5" fill={C.goldLight} />
+          <path d="M 0 10 Q 2 20 4 30" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+          <ellipse cx="6" cy="30" rx="3.5" ry="1.5" fill={C.goldLight} />
+
+          {/* Cabeza Premium */}
+          <circle cx="0" cy="-20" r="8.5" fill="url(#skin)" stroke={C.goldLight} strokeWidth="2" />
+          {/* Cabello: cerquillo y coleta */}
+          <path d="M -7 -25 Q 0 -32 8 -24" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M -7 -25 Q -12 -28 -14 -22" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+          
+          {/* Carita mirando a la derecha */}
+          <circle cx="1" cy="-21" r="1.2" fill={C.goldLight} />
+          <circle cx="5.5" cy="-21" r="1.2" fill={C.goldLight} />
+          <circle cx="-0.5" cy="-19" r="1.5" fill="#f43f5e" opacity="0.4" />
+          <circle cx="7" cy="-19" r="1.5" fill="#f43f5e" opacity="0.4" />
+          <path d="M 1 -17 Q 3.5 -14.5 6 -17" fill="none" stroke={C.goldLight} strokeWidth="1.2" strokeLinecap="round" />
+
+          {/* Estetoscopio */}
+          <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#1B1C1C" strokeWidth="1.2" />
+          <circle cx="5" cy="-10" r="1.8" fill="#1B1C1C" />
+          <circle cx="5" cy="-10" r="0.8" fill="#fff" />
+
+          {/* Brazo Izquierdo (descansa con maletín) */}
+          <g>
+            <path d="M 0 -5 Q -6 0 -8 7" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+            <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#1B1C1C" strokeWidth="1.5" />
+            <line x1="-10" y1="7" x2="-6" y2="7" stroke="#1B1C1C" strokeWidth="1.5" strokeLinecap="round" />
+            <circle cx="-8" cy="10.5" r="1" fill="#1B1C1C" />
+          </g>
+
+          {/* Brazo Derecho (señala animado) */}
+          <g>
+            <animateTransform attributeName="transform" type="rotate" values="65 0 -5; 65 0 -5; 15 0 -5; 15 0 -5; 65 0 -5" keyTimes="0; 0.2; 0.4; 0.8; 1" dur="4s" repeatCount="indefinite" />
+            <path d="M 0 -5 Q 12 -5 25 -5" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx="25" cy="-5" r="1.5" fill={C.goldLight} />
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+)
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export const AdminClasses: React.FC = () => {
@@ -189,7 +290,7 @@ export const AdminClasses: React.FC = () => {
             </div>
             <div>
               <div style={{ fontFamily: FONT_BODONI, fontSize: 17, fontWeight: 600, color: C.gold, lineHeight: 1.2 }}>MEDIS</div>
-              <div style={{ fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 2 }}>Estudio Admin</div>
+              <div style={{ fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 2 }}>Panel Admin</div>
             </div>
           </div>
         </div>
@@ -249,7 +350,7 @@ export const AdminClasses: React.FC = () => {
             <h2 style={{ fontFamily: FONT_BODONI, fontSize: 22, fontWeight: 600, color: C.gold, margin: 0, whiteSpace: 'nowrap' }}>MEDIS</h2>
             <div className="topbar-search" style={{ position: 'relative' }}>
               <Search size={15} color={C.textMuted} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-              <input className="cls-search" type="text" placeholder="Buscar servicio o instructor..." value={search} onChange={e => setSearch(e.target.value)}
+              <input className="cls-search" type="text" placeholder="Buscar servicio o médico..." value={search} onChange={e => setSearch(e.target.value)}
                 style={{ width: 260, background: C.bgPanel, border: `1px solid ${C.border}`, borderRadius: 10, padding: '9px 14px 9px 36px', fontSize: 13, color: C.text, outline: 'none', boxSizing: 'border-box', fontFamily: FONT_INTER }}
                 onFocus={e => e.target.style.borderColor = C.gold} onBlur={e => e.target.style.borderColor = C.border}
               />
@@ -277,12 +378,15 @@ export const AdminClasses: React.FC = () => {
               <style>{`.mobile-search-bar { display: none !important; } @media (max-width: 768px) { .mobile-search-bar { display: block !important; } }`}</style>
               <div style={{ position: 'relative' }}>
                 <Search size={15} color={C.textMuted} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-                <input className="cls-search" type="text" placeholder="Buscar servicio o instructor..." value={search} onChange={e => setSearch(e.target.value)}
+                <input className="cls-search" type="text" placeholder="Buscar servicio o médico..." value={search} onChange={e => setSearch(e.target.value)}
                   style={{ width: '100%', background: C.bgPanel, border: `1px solid ${C.border}`, borderRadius: 10, padding: '10px 14px 10px 36px', fontSize: 13, color: C.text, outline: 'none', boxSizing: 'border-box', fontFamily: FONT_INTER }}
                   onFocus={e => e.target.style.borderColor = C.gold} onBlur={e => e.target.style.borderColor = C.border}
                 />
               </div>
             </div>
+
+            {/* Animation Banner */}
+            <CalendarStickmanAnimation />
 
             {/* Page header + controls */}
             <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 28, flexWrap: 'wrap', gap: 16 }}>
@@ -491,7 +595,7 @@ export const AdminClasses: React.FC = () => {
 
                 {/* Instructor Load */}
                 <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 16, padding: 24 }}>
-                  <h3 style={{ fontFamily: FONT_BODONI, fontSize: 20, fontWeight: 600, color: C.text, margin: '0 0 20px' }}>Carga de Instructores</h3>
+                  <h3 style={{ fontFamily: FONT_BODONI, fontSize: 20, fontWeight: 600, color: C.text, margin: '0 0 20px' }}>Carga de Médicos</h3>
                   {instructorLoad.length === 0 ? (
                     <p style={{ fontSize: 13, color: C.textMuted, fontStyle: 'italic' }}>Sin datos aún.</p>
                   ) : (
@@ -576,7 +680,7 @@ export const AdminClasses: React.FC = () => {
             {/* Footer */}
             <div style={{ borderTop: `1px solid ${C.borderLight}`, paddingTop: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
               <p style={{ fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0 }}>
-                © 2026 MEDIS Estudio · Todos los derechos reservados
+                © 2026 Medis · Todos los derechos reservados
               </p>
             </div>
 

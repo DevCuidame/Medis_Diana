@@ -333,7 +333,7 @@ export const MembresiasDashboard: React.FC = () => {
             </div>
             <div>
               <div style={{ fontFamily: FONT_BODONI, fontSize: 17, fontWeight: 600, color: C.gold, lineHeight: 1.2 }}>MEDIS</div>
-              <div style={{ fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 2 }}>Estudio Admin</div>
+              <div style={{ fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 2 }}>Panel Admin</div>
             </div>
           </div>
         </div>
@@ -427,7 +427,7 @@ export const MembresiasDashboard: React.FC = () => {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: 16 }}>
               <div>
                 <h1 style={{ fontFamily: FONT_BODONI, fontSize: '2.5rem', color: C.text, marginBottom: '0.5rem', lineHeight: 1.2 }}>Gestión de Planes</h1>
-                <p style={{ color: C.textMuted, fontSize: '1.05rem' }}>Administra los planes y tarifas disponibles en MEDIS Studio.</p>
+                <p style={{ color: C.textMuted, fontSize: '1.05rem' }}>Administra los planes y tarifas disponibles en Medis.</p>
               </div>
               <div style={{ display: 'flex', gap: 10 }}>
                 <button

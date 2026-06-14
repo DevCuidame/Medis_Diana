@@ -33,6 +33,116 @@ const NAV_ITEMS = [
   { icon: CreditCard,   label: 'Planes',    active: false },
 ];
 
+// ── Animación: Stickman médico señalando un consultorio (espacio) ──────────────
+const EspaciosStickmanAnimation = () => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', padding: '1.5rem 2rem', background: C.white, borderRadius: '1.25rem', border: `1px solid ${C.borderLight}`, marginBottom: '2rem', boxShadow: '0 4px 16px rgba(0,0,0,0.03)' }}>
+    <div style={{ flex: 1 }}>
+      <div style={{ fontFamily: FONT_BODONI, fontSize: '1.6rem', color: C.gold, fontWeight: 700, marginBottom: '0.25rem' }}>
+        Consultorios y Espacios 🚪
+      </div>
+      <div style={{ fontSize: '1rem', color: C.textBrown }}>
+        Organiza las salas y consultorios disponibles en cada sede.
+      </div>
+    </div>
+    <div style={{ flexShrink: 0 }}>
+      <svg width="150" height="120" viewBox="0 0 150 120" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(139,92,246,0.12))' }}>
+        <defs>
+          <linearGradient id="espSkin" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="100%" stopColor="#f3f0fb" />
+          </linearGradient>
+          <linearGradient id="espCoat" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0.8)" />
+            <stop offset="100%" stopColor="rgba(139,92,246,0.15)" />
+          </linearGradient>
+          <linearGradient id="espRoom" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="rgba(59,130,246,0.12)" />
+            <stop offset="100%" stopColor="rgba(139,92,246,0.05)" />
+          </linearGradient>
+        </defs>
+
+        {/* Planta del consultorio */}
+        <rect x="76" y="14" width="60" height="92" rx="6" fill="url(#espRoom)" stroke={C.gold} strokeWidth="3" />
+
+        {/* Cruz médica en la pared */}
+        <rect x="116" y="22" width="14" height="14" rx="2" fill={C.white} stroke={C.gold} strokeWidth="2" />
+        <line x1="123" y1="26" x2="123" y2="32" stroke={C.gold} strokeWidth="2" strokeLinecap="round" />
+        <line x1="120" y1="29" x2="126" y2="29" stroke={C.gold} strokeWidth="2" strokeLinecap="round" />
+
+        {/* Camilla / mesa de examen */}
+        <rect x="86" y="58" width="40" height="18" rx="4" fill={C.white} stroke={C.goldLight} strokeWidth="2" />
+        <rect x="86" y="58" width="11" height="18" rx="3" fill="rgba(139,92,246,0.15)" stroke={C.goldLight} strokeWidth="1.5" />
+
+        {/* Puerta abierta (animada) */}
+        <g transform="translate(134, 98)">
+          <g>
+            <animateTransform attributeName="transform" type="rotate" values="0; -60; -60; 0; 0" keyTimes="0; 0.25; 0.6; 0.85; 1" dur="4s" repeatCount="indefinite" />
+            <line x1="0" y1="0" x2="0" y2="-26" stroke={C.gold} strokeWidth="3" strokeLinecap="round" />
+          </g>
+          <circle cx="0" cy="0" r="1.6" fill={C.gold} />
+        </g>
+
+        {/* Indicador "disponible" parpadeante */}
+        <g>
+          <animate attributeName="opacity" values="0.3; 1; 0.3" keyTimes="0; 0.5; 1" dur="2.5s" repeatCount="indefinite" />
+          <circle cx="123" cy="48" r="4" fill="#10B981" />
+        </g>
+
+        {/* Stickman médico señalando el consultorio */}
+        <g transform="translate(28, 78)">
+
+          {/* Cuerpo central */}
+          <line x1="0" y1="-12" x2="0" y2="10" stroke={C.goldLight} strokeWidth="3" strokeLinecap="round" />
+
+          {/* Bata médica */}
+          <path d="M -3 -10 L -10 12 C -10 14 10 14 10 12 L 3 -10 Z" fill="url(#espCoat)" stroke={C.goldLight} strokeWidth="1.5" strokeLinejoin="round" />
+          <path d="M -3 -10 L 0 0 L 3 -10" fill="none" stroke={C.goldLight} strokeWidth="1" />
+          <line x1="-6" y1="5" x2="-4" y2="5" stroke={C.goldLight} strokeWidth="1.5" strokeLinecap="round" />
+
+          {/* Piernas */}
+          <path d="M 0 10 Q -2 20 -4 30" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+          <ellipse cx="-2" cy="30" rx="3.5" ry="1.5" fill={C.goldLight} />
+          <path d="M 0 10 Q 2 20 4 30" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+          <ellipse cx="6" cy="30" rx="3.5" ry="1.5" fill={C.goldLight} />
+
+          {/* Cabeza */}
+          <circle cx="0" cy="-20" r="8.5" fill="url(#espSkin)" stroke={C.goldLight} strokeWidth="2" />
+          {/* Cabello: cerquillo y coleta */}
+          <path d="M -7 -25 Q 0 -32 8 -24" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M -7 -25 Q -12 -28 -14 -22" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+
+          {/* Carita mirando hacia el consultorio */}
+          <circle cx="1" cy="-21" r="1.2" fill={C.goldLight} />
+          <circle cx="5.5" cy="-21" r="1.2" fill={C.goldLight} />
+          <circle cx="-0.5" cy="-19" r="1.5" fill="#f43f5e" opacity="0.4" />
+          <circle cx="7" cy="-19" r="1.5" fill="#f43f5e" opacity="0.4" />
+          <path d="M 1 -17 Q 3.5 -14.5 6 -17" fill="none" stroke={C.goldLight} strokeWidth="1.2" strokeLinecap="round" />
+
+          {/* Estetoscopio */}
+          <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#1B1C1C" strokeWidth="1.2" />
+          <circle cx="5" cy="-10" r="1.8" fill="#1B1C1C" />
+          <circle cx="5" cy="-10" r="0.8" fill="#fff" />
+
+          {/* Brazo izquierdo (maletín) */}
+          <g>
+            <path d="M 0 -5 Q -6 0 -8 7" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+            <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#1B1C1C" strokeWidth="1.5" />
+            <line x1="-10" y1="7" x2="-6" y2="7" stroke="#1B1C1C" strokeWidth="1.5" strokeLinecap="round" />
+            <circle cx="-8" cy="10.5" r="1" fill="#1B1C1C" />
+          </g>
+
+          {/* Brazo derecho: señala el consultorio (animado) */}
+          <g>
+            <animateTransform attributeName="transform" type="rotate" values="68 0 -5; 68 0 -5; 12 0 -5; 12 0 -5; 68 0 -5" keyTimes="0; 0.2; 0.4; 0.8; 1" dur="4s" repeatCount="indefinite" />
+            <path d="M 0 -5 Q 16 -10 32 -15" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx="32" cy="-15" r="1.5" fill={C.goldLight} />
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+);
+
 export const EspaciosDashboard: React.FC = () => {
   const navigate = useNavigate();
   const [hoveredNav, setHoveredNav] = useState<number | null>(null);
@@ -138,7 +248,7 @@ export const EspaciosDashboard: React.FC = () => {
             </div>
             <div>
               <div style={{ fontFamily: FONT_BODONI, fontSize: 17, fontWeight: 600, color: C.gold, lineHeight: 1.2 }}>MEDIS</div>
-              <div style={{ fontFamily: FONT_INTER, fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 2 }}>Estudio Admin</div>
+              <div style={{ fontFamily: FONT_INTER, fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 2 }}>Panel Admin</div>
             </div>
           </div>
         </div>
@@ -234,7 +344,12 @@ export const EspaciosDashboard: React.FC = () => {
 
         {/* CONTENIDO PRINCIPAL SCROLL */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '32px 28px' }}>
-          
+
+          {/* ANIMACIÓN DE BIENVENIDA */}
+          <div style={{ maxWidth: 1140, margin: '0 auto' }}>
+            <EspaciosStickmanAnimation />
+          </div>
+
           {/* CONTROLES SUPERIORES (Filtros de estado y Sede) */}
           <div style={{ maxWidth: 1140, margin: '0 auto 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
             <div style={{ display: 'flex', gap: 12 }}>

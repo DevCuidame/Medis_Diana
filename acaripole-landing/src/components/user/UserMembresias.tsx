@@ -433,7 +433,7 @@ export const UserMembresias: React.FC<Props> = () => {
         <div style={{ marginTop: 48, borderRadius: 20, overflow: 'hidden', background: `linear-gradient(135deg, ${C.text} 0%, #2D2B29 100%)`, padding: '32px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20 }}>
           <div style={{ flex: 1 }}>
             <p style={{ fontFamily: FONT_BODONI, fontSize: 22, color: C.goldLight, margin: '0 0 8px', fontStyle: 'italic' }}>"La fuerza que no sabías que tenías."</p>
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: 0 }}>Cada clase es un paso más hacia tu mejor versión. — Academia MEDIS</p>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', margin: 0 }}>Tu salud es nuestra prioridad. — Academia MEDIS</p>
           </div>
         </div>
       </div>

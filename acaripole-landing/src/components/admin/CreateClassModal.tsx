@@ -405,7 +405,7 @@ export const CreateClassModal: React.FC<CreateClassModalProps> = ({ onClose, onS
         {/* Header */}
         <header style={{ padding: '22px 28px', borderBottom: `1px solid ${C.borderLight}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
           <div>
-            <h3 style={{ fontFamily: FONT_BODONI, fontSize: 22, fontWeight: 700, color: C.gold, margin: 0 }}>Programar Clase Especial</h3>
+            <h3 style={{ fontFamily: FONT_BODONI, fontSize: 22, fontWeight: 700, color: C.gold, margin: 0 }}>Programar Consulta</h3>
             <p style={{ fontFamily: FONT_INTER, fontSize: 11, color: C.textMuted, margin: '4px 0 0', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600 }}>Sesión Única, Recurrente, Grupal o Privada</p>
           </div>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: C.textMuted, padding: 4 }}>
@@ -417,7 +417,7 @@ export const CreateClassModal: React.FC<CreateClassModalProps> = ({ onClose, onS
         <div style={{ background: C.bgPanel, padding: '16px 28px', borderBottom: `1px solid ${C.borderLight}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
           {[
             { nr: 1, label: 'Sede & Salón' },
-            { nr: 2, label: 'Clase & Tipo' },
+            { nr: 2, label: 'Consulta & Tipo' },
             { nr: 3, label: 'Frecuencia & Cupo' },
             { nr: 4, label: 'Confirmación' },
           ].map(s => {
@@ -502,7 +502,7 @@ export const CreateClassModal: React.FC<CreateClassModalProps> = ({ onClose, onS
               {/* Salon Select */}
               {selectedSedeId && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <label style={{ fontFamily: FONT_INTER, fontSize: 11, fontWeight: 700, color: C.textBrown, textTransform: 'uppercase', letterSpacing: '0.04em' }}>🚪 2. Selecciona el Salón / Estudio</label>
+                  <label style={{ fontFamily: FONT_INTER, fontSize: 11, fontWeight: 700, color: C.textBrown, textTransform: 'uppercase', letterSpacing: '0.04em' }}>🚪 2. Selecciona el Consultorio</label>
                   <div style={{ display: 'flex', gap: 10 }}>
                     <select
                       value={selectedSalonId}
@@ -561,7 +561,7 @@ export const CreateClassModal: React.FC<CreateClassModalProps> = ({ onClose, onS
               
               {/* Type Select (Grupal vs Privada) */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <label style={{ fontFamily: FONT_INTER, fontSize: 11, fontWeight: 700, color: C.textBrown, textTransform: 'uppercase', letterSpacing: '0.04em' }}>👑 Tipo de Clase / Acceso</label>
+                <label style={{ fontFamily: FONT_INTER, fontSize: 11, fontWeight: 700, color: C.textBrown, textTransform: 'uppercase', letterSpacing: '0.04em' }}>👑 Tipo de Consulta</label>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                   <button
                     onClick={() => setClassType('grupal')}
@@ -572,7 +572,7 @@ export const CreateClassModal: React.FC<CreateClassModalProps> = ({ onClose, onS
                     }}
                   >
                     <Users size={20} color={classType === 'grupal' ? C.gold : C.textMuted} />
-                    <span style={{ fontFamily: FONT_INTER, fontSize: 13, fontWeight: 700, color: classType === 'grupal' ? C.gold : C.textBrown }}>Clase Grupal</span>
+                    <span style={{ fontFamily: FONT_INTER, fontSize: 13, fontWeight: 700, color: classType === 'grupal' ? C.gold : C.textBrown }}>Consulta Grupal</span>
                     <span style={{ fontFamily: FONT_INTER, fontSize: 10, color: C.textMuted, textAlign: 'center' }}>Varios cupos disponibles para reservas generales</span>
                   </button>
                   <button
@@ -584,7 +584,7 @@ export const CreateClassModal: React.FC<CreateClassModalProps> = ({ onClose, onS
                     }}
                   >
                     <Sparkles size={20} color={classType === 'privada' ? C.goldLight : C.textMuted} />
-                    <span style={{ fontFamily: FONT_INTER, fontSize: 13, fontWeight: 700, color: classType === 'privada' ? C.gold : C.textBrown }}>Clase Privada VIP</span>
+                    <span style={{ fontFamily: FONT_INTER, fontSize: 13, fontWeight: 700, color: classType === 'privada' ? C.gold : C.textBrown }}>Consulta Privada</span>
                     <span style={{ fontFamily: FONT_INTER, fontSize: 10, color: C.textMuted, textAlign: 'center' }}>Asesoría personalizada (1 a 1), cupo bloqueado</span>
                   </button>
                 </div>
@@ -592,13 +592,13 @@ export const CreateClassModal: React.FC<CreateClassModalProps> = ({ onClose, onS
 
               {/* Discipline Select */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <label style={{ fontFamily: FONT_INTER, fontSize: 11, fontWeight: 700, color: C.textBrown, textTransform: 'uppercase', letterSpacing: '0.04em' }}>🩰 Disciplina / Especialidad</label>
+                <label style={{ fontFamily: FONT_INTER, fontSize: 11, fontWeight: 700, color: C.textBrown, textTransform: 'uppercase', letterSpacing: '0.04em' }}>🩰 Especialidad Médica</label>
                 <select
                   value={selectedDisciplineId}
                   onChange={e => setSelectedDisciplineId(e.target.value)}
                   style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 10, padding: '12px 14px', fontFamily: FONT_INTER, fontSize: 13, color: C.text, outline: 'none' }}
                 >
-                  <option value="">-- Selecciona Disciplina --</option>
+                  <option value="">-- Selecciona Especialidad --</option>
                   {disciplines.map(d => (
                     <option key={d.id} value={d.id}>{d.name} ({d.level === 'all' ? 'Multinivel' : d.level}) - {d.duration} min</option>
                   ))}
@@ -608,7 +608,7 @@ export const CreateClassModal: React.FC<CreateClassModalProps> = ({ onClose, onS
               {/* Custom Class Name */}
               {selectedDisciplineId && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <label style={{ fontFamily: FONT_INTER, fontSize: 11, fontWeight: 700, color: C.textBrown, textTransform: 'uppercase', letterSpacing: '0.04em' }}>📝 Nombre Personalizado de la Clase</label>
+                  <label style={{ fontFamily: FONT_INTER, fontSize: 11, fontWeight: 700, color: C.textBrown, textTransform: 'uppercase', letterSpacing: '0.04em' }}>📝 Nombre de la Consulta</label>
                   <input
                     type="text"
                     placeholder="ej: Pole Exotic Especial - Coreografía de Halloween"
@@ -802,7 +802,7 @@ export const CreateClassModal: React.FC<CreateClassModalProps> = ({ onClose, onS
                     fontFamily: FONT_INTER, fontSize: 9.5, fontWeight: 700, letterSpacing: '0.08em',
                     color: classType === 'privada' ? C.goldLight : C.gold, textTransform: 'uppercase'
                   }}>
-                    {classType === 'privada' ? '👑 Clase Privada' : '👥 Clase Grupal'}
+                    {classType === 'privada' ? '👑 Clase Privada' : '👥 Consulta Grupal'}
                   </div>
                 </div>
                 

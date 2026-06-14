@@ -177,13 +177,11 @@ const OFFER_SELECT = `
     l.id AS location_id, l.name AS location_name,
     r.id AS room_id, r.name AS room_name, r.capacity AS room_capacity,
     u.id AS professional_id, u.first_name AS professional_first,
-    u.last_name AS professional_last, u.avatar_url AS professional_avatar,
-    d.id AS discipline_id, d.name AS discipline_name, d.level AS discipline_level
+    u.last_name AS professional_last, u.avatar_url AS professional_avatar
   FROM service_offers so
   JOIN locations l ON l.id = so.location_id
   LEFT JOIN rooms r ON r.id = so.room_id
   LEFT JOIN users u ON u.id = so.professional_id
-  LEFT JOIN disciplines d ON d.id = so.discipline_id
 `;
 
 export const ServiceOfferRepository = {
