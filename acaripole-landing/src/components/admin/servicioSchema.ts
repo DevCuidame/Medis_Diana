@@ -1,15 +1,15 @@
 import { z } from 'zod';
 
 export const categoriaEnum = z.enum([
-  'Clase',
-  'Práctica Libre',
-  'Disciplinas Complementarias',
-  'Eventos',
-  'Otros'
+  'Promoción y Prevención en Salud',
+  'Enfermedades No Transmisibles',
+  'Sobrepeso y Obesidad',
+  'Salud de la Mujer',
+  'Salud Mental',
 ]);
 
 export const modalidadEnum = z.enum(['Grupal', 'Individual']);
-export const nivelEnum = z.enum(['Principiante', 'Intermedio', 'Avanzado', 'Todos los niveles']);
+export const tipoAtencionEnum = z.enum(['Primera vez', 'Control o seguimiento', 'Urgencia']);
 
 export const DIA_LABELS: Record<string, string> = {
   lun: 'L', mar: 'M', mie: 'X', jue: 'J', vie: 'V', sab: 'S', dom: 'D',
@@ -39,29 +39,23 @@ const baseSchema = z.object({
   // Conditional
   modalidad:       z.preprocess((val) => (val === '' || val === null ? undefined : val), modalidadEnum.optional()) as z.ZodType<'Grupal' | 'Individual' | undefined>,
   instructorId:    z.preprocess((val) => (val === '' || val === null ? undefined : val), z.string().optional()) as z.ZodType<string | undefined>,
-  nivelDificultad: z.preprocess((val) => (val === '' || val === null ? undefined : val), nivelEnum.optional()) as z.ZodType<'Principiante' | 'Intermedio' | 'Avanzado' | 'Todos los niveles' | undefined>,
+  tipoAtencion:    z.preprocess((val) => (val === '' || val === null ? undefined : val), tipoAtencionEnum.optional()) as z.ZodType<'Primera vez' | 'Control o seguimiento' | 'Urgencia' | undefined>,
   capacidad:       z.number().optional(),
 });
 
 export const servicioSchema = baseSchema.superRefine((data, ctx) => {
-  const requiereInstructor =
-    data.categoria === 'Clase' ||
-    data.categoria === 'Disciplinas Complementarias';
-
-  if (requiereInstructor) {
-    if (!data.modalidad) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'La modalidad es obligatoria para clases y disciplinas', path: ['modalidad'] });
-    }
-    if (!data.instructorId) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'El instructor es obligatorio para este servicio', path: ['instructorId'] });
-    }
-    if (data.modalidad === 'Grupal') {
-      if (!data.nivelDificultad) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'El nivel de dificultad es obligatorio para clases grupales', path: ['nivelDificultad'] });
-      }
-      if (!data.capacidad || data.capacidad < 2 || data.capacidad > 5) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'La capacidad grupal debe ser entre 2 y 5', path: ['capacidad'] });
-      }
+  if (!data.modalidad) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'La modalidad es obligatoria', path: ['modalidad'] });
+  }
+  if (!data.instructorId) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'El médico responsable es obligatorio', path: ['instructorId'] });
+  }
+  if (!data.tipoAtencion) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'El tipo de atención es obligatorio', path: ['tipoAtencion'] });
+  }
+  if (data.modalidad === 'Grupal') {
+    if (!data.capacidad || data.capacidad < 2 || data.capacidad > 20) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'La capacidad grupal debe ser entre 2 y 20', path: ['capacidad'] });
     }
   }
 
