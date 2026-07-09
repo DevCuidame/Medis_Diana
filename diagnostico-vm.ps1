@@ -13,7 +13,7 @@ pm2 logs backend --lines 30 --nostream 2>/dev/null || pm2 logs --lines 30 --nost
 
 echo ""
 echo "=== ESTADO DB ==="
-PGPASSWORD="AcariPole2024Secure!" psql -h 127.0.0.1 -U acaripole_user -d acaripole_prod -c "
+PGPASSWORD="medisdiana2024Secure!" psql -h 127.0.0.1 -U medisdiana_user -d medisdiana_prod -c "
 SELECT 'admin_exists' as check, COUNT(*)::text as result FROM users WHERE role='ADMIN'
 UNION ALL
 SELECT 'service_offers_table', CASE WHEN EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name='service_offers') THEN 'YES' ELSE 'NO' END
@@ -29,24 +29,24 @@ ADMIN_HASH=$(node -e "
   const h = c.pbkdf2Sync('HFT2AJ543', s, 310000, 32, 'sha256').toString('hex');
   process.stdout.write(s + ':' + h);
 ")
-PGPASSWORD="AcariPole2024Secure!" psql -h 127.0.0.1 -U acaripole_user -d acaripole_prod -c "
+PGPASSWORD="medisdiana2024Secure!" psql -h 127.0.0.1 -U medisdiana_user -d medisdiana_prod -c "
 INSERT INTO users (email, password_hash, first_name, last_name, role, is_active, is_verified)
-VALUES ('admin@acaripole.com', '$ADMIN_HASH', 'Acaripole', 'Admin', 'ADMIN', TRUE, TRUE)
+VALUES ('admin@medisdiana.com', '$ADMIN_HASH', 'medisdiana', 'Admin', 'ADMIN', TRUE, TRUE)
 ON CONFLICT (email) DO UPDATE
   SET password_hash = EXCLUDED.password_hash,
       role = 'ADMIN', is_active = TRUE, is_verified = TRUE;
 "
-echo "[OK] Admin: admin@acaripole.com / HFT2AJ543"
+echo "[OK] Admin: admin@medisdiana.com / HFT2AJ543"
 
 echo ""
 echo "=== VERIFICACION FINAL ==="
-PGPASSWORD="AcariPole2024Secure!" psql -h 127.0.0.1 -U acaripole_user -d acaripole_prod -c "
+PGPASSWORD="medisdiana2024Secure!" psql -h 127.0.0.1 -U medisdiana_user -d medisdiana_prod -c "
 SELECT id, email, role, is_active FROM users WHERE role='ADMIN';
 "
 
 echo ""
 echo "=== RUTA POST /services/offers en el VM ==="
-grep -n "services/offers" /var/www/acaripole/apps/backend/src/routes/services.routes.ts | head -5
+grep -n "services/offers" /var/www/medisdiana/apps/backend/src/routes/services.routes.ts | head -5
 
 echo ""
 echo "=== REINICIANDO BACKEND ==="

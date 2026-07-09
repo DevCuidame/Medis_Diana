@@ -1,5 +1,5 @@
 {
-  "name": "@acaripole/config",
+  "name": "@medisdiana/config",
   "version": "0.0.1",
   "description": "Shared configuration for ESLint, TypeScript, and Prettier"
 }

@@ -5,7 +5,7 @@
 $VM   = "cuidame-app"
 $ZONE = "us-central1-a"
 $PROJ = "esmart-health"
-$APP  = "/var/www/acaripole"
+$APP  = "/var/www/medisdiana"
 $ROOT = $PSScriptRoot
 
 $ErrorActionPreference = "Continue"
@@ -39,32 +39,32 @@ $files = @(
     @{ local = "apps\backend\src\repositories\services.repository.ts"; remote = "$APP/apps/backend/src/repositories/services.repository.ts" },
     @{ local = "apps\backend\src\repositories\user-membership.repository.ts"; remote = "$APP/apps/backend/src/repositories/user-membership.repository.ts" },
     # Frontend: dashboard de Finanzas con aprobar/rechazar/eliminar
-    @{ local = "acaripole-landing\src\components\admin\FinanzasDashboard.tsx"; remote = "$APP/acaripole-landing/src/components/admin/FinanzasDashboard.tsx" },
+    @{ local = "medisdiana-landing\src\components\admin\FinanzasDashboard.tsx"; remote = "$APP/medisdiana-landing/src/components/admin/FinanzasDashboard.tsx" },
     # Frontend: formulario de servicios con capacidad del salon
-    @{ local = "acaripole-landing\src\components\admin\FormularioServicio.tsx"; remote = "$APP/acaripole-landing/src/components/admin/FormularioServicio.tsx" },
+    @{ local = "medisdiana-landing\src\components\admin\FormularioServicio.tsx"; remote = "$APP/medisdiana-landing/src/components/admin/FormularioServicio.tsx" },
     # Frontend: dashboard de servicios
-    @{ local = "acaripole-landing\src\components\admin\ServiciosDashboard.tsx"; remote = "$APP/acaripole-landing/src/components/admin/ServiciosDashboard.tsx" },
+    @{ local = "medisdiana-landing\src\components\admin\ServiciosDashboard.tsx"; remote = "$APP/medisdiana-landing/src/components/admin/ServiciosDashboard.tsx" },
     # Frontend: schema de servicios (categoria 'Clase')
-    @{ local = "acaripole-landing\src\components\admin\servicioSchema.ts"; remote = "$APP/acaripole-landing/src/components/admin/servicioSchema.ts" },
+    @{ local = "medisdiana-landing\src\components\admin\servicioSchema.ts"; remote = "$APP/medisdiana-landing/src/components/admin/servicioSchema.ts" },
     # Frontend: calendario admin responsive
-    @{ local = "acaripole-landing\src\components\admin\AdminClasses.tsx"; remote = "$APP/acaripole-landing/src/components/admin/AdminClasses.tsx" },
+    @{ local = "medisdiana-landing\src\components\admin\AdminClasses.tsx"; remote = "$APP/medisdiana-landing/src/components/admin/AdminClasses.tsx" },
     # Frontend: CSS global responsive
-    @{ local = "acaripole-landing\src\components\admin\MainDashboard.css"; remote = "$APP/acaripole-landing/src/components/admin/MainDashboard.css" },
-    # Frontend: vistas de usuario (rebranding Academia Acaripole)
-    @{ local = "acaripole-landing\src\components\ArtistLogin.tsx";              remote = "$APP/acaripole-landing/src/components/ArtistLogin.tsx" },
-    @{ local = "acaripole-landing\src\components\user\UserCalendario.tsx";      remote = "$APP/acaripole-landing/src/components/user/UserCalendario.tsx" },
-    @{ local = "acaripole-landing\src\components\user\UserMembresias.tsx";      remote = "$APP/acaripole-landing/src/components/user/UserMembresias.tsx" },
-    @{ local = "acaripole-landing\src\components\user\UserProfesionales.tsx";   remote = "$APP/acaripole-landing/src/components/user/UserProfesionales.tsx" },
-    @{ local = "acaripole-landing\src\components\user\UserServicios.tsx";       remote = "$APP/acaripole-landing/src/components/user/UserServicios.tsx" },
+    @{ local = "medisdiana-landing\src\components\admin\MainDashboard.css"; remote = "$APP/medisdiana-landing/src/components/admin/MainDashboard.css" },
+    # Frontend: vistas de usuario (rebranding Academia medisdiana)
+    @{ local = "medisdiana-landing\src\components\ArtistLogin.tsx";              remote = "$APP/medisdiana-landing/src/components/ArtistLogin.tsx" },
+    @{ local = "medisdiana-landing\src\components\user\UserCalendario.tsx";      remote = "$APP/medisdiana-landing/src/components/user/UserCalendario.tsx" },
+    @{ local = "medisdiana-landing\src\components\user\UserMembresias.tsx";      remote = "$APP/medisdiana-landing/src/components/user/UserMembresias.tsx" },
+    @{ local = "medisdiana-landing\src\components\user\UserProfesionales.tsx";   remote = "$APP/medisdiana-landing/src/components/user/UserProfesionales.tsx" },
+    @{ local = "medisdiana-landing\src\components\user\UserServicios.tsx";       remote = "$APP/medisdiana-landing/src/components/user/UserServicios.tsx" },
     # Frontend: gestión de planes (suma de sesiones por categoría + scroll)
-    @{ local = "acaripole-landing\src\components\admin\MembresiasDashboard.tsx"; remote = "$APP/acaripole-landing/src/components/admin/MembresiasDashboard.tsx" },
+    @{ local = "medisdiana-landing\src\components\admin\MembresiasDashboard.tsx"; remote = "$APP/medisdiana-landing/src/components/admin/MembresiasDashboard.tsx" },
     # Per-category session tracking (migration + backend + frontend)
     @{ local = "apps\backend\migrations\014_service_category.sql";                remote = "$APP/apps/backend/migrations/014_service_category.sql" },
     @{ local = "apps\backend\src\repositories\benefit.repository.ts";             remote = "$APP/apps/backend/src/repositories/benefit.repository.ts" },
     @{ local = "apps\backend\src\controllers\benefits.controller.ts";             remote = "$APP/apps/backend/src/controllers/benefits.controller.ts" },
     @{ local = "apps\backend\src\types\user-membership.types.ts";                 remote = "$APP/apps/backend/src/types/user-membership.types.ts" },
-    @{ local = "acaripole-landing\src\components\admin\BeneficiosDashboard.tsx";  remote = "$APP/acaripole-landing/src/components/admin/BeneficiosDashboard.tsx" },
-    @{ local = "acaripole-landing\src\components\user\UserServicios.tsx";         remote = "$APP/acaripole-landing/src/components/user/UserServicios.tsx" },
+    @{ local = "medisdiana-landing\src\components\admin\BeneficiosDashboard.tsx";  remote = "$APP/medisdiana-landing/src/components/admin/BeneficiosDashboard.tsx" },
+    @{ local = "medisdiana-landing\src\components\user\UserServicios.tsx";         remote = "$APP/medisdiana-landing/src/components/user/UserServicios.tsx" },
     # Inscripción: coexistencia con planes + descuento + bloqueo sin inscripción
     @{ local = "apps\backend\src\repositories\user-membership.repository.ts";    remote = "$APP/apps/backend/src/repositories/user-membership.repository.ts" },
     @{ local = "apps\backend\src\controllers\user-memberships.controller.ts";    remote = "$APP/apps/backend/src/controllers/user-memberships.controller.ts" },
@@ -78,13 +78,13 @@ $files = @(
     @{ local = "apps\backend\src\controllers\location.controller.ts";             remote = "$APP/apps/backend/src/controllers/location.controller.ts" },
     @{ local = "apps\backend\src\repositories\location.repository.ts";            remote = "$APP/apps/backend/src/repositories/location.repository.ts" },
     @{ local = "packages\shared-types\src\models\services.types.ts";              remote = "$APP/packages/shared-types/src/models/services.types.ts" },
-    @{ local = "acaripole-landing\src\lib\schemas\sedeSchema.ts";                  remote = "$APP/acaripole-landing/src/lib/schemas/sedeSchema.ts" },
-    @{ local = "acaripole-landing\src\components\admin\FormularioSede.tsx";       remote = "$APP/acaripole-landing/src/components/admin/FormularioSede.tsx" },
-    @{ local = "acaripole-landing\src\components\admin\SedesDashboard.tsx";       remote = "$APP/acaripole-landing/src/components/admin/SedesDashboard.tsx" },
-    @{ local = "acaripole-landing\src\components\admin\EspaciosDashboard.tsx";    remote = "$APP/acaripole-landing/src/components/admin/EspaciosDashboard.tsx" },
-    @{ local = "acaripole-landing\src\components\admin\CreateProfessionalModal.tsx"; remote = "$APP/acaripole-landing/src/components/admin/CreateProfessionalModal.tsx" },
-    @{ local = "acaripole-landing\src\components\user\UserLayout.tsx";            remote = "$APP/acaripole-landing/src/components/user/UserLayout.tsx" },
-    @{ local = "acaripole-landing\src\components\Footer.tsx";                     remote = "$APP/acaripole-landing/src/components/Footer.tsx" }
+    @{ local = "medisdiana-landing\src\lib\schemas\sedeSchema.ts";                  remote = "$APP/medisdiana-landing/src/lib/schemas/sedeSchema.ts" },
+    @{ local = "medisdiana-landing\src\components\admin\FormularioSede.tsx";       remote = "$APP/medisdiana-landing/src/components/admin/FormularioSede.tsx" },
+    @{ local = "medisdiana-landing\src\components\admin\SedesDashboard.tsx";       remote = "$APP/medisdiana-landing/src/components/admin/SedesDashboard.tsx" },
+    @{ local = "medisdiana-landing\src\components\admin\EspaciosDashboard.tsx";    remote = "$APP/medisdiana-landing/src/components/admin/EspaciosDashboard.tsx" },
+    @{ local = "medisdiana-landing\src\components\admin\CreateProfessionalModal.tsx"; remote = "$APP/medisdiana-landing/src/components/admin/CreateProfessionalModal.tsx" },
+    @{ local = "medisdiana-landing\src\components\user\UserLayout.tsx";            remote = "$APP/medisdiana-landing/src/components/user/UserLayout.tsx" },
+    @{ local = "medisdiana-landing\src\components\Footer.tsx";                     remote = "$APP/medisdiana-landing/src/components/Footer.tsx" }
 )
 
 Write-Step "Subiendo $($files.Count) archivos al VM..."
@@ -102,7 +102,7 @@ Write-Step "Reconstruyendo frontend y reiniciando backend..."
 
 $remoteScript = @'
 #!/bin/bash
-APP_DIR="/var/www/acaripole"
+APP_DIR="/var/www/medisdiana"
 
 echo "[0] Ejecutando migración 014 (service_category)..."
 cd "$APP_DIR"
@@ -132,7 +132,7 @@ fi
 
 echo ""
 echo "[2] Compilando frontend con Vite (2-3 min)..."
-cd "$APP_DIR/acaripole-landing"
+cd "$APP_DIR/medisdiana-landing"
 export NODE_OPTIONS="--max-old-space-size=2048"
 pnpm exec vite build 2>&1 | tail -20
 

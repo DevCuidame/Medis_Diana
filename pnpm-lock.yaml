@@ -15,7 +15,7 @@ importers:
         specifier: ^2.0.0
         version: 2.9.14
 
-  acaripole-landing:
+  medisdiana-landing:
     dependencies:
       '@hookform/resolvers':
         specifier: ^5.2.2
@@ -90,7 +90,7 @@ importers:
 
   apps/backend:
     dependencies:
-      '@acaripole/shared-types':
+      '@medisdiana/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
       dotenv:

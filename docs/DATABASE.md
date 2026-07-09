@@ -130,10 +130,10 @@ CREATE INDEX idx_audit_logs_created_at ON audit_logs(created_at);
 ### Backup Strategy
 ```bash
 # Weekly full backups
-pg_dump acaripole_dev > backup_$(date +%Y%m%d).sql
+pg_dump medisdiana_dev > backup_$(date +%Y%m%d).sql
 
 # Point-in-time recovery
-pg_restore -d acaripole_dev backup.sql
+pg_restore -d medisdiana_dev backup.sql
 ```
 
 ### Disaster Recovery

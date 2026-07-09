@@ -1,11 +1,11 @@
-# 🚀 Acaripole Project - Quick Start
+# 🚀 medisdiana Project - Quick Start
 
-El proyecto **Acaripole** ha sido creado exitosamente con una arquitectura moderna, modular y escalable.
+El proyecto **medisdiana** ha sido creado exitosamente con una arquitectura moderna, modular y escalable.
 
 ## 📁 Estructura Creada
 
 ```
-Acaripole/
+medisdiana/
 ├── apps/
 │   ├── frontend/          ✅ React + Vite (Puerto 5173)
 │   └── backend/           ✅ Express.js + Node.js (Puerto 3000)
@@ -23,7 +23,7 @@ Acaripole/
 
 ### 1. Abrir en VS Code
 ```bash
-cd "c:\Users\julia\Dropbox\My PC (LAPTOP-LKGFJOOJ)\Downloads\Acaripole"
+cd "c:\Users\julia\Dropbox\My PC (LAPTOP-LKGFJOOJ)\Downloads\medisdiana"
 code .
 ```
 
@@ -38,7 +38,7 @@ pnpm install
 cp apps/backend/.env.example apps/backend/.env.local
 
 # Editar con credenciales de PostgreSQL
-# DATABASE_URL=postgresql://usuario:contraseña@localhost:5432/acaripole_dev
+# DATABASE_URL=postgresql://usuario:contraseña@localhost:5432/medisdiana_dev
 ```
 
 ### 4. Iniciar Servidores (después de configurar BD)
@@ -47,8 +47,8 @@ pnpm dev
 ```
 
 Frontend: http://localhost:5173
-Backend: http://localhost:3000
-API Health: http://localhost:3000/api/health
+Backend: http://localhost:3007
+API Health: http://localhost:3007/api/health
 
 ## 📚 Documentación
 
@@ -80,8 +80,8 @@ API Health: http://localhost:3000/api/health
 ```bash
 # Desarrollo
 pnpm dev                           # Inicia todos los servidores
-pnpm -F @acaripole/frontend dev   # Solo frontend
-pnpm -F @acaripole/backend dev    # Solo backend
+pnpm -F medisdiana-landing dev      # Solo frontend
+pnpm -F @medisdiana/backend dev    # Solo backend
 
 # Build
 pnpm build                         # Construye todo
@@ -93,7 +93,7 @@ pnpm lint                          # Ejecuta ESLint
 pnpm format                        # Formatea con Prettier
 
 # Base de datos
-pnpm -F @acaripole/backend migrate # Corre migraciones
+pnpm -F @medisdiana/backend migrate # Corre migraciones
 
 # Tests
 pnpm test                          # Ejecuta tests

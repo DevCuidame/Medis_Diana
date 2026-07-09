@@ -1,6 +1,6 @@
-# Acaripole Backend
+# medisdiana Backend
 
-Express.js backend server for Acaripole project with PostgreSQL database.
+Express.js backend server for medisdiana project with PostgreSQL database.
 
 ## Features
 
@@ -85,9 +85,9 @@ pnpm migrate
 Copy `.env.example` to `.env.local` and configure:
 
 ```
-DATABASE_URL=postgresql://user:password@localhost:5432/acaripole_dev
+DATABASE_URL=postgresql://user:password@localhost:5432/medisdiana_dev
 NODE_ENV=development
-PORT=3000
+PORT=3007
 JWT_SECRET=your-secret-key
 CORS_ORIGIN=http://localhost:5173
 ```

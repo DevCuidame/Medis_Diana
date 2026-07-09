@@ -4,7 +4,7 @@
 $VM_NAME  = "cuidame-app"
 $ZONE     = "us-central1-a"
 $PROJECT  = "esmart-health"
-$APP_DIR  = "/var/www/acaripole"
+$APP_DIR  = "/var/www/medisdiana"
 
 $bashScript = @'
 #!/bin/bash
@@ -20,17 +20,17 @@ ADMIN_HASH=$(node -e "
   process.stdout.write(s + ':' + h);
 ")
 printf "INSERT INTO users (email, password_hash, first_name, last_name, role, is_active, is_verified)
-VALUES ('admin@acaripole.com', '%s', 'Acaripole', 'Admin', 'ADMIN', TRUE, TRUE)
+VALUES ('admin@medisdiana.com', '%s', 'medisdiana', 'Admin', 'ADMIN', TRUE, TRUE)
 ON CONFLICT (email) DO UPDATE
   SET password_hash = EXCLUDED.password_hash,
       is_active = TRUE,
       is_verified = TRUE;\n" "${ADMIN_HASH}" | \
-  PGPASSWORD="AcariPole2024Secure!" psql -h 127.0.0.1 -U acaripole_user -d acaripole_prod
-echo "[OK] Admin listo: admin@acaripole.com / HFT2AJ543"
+  PGPASSWORD="medisdiana2024Secure!" psql -h 127.0.0.1 -U medisdiana_user -d medisdiana_prod
+echo "[OK] Admin listo: admin@medisdiana.com / HFT2AJ543"
 
 echo ""
 echo "=== Parcheando ruta POST /services/offers ==="
-ROUTES_FILE="/var/www/acaripole/apps/backend/src/routes/services.routes.ts"
+ROUTES_FILE="/var/www/medisdiana/apps/backend/src/routes/services.routes.ts"
 if grep -q "createOffer);.*TODO" "$ROUTES_FILE"; then
   sed -i "s|router.post.*services/offers.*createOffer.*|router.post('/services/offers', authenticate, authorize('ADMIN'), createOffer);|" "$ROUTES_FILE"
   echo "[OK] Middleware de autenticacion agregado"

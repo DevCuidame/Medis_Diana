@@ -9,7 +9,7 @@ servicios usando las 5 categorías médicas reales de su consulta, con un nuevo 
 coincida con el ENUM real de Postgres (`appointment | open_consultation | workshop | event`).
 
 **Architecture:** Cambios puramente de frontend (React + TypeScript + Zod + React Hook
-Form) en `acaripole-landing`, más un ajuste de un tipo en `packages/shared-types`. No hay
+Form) en `medisdiana-landing`, más un ajuste de un tipo en `packages/shared-types`. No hay
 cambios de backend ni de base de datos — el ENUM de Postgres ya tenía los valores
 correctos; el frontend era el que estaba desalineado. El orden de tareas sigue la cadena
 de dependencias: primero el tipo compartido, luego el schema Zod, luego el formulario,
@@ -21,9 +21,9 @@ Framer Motion, Vite 8, pnpm workspaces.
 
 **Spec:** `docs/superpowers/specs/2026-06-14-categorias-servicios-medicos-design.md`
 
-**Dev server:** `cd acaripole-landing; pnpm dev` → abre `http://localhost:5173`
+**Dev server:** `cd medisdiana-landing; pnpm dev` → abre `http://localhost:5173`
 
-**Build / typecheck (no hay test runner en este proyecto):** `cd acaripole-landing; pnpm build` (ejecuta `tsc -b && vite build`)
+**Build / typecheck (no hay test runner en este proyecto):** `cd medisdiana-landing; pnpm build` (ejecuta `tsc -b && vite build`)
 
 ---
 
@@ -32,16 +32,16 @@ Framer Motion, Vite 8, pnpm workspaces.
 | Archivo | Cambio principal |
 |---|---|
 | `packages/shared-types/src/models/services.types.ts` | Corrige `OfferType` al ENUM real de Postgres |
-| `acaripole-landing/src/components/admin/servicioSchema.ts` | Nuevo `categoriaEnum` (5 categorías médicas), nuevo `tipoAtencionEnum`, `requiereInstructor` incondicional, `capacidad` 2–20 |
-| `acaripole-landing/src/components/admin/FormularioServicio.tsx` | Presets `TIPOS_SERVICIO_POR_CATEGORIA`, campo "Tipo de Atención" siempre visible, "Médico responsable", copy médico |
-| `acaripole-landing/src/components/admin/ServiciosDashboard.tsx` | `OFFER_TYPE_LABEL`/`OFFER_TYPE_COLOR`, `offerTypeMap`, parseo de `description`, filtro, copy |
-| `acaripole-landing/src/components/admin/AdminClasses.tsx` | `OFFER_TYPE_LABEL`/`TYPE_COLORS` |
-| `acaripole-landing/src/components/professional/ProfessionalClasses.tsx` | `TYPE_COLOR`/`TYPE_LABEL`, "Mis Clases" → "Mi Agenda" |
-| `acaripole-landing/src/components/user/UserMisServicios.tsx` | `TYPE_COLOR`/`TYPE_LABEL` |
-| `acaripole-landing/src/components/user/UserServicios.tsx` | `TYPE_COLOR`/`TYPE_LABEL`, filtro de pills |
+| `medisdiana-landing/src/components/admin/servicioSchema.ts` | Nuevo `categoriaEnum` (5 categorías médicas), nuevo `tipoAtencionEnum`, `requiereInstructor` incondicional, `capacidad` 2–20 |
+| `medisdiana-landing/src/components/admin/FormularioServicio.tsx` | Presets `TIPOS_SERVICIO_POR_CATEGORIA`, campo "Tipo de Atención" siempre visible, "Médico responsable", copy médico |
+| `medisdiana-landing/src/components/admin/ServiciosDashboard.tsx` | `OFFER_TYPE_LABEL`/`OFFER_TYPE_COLOR`, `offerTypeMap`, parseo de `description`, filtro, copy |
+| `medisdiana-landing/src/components/admin/AdminClasses.tsx` | `OFFER_TYPE_LABEL`/`TYPE_COLORS` |
+| `medisdiana-landing/src/components/professional/ProfessionalClasses.tsx` | `TYPE_COLOR`/`TYPE_LABEL`, "Mis Clases" → "Mi Agenda" |
+| `medisdiana-landing/src/components/user/UserMisServicios.tsx` | `TYPE_COLOR`/`TYPE_LABEL` |
+| `medisdiana-landing/src/components/user/UserServicios.tsx` | `TYPE_COLOR`/`TYPE_LABEL`, filtro de pills |
 
 **Fuera de alcance (no tocar):**
-- `acaripole-landing/src/components/user/UserServicios.tsx:300` — `LABEL = { pole, complementary, general }` (otro subsistema, `service_category` de membresías).
+- `medisdiana-landing/src/components/user/UserServicios.tsx:300` — `LABEL = { pole, complementary, general }` (otro subsistema, `service_category` de membresías).
 - `SedesDashboard.tsx` — galería "Inspiración de Espacios" con imágenes `pole_studio_*`.
 - `apps/frontend` (app Angular legacy, no forma parte del workspace pnpm).
 
@@ -93,7 +93,7 @@ git commit -m "fix: alinear OfferType con el ENUM real de Postgres (offer_type)"
 ## Task 2: `servicioSchema.ts` — Nuevas categorías y campo "Tipo de Atención"
 
 **Files:**
-- Modify: `acaripole-landing/src/components/admin/servicioSchema.ts`
+- Modify: `medisdiana-landing/src/components/admin/servicioSchema.ts`
 
 - [ ] **Step 1: Reemplazar `categoriaEnum` con las 5 categorías médicas**
 
@@ -207,7 +207,7 @@ helpers de día quedan sin cambios.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add acaripole-landing/src/components/admin/servicioSchema.ts
+git add medisdiana-landing/src/components/admin/servicioSchema.ts
 git commit -m "feat: nuevas categorias medicas y campo tipoAtencion en servicioSchema"
 ```
 
@@ -216,7 +216,7 @@ git commit -m "feat: nuevas categorias medicas y campo tipoAtencion en servicioS
 ## Task 3: `FormularioServicio.tsx` — Presets, campo "Tipo de Atención" y copy médico
 
 **Files:**
-- Modify: `acaripole-landing/src/components/admin/FormularioServicio.tsx`
+- Modify: `medisdiana-landing/src/components/admin/FormularioServicio.tsx`
 
 - [ ] **Step 1: Actualizar el import — `nivelEnum` → `tipoAtencionEnum`**
 
@@ -506,7 +506,7 @@ Reemplázala con:
 - [ ] **Step 12: Verificar en el navegador**
 
 ```bash
-cd acaripole-landing
+cd medisdiana-landing
 pnpm dev
 ```
 
@@ -530,7 +530,7 @@ servicio" y confirma:
 - [ ] **Step 13: Commit**
 
 ```bash
-git add acaripole-landing/src/components/admin/FormularioServicio.tsx
+git add medisdiana-landing/src/components/admin/FormularioServicio.tsx
 git commit -m "feat: presets medicos, campo Tipo de Atencion y copy clinico en FormularioServicio"
 ```
 
@@ -539,7 +539,7 @@ git commit -m "feat: presets medicos, campo Tipo de Atencion y copy clinico en F
 ## Task 4: `ServiciosDashboard.tsx` — Mapeo a `offerType`, parseo de `description` y copy
 
 **Files:**
-- Modify: `acaripole-landing/src/components/admin/ServiciosDashboard.tsx`
+- Modify: `medisdiana-landing/src/components/admin/ServiciosDashboard.tsx`
 
 - [ ] **Step 1: Reemplazar `OFFER_TYPE_LABEL` y `OFFER_TYPE_COLOR`**
 
@@ -792,7 +792,7 @@ Con `pnpm dev` corriendo, en `http://localhost:5173/admin/servicios`:
 - [ ] **Step 8: Commit**
 
 ```bash
-git add acaripole-landing/src/components/admin/ServiciosDashboard.tsx
+git add medisdiana-landing/src/components/admin/ServiciosDashboard.tsx
 git commit -m "fix: offerType correcto (appointment/workshop) y parseo de tipoAtencion en ServiciosDashboard"
 ```
 
@@ -801,7 +801,7 @@ git commit -m "fix: offerType correcto (appointment/workshop) y parseo de tipoAt
 ## Task 5: `AdminClasses.tsx` — Relabeling de `OFFER_TYPE_LABEL`/`TYPE_COLORS`
 
 **Files:**
-- Modify: `acaripole-landing/src/components/admin/AdminClasses.tsx`
+- Modify: `medisdiana-landing/src/components/admin/AdminClasses.tsx`
 
 - [ ] **Step 1: Reemplazar `OFFER_TYPE_LABEL` y `TYPE_COLORS`**
 
@@ -846,7 +846,7 @@ mensual):
 - [ ] **Step 3: Commit**
 
 ```bash
-git add acaripole-landing/src/components/admin/AdminClasses.tsx
+git add medisdiana-landing/src/components/admin/AdminClasses.tsx
 git commit -m "fix: relabeling de tipos de oferta a appointment/open_consultation/workshop/event en AdminClasses"
 ```
 
@@ -855,7 +855,7 @@ git commit -m "fix: relabeling de tipos de oferta a appointment/open_consultatio
 ## Task 6: `ProfessionalClasses.tsx` — Relabeling + título "Mi Agenda"
 
 **Files:**
-- Modify: `acaripole-landing/src/components/professional/ProfessionalClasses.tsx`
+- Modify: `medisdiana-landing/src/components/professional/ProfessionalClasses.tsx`
 
 - [ ] **Step 1: Reemplazar `TYPE_COLOR` y `TYPE_LABEL`**
 
@@ -906,7 +906,7 @@ Con `pnpm dev` corriendo, inicia sesión como médico y abre el portal profesion
 - [ ] **Step 4: Commit**
 
 ```bash
-git add acaripole-landing/src/components/professional/ProfessionalClasses.tsx
+git add medisdiana-landing/src/components/professional/ProfessionalClasses.tsx
 git commit -m "fix: relabeling de tipos de oferta y renombrar Mis Clases a Mi Agenda en ProfessionalClasses"
 ```
 
@@ -915,7 +915,7 @@ git commit -m "fix: relabeling de tipos de oferta y renombrar Mis Clases a Mi Ag
 ## Task 7: `UserMisServicios.tsx` — Relabeling de `TYPE_COLOR`/`TYPE_LABEL`
 
 **Files:**
-- Modify: `acaripole-landing/src/components/user/UserMisServicios.tsx`
+- Modify: `medisdiana-landing/src/components/user/UserMisServicios.tsx`
 
 - [ ] **Step 1: Reemplazar `TYPE_COLOR` y `TYPE_LABEL`**
 
@@ -943,7 +943,7 @@ Con `pnpm dev` corriendo, inicia sesión como paciente y abre `/user/mis-servici
 - [ ] **Step 3: Commit**
 
 ```bash
-git add acaripole-landing/src/components/user/UserMisServicios.tsx
+git add medisdiana-landing/src/components/user/UserMisServicios.tsx
 git commit -m "fix: relabeling de tipos de oferta en UserMisServicios"
 ```
 
@@ -952,7 +952,7 @@ git commit -m "fix: relabeling de tipos de oferta en UserMisServicios"
 ## Task 8: `UserServicios.tsx` — Relabeling de `TYPE_COLOR`/`TYPE_LABEL` y filtro de pills
 
 **Files:**
-- Modify: `acaripole-landing/src/components/user/UserServicios.tsx`
+- Modify: `medisdiana-landing/src/components/user/UserServicios.tsx`
 
 - [ ] **Step 1: Reemplazar `TYPE_COLOR` y `TYPE_LABEL`**
 
@@ -1001,7 +1001,7 @@ Con `pnpm dev` corriendo, inicia sesión como paciente y abre `/user/servicios`:
 - [ ] **Step 4: Commit**
 
 ```bash
-git add acaripole-landing/src/components/user/UserServicios.tsx
+git add medisdiana-landing/src/components/user/UserServicios.tsx
 git commit -m "fix: relabeling de tipos de oferta y filtro de pills en UserServicios"
 ```
 
@@ -1014,7 +1014,7 @@ git commit -m "fix: relabeling de tipos de oferta y filtro de pills en UserServi
 - [ ] **Step 1: Typecheck completo del frontend**
 
 ```bash
-cd acaripole-landing
+cd medisdiana-landing
 pnpm build
 ```
 

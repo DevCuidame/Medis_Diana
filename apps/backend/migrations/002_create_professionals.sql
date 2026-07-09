@@ -1,7 +1,7 @@
 -- ============================================================
 -- Migration 002: Specialties, Appointments, Bookings & Ratings
 -- ============================================================
--- Run: psql -d acaripole_db -f migrations/002_create_professionals.sql
+-- Run: psql -d medisdiana_db -f migrations/002_create_professionals.sql
 -- ============================================================
 
 -- 1. Enum de nivel de especialidad

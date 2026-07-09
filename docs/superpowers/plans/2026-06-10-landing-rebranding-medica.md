@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Migrar la landing pública de AcariPole (pole dance) al consultorio de la Dra. Diana Cristina Medina Camargo — Especialista en Medicina Familiar y Comunitaria — aplicando la nueva paleta morado→azul sobre blanco y reemplazando todo el contenido con temática médica.
+**Goal:** Migrar la landing pública de medisdiana (pole dance) al consultorio de la Dra. Diana Cristina Medina Camargo — Especialista en Medicina Familiar y Comunitaria — aplicando la nueva paleta morado→azul sobre blanco y reemplazando todo el contenido con temática médica.
 
 **Architecture:** Se actualizan en orden: (1) `index.css` establece el nuevo sistema de tokens y clases utilitarias como fundamento visual; (2) `App.tsx` corrige los dos gradientes dorados que afectan toda la app; (3) los 8 componentes de landing se migran uno a uno — contenido primero, luego colores inline.
 
@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-06-10-landing-rebranding-medica-design.md`
 
-**Dev server:** `cd acaripole-landing && pnpm dev` → abre `http://localhost:5173`
+**Dev server:** `cd medisdiana-landing && pnpm dev` → abre `http://localhost:5173`
 
 ---
 
@@ -18,23 +18,23 @@
 
 | Archivo | Tipo de cambio |
 |---|---|
-| `acaripole-landing/src/index.css` | Reescritura completa — nuevo `@theme` + clases utilitarias |
-| `acaripole-landing/src/App.tsx` | 2 cambios inline — barra progreso + banner sesión expirada |
-| `acaripole-landing/src/components/Navbar.tsx` | Copy + links + colores + classNames |
-| `acaripole-landing/src/components/Hero.tsx` | Copy + video source + colores inline |
-| `acaripole-landing/src/components/About.tsx` | Array PILLARS + stats + copy + colores inline |
-| `acaripole-landing/src/components/Classes.tsx` | Array CLASSES→SERVICES + id sección + gradientes tarjetas |
-| `acaripole-landing/src/components/Instructors.tsx` | Reescritura completa — layout 2 columnas, perfil doctora |
-| `acaripole-landing/src/components/Testimonials.tsx` | Array TESTIMONIALS + id sección + colores |
-| `acaripole-landing/src/components/FinalCTA.tsx` | Copy + colores inline |
-| `acaripole-landing/src/components/Footer.tsx` | Contenido + colores inline |
+| `medisdiana-landing/src/index.css` | Reescritura completa — nuevo `@theme` + clases utilitarias |
+| `medisdiana-landing/src/App.tsx` | 2 cambios inline — barra progreso + banner sesión expirada |
+| `medisdiana-landing/src/components/Navbar.tsx` | Copy + links + colores + classNames |
+| `medisdiana-landing/src/components/Hero.tsx` | Copy + video source + colores inline |
+| `medisdiana-landing/src/components/About.tsx` | Array PILLARS + stats + copy + colores inline |
+| `medisdiana-landing/src/components/Classes.tsx` | Array CLASSES→SERVICES + id sección + gradientes tarjetas |
+| `medisdiana-landing/src/components/Instructors.tsx` | Reescritura completa — layout 2 columnas, perfil doctora |
+| `medisdiana-landing/src/components/Testimonials.tsx` | Array TESTIMONIALS + id sección + colores |
+| `medisdiana-landing/src/components/FinalCTA.tsx` | Copy + colores inline |
+| `medisdiana-landing/src/components/Footer.tsx` | Contenido + colores inline |
 
 ---
 
 ## Task 1: Sistema de diseño — `index.css`
 
 **Files:**
-- Modify: `acaripole-landing/src/index.css` (reescritura completa)
+- Modify: `medisdiana-landing/src/index.css` (reescritura completa)
 
 - [ ] **Step 1: Reemplazar `index.css` con el nuevo sistema de tokens**
 
@@ -191,7 +191,7 @@ body {
 - [ ] **Step 2: Verificar en dev server**
 
 ```bash
-cd acaripole-landing && pnpm dev
+cd medisdiana-landing && pnpm dev
 ```
 
 Abrir `http://localhost:5173`. La barra de scroll (si visible) debe verse morada/azul. El fondo del body es blanco. No hay errores de consola por clases CSS faltantes todavía (las clases `gold-gradient`/`gold-text-gradient` seguirán en el HTML de los componentes hasta que se actualicen en las tareas siguientes — es normal que los botones queden sin estilo de gradiente por ahora).
@@ -201,7 +201,7 @@ Abrir `http://localhost:5173`. La barra de scroll (si visible) debe verse morada
 ## Task 2: `App.tsx` — barra de progreso y banner de sesión
 
 **Files:**
-- Modify: `acaripole-landing/src/App.tsx`
+- Modify: `medisdiana-landing/src/App.tsx`
 
 - [ ] **Step 1: Actualizar `ScrollProgressBar`**
 
@@ -234,7 +234,7 @@ Con el dev server activo, recarga `http://localhost:5173`. La barra de progreso 
 ## Task 3: `Navbar.tsx`
 
 **Files:**
-- Modify: `acaripole-landing/src/components/Navbar.tsx`
+- Modify: `medisdiana-landing/src/components/Navbar.tsx`
 
 - [ ] **Step 1: Actualizar array `links`**
 
@@ -263,7 +263,7 @@ const links = [
 
 Reemplaza:
 ```tsx
-            Acaripole
+            medisdiana
 ```
 Con:
 ```tsx
@@ -399,7 +399,7 @@ Recargar `http://localhost:5173`. El navbar debe mostrar "Dra. Diana Medina" en 
 ## Task 4: `Hero.tsx`
 
 **Files:**
-- Modify: `acaripole-landing/src/components/Hero.tsx`
+- Modify: `medisdiana-landing/src/components/Hero.tsx`
 
 - [ ] **Step 1: Cambiar fuente del video**
 
@@ -513,7 +513,7 @@ Reemplaza:
 
 Reemplaza:
 ```tsx
-            En Acaripole transformamos fuerza, sensualidad y confianza en una experiencia artística
+            En medisdiana transformamos fuerza, sensualidad y confianza en una experiencia artística
             diseñada para conectar contigo misma.
 ```
 →
@@ -599,7 +599,7 @@ Scroll al hero en `http://localhost:5173`. Los orbs deben ser morado/azul, el te
 ## Task 5: `About.tsx`
 
 **Files:**
-- Modify: `acaripole-landing/src/components/About.tsx`
+- Modify: `medisdiana-landing/src/components/About.tsx`
 
 - [ ] **Step 1: Reemplazar array `PILLARS`**
 
@@ -647,7 +647,7 @@ Título (dos líneas):
 
 Subtexto:
 ```tsx
-            Acaripole es un espacio donde el movimiento se convierte en ritual. Cada sesión es un
+            medisdiana es un espacio donde el movimiento se convierte en ritual. Cada sesión es un
             encuentro contigo misma — un espacio de exploración, confianza y poder que va más allá
             de la técnica. Aquí, el arte del pole dance se fusiona con la expresión femenina más pura.
 ```
@@ -784,14 +784,14 @@ Scroll a la sección "About" en la landing. Las tarjetas deben mostrar íconos m
 ## Task 6: `Classes.tsx` → Servicios Médicos
 
 **Files:**
-- Modify: `acaripole-landing/src/components/Classes.tsx`
+- Modify: `medisdiana-landing/src/components/Classes.tsx`
 
 - [ ] **Step 1: Reemplazar array `CLASSES`**
 
 ```tsx
 const CLASSES = [
   {
-    title: 'Consulta Médica General',
+    title: 'Consulta médica especializada',
     level: 'Todas las edades',
     duration: '30 min',
     description: 'Evaluación integral de tu salud, diagnóstico y tratamiento de enfermedades comunes. Primera puerta a una atención médica de calidad.',
@@ -946,7 +946,7 @@ Scroll a la sección en la landing. Las 6 tarjetas deben mostrar servicios médi
 ## Task 7: `Instructors.tsx` — Perfil de la Doctora (reescritura completa)
 
 **Files:**
-- Modify: `acaripole-landing/src/components/Instructors.tsx` (reescritura completa del archivo)
+- Modify: `medisdiana-landing/src/components/Instructors.tsx` (reescritura completa del archivo)
 
 - [ ] **Step 1: Reemplazar el archivo completo**
 
@@ -1088,10 +1088,10 @@ export default function Instructors() {
                 marginBottom: '2rem',
               }}
             >
-              Médica con sólida formación en medicina familiar y comunitaria, con amplia
-              experiencia en atención primaria, prevención y seguimiento de enfermedades
-              crónicas. Su enfoque centrado en el paciente garantiza una atención cercana,
-              humana y de calidad para toda la familia.
+              Médica especialista en Medicina Familiar y Comunitaria, con especialización en Gerencia de Instituciones de Seguridad Social en Salud. Cuento con amplia experiencia en la coordinación de proyectos de impacto social, promoción de la salud, prevención de la enfermedad y fortalecimiento del bienestar comunitario.
+
+Mi enfoque integral y humano me permite trabajar junto a equipos multidisciplinarios para brindar una atención centrada en las personas, identificando necesidades y desarrollando estrategias efectivas para poblaciones diversas en entornos rurales y urbanos. Me caracterizan el compromiso ético, la vocación de servicio y el liderazgo orientado a generar cambios positivos y sostenibles en la comunidad.
+
             </p>
 
             {/* Credential chips */}
@@ -1137,7 +1137,7 @@ Scroll a la sección "Sobre la Doctora". Debe mostrarse el perfil de 2 columnas:
 ## Task 8: `Testimonials.tsx`
 
 **Files:**
-- Modify: `acaripole-landing/src/components/Testimonials.tsx`
+- Modify: `medisdiana-landing/src/components/Testimonials.tsx`
 
 - [ ] **Step 1: Reemplazar array `TESTIMONIALS`**
 
@@ -1331,7 +1331,7 @@ Scroll a "Testimonios". Deben verse los 5 testimonios de pacientes, estrellas mo
 ## Task 9: `FinalCTA.tsx`
 
 **Files:**
-- Modify: `acaripole-landing/src/components/FinalCTA.tsx`
+- Modify: `medisdiana-landing/src/components/FinalCTA.tsx`
 
 - [ ] **Step 1: Actualizar eyebrow, título y subtexto**
 
@@ -1508,13 +1508,13 @@ Scroll al FinalCTA. Fondo oscuro con resplandores morado/azul, título "Tu salud
 ## Task 10: `Footer.tsx`
 
 **Files:**
-- Modify: `acaripole-landing/src/components/Footer.tsx`
+- Modify: `medisdiana-landing/src/components/Footer.tsx`
 
 - [ ] **Step 1: Actualizar nombre de marca y tagline**
 
 Reemplaza texto del logo:
 ```tsx
-              Acaripole
+              medisdiana
 ```
 →
 ```tsx
@@ -1567,7 +1567,7 @@ Reemplaza el objeto TikTok en el array `SOCIAL`:
   },
 ```
 
-Actualiza la URL de Instagram de `href: 'https://www.instagram.com/acaripole/?hl=es-la'` a `href: '#'` (placeholder — el usuario debe poner su URL real).
+Actualiza la URL de Instagram de `href: 'https://www.instagram.com/medisdiana/?hl=es-la'` a `href: '#'` (placeholder — el usuario debe poner su URL real).
 
 - [ ] **Step 3: Actualizar columna "Estudio" → "Consultorio"**
 
@@ -1608,9 +1608,9 @@ Los hrefs de esos links: `href="#clases"` → `href="#servicios"`
 
 Reemplaza el array de datos de contacto:
 ```tsx
-                { label: 'Instagram', value: '@acaripole' },
+                { label: 'Instagram', value: '@medisdiana' },
                 { label: 'WhatsApp', value: '+57 322 380 80 20 ' },
-                { label: 'Email', value: 'acaripoleagenda@gmail.com' },
+                { label: 'Email', value: 'medisdianaagenda@gmail.com' },
                 { label: 'Horarios', value: 'Lun – Vier · 8am – 11am y 3pm-8pm sab 8am-8pm' },
 ```
 →
@@ -1635,7 +1635,7 @@ Texto: `Acceso artistas` → `Agendar Cita`
 
 Copyright:
 ```tsx
-            © {year} Acaripole · Todos los derechos reservados
+            © {year} medisdiana · Todos los derechos reservados
 ```
 →
 ```tsx
@@ -1689,10 +1689,10 @@ Scroll al footer. Debe mostrar: nombre completo de la doctora en degradado morad
 
 - [ ] **Step 1: Grep de referencias residuales**
 
-Ejecuta desde `acaripole-landing/`:
+Ejecuta desde `medisdiana-landing/`:
 
 ```bash
-grep -rn "Acaripole\|acaripole\|pole dance\|pole\|instructora\|instructoras\|disciplinas" src/components/Navbar.tsx src/components/Hero.tsx src/components/About.tsx src/components/Classes.tsx src/components/Instructors.tsx src/components/Testimonials.tsx src/components/FinalCTA.tsx src/components/Footer.tsx
+grep -rn "medisdiana\|medisdiana\|pole dance\|pole\|instructora\|instructoras\|disciplinas" src/components/Navbar.tsx src/components/Hero.tsx src/components/About.tsx src/components/Classes.tsx src/components/Instructors.tsx src/components/Testimonials.tsx src/components/FinalCTA.tsx src/components/Footer.tsx
 ```
 
 No debe haber resultados. Si los hay, corregir en el archivo correspondiente.
@@ -1733,7 +1733,7 @@ Abrir DevTools → dispositivo mobile (< 900px). Probar hamburger, dropdown, tod
 - [ ] **Step 6: Verificar `build` sin errores de TypeScript**
 
 ```bash
-cd acaripole-landing && pnpm build
+cd medisdiana-landing && pnpm build
 ```
 
 Salida esperada: `✓ built in X.XXs` sin errores.

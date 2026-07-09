@@ -1,5 +1,5 @@
 {
-  "name": "@acaripole/backend",
+  "name": "@medisdiana/backend",
   "version": "0.0.1",
   "type": "module",
   "scripts": {
@@ -12,7 +12,7 @@
     "migrate": "tsx src/scripts/run-migration.ts"
   },
   "dependencies": {
-    "@acaripole/shared-types": "workspace:*",
+    "@medisdiana/shared-types": "workspace:*",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.3",

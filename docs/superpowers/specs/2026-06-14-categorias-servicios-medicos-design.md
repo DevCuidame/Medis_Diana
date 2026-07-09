@@ -9,7 +9,7 @@
 ## Contexto
 
 El formulario de "Catálogo de Servicios" (creación/edición de servicios) aún refleja
-categorías de AcariPole (Clase, Práctica Libre, Disciplinas Complementarias, Eventos,
+categorías de medisdiana (Clase, Práctica Libre, Disciplinas Complementarias, Eventos,
 Otros) con copy de "Pole Dance". La Dra. Diana Medina maneja 5 líneas de servicio
 reales en su consulta de medicina general:
 
@@ -44,13 +44,13 @@ fallaría por violar el ENUM. Este spec corrige el tipo TS y el mapeo para que u
 
 | Archivo | Cambio principal |
 |---|---|
-| `acaripole-landing/src/components/admin/servicioSchema.ts` | Nuevo `categoriaEnum` (5 categorías médicas), nuevo `tipoAtencionEnum`, `requiereInstructor` siempre `true`, rango de `capacidad` 2–20 |
-| `acaripole-landing/src/components/admin/FormularioServicio.tsx` | Presets de `TIPOS_SERVICIO_POR_CATEGORIA`, campo "Tipo de Atención" (siempre visible), copy médico, lógica de instructor/modalidad obligatoria |
-| `acaripole-landing/src/components/admin/ServiciosDashboard.tsx` | `OFFER_TYPE_LABEL`/`OFFER_TYPE_COLOR` con valores reales del ENUM, `offerTypeMap` corregido, filtro de tipo, `mapGroupToFormValues` (parseo de `tipoAtencion` desde `description`), copy |
-| `acaripole-landing/src/components/admin/AdminClasses.tsx` | `TYPE_LABEL` actualizado |
-| `acaripole-landing/src/components/professional/ProfessionalClasses.tsx` | `TYPE_LABEL` actualizado, título "Mis Clases" → "Mi Agenda" |
-| `acaripole-landing/src/components/user/UserMisServicios.tsx` | `TYPE_LABEL` actualizado |
-| `acaripole-landing/src/components/user/UserServicios.tsx` | `TYPE_LABEL` y filtros de tipo actualizados |
+| `medisdiana-landing/src/components/admin/servicioSchema.ts` | Nuevo `categoriaEnum` (5 categorías médicas), nuevo `tipoAtencionEnum`, `requiereInstructor` siempre `true`, rango de `capacidad` 2–20 |
+| `medisdiana-landing/src/components/admin/FormularioServicio.tsx` | Presets de `TIPOS_SERVICIO_POR_CATEGORIA`, campo "Tipo de Atención" (siempre visible), copy médico, lógica de instructor/modalidad obligatoria |
+| `medisdiana-landing/src/components/admin/ServiciosDashboard.tsx` | `OFFER_TYPE_LABEL`/`OFFER_TYPE_COLOR` con valores reales del ENUM, `offerTypeMap` corregido, filtro de tipo, `mapGroupToFormValues` (parseo de `tipoAtencion` desde `description`), copy |
+| `medisdiana-landing/src/components/admin/AdminClasses.tsx` | `TYPE_LABEL` actualizado |
+| `medisdiana-landing/src/components/professional/ProfessionalClasses.tsx` | `TYPE_LABEL` actualizado, título "Mis Clases" → "Mi Agenda" |
+| `medisdiana-landing/src/components/user/UserMisServicios.tsx` | `TYPE_LABEL` actualizado |
+| `medisdiana-landing/src/components/user/UserServicios.tsx` | `TYPE_LABEL` y filtros de tipo actualizados |
 | `packages/shared-types/src/models/services.types.ts` | `OfferType` corregido a `'appointment' \| 'open_consultation' \| 'workshop' \| 'event'` |
 
 **Fuera de alcance** (artefactos pole-dance detectados pero no relacionados con

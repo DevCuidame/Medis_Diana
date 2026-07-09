@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 130" fill="none">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7BC8E8"/>
+      <stop offset="50%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#C084D8"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60B8E0"/>
+      <stop offset="100%" stop-color="#9B6BD4"/>
+    </linearGradient>
+    <linearGradient id="g3" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5EB5DC"/>
+      <stop offset="100%" stop-color="#B07EDA"/>
+    </linearGradient>
+  </defs>
+
+  <!-- TREE TRUNK -->
+  <path d="M58 72 L58 52 Q58 46 62 42" stroke="url(#g1)" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+  <path d="M58 62 L52 54" stroke="url(#g1)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <path d="M58 56 L65 48" stroke="url(#g1)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+
+  <!-- TREE CANOPY - large organic shape -->
+  <ellipse cx="60" cy="30" rx="22" ry="18" fill="url(#g1)" opacity="0.15"/>
+  <!-- Leaf clusters -->
+  <ellipse cx="45" cy="26" rx="9" ry="7" fill="url(#g2)" opacity="0.85"/>
+  <ellipse cx="55" cy="18" rx="10" ry="8" fill="url(#g1)" opacity="0.85"/>
+  <ellipse cx="67" cy="20" rx="9" ry="7" fill="url(#g2)" opacity="0.85"/>
+  <ellipse cx="75" cy="30" rx="8" ry="6" fill="url(#g1)" opacity="0.85"/>
+  <ellipse cx="38" cy="34" rx="7" ry="6" fill="url(#g2)" opacity="0.85"/>
+  <ellipse cx="60" cy="14" rx="8" ry="6" fill="url(#g1)" opacity="0.85"/>
+  <ellipse cx="50" cy="10" rx="6" ry="5" fill="url(#g2)" opacity="0.75"/>
+  <ellipse cx="70" cy="13" rx="6" ry="5" fill="url(#g2)" opacity="0.75"/>
+
+  <!-- HOUSE outline -->
+  <!-- Roof -->
+  <polyline points="38,72 60,54 82,72" stroke="url(#g1)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+  <!-- Chimney -->
+  <rect x="70" y="57" width="5" height="9" rx="1" fill="url(#g1)" opacity="0.9"/>
+  <!-- House walls -->
+  <path d="M42 72 L42 88 L78 88 L78 72" stroke="url(#g1)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+  <!-- Medical cross -->
+  <line x1="60" y1="72" x2="60" y2="84" stroke="url(#g1)" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="54" y1="78" x2="66" y2="78" stroke="url(#g1)" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- HEART shape (bottom) -->
+  <path d="M60 126 C60 126 28 107 28 91 C28 83 34 78 41 80 C47 81 52 86 60 93 C68 86 73 81 79 80 C86 78 92 83 92 91 C92 107 60 126 60 126 Z"
+        stroke="url(#g3)" stroke-width="3" fill="none" stroke-linejoin="round"/>
+
+  <!-- FAMILY figures inside heart -->
+  <!-- Adult left -->
+  <circle cx="50" cy="96" r="3.5" fill="url(#g3)"/>
+  <path d="M50 99.5 L50 109" stroke="url(#g3)" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M44 103 L56 103" stroke="url(#g3)" stroke-width="2" stroke-linecap="round"/>
+  <path d="M50 109 L46 116" stroke="url(#g3)" stroke-width="2" stroke-linecap="round"/>
+  <path d="M50 109 L54 116" stroke="url(#g3)" stroke-width="2" stroke-linecap="round"/>
+  <!-- Child right (smaller) -->
+  <circle cx="66" cy="100" r="2.8" fill="url(#g3)"/>
+  <path d="M66 102.8 L66 111" stroke="url(#g3)" stroke-width="2" stroke-linecap="round"/>
+  <path d="M61 106 L71 106" stroke="url(#g3)" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M66 111 L63 117" stroke="url(#g3)" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M66 111 L69 117" stroke="url(#g3)" stroke-width="1.8" stroke-linecap="round"/>
+
+  <!-- HEARTBEAT line across heart -->
+  <polyline points="30,100 40,100 44,93 48,107 52,97 56,100 70,100 75,95 80,100 90,100"
+            stroke="url(#g2)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+</svg>

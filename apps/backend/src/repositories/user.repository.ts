@@ -17,6 +17,15 @@ function toPublic(u: UserRecord): UserPublic {
     avatarUrl:   u.avatar_url,
     isActive:    u.is_active,
     isVerified:  u.is_verified,
+    idType:      u.id_type,
+    idNumber:    u.id_number,
+    middleName:  u.middle_name,
+    secondLastName: u.second_last_name,
+    personalAddress: u.personal_address,
+    professionalType: u.professional_type,
+    status:      u.status,
+    medicalRegistrationNumber: u.medical_registration_number,
+    sisproUsername: u.sispro_username,
     createdAt:   u.created_at.toISOString(),
   };
 }
@@ -47,8 +56,9 @@ export const UserRepository = {
   async create(dto: RegisterDTO & { passwordHash: string }): Promise<UserPublic> {
     const { rows } = await pool.query<UserRecord>(
       `INSERT INTO users
-        (email, password_hash, first_name, last_name, phone, role)
-       VALUES ($1, $2, $3, $4, $5, $6)
+        (email, password_hash, first_name, last_name, phone, role,
+         id_type, id_number, middle_name, second_last_name, personal_address)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
        RETURNING *`,
       [
         dto.email.toLowerCase().trim(),
@@ -57,17 +67,29 @@ export const UserRepository = {
         dto.lastName.trim(),
         dto.phone?.trim() ?? null,
         dto.role ?? 'USER',
+        dto.idType?.trim() ?? null,
+        dto.idNumber?.trim() ?? null,
+        dto.middleName?.trim() ?? null,
+        dto.secondLastName?.trim() ?? null,
+        dto.personalAddress?.trim() ?? null,
       ]
     );
     return toPublic(rows[0]);
   },
 
-  /** Check if email already exists */
-  async emailExists(email: string): Promise<boolean> {
-    const { rows } = await pool.query(
-      `SELECT 1 FROM users WHERE email = $1`,
-      [email.toLowerCase().trim()]
-    );
+  /** Check if email already exists (optionally excluding one user, for edits) */
+  async emailExists(email: string, excludeId?: string): Promise<boolean> {
+    const { rows } = excludeId
+      ? await pool.query(`SELECT 1 FROM users WHERE email = $1 AND id != $2`, [email.toLowerCase().trim(), excludeId])
+      : await pool.query(`SELECT 1 FROM users WHERE email = $1`, [email.toLowerCase().trim()]);
+    return rows.length > 0;
+  },
+
+  /** Check if a document number already exists (optionally excluding one user, for edits) */
+  async idNumberExists(idNumber: string, excludeId?: string): Promise<boolean> {
+    const { rows } = excludeId
+      ? await pool.query(`SELECT 1 FROM users WHERE id_number = $1 AND id != $2 LIMIT 1`, [idNumber.trim(), excludeId])
+      : await pool.query(`SELECT 1 FROM users WHERE id_number = $1 LIMIT 1`, [idNumber.trim()]);
     return rows.length > 0;
   },
 

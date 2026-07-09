@@ -14,7 +14,7 @@
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd Acaripole
+cd medisdiana
 
 # Install dependencies (all apps and packages)
 pnpm install
@@ -24,16 +24,16 @@ pnpm install
 
 ```bash
 # Option A: Using Docker (recommended)
-docker run -d --name acaripole-postgres \
-  -e POSTGRES_USER=acaripole \
+docker run -d --name medisdiana-postgres \
+  -e POSTGRES_USER=medisdiana \
   -e POSTGRES_PASSWORD=your_password \
-  -e POSTGRES_DB=acaripole_dev \
+  -e POSTGRES_DB=medisdiana_dev \
   -p 5432:5432 \
   postgres:15
 
 # Option B: Using local PostgreSQL
 psql -U postgres
-CREATE DATABASE acaripole_dev;
+CREATE DATABASE medisdiana_dev;
 ```
 
 ### 3. Environment Configuration
@@ -43,15 +43,15 @@ CREATE DATABASE acaripole_dev;
 cp apps/backend/.env.example apps/backend/.env.local
 
 # Edit apps/backend/.env.local with your database credentials:
-# DATABASE_URL=postgresql://acaripole:your_password@localhost:5432/acaripole_dev
+# DATABASE_URL=postgresql://medisdiana:your_password@localhost:5432/medisdiana_dev
 # JWT_SECRET=your-secret-key-change-in-production
 
 # Frontend
 cp apps/frontend/.env.example apps/frontend/.env.local
 
 # Edit apps/frontend/.env.local (usually defaults are fine):
-# VITE_API_URL=http://localhost:3000/api
-# VITE_APP_NAME=Acaripole
+# VITE_API_URL=http://localhost:3007/api
+# VITE_APP_NAME=medisdiana
 # VITE_ENVIRONMENT=development
 ```
 
@@ -59,7 +59,7 @@ cp apps/frontend/.env.example apps/frontend/.env.local
 
 ```bash
 # Run migrations
-pnpm -F @acaripole/backend migrate
+pnpm -F @medisdiana/backend migrate
 ```
 
 ### 5. Start Development Servers
@@ -70,17 +70,17 @@ pnpm dev
 
 # Or separately:
 # Terminal 1 - Frontend (http://localhost:5173)
-pnpm -F @acaripole/frontend dev
+pnpm -F medisdiana-landing dev
 
-# Terminal 2 - Backend (http://localhost:3000)
-pnpm -F @acaripole/backend dev
+# Terminal 2 - Backend (http://localhost:3007)
+pnpm -F @medisdiana/backend dev
 ```
 
 ## Verify Installation
 
 - Open http://localhost:5173 in your browser
-- You should see the Acaripole welcome page
-- Check http://localhost:3000/api/health for backend health status
+- You should see the medisdiana welcome page
+- Check http://localhost:3007/api/health for backend health status
 
 ## Common Commands
 
@@ -90,8 +90,8 @@ pnpm -F @acaripole/backend dev
 pnpm dev
 
 # Start specific app
-pnpm -F @acaripole/frontend dev
-pnpm -F @acaripole/backend dev
+pnpm -F @medisdiana/frontend dev
+pnpm -F @medisdiana/backend dev
 
 # Format code
 pnpm format
@@ -116,7 +116,7 @@ pnpm build:backend
 pnpm test
 
 # Run specific app tests
-pnpm -F @acaripole/backend test
+pnpm -F @medisdiana/backend test
 ```
 
 ## Troubleshooting
@@ -145,7 +145,7 @@ kill -9 <PID>
 
 3. Ensure database exists:
    ```bash
-   psql -U postgres -l | grep acaripole_dev
+   psql -U postgres -l | grep medisdiana_dev
    ```
 
 ### pnpm Install Issues

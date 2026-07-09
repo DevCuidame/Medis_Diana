@@ -152,7 +152,7 @@ async function resolveBenefits(
          COUNT(*) AS cnt
        FROM booking_requests br
        JOIN service_offers so ON so.id = br.offer_id
-       LEFT JOIN disciplines d ON d.id = so.discipline_id
+       LEFT JOIN specialties d ON d.id = so.specialty_id
        WHERE br.user_id = $1
          AND br.status IN ('approved', 'pending')
          AND so.scheduled_at >= $2

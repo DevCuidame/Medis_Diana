@@ -1,4 +1,5 @@
 export * from './services.types';
+export * from './discounts.types';
 
 export interface User {
   id: string;

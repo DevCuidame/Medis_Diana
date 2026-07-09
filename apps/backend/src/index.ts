@@ -4,7 +4,7 @@ import { log } from '@utils/logger.util';
 
 async function main() {
   try {
-    log.info('🔄 Starting Acaripole Backend...');
+    log.info('🔄 Starting medisdiana Backend...');
     await connectDatabase();
     startServer();
   } catch (error) {

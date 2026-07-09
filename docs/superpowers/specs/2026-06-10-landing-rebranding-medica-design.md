@@ -1,14 +1,14 @@
 # Diseño: Rebranding Landing Pública — Consultorio Dra. Diana Cristina Medina Camargo
 
 **Fecha:** 2026-06-10
-**Sub-proyecto:** 1 de N — Landing pública (`acaripole-landing/src/components/`)
+**Sub-proyecto:** 1 de N — Landing pública (`medisdiana-landing/src/components/`)
 **Estado:** Aprobado — pendiente plan de implementación
 
 ---
 
 ## Contexto
 
-El proyecto `medis` parte de una copia de la plataforma AcariPole (estudio de pole dance) y se migra al sistema de gestión del **consultorio de la Dra. Diana Cristina Medina Camargo, Especialista en Medicina Familiar y Comunitaria**. Este spec cubre únicamente los 8 componentes de la landing pública. La autenticación, los portales de paciente, profesional y panel admin son sub-proyectos independientes que vendrán después.
+El proyecto `medis` parte de una copia de la plataforma medisdiana (estudio de pole dance) y se migra al sistema de gestión del **consultorio de la Dra. Diana Cristina Medina Camargo, Especialista en Medicina Familiar y Comunitaria**. Este spec cubre únicamente los 8 componentes de la landing pública. La autenticación, los portales de paciente, profesional y panel admin son sub-proyectos independientes que vendrán después.
 
 ---
 
@@ -72,7 +72,7 @@ Se puede eliminar de Google Fonts las familias sin uso (`Bodoni Moda`, `Hanken G
 
 ## B. Navbar.tsx
 
-- **Marca**: `Acaripole` → `Dra. Diana Medina` (versión corta para el pill; nombre completo en Footer y sección de perfil).
+- **Marca**: `medisdiana` → `Dra. Diana Medina` (versión corta para el pill; nombre completo en Footer y sección de perfil).
 - **Links de navegación**:
   ```
   Inicio (#inicio) · Sobre la Doctora (#sobre-la-doctora) · Servicios (#servicios) · Testimonios (#testimonios) · Contacto (#contacto)
@@ -292,13 +292,13 @@ Los open items NO bloquean la implementación — todos quedan como placeholder 
 
 ## K. Plan de pruebas
 
-1. Levantar dev server: `cd acaripole-landing && pnpm dev`
+1. Levantar dev server: `cd medisdiana-landing && pnpm dev`
 2. Revisar en browser: scroll completo, verificar que cada sección se ve correctamente (colores, copy, animaciones).
 3. Probar anchors: `#inicio`, `#servicios`, `#sobre-la-doctora`, `#testimonios`, `#contacto`.
 4. Probar menú mobile (< 900px): hamburger, dropdown, links y CTA.
 5. Grep de limpieza post-implementación:
    ```bash
-   grep -r "Acaripole\|pole\|instructora\|#775A00\|#B08D32\|119,90,0\|176,141,50" src/components/
+   grep -r "medisdiana\|pole\|instructora\|#775A00\|#B08D32\|119,90,0\|176,141,50" src/components/
    ```
    → No debe retornar resultados en los 8 archivos de landing.
 

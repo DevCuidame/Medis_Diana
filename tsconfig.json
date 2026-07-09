@@ -12,7 +12,7 @@
 
     "baseUrl": ".",
     "paths": {
-      "@acaripole/*": ["./packages/*/src"],
+      "@medisdiana/*": ["./packages/*/src"],
       "@/*": ["./src/*"]
     }
   }

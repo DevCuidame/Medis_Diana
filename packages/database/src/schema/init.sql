@@ -1,4 +1,4 @@
--- Schema initialization for Acaripole
+-- Schema initialization for medisdiana
 -- This is a placeholder for the complete schema
 
 -- Users table

@@ -16,13 +16,13 @@ src/
 ### In Frontend
 
 ```typescript
-import { User, ApiResponse, LoginRequest } from '@acaripole/shared-types';
+import { User, ApiResponse, LoginRequest } from '@medisdiana/shared-types';
 ```
 
 ### In Backend
 
 ```typescript
-import { User, ApiResponse, LoginRequest } from '@acaripole/shared-types';
+import { User, ApiResponse, LoginRequest } from '@medisdiana/shared-types';
 ```
 
 ## Guidelines

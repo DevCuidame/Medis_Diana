@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS locations (
   city        VARCHAR(100),
   phone       VARCHAR(30),
   email       VARCHAR(255),
+  provider_code VARCHAR(100),
   is_active   BOOLEAN       NOT NULL DEFAULT TRUE,
   created_at  TIMESTAMPTZ   NOT NULL DEFAULT NOW(),
   updated_at  TIMESTAMPTZ   NOT NULL DEFAULT NOW()
@@ -19,6 +20,7 @@ CREATE TABLE IF NOT EXISTS locations (
 ALTER TABLE locations ADD COLUMN IF NOT EXISTS city  VARCHAR(100);
 ALTER TABLE locations ADD COLUMN IF NOT EXISTS phone VARCHAR(30);
 ALTER TABLE locations ADD COLUMN IF NOT EXISTS email VARCHAR(255);
+ALTER TABLE locations ADD COLUMN IF NOT EXISTS provider_code VARCHAR(100);
 
 -- Trigger para locations
 DO $$

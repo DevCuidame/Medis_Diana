@@ -74,10 +74,55 @@ export interface UpdateRoomPayload {
   isActive?: boolean;
 }
 
+// ─── SERVICE CATALOG (RIPS) ──────────────────────────────────
+
+export interface ServiceCatalogPublic {
+  id: string;
+  serviceId: number;
+  serviceName: string;
+  description: string | null;
+  categoryGroup: string | null;
+  subcategoryGroup: string | null;
+  category: string | null;
+  subcategory: string | null;
+  serviceCode: string | null;
+  modality: string | null;
+  isActive: boolean;
+  basePrice: number | null;
+  imageUrl: string | null;
+  preparationInstructions: string | null;
+  genderRestriction: string | null;
+  risks: string | null;
+  contraindications: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateServiceCatalogPayload {
+  serviceName: string;
+  description?: string;
+  categoryGroup?: string;
+  subcategoryGroup?: string;
+  category?: string;
+  subcategory?: string;
+  serviceCode?: string;
+  modality?: string;
+  isActive?: boolean;
+  basePrice?: number;
+  imageUrl?: string;
+  preparationInstructions?: string;
+  genderRestriction?: string;
+  risks?: string;
+  contraindications?: string;
+}
+
+export interface UpdateServiceCatalogPayload extends Partial<CreateServiceCatalogPayload> {}
+
 // ─── SERVICE OFFER ───────────────────────────────────────────
 
 export interface ServiceOfferPublic {
   id: string;
+  catalogId: string | null;
   title: string;
   description: string | null;
   offerType: OfferType;
@@ -97,7 +142,7 @@ export interface ServiceOfferPublic {
     lastName: string;
     avatarUrl: string | null;
   } | null;
-  discipline: {
+  specialty: {
     id: string;
     name: string;
     level: string;
@@ -105,13 +150,14 @@ export interface ServiceOfferPublic {
 }
 
 export interface CreateServiceOfferPayload {
+  catalogId?: string;
   locationId: string;
   roomId?: string;
   offerType: OfferType;
   title: string;
   description?: string;
   professionalId?: string;
-  disciplineId?: string;
+  specialtyId?: string;
   capacity: number;
   durationMinutes: number;
   scheduledAt: string;    // ISO 8601
@@ -120,11 +166,12 @@ export interface CreateServiceOfferPayload {
 }
 
 export interface UpdateServiceOfferPayload {
+  catalogId?: string;
   title?: string;
   description?: string;
   roomId?: string;
   professionalId?: string;
-  disciplineId?: string;
+  specialtyId?: string;
   capacity?: number;
   durationMinutes?: number;
   scheduledAt?: string;

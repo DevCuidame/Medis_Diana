@@ -2,13 +2,13 @@
 
 ## Overview
 
-The Acaripole API is a RESTful service that communicates with JSON payloads. All requests should include `Content-Type: application/json`.
+The medisdiana API is a RESTful service that communicates with JSON payloads. All requests should include `Content-Type: application/json`.
 
 ## Base URL
 
 ```
-Development:  http://localhost:3000/api
-Production:   https://api.acaripole.com/api
+Development:  http://localhost:3007/api
+Production:   https://docxime.cuidame.tech/api
 ```
 
 ## Response Format
@@ -197,13 +197,13 @@ Common error messages:
 
 The API allows requests from:
 - Development: `http://localhost:5173`
-- Production: `https://acaripole.com`
+- Production: `https://docxime.cuidame.tech`
 
 ## Testing API
 
 ### Using cURL
 ```bash
-curl -X GET http://localhost:3000/api/health
+curl -X GET http://localhost:3007/api/health
 ```
 
 ### Using Thunder Client (VS Code)
@@ -215,7 +215,7 @@ curl -X GET http://localhost:3000/api/health
 
 ### Using Postman
 1. Import collection (future)
-2. Set base URL to `http://localhost:3000/api`
+2. Set base URL to `http://localhost:3007/api`
 3. Test endpoints
 
 ## Changelog

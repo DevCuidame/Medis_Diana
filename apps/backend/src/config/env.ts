@@ -30,7 +30,9 @@ export const env: Env = {
   NODE_ENV: (process.env.NODE_ENV as Env['NODE_ENV']) || 'development',
   PORT: Number(process.env.PORT) || 3007,
   JWT_SECRET: process.env.JWT_SECRET || '',
-  CORS_ORIGIN: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  CORS_ORIGIN:
+    process.env.CORS_ORIGIN ||
+    (process.env.NODE_ENV === 'production' ? 'https://docxime.cuidame.tech' : 'http://localhost:5173'),
   EMAIL_HOST: process.env.EMAIL_HOST || 'smtp.gmail.com',
   EMAIL_PORT: Number(process.env.EMAIL_PORT) || 465,
   EMAIL_SECURE: process.env.EMAIL_SECURE === 'true',

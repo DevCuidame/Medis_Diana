@@ -1,6 +1,6 @@
 # CLAUDE.md — Proyecto "Medis" (Clínica General)
 
-Este proyecto parte de una copia de la plataforma **AcariPole** (estudio de pole dance)
+Este proyecto parte de una copia de la plataforma **medisdiana** (estudio de pole dance)
 y se está adaptando para convertirse en un sistema de gestión para una **clínica médica
 de medicina general** (agendamiento de citas, pacientes, médicos, planes/membresías,
 finanzas, etc.).
@@ -20,7 +20,7 @@ finanzas, etc.).
 
 ## Mapeo conceptual de entidades
 
-| Concepto original (AcariPole)        | Concepto nuevo (Clínica General) |
+| Concepto original (medisdiana)        | Concepto nuevo (Clínica General) |
 |---------------------------------------|-----------------------------------|
 | Instructores / Profesionales          | Médicos / Profesionales de salud |
 | Clases / Sesiones / Disciplinas       | Consultas / Citas / Especialidades |
@@ -32,44 +32,44 @@ finanzas, etc.).
 ## Pantallas detectadas a migrar
 
 ### Landing pública (`/`)
-- acaripole-landing/src/components/Hero.tsx
-- acaripole-landing/src/components/About.tsx
-- acaripole-landing/src/components/Classes.tsx
-- acaripole-landing/src/components/Instructors.tsx
-- acaripole-landing/src/components/Testimonials.tsx
-- acaripole-landing/src/components/FinalCTA.tsx
-- acaripole-landing/src/components/Navbar.tsx
-- acaripole-landing/src/components/Footer.tsx
+- medisdiana-landing/src/components/Hero.tsx
+- medisdiana-landing/src/components/About.tsx
+- medisdiana-landing/src/components/Classes.tsx
+- medisdiana-landing/src/components/Instructors.tsx
+- medisdiana-landing/src/components/Testimonials.tsx
+- medisdiana-landing/src/components/FinalCTA.tsx
+- medisdiana-landing/src/components/Navbar.tsx
+- medisdiana-landing/src/components/Footer.tsx
 
 ### Autenticación (`/login`)
-- acaripole-landing/src/components/ArtistLogin.tsx
+- medisdiana-landing/src/components/ArtistLogin.tsx
 
 ### Panel Admin (`/admin/*`)
-- acaripole-landing/src/components/admin/MainDashboard.tsx
-- acaripole-landing/src/components/admin/UsuariosDashboard.tsx
-- acaripole-landing/src/components/admin/AdminClasses.tsx
-- acaripole-landing/src/components/admin/CreateService.tsx
-- acaripole-landing/src/components/admin/SedesDashboard.tsx
-- acaripole-landing/src/components/admin/EspaciosDashboard.tsx
-- acaripole-landing/src/components/admin/FinanzasDashboard.tsx
-- acaripole-landing/src/components/admin/MembresiasDashboard.tsx
-- acaripole-landing/src/components/admin/BeneficiosDashboard.tsx
-- acaripole-landing/src/components/admin/InscripcionesDashboard.tsx
+- medisdiana-landing/src/components/admin/MainDashboard.tsx
+- medisdiana-landing/src/components/admin/UsuariosDashboard.tsx
+- medisdiana-landing/src/components/admin/AdminClasses.tsx
+- medisdiana-landing/src/components/admin/CreateService.tsx
+- medisdiana-landing/src/components/admin/SedesDashboard.tsx
+- medisdiana-landing/src/components/admin/EspaciosDashboard.tsx
+- medisdiana-landing/src/components/admin/FinanzasDashboard.tsx
+- medisdiana-landing/src/components/admin/MembresiasDashboard.tsx
+- medisdiana-landing/src/components/admin/BeneficiosDashboard.tsx
+- medisdiana-landing/src/components/admin/InscripcionesDashboard.tsx
 
 ### Portal Paciente (`/user/*`)
-- acaripole-landing/src/components/user/UserLayout.tsx
-- acaripole-landing/src/components/user/UserCalendario.tsx
-- acaripole-landing/src/components/user/UserServicios.tsx
-- acaripole-landing/src/components/user/UserMisServicios.tsx
-- acaripole-landing/src/components/user/UserMembresias.tsx
-- acaripole-landing/src/components/user/UserProfesionales.tsx
+- medisdiana-landing/src/components/user/UserLayout.tsx
+- medisdiana-landing/src/components/user/UserCalendario.tsx
+- medisdiana-landing/src/components/user/UserServicios.tsx
+- medisdiana-landing/src/components/user/UserMisServicios.tsx
+- medisdiana-landing/src/components/user/UserMembresias.tsx
+- medisdiana-landing/src/components/user/UserProfesionales.tsx
 
 ### Portal Profesional/Médico (`/professional/*`)
-- acaripole-landing/src/components/professional/ProfessionalDashboard.tsx
-- acaripole-landing/src/components/professional/ProfessionalClasses.tsx
-- acaripole-landing/src/components/professional/ProfessionalProfile.tsx
+- medisdiana-landing/src/components/professional/ProfessionalDashboard.tsx
+- medisdiana-landing/src/components/professional/ProfessionalClasses.tsx
+- medisdiana-landing/src/components/professional/ProfessionalProfile.tsx
 
 ### Componentes legacy / no enrutados (revisar si eliminar)
-- acaripole-landing/src/components/user/UserClasses.tsx
-- acaripole-landing/src/components/user/UserDashboard.tsx
-- acaripole-landing/src/components/user/UserMemberships.tsx
+- medisdiana-landing/src/components/user/UserClasses.tsx
+- medisdiana-landing/src/components/user/UserDashboard.tsx
+- medisdiana-landing/src/components/user/UserMemberships.tsx

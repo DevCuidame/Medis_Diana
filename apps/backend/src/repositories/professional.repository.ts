@@ -1,4 +1,5 @@
 import { pool } from '@config/database.js'
+import { hashPassword } from '@utils/index.js'
 import type {
   ProfessionalRecord,
   ProfessionalPublic,
@@ -14,6 +15,7 @@ function toPublic(r: ProfessionalRecord): ProfessionalPublic {
   return {
     id:               r.id,
     email:            r.email,
+    role:             r.role as ProfessionalPublic['role'],
     firstName:        r.first_name,
     lastName:         r.last_name,
     phone:            r.phone,
@@ -25,6 +27,13 @@ function toPublic(r: ProfessionalRecord): ProfessionalPublic {
     isActive:         r.is_active,
     isVerified:       r.is_verified,
     professionalType: r.professional_type ?? 'dependiente',
+    idType:                    r.id_type,
+    idNumber:                  r.id_number,
+    middleName:                r.middle_name,
+    secondLastName:            r.second_last_name,
+    personalAddress:           r.personal_address,
+    medicalRegistrationNumber: r.medical_registration_number,
+    sisproUsername:            r.sispro_username,
     avgScore:         r.avg_score ? parseFloat(r.avg_score) : 0,
     totalReviews:     r.total_reviews ? parseInt(r.total_reviews, 10) : 0,
     createdAt:        r.created_at.toISOString(),
@@ -69,11 +78,15 @@ export const ProfessionalRepository = {
 
   /** Create a professional (insert as PROFESSIONAL role) */
   async create(dto: CreateProfessionalDTO & { passwordHash: string }): Promise<ProfessionalPublic> {
+    const sisproPasswordHash = dto.sisproPassword ? hashPassword(dto.sisproPassword) : null
     const { rows } = await pool.query<ProfessionalRecord>(`
       INSERT INTO users
         (email, password_hash, first_name, last_name, phone, role,
-         bio, specialties, instagram_url, avatar_url, status, is_verified, professional_type)
-      VALUES ($1,$2,$3,$4,$5,'PROFESSIONAL',$6,$7,$8,$9,'offline',TRUE,$10)
+         bio, specialties, instagram_url, avatar_url, status, is_verified, professional_type,
+         id_type, id_number, middle_name, second_last_name, personal_address,
+         medical_registration_number, sispro_username, sispro_password_hash)
+      VALUES ($1,$2,$3,$4,$5,'PROFESSIONAL',$6,$7,$8,$9,'offline',TRUE,$10,
+        $11,$12,$13,$14,$15,$16,$17,$18)
       RETURNING *,
         NULL::NUMERIC AS avg_score,
         NULL::BIGINT  AS total_reviews
@@ -88,16 +101,25 @@ export const ProfessionalRepository = {
       dto.instagramUrl?.trim() ?? null,
       dto.avatarUrl?.trim() ?? null,
       dto.professionalType ?? 'dependiente',
+      dto.idType.trim(),
+      dto.idNumber.trim(),
+      dto.middleName?.trim() ?? null,
+      dto.secondLastName?.trim() ?? null,
+      dto.personalAddress.trim(),
+      dto.medicalRegistrationNumber?.trim() ?? null,
+      dto.sisproUsername?.trim() ?? null,
+      sisproPasswordHash,
     ])
     return toPublic(rows[0])
   },
 
-  /** Update professional profile */
+  /** Update a user's full profile (any role — this table is shared across USER/PROFESSIONAL/ADMIN) */
   async update(id: string, dto: UpdateProfessionalDTO): Promise<ProfessionalPublic | null> {
     const fields: string[] = []
     const values: unknown[] = []
     let idx = 1
 
+    if (dto.email       !== undefined) { fields.push(`email         = $${idx++}`); values.push(dto.email.toLowerCase().trim()) }
     if (dto.firstName   !== undefined) { fields.push(`first_name    = $${idx++}`); values.push(dto.firstName.trim()) }
     if (dto.lastName    !== undefined) { fields.push(`last_name     = $${idx++}`); values.push(dto.lastName.trim()) }
     if (dto.phone       !== undefined) { fields.push(`phone         = $${idx++}`); values.push(dto.phone?.trim() ?? null) }
@@ -107,6 +129,17 @@ export const ProfessionalRepository = {
     if (dto.avatarUrl   !== undefined) { fields.push(`avatar_url    = $${idx++}`); values.push(dto.avatarUrl?.trim() ?? null) }
     if (dto.isActive    !== undefined) { fields.push(`is_active     = $${idx++}`); values.push(dto.isActive) }
     if (dto.isVerified  !== undefined) { fields.push(`is_verified   = $${idx++}`); values.push(dto.isVerified) }
+    if (dto.role        !== undefined) { fields.push(`role          = $${idx++}`); values.push(dto.role) }
+    if (dto.professionalType !== undefined) { fields.push(`professional_type = $${idx++}`); values.push(dto.professionalType) }
+    if (dto.idType       !== undefined) { fields.push(`id_type       = $${idx++}`); values.push(dto.idType?.trim() ?? null) }
+    if (dto.idNumber     !== undefined) { fields.push(`id_number     = $${idx++}`); values.push(dto.idNumber?.trim() ?? null) }
+    if (dto.middleName   !== undefined) { fields.push(`middle_name   = $${idx++}`); values.push(dto.middleName?.trim() ?? null) }
+    if (dto.secondLastName !== undefined) { fields.push(`second_last_name = $${idx++}`); values.push(dto.secondLastName?.trim() ?? null) }
+    if (dto.personalAddress !== undefined) { fields.push(`personal_address = $${idx++}`); values.push(dto.personalAddress?.trim() ?? null) }
+    if (dto.medicalRegistrationNumber !== undefined) { fields.push(`medical_registration_number = $${idx++}`); values.push(dto.medicalRegistrationNumber?.trim() ?? null) }
+    if (dto.sisproUsername !== undefined) { fields.push(`sispro_username = $${idx++}`); values.push(dto.sisproUsername?.trim() ?? null) }
+    if (dto.sisproPassword) { fields.push(`sispro_password_hash = $${idx++}`); values.push(hashPassword(dto.sisproPassword)) }
+    if (dto.password)    { fields.push(`password_hash = $${idx++}`); values.push(hashPassword(dto.password)) }
 
     if (fields.length === 0) return this.findById(id)
 
@@ -114,7 +147,7 @@ export const ProfessionalRepository = {
     const { rows } = await pool.query<ProfessionalRecord>(`
       UPDATE users
       SET ${fields.join(', ')}
-      WHERE id = $${idx} AND role = 'PROFESSIONAL'
+      WHERE id = $${idx}
       RETURNING *,
         NULL::NUMERIC AS avg_score,
         NULL::BIGINT  AS total_reviews

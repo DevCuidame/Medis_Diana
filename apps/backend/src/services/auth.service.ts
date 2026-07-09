@@ -57,8 +57,9 @@ export const AuthService = {
     // 2. Hashear contraseña
     const passwordHash = hashPassword(dto.password);
 
-    // 3. Crear usuario
-    const user = await UserRepository.create({ ...dto, passwordHash });
+    // 3. Crear usuario — el registro público SIEMPRE crea un paciente (rol 'USER'),
+    //    ignorando cualquier 'role' que venga en el body para evitar auto-escalamiento de privilegios.
+    const user = await UserRepository.create({ ...dto, role: 'USER', passwordHash });
 
     // 4. Emitir tokens
     const tokens = await AuthService._issueTokens(user.id, user.email, user.role);

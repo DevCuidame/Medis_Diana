@@ -9,10 +9,10 @@ $bashScript = @'
 #!/bin/bash
 set -e
 
-DB_PASS="AcariPole2024Secure!"
-DB_USER="acaripole_user"
-DB_NAME="acaripole_prod"
-APP_DIR="/var/www/acaripole"
+DB_PASS="medisdiana2024Secure!"
+DB_USER="medisdiana_user"
+DB_NAME="medisdiana_prod"
+APP_DIR="/var/www/medisdiana"
 
 psql_cmd() {
   PGPASSWORD="$DB_PASS" psql -h 127.0.0.1 -U "$DB_USER" -d "$DB_NAME" "$@"
@@ -61,13 +61,13 @@ ADMIN_HASH=$(node -e "
 ")
 
 printf "INSERT INTO users (email, password_hash, first_name, last_name, role, is_active, is_verified)
-VALUES ('admin@acaripole.com', '%s', 'Acaripole', 'Admin', 'ADMIN', TRUE, TRUE)
+VALUES ('admin@medisdiana.com', '%s', 'medisdiana', 'Admin', 'ADMIN', TRUE, TRUE)
 ON CONFLICT (email) DO UPDATE
   SET password_hash = EXCLUDED.password_hash,
       role = 'ADMIN',
       is_active = TRUE,
       is_verified = TRUE;\n" "${ADMIN_HASH}" | psql_cmd
-echo "[OK] Admin: admin@acaripole.com / HFT2AJ543"
+echo "[OK] Admin: admin@medisdiana.com / HFT2AJ543"
 
 echo ""
 echo "============================================================"
@@ -98,7 +98,7 @@ pm2 status
 echo ""
 echo "============================================================"
 echo "  LISTO — Intenta crear el servicio de nuevo"
-echo "  Admin: admin@acaripole.com / HFT2AJ543"
+echo "  Admin: admin@medisdiana.com / HFT2AJ543"
 echo "============================================================"
 '@
 

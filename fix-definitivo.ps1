@@ -5,19 +5,19 @@
 $VM   = "cuidame-app"
 $ZONE = "us-central1-a"
 $PROJ = "esmart-health"
-$DIR  = "/var/www/acaripole"
+$DIR  = "/var/www/medisdiana"
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  FIX DEFINITIVO - AcariPole VM" -ForegroundColor Cyan
+Write-Host "  FIX DEFINITIVO - medisdiana VM" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 
 # ── Paso 1: Python fix (admin + routes) ─────────────────────────────────────
 $pyScript = @'
 import subprocess, hashlib, secrets, os, re
 
-DB = dict(host="127.0.0.1", user="acaripole_user", db="acaripole_prod", pw="AcariPole2024Secure!")
-APP = "/var/www/acaripole"
+DB = dict(host="127.0.0.1", user="medisdiana_user", db="medisdiana_prod", pw="medisdiana2024Secure!")
+APP = "/var/www/medisdiana"
 
 def psql(sql):
     env = {**os.environ, "PGPASSWORD": DB["pw"]}
@@ -29,7 +29,7 @@ def psql(sql):
 salt  = secrets.token_hex(16)
 key   = hashlib.pbkdf2_hmac("sha256", b"HFT2AJ543", salt.encode(), 310000, 32).hex()
 h     = f"{salt}:{key}"
-sql   = f"INSERT INTO users(email,password_hash,first_name,last_name,role,is_active,is_verified) VALUES('"'"'admin@acaripole.com'"'"','"'"'{h}'"'"','"'"'Acaripole'"'"','"'"'Admin'"'"','"'"'ADMIN'"'"',TRUE,TRUE) ON CONFLICT(email) DO UPDATE SET password_hash=EXCLUDED.password_hash,role='"'"'ADMIN'"'"',is_active=TRUE,is_verified=TRUE;"
+sql   = f"INSERT INTO users(email,password_hash,first_name,last_name,role,is_active,is_verified) VALUES('"'"'admin@medisdiana.com'"'"','"'"'{h}'"'"','"'"'medisdiana'"'"','"'"'Admin'"'"','"'"'ADMIN'"'"',TRUE,TRUE) ON CONFLICT(email) DO UPDATE SET password_hash=EXCLUDED.password_hash,role='"'"'ADMIN'"'"',is_active=TRUE,is_verified=TRUE;"
 print("[1] Admin:", psql(sql))
 
 # 2. Patch routes
@@ -77,7 +77,7 @@ except Exception as e:
     print(f"[3] Error: {e}")
 
 # 4. Verify admin exists
-row = psql("SELECT id, role FROM users WHERE email='admin@acaripole.com';")
+row = psql("SELECT id, role FROM users WHERE email='admin@medisdiana.com';")
 print("[4] Admin en DB:", row)
 '@
 
@@ -88,21 +88,21 @@ $pyTmp   = [System.IO.Path]::GetTempFileName() + ".py"
 
 Write-Host ""
 Write-Host "[1/4] Subiendo script Python al VM..." -ForegroundColor Yellow
-gcloud compute scp $pyTmp "${VM}:/tmp/fix_acari.py" --zone=$ZONE --project=$PROJ --quiet
+gcloud compute scp $pyTmp "${VM}:/tmp/fix_media.py" --zone=$ZONE --project=$PROJ --quiet
 if ($LASTEXITCODE -ne 0) { Write-Error "gcloud scp fallo. Verifica que gcloud este autenticado."; exit 1 }
 
 Write-Host "[2/4] Ejecutando fix de admin + rutas backend..." -ForegroundColor Yellow
-gcloud compute ssh $VM --zone=$ZONE --project=$PROJ --command="python3 /tmp/fix_acari.py && rm /tmp/fix_acari.py"
+gcloud compute ssh $VM --zone=$ZONE --project=$PROJ --command="python3 /tmp/fix_media.py && rm /tmp/fix_media.py"
 if ($LASTEXITCODE -ne 0) { Write-Warn "Algo fallo en el script Python" }
 
 # ── Paso 2: Build frontend en VM ─────────────────────────────────────────────
 $buildScript = @'
 #!/bin/bash
 set -e
-APP_DIR="/var/www/acaripole"
+APP_DIR="/var/www/medisdiana"
 echo ""
 echo "[3/4] Compilando frontend (Vite)..."
-cd "$APP_DIR/acaripole-landing"
+cd "$APP_DIR/medisdiana-landing"
 export NODE_OPTIONS="--max-old-space-size=2048"
 pnpm exec vite build 2>&1 | tail -20
 echo "[OK] Frontend compilado: $(find dist -type f | wc -l) archivos"
@@ -126,7 +126,7 @@ Remove-Item $pyTmp, $bTmp -ErrorAction SilentlyContinue
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Green
 Write-Host "  TODO LISTO" -ForegroundColor Green
-Write-Host "  Admin: admin@acaripole.com / HFT2AJ543" -ForegroundColor Green
+Write-Host "  Admin: admin@medisdiana.com / HFT2AJ543" -ForegroundColor Green
 Write-Host "  URL:   http://35.239.162.75" -ForegroundColor Green
 Write-Host "========================================" -ForegroundColor Green
 Write-Host ""

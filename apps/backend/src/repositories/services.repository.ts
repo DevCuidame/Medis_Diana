@@ -15,7 +15,7 @@ import type {
   UpdateRoomPayload,
   ServiceOffersFilter,
   UpsertOperatingHourPayload,
-} from '@acaripole/shared-types';
+} from '@medisdiana/shared-types';
 
 // ─── OPERATING HOURS ─────────────────────────────────────────
 
@@ -131,11 +131,70 @@ export const RoomRepository = {
   },
 };
 
+// ─── SERVICE CATALOG ──────────────────────────────────────────
+
+export const ServiceCatalogRepository = {
+  async create(data: any): Promise<{ id: string }> {
+    // Serialize modality array to JSON string for VARCHAR storage
+    const modalityStr = Array.isArray(data.modality)
+      ? JSON.stringify(data.modality)
+      : (data.modality ? String(data.modality) : null);
+
+    const { rows } = await pool.query(
+      `INSERT INTO service_catalog
+         (service_name, description, category_group, subcategory_group, category, subcategory,
+          service_code, modality, is_active, base_price, image_url, preparation_instructions,
+          gender_restriction, risks, contraindications)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+       RETURNING id`,
+      [
+        data.serviceName, data.description ?? null, data.categoryGroup, data.subcategoryGroup ?? null,
+        data.category ?? null, data.subcategory ?? null, data.serviceCode ?? null,
+        modalityStr, data.isActive ?? true, data.basePrice ?? 0,
+        data.imageUrl ?? null, data.preparationInstructions ?? null, data.genderRestriction ?? null,
+        data.risks ?? null, data.contraindications ?? null
+      ]
+    );
+    return rows[0];
+  },
+  
+  async update(id: string, data: any): Promise<void> {
+    const map: Record<string, string> = {
+      serviceName: 'service_name', description: 'description', categoryGroup: 'category_group',
+      subcategoryGroup: 'subcategory_group', category: 'category', subcategory: 'subcategory',
+      serviceCode: 'service_code', modality: 'modality', isActive: 'is_active',
+      basePrice: 'base_price', imageUrl: 'image_url', preparationInstructions: 'preparation_instructions',
+      genderRestriction: 'gender_restriction', risks: 'risks', contraindications: 'contraindications'
+    };
+    const sets: string[] = [];
+    const values: unknown[] = [];
+    let i = 1;
+
+    for (const [key, col] of Object.entries(map)) {
+      if (data[key] !== undefined) {
+        sets.push(`${col} = $${i++}`);
+        if (key === 'modality') {
+          // Always serialize modality as JSON string
+          const val = data[key];
+          values.push(Array.isArray(val) ? JSON.stringify(val) : (val ? String(val) : null));
+        } else {
+          values.push(data[key]);
+        }
+      }
+    }
+    if (sets.length === 0) return;
+    sets.push(`updated_at = NOW()`);
+    values.push(id);
+    await pool.query(`UPDATE service_catalog SET ${sets.join(', ')} WHERE id = $${i}`, values);
+  }
+};
+
 // ─── SERVICE OFFERS ──────────────────────────────────────────
 
-function rowToOffer(row: Record<string, unknown>): ServiceOfferPublic {
+function rowToOffer(row: Record<string, unknown>): ServiceOfferPublic & { catalog?: any } {
   return {
     id:              row['id'] as string,
+    catalogId:       (row['catalog_id'] as string) ?? null,
     title:           row['title'] as string,
     description:     (row['description'] as string) ?? null,
     offerType:       row['offer_type'] as ServiceOfferPublic['offerType'],
@@ -161,27 +220,60 @@ function rowToOffer(row: Record<string, unknown>): ServiceOfferPublic {
       lastName:  row['professional_last'] as string,
       avatarUrl: (row['professional_avatar'] as string) ?? null,
     } : null,
-    discipline: row['discipline_id'] ? {
-      id:    row['discipline_id'] as string,
-      name:  row['discipline_name'] as string,
-      level: row['discipline_level'] as string,
+    specialty: row['specialty_id'] ? {
+      id:    row['specialty_id'] as string,
+      name:  row['specialty_name'] as string,
+      level: row['specialty_level'] as string,
+    } : null,
+    catalog: row['catalog_id'] ? {
+      serviceName: row['c_service_name'],
+      description: row['c_description'],
+      categoryGroup: row['c_category_group'],
+      subcategoryGroup: row['c_subcategory_group'],
+      category: row['c_category'],
+      subcategory: row['c_subcategory'],
+      serviceCode: row['c_service_code'],
+      modality: (() => {
+        const raw = row['c_modality'];
+        if (!raw) return [];
+        if (Array.isArray(raw)) return raw;
+        try { return JSON.parse(raw as string); } catch { return [String(raw)]; }
+      })(),
+      isActive: row['c_is_active'],
+      basePrice: row['c_base_price'],
+      imageUrl: row['c_image_url'],
+      preparationInstructions: row['c_preparation_instructions'],
+      genderRestriction: row['c_gender_restriction'],
+      risks: row['c_risks'],
+      contraindications: row['c_contraindications'],
     } : null,
   };
 }
 
 const OFFER_SELECT = `
   SELECT
-    so.id, so.title, so.description, so.offer_type, so.status,
+    so.id, so.catalog_id, so.title, so.description, so.offer_type, so.status,
     so.scheduled_at, so.duration_minutes, so.capacity, so.enrolled_count,
     so.price, so.currency,
     l.id AS location_id, l.name AS location_name,
     r.id AS room_id, r.name AS room_name, r.capacity AS room_capacity,
     u.id AS professional_id, u.first_name AS professional_first,
-    u.last_name AS professional_last, u.avatar_url AS professional_avatar
+    u.last_name AS professional_last, u.avatar_url AS professional_avatar,
+    sp.id AS specialty_id, sp.name AS specialty_name, sp.level AS specialty_level,
+    c.service_name AS c_service_name, c.description AS c_description,
+    c.category_group AS c_category_group, c.subcategory_group AS c_subcategory_group,
+    c.category AS c_category, c.subcategory AS c_subcategory,
+    c.service_code AS c_service_code, c.modality AS c_modality,
+    c.is_active AS c_is_active, c.base_price AS c_base_price,
+    c.image_url AS c_image_url, c.preparation_instructions AS c_preparation_instructions,
+    c.gender_restriction AS c_gender_restriction, c.risks AS c_risks,
+    c.contraindications AS c_contraindications
   FROM service_offers so
   JOIN locations l ON l.id = so.location_id
   LEFT JOIN rooms r ON r.id = so.room_id
   LEFT JOIN users u ON u.id = so.professional_id
+  LEFT JOIN specialties sp ON sp.id = so.specialty_id
+  LEFT JOIN service_catalog c ON c.id = so.catalog_id
 `;
 
 export const ServiceOfferRepository = {
@@ -225,15 +317,15 @@ export const ServiceOfferRepository = {
   async create(data: CreateServiceOfferPayload, createdBy: string): Promise<ServiceOfferPublic> {
     const { rows } = await pool.query(
       `INSERT INTO service_offers
-         (location_id, room_id, offer_type, title, description,
-          professional_id, discipline_id, capacity, duration_minutes,
+         (catalog_id, location_id, room_id, offer_type, title, description,
+          professional_id, specialty_id, capacity, duration_minutes,
           scheduled_at, price, currency, created_by)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
        RETURNING id`,
       [
-        data.locationId, data.roomId ?? null, data.offerType, data.title,
+        data.catalogId ?? null, data.locationId, data.roomId ?? null, data.offerType, data.title,
         data.description ?? null, data.professionalId ?? null,
-        data.disciplineId ?? null, data.capacity, data.durationMinutes,
+        data.specialtyId ?? null, data.capacity, data.durationMinutes,
         data.scheduledAt, data.price ?? null, data.currency ?? 'COP', createdBy,
       ]
     );
@@ -242,8 +334,8 @@ export const ServiceOfferRepository = {
 
   async update(id: string, data: UpdateServiceOfferPayload): Promise<ServiceOfferPublic | null> {
     const map: Record<string, string> = {
-      title: 'title', description: 'description', roomId: 'room_id',
-      professionalId: 'professional_id', disciplineId: 'discipline_id',
+      catalogId: 'catalog_id', title: 'title', description: 'description', roomId: 'room_id',
+      professionalId: 'professional_id', specialtyId: 'specialty_id',
       capacity: 'capacity', durationMinutes: 'duration_minutes',
       scheduledAt: 'scheduled_at', price: 'price', currency: 'currency',
       status: 'status',
