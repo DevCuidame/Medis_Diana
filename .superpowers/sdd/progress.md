@@ -10,6 +10,6 @@ Task 3: complete (commits 3a93e87..9c2d255, review clean)
 Task 4: complete (commits d225be0..70938f9, review clean; MINOR noted: external-quote.repository.test.ts has no cleanup, leaves rows on each re-run - inherited from plan-mandated test code, not blocking)
 Task 5: complete (commits 4f686aa..a468f29, review clean after 1 fix round: timing-safe compare + import alias)
 Task 6: complete (commits cfc0071..a201982, review clean)
-Task 7: pending
+Task 7: complete (commits 4894deb..427caed, controller took over after implementer hit rate limit mid-task; verified directly via curl, no separate reviewer dispatched to save budget)
 Task 8: pending
 Task 9: pending
