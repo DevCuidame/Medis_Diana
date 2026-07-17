@@ -5,7 +5,7 @@ Worktree branch: feature/inventario-cotizaciones
 DB target: medisdiana_prod on VM cuidame-app via SSH tunnel 127.0.0.1:5433 (per user instruction — real test server, not local Postgres)
 
 Task 1: complete (commits 1c8aca1..42d1cbd, review clean)
-Task 2: pending
+Task 2: complete (commits b6a0b5d..3b5d7f2, review clean)
 Task 3: pending
 Task 4: pending
 Task 5: pending
