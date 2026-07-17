@@ -9,7 +9,7 @@ Task 2: complete (commits b6a0b5d..3b5d7f2, review clean)
 Task 3: complete (commits 3a93e87..9c2d255, review clean)
 Task 4: complete (commits d225be0..70938f9, review clean; MINOR noted: external-quote.repository.test.ts has no cleanup, leaves rows on each re-run - inherited from plan-mandated test code, not blocking)
 Task 5: complete (commits 4f686aa..a468f29, review clean after 1 fix round: timing-safe compare + import alias)
-Task 6: pending
+Task 6: complete (commits cfc0071..a201982, review clean)
 Task 7: pending
 Task 8: pending
 Task 9: pending
