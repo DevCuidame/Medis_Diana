@@ -2,7 +2,7 @@
 # deploy-rapido.ps1
 # Sube los archivos clave modificados, reconstruye frontend y reinicia backend.
 
-$VM   = "cuidame-app"
+$VM   = "julie@cuidame-app"   # dueño de /var/www/medisdiana (evita 'permission denied' en scp)
 $ZONE = "us-central1-a"
 $PROJ = "esmart-health"
 $APP  = "/var/www/medisdiana"

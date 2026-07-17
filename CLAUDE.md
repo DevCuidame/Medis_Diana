@@ -1,75 +1,35 @@
-# CLAUDE.md — Proyecto "Medis" (Clínica General)
+# CLAUDE.md — Proyecto "Medis Diana" / dianamedic.cuidame.tech
 
-Este proyecto parte de una copia de la plataforma **medisdiana** (estudio de pole dance)
-y se está adaptando para convertirse en un sistema de gestión para una **clínica médica
-de medicina general** (agendamiento de citas, pacientes, médicos, planes/membresías,
-finanzas, etc.).
+## Visión general
 
-## Reglas globales (aplican a TODA la migración de pantallas)
+Landing + portal de la **Dra. Diana Cristina Medina Camargo**, en producción en
+`https://dianamedic.cuidame.tech`. Es una adaptación a **clínica general** de la
+plataforma medisdiana; el agendamiento de citas clínicas se delega al backend
+externo de **CuidameDoc** (Diana = `professional_id 12`).
 
-- **Temática**: médica (clínica general). Todo el contenido, textos de ejemplo, datos
-  semilla (seed) e imágenes deben reflejar un entorno de salud — consultas, médicos,
-  pacientes, especialidades, exámenes, tratamientos — sin rastros de pole dance, danza
-  o estudios de baile (nombres de disciplinas, salones, instructoras, etc.).
-- **Colores**: blancos, azules, limpios. La paleta visual debe transmitir confianza,
-  higiene y profesionalismo médico. Evitar la paleta original de dorados/rosas
-  (`#775A00`, `#B08D32`, `#BE185D`, `#DB2777`, etc.) y reemplazarla por tonos blancos
-  (`#FFFFFF`, `#F5F7FA`) y azules (`#1D4ED8`, `#2563EB`, `#0EA5E9`, etc.).
-- **Textos**: formales y orientados a salud/pacientes. Lenguaje claro, respetuoso y
-  profesional, dirigido a pacientes y personal médico (evitar tono "fitness/estudio").
+Este archivo es solo el **índice maestro**: el contenido detallado vive en los
+documentos enlazados abajo. No duplicar información aquí — actualizar siempre
+el documento correspondiente.
 
-## Mapeo conceptual de entidades
+## Índice de documentación
 
-| Concepto original (medisdiana)        | Concepto nuevo (Clínica General) |
-|---------------------------------------|-----------------------------------|
-| Instructores / Profesionales          | Médicos / Profesionales de salud |
-| Clases / Sesiones / Disciplinas       | Consultas / Citas / Especialidades |
-| Alumnos / Clientes / Usuarios         | Pacientes |
-| Sedes / Salones                       | Sedes / Consultorios |
-| Membresías / Planes                   | Planes / Membresías de paciente |
-| Inscripción                           | Afiliación / Inscripción |
+| Documento | Qué contiene | Consultar cuando… |
+|-----------|--------------|-------------------|
+| [arquitectura.md](arquitectura.md) | Stack, estructura del monorepo, mapa de pantallas/rutas, componente `DianaBookingCalendar` (flujo, endpoints, estado, constantes) | Vas a tocar código, rutas, el booking o integraciones con CuidameDoc |
+| [convenciones.md](convenciones.md) | Reglas críticas de tematización, paleta de colores, tono de los textos | Vas a escribir o modificar CUALQUIER texto, estilo o UI visible |
+| [glosario.md](glosario.md) | Mapeo de conceptos (pole dance → clínica) y términos técnicos (`prof_service_id`, `clinical_service_id`, slots…) | Dudas de nomenclatura o al renombrar entidades durante la migración |
+| [decisiones.md](decisiones.md) | Decisiones de arquitectura vigentes con su justificación + historial de cambios | Antes de cambiar el enfoque de algo que ya funciona, o para registrar un cambio |
+| [flujo-de-trabajo.md](flujo-de-trabajo.md) | Desarrollo local, proceso de migración de pantallas, despliegue (`deploy-Dianamedic.ps1`), gestión de servicios en CuidameDoc | Vas a migrar una pantalla, desplegar o configurar servicios clínicos |
+| [errores-conocidos.md](errores-conocidos.md) | Bugs conocidos, limitaciones y comportamientos que no son bugs | Algo falla o se comporta raro, antes de diagnosticar desde cero |
 
-## Pantallas detectadas a migrar
+## Regla de oro (resumen mínimo)
 
-### Landing pública (`/`)
-- medisdiana-landing/src/components/Hero.tsx
-- medisdiana-landing/src/components/About.tsx
-- medisdiana-landing/src/components/Classes.tsx
-- medisdiana-landing/src/components/Instructors.tsx
-- medisdiana-landing/src/components/Testimonials.tsx
-- medisdiana-landing/src/components/FinalCTA.tsx
-- medisdiana-landing/src/components/Navbar.tsx
-- medisdiana-landing/src/components/Footer.tsx
+Todo lo visible al usuario debe ser **médico, formal, blanco/azul** — nunca
+mencionar pole dance ni usar la paleta dorada/rosa original. Detalle completo
+en [convenciones.md](convenciones.md).
 
-### Autenticación (`/login`)
-- medisdiana-landing/src/components/ArtistLogin.tsx
+## Otros documentos del repo
 
-### Panel Admin (`/admin/*`)
-- medisdiana-landing/src/components/admin/MainDashboard.tsx
-- medisdiana-landing/src/components/admin/UsuariosDashboard.tsx
-- medisdiana-landing/src/components/admin/AdminClasses.tsx
-- medisdiana-landing/src/components/admin/CreateService.tsx
-- medisdiana-landing/src/components/admin/SedesDashboard.tsx
-- medisdiana-landing/src/components/admin/EspaciosDashboard.tsx
-- medisdiana-landing/src/components/admin/FinanzasDashboard.tsx
-- medisdiana-landing/src/components/admin/MembresiasDashboard.tsx
-- medisdiana-landing/src/components/admin/BeneficiosDashboard.tsx
-- medisdiana-landing/src/components/admin/InscripcionesDashboard.tsx
-
-### Portal Paciente (`/user/*`)
-- medisdiana-landing/src/components/user/UserLayout.tsx
-- medisdiana-landing/src/components/user/UserCalendario.tsx
-- medisdiana-landing/src/components/user/UserServicios.tsx
-- medisdiana-landing/src/components/user/UserMisServicios.tsx
-- medisdiana-landing/src/components/user/UserMembresias.tsx
-- medisdiana-landing/src/components/user/UserProfesionales.tsx
-
-### Portal Profesional/Médico (`/professional/*`)
-- medisdiana-landing/src/components/professional/ProfessionalDashboard.tsx
-- medisdiana-landing/src/components/professional/ProfessionalClasses.tsx
-- medisdiana-landing/src/components/professional/ProfessionalProfile.tsx
-
-### Componentes legacy / no enrutados (revisar si eliminar)
-- medisdiana-landing/src/components/user/UserClasses.tsx
-- medisdiana-landing/src/components/user/UserDashboard.tsx
-- medisdiana-landing/src/components/user/UserMemberships.tsx
+En `docs/` hay documentación legacy en inglés de la plataforma original
+(API.md, ARCHITECTURE.md, DATABASE.md, SETUP.md, CONTRIBUTING.md): útil como
+referencia histórica, pero **no** refleja las adaptaciones de este proyecto.

@@ -51,6 +51,7 @@ export default function ArtistLogin({
     setIsSubmitting(true)
 
     try {
+      // ── 1. Intento contra el backend propio de Diana ────────────
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -59,22 +60,47 @@ export default function ArtistLogin({
 
       const contentType = response.headers.get('content-type')
       if (!contentType || !contentType.includes('application/json')) {
-        throw new Error('El servidor backend no está respondiendo. Asegúrate de que esté encendido.')
+        throw new Error('backend_unavailable')
       }
 
       const data = await response.json()
-      if (!response.ok || !data.success) throw new Error(data.error || 'Credenciales inválidas')
+      if (!response.ok || !data.success) throw new Error(data.error || 'invalid_credentials')
+
       localStorage.setItem('accessToken', data.data.tokens.accessToken)
       localStorage.setItem('refreshToken', data.data.tokens.refreshToken)
 
-      const payloadBase64 = data.data.tokens.accessToken.split('.')[1]
-      const payload = JSON.parse(atob(payloadBase64))
-      const userRole = payload.role
-
-      if (onLoginSuccess) onLoginSuccess(userRole)
+      const jwtPayload = JSON.parse(atob(data.data.tokens.accessToken.split('.')[1]))
+      if (onLoginSuccess) onLoginSuccess(jwtPayload.role)
       else alert('¡Bienvenido/a de vuelta!')
-    } catch (err: any) {
-      alert(err.message || 'Error al iniciar sesión')
+
+    } catch (_dianaErr) {
+      // ── 2. Fallback: intentar contra CuidameDoc ─────────────────
+      try {
+        const docRes = await fetch('https://doc-api.cuidame.tech/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email.toLowerCase(), password }),
+        })
+        const docData = await docRes.json()
+
+        if (!docRes.ok || !docData.success || !docData.data?.access_token) {
+          throw new Error('Credenciales inválidas. Verifica tu correo y contraseña.')
+        }
+
+        // Serializar sesión en el fragmento URL (#sso=).
+        // Los fragmentos NUNCA se envían a ningún servidor ni quedan en logs.
+        // CuidameDoc los lee una sola vez y los borra del historial inmediatamente.
+        const ssoPayload = encodeURIComponent(JSON.stringify({
+          u: docData.data.user,
+          t: docData.data.access_token,
+          r: docData.data.refresh_token,
+          p: docData.data.professional ?? null,
+        }))
+        window.location.href = `https://doc.cuidame.tech/#sso=${ssoPayload}`
+
+      } catch (docErr: any) {
+        alert(docErr.message || 'Credenciales inválidas')
+      }
     } finally {
       setIsSubmitting(false)
     }

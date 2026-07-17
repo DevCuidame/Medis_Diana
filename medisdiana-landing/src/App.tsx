@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion'
 
@@ -11,21 +11,28 @@ import Testimonials from './components/Testimonials'
 import FinalCTA from './components/FinalCTA'
 import Footer from './components/Footer'
 import ArtistLogin from './components/ArtistLogin'
-import PublicBooking from './components/PublicBooking'
-import { UsuariosDashboard } from './components/admin/UsuariosDashboard'
-import { MainDashboard } from './components/admin/MainDashboard'
-import { AdminClasses } from './components/admin/AdminClasses'
-import { CreateService } from './components/admin/CreateService'
-import { SedesDashboard } from './components/admin/SedesDashboard'
-import { EspaciosDashboard } from './components/admin/EspaciosDashboard'
-import { FinanzasDashboard } from './components/admin/FinanzasDashboard'
-import { MembresiasDashboard } from './components/admin/MembresiasDashboard'
-import { BeneficiosDashboard } from './components/admin/BeneficiosDashboard'
-import { InscripcionesDashboard } from './components/admin/InscripcionesDashboard'
-import { DescuentosDashboard } from './components/admin/DescuentosDashboard'
+import DianaBookingCalendar from './components/DianaBookingCalendar'
 import { ProtectedRoute } from './components/ProtectedRoute'
-import { UserLayout } from './components/user/UserLayout'
-import { ProfessionalDashboard } from './components/professional/ProfessionalDashboard'
+import { Seo } from './seo/Seo'
+import { MedicalClinicJsonLd } from './seo/JsonLd'
+import NotFoundPage from './pages/public/NotFoundPage'
+
+// ── Lazy-loaded private panels ────────────────────────────────────────────────
+// Split out of the public bundle: a patient landing on "/" no longer downloads
+// the admin/user/professional code. Big LCP/TBT win.
+const MainDashboard         = lazy(() => import('./components/admin/MainDashboard').then(m => ({ default: m.MainDashboard })))
+const UsuariosDashboard     = lazy(() => import('./components/admin/UsuariosDashboard').then(m => ({ default: m.UsuariosDashboard })))
+const AdminClasses          = lazy(() => import('./components/admin/AdminClasses').then(m => ({ default: m.AdminClasses })))
+const CreateService         = lazy(() => import('./components/admin/CreateService').then(m => ({ default: m.CreateService })))
+const SedesDashboard        = lazy(() => import('./components/admin/SedesDashboard').then(m => ({ default: m.SedesDashboard })))
+const EspaciosDashboard     = lazy(() => import('./components/admin/EspaciosDashboard').then(m => ({ default: m.EspaciosDashboard })))
+const FinanzasDashboard     = lazy(() => import('./components/admin/FinanzasDashboard').then(m => ({ default: m.FinanzasDashboard })))
+const MembresiasDashboard   = lazy(() => import('./components/admin/MembresiasDashboard').then(m => ({ default: m.MembresiasDashboard })))
+const BeneficiosDashboard   = lazy(() => import('./components/admin/BeneficiosDashboard').then(m => ({ default: m.BeneficiosDashboard })))
+const InscripcionesDashboard = lazy(() => import('./components/admin/InscripcionesDashboard').then(m => ({ default: m.InscripcionesDashboard })))
+const DescuentosDashboard   = lazy(() => import('./components/admin/DescuentosDashboard').then(m => ({ default: m.DescuentosDashboard })))
+const UserLayout            = lazy(() => import('./components/user/UserLayout').then(m => ({ default: m.UserLayout })))
+const ProfessionalDashboard = lazy(() => import('./components/professional/ProfessionalDashboard').then(m => ({ default: m.ProfessionalDashboard })))
 
 // ── Scroll to top on every route change ──────────────────────────────────────
 function ScrollToTop() {
@@ -60,6 +67,8 @@ function LandingPage() {
   const navigate = useNavigate()
   return (
     <>
+      <Seo path="/" />
+      <MedicalClinicJsonLd />
       <ScrollProgressBar />
       <Navbar onLoginClick={() => navigate('/login')} onAgendarClick={() => navigate('/agendar')} />
       <main>
@@ -106,7 +115,9 @@ function LoginPage() {
   }
 
   return (
-    <ArtistLogin
+    <>
+      <Seo path="/login" title="Iniciar sesión" noindex />
+      <ArtistLogin
       onBackToHome={() => navigate('/')}
       onForgotPasswordClick={() => alert('Se ha enviado un enlace de recuperación a tu correo electrónico registrado.')}
       onLoginSuccess={async (role) => {
@@ -115,18 +126,25 @@ function LoginPage() {
         else if (role === 'PROFESSIONAL') navigate(from ?? '/professional/classes', { replace: true })
         else                         navigate(from ?? '/admin/dashboard',         { replace: true })
       }}
-    />
+      />
+    </>
   )
 }
 
 function BookingPage() {
   const navigate = useNavigate()
   return (
-    <PublicBooking
-      onBackToHome={() => navigate('/')}
-      onContinue={() => navigate('/login')}
-      onLoginClick={() => navigate('/login')}
-    />
+    <>
+      <Seo
+        path="/agendar"
+        title="Agendar cita médica en línea"
+        description="Reserva tu consulta de medicina familiar con la Dra. Diana Medina. Disponibilidad en tiempo real."
+      />
+      <MedicalClinicJsonLd />
+      <DianaBookingCalendar
+        onBackToHome={() => navigate('/')}
+      />
+    </>
   )
 }
 
@@ -205,6 +223,7 @@ export default function App() {
     <>
       <SessionExpiredBanner />
       <ScrollToTop />
+      <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
       <Routes>
         <Route path="/"      element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -326,9 +345,10 @@ export default function App() {
           }
         />
 
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        {/* Fallback: real 404 (noindex) — no more soft-404 to "/" */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      </Suspense>
     </>
   )
 }

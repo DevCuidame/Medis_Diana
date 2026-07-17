@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /$
+Allow: /agendar
+Disallow: /login
+Disallow: /admin/
+Disallow: /user/
+Disallow: /professional/
+Sitemap: https://dianamedic.cuidame.tech/sitemap.xml

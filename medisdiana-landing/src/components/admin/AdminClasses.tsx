@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Building2, Users, CalendarDays, DollarSign, CreditCard, CircleHelp, LogOut,
   Search, Bell, RefreshCw, ChevronDown, ChevronRight, ChevronLeft,
-  ArrowRight, Briefcase, LayoutDashboard, Loader2, Clock, Menu, Percent, } from 'lucide-react'
+  ArrowRight, Briefcase, LayoutDashboard, Loader2, Clock, Menu, Percent, Plus, X, } from 'lucide-react'
 import './MainDashboard.css'
 
 const C = {
@@ -33,6 +33,19 @@ const OFFER_COLORS = ['#8B5CF6', '#4A6FA5', '#7C6B8A', '#2563EB', '#059669', '#3
 const TYPE_COLORS: Record<string, string> = {
   appointment: '#2563EB', open_consultation: '#0EA5E9', workshop: '#8B5CF6', event: '#3B82F6',
 }
+const STATUS_APPT_LABEL: Record<string, string> = {
+  scheduled:  'Programada',
+  completed:  'Completada',
+  cancelled:  'Cancelada',
+  pending:    'Pendiente',
+}
+const APPT_TYPES = [
+  { value: 'consulta',      label: 'Consulta' },
+  { value: 'seguimiento',   label: 'Seguimiento' },
+  { value: 'valoracion',    label: 'Valoración' },
+  { value: 'procedimiento', label: 'Procedimiento' },
+  { value: 'urgencia',      label: 'Urgencia' },
+]
 const DAY_SHORT = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM']
 const MONTH_NAMES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
 
@@ -207,16 +220,109 @@ export const AdminClasses: React.FC = () => {
   const [isInfraExpanded, setIsInfraExpanded] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
+  // Nueva cita modal
+  const [showNewAppt, setShowNewAppt]       = useState(false)
+  const [savingAppt, setSavingAppt]         = useState(false)
+  const [newAppt, setNewAppt]               = useState({
+    patient_id: 0, patientName: '',
+    appointment_date: new Date().toISOString().slice(0, 10),
+    appointment_time: '08:00',
+    duration_minutes: 30,
+    appointment_type: 'consulta',
+    reason: '',
+  })
+  const [patientQuery, setPatientQuery]     = useState('')
+  const [patients, setPatients]             = useState<any[]>([])
+  const [patientsLoading, setPatientsLoading] = useState(false)
+  const [showPatientDrop, setShowPatientDrop] = useState(false)
+  const patientDebounce = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const authH = (): Record<string, string> => {
+    const token = localStorage.getItem('accessToken');
+    return { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) };
+  };
+
   const loadOffers = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const res  = await fetch('/api/services/offers')
-      const json = await res.json()
-      if (json.success) setOffers(json.data.offers || [])
+      // Load a wide range: 2 months back → 3 months forward from today
+      const from = new Date(); from.setMonth(from.getMonth() - 2); from.setDate(1);
+      const to   = new Date(); to.setMonth(to.getMonth() + 3);   to.setDate(0);
+      const fmt  = (d: Date) => d.toISOString().slice(0, 10);
+      const url  = `/api/appointments/diana?start_date=${fmt(from)}&end_date=${fmt(to)}`;
+      const res  = await fetch(url, { headers: authH() });
+      const json = await res.json();
+      if (json.success) {
+        // Map clinical appointments to the shape the calendar expects
+        const mapped = (json.data as any[]).map((appt: any) => ({
+          id:              appt.appointment_id,
+          scheduledAt:     `${(appt.appointment_date as string).substring(0, 10)}T${appt.appointment_time ?? '08:00'}:00`,
+          title:           appt.patient
+                             ? `${appt.patient.first_name} ${appt.patient.last_name}`
+                             : (appt.appointment_type ?? 'Cita'),
+          durationMinutes: appt.duration_minutes ?? 30,
+          professional:    { id: '12', firstName: 'Diana', lastName: 'Medina' },
+          status:          appt.status === 'cancelled' ? 'draft' : 'published',
+          offerType:       'appointment',
+          capacity:        1,
+          enrolledCount:   1,
+          price:           null,
+          currency:        'COP',
+          location:        null,
+          room:            null,
+          specialty:       null,
+          // Extra fields for tooltip / display
+          appointmentType: appt.appointment_type,
+          reason:          appt.reason ?? null,
+          rawStatus:       appt.status,
+        }));
+        setOffers(mapped);
+      }
     } catch { /* ignore */ } finally { setLoading(false) }
-  }
+  };
 
   useEffect(() => { loadOffers() }, [])
+
+  const searchPatients = (q: string) => {
+    setPatientQuery(q)
+    setShowPatientDrop(true)
+    if (patientDebounce.current) clearTimeout(patientDebounce.current)
+    if (!q.trim()) { setPatients([]); return }
+    patientDebounce.current = setTimeout(async () => {
+      setPatientsLoading(true)
+      try {
+        const res = await fetch(`/api/appointments/diana/patients?q=${encodeURIComponent(q)}`, { headers: authH() })
+        const json = await res.json()
+        setPatients(json.data ?? json ?? [])
+      } catch { setPatients([]) } finally { setPatientsLoading(false) }
+    }, 350)
+  }
+
+  const handleCreateAppt = async () => {
+    if (!newAppt.patient_id || !newAppt.appointment_date || !newAppt.appointment_time) return
+    setSavingAppt(true)
+    try {
+      const res = await fetch('/api/appointments/diana', {
+        method: 'POST',
+        headers: authH(),
+        body: JSON.stringify({
+          patient_id:       newAppt.patient_id,
+          appointment_date: newAppt.appointment_date,
+          appointment_time: newAppt.appointment_time + ':00',
+          duration_minutes: newAppt.duration_minutes,
+          appointment_type: newAppt.appointment_type,
+          reason:           newAppt.reason || undefined,
+        }),
+      })
+      const json = await res.json()
+      if (json.success !== false) {
+        setShowNewAppt(false)
+        setNewAppt({ patient_id: 0, patientName: '', appointment_date: new Date().toISOString().slice(0, 10), appointment_time: '08:00', duration_minutes: 30, appointment_type: 'consulta', reason: '' })
+        setPatientQuery('')
+        await loadOffers()
+      }
+    } finally { setSavingAppt(false) }
+  }
 
   const handleNavClick = (label: string) => {
     if (label === 'Dashboard')     { navigate('/admin/dashboard');   setIsMobileMenuOpen(false) }
@@ -401,6 +507,11 @@ export const AdminClasses: React.FC = () => {
               </div>
 
               <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+                {/* Nueva Cita */}
+                <button onClick={() => setShowNewAppt(true)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, border: 'none', borderRadius: 10, cursor: 'pointer', fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: '0.06em', fontFamily: FONT_INTER }}>
+                  <Plus size={14} /> Nueva Cita
+                </button>
                 {/* Semana / Mes */}
                 <div style={{ display: 'flex', background: C.bgPanel, border: `1px solid ${C.border}`, borderRadius: 10, overflow: 'hidden' }}>
                   {(['semana','mes'] as const).map(v => (
@@ -624,7 +735,7 @@ export const AdminClasses: React.FC = () => {
                     const thisWeek = weekDays.flatMap(d => offersForDay(offers, d))
                       .sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime())
                       .slice(0, 5)
-                    if (thisWeek.length === 0) return <p style={{ fontSize: 13, color: C.textMuted, fontStyle: 'italic' }}>Sin sesiones esta semana.</p>
+                    if (thisWeek.length === 0) return <p style={{ fontSize: 13, color: C.textMuted, fontStyle: 'italic' }}>Sin citas esta semana.</p>
                     return (
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
                         {thisWeek.map((o, i) => {
@@ -639,7 +750,7 @@ export const AdminClasses: React.FC = () => {
                                 </div>
                               </div>
                               <span style={{ fontSize: 9, fontWeight: 700, color: o.status === 'published' ? '#16a34a' : C.textMuted, background: o.status === 'published' ? 'rgba(34,197,94,0.08)' : C.bgPanel, padding: '3px 8px', borderRadius: 6, whiteSpace: 'nowrap', flexShrink: 0 }}>
-                                {o.status === 'published' ? 'Activo' : 'Inactivo'}
+                                {o.rawStatus ? (STATUS_APPT_LABEL[o.rawStatus] ?? o.rawStatus) : (o.status === 'published' ? 'Activo' : 'Inactivo')}
                               </span>
                             </div>
                           )
@@ -685,6 +796,117 @@ export const AdminClasses: React.FC = () => {
                 © 2026 Medis · Todos los derechos reservados
               </p>
             </div>
+
+            {/* ── MODAL NUEVA CITA ── */}
+            {showNewAppt && (
+              <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}
+                onClick={e => { if (e.target === e.currentTarget) setShowNewAppt(false) }}>
+                <div style={{ background: C.white, borderRadius: 20, padding: 32, width: '100%', maxWidth: 480, boxShadow: '0 24px 64px rgba(0,0,0,0.18)', position: 'relative' }}>
+                  <button onClick={() => setShowNewAppt(false)}
+                    style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', cursor: 'pointer', color: C.textMuted, padding: 4 }}>
+                    <X size={18} />
+                  </button>
+
+                  <h2 style={{ fontFamily: FONT_BODONI, fontSize: 22, fontWeight: 700, color: C.text, margin: '0 0 4px' }}>Nueva Cita</h2>
+                  <p style={{ fontSize: 12, color: C.textMuted, margin: '0 0 24px' }}>Dra. Diana Medina</p>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+                    {/* Paciente */}
+                    <div style={{ position: 'relative' }}>
+                      <label style={{ fontSize: 11, fontWeight: 700, color: C.textBrown, display: 'block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Paciente *</label>
+                      <input
+                        type="text"
+                        placeholder="Buscar paciente por nombre..."
+                        value={patientQuery}
+                        onChange={e => searchPatients(e.target.value)}
+                        onFocus={() => setShowPatientDrop(true)}
+                        style={{ width: '100%', padding: '10px 14px', border: `1px solid ${C.border}`, borderRadius: 10, fontSize: 13, color: C.text, outline: 'none', boxSizing: 'border-box', fontFamily: FONT_INTER, background: newAppt.patient_id ? 'rgba(139,92,246,0.04)' : C.white }}
+                      />
+                      {newAppt.patient_id > 0 && (
+                        <span style={{ position: 'absolute', right: 10, top: 34, fontSize: 10, color: C.gold, fontWeight: 700 }}>✓ {newAppt.patientName}</span>
+                      )}
+                      {showPatientDrop && (patientQuery.length > 0) && (
+                        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: C.white, border: `1px solid ${C.border}`, borderRadius: 10, boxShadow: '0 8px 24px rgba(0,0,0,0.1)', zIndex: 10, maxHeight: 200, overflowY: 'auto', marginTop: 4 }}>
+                          {patientsLoading ? (
+                            <div style={{ padding: '12px 14px', fontSize: 12, color: C.textMuted, display: 'flex', alignItems: 'center', gap: 6 }}><Loader2 size={12} className="spin" /> Buscando...</div>
+                          ) : patients.length === 0 ? (
+                            <div style={{ padding: '12px 14px', fontSize: 12, color: C.textMuted }}>Sin resultados</div>
+                          ) : patients.map((p: any) => (
+                            <div key={p.patient_id} onClick={() => {
+                              setNewAppt(a => ({ ...a, patient_id: p.patient_id, patientName: `${p.first_name} ${p.last_name}` }))
+                              setPatientQuery(`${p.first_name} ${p.last_name}`)
+                              setShowPatientDrop(false)
+                            }} style={{ padding: '10px 14px', fontSize: 13, color: C.text, cursor: 'pointer', borderBottom: `1px solid ${C.borderLight}` }}
+                              onMouseEnter={e => e.currentTarget.style.background = C.bgPanel}
+                              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                              {p.first_name} {p.last_name}
+                              {p.identification_number && <span style={{ fontSize: 10, color: C.textMuted, marginLeft: 6 }}>· {p.identification_number}</span>}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Fecha + Hora */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                      <div>
+                        <label style={{ fontSize: 11, fontWeight: 700, color: C.textBrown, display: 'block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Fecha *</label>
+                        <input type="date" value={newAppt.appointment_date}
+                          onChange={e => setNewAppt(a => ({ ...a, appointment_date: e.target.value }))}
+                          style={{ width: '100%', padding: '10px 12px', border: `1px solid ${C.border}`, borderRadius: 10, fontSize: 13, color: C.text, outline: 'none', boxSizing: 'border-box', fontFamily: FONT_INTER }} />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: 11, fontWeight: 700, color: C.textBrown, display: 'block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Hora *</label>
+                        <input type="time" value={newAppt.appointment_time}
+                          onChange={e => setNewAppt(a => ({ ...a, appointment_time: e.target.value }))}
+                          style={{ width: '100%', padding: '10px 12px', border: `1px solid ${C.border}`, borderRadius: 10, fontSize: 13, color: C.text, outline: 'none', boxSizing: 'border-box', fontFamily: FONT_INTER }} />
+                      </div>
+                    </div>
+
+                    {/* Duración + Tipo */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                      <div>
+                        <label style={{ fontSize: 11, fontWeight: 700, color: C.textBrown, display: 'block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Duración (min)</label>
+                        <input type="number" min={5} step={5} value={newAppt.duration_minutes}
+                          onChange={e => setNewAppt(a => ({ ...a, duration_minutes: Number(e.target.value) }))}
+                          style={{ width: '100%', padding: '10px 12px', border: `1px solid ${C.border}`, borderRadius: 10, fontSize: 13, color: C.text, outline: 'none', boxSizing: 'border-box', fontFamily: FONT_INTER }} />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: 11, fontWeight: 700, color: C.textBrown, display: 'block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Tipo</label>
+                        <select value={newAppt.appointment_type}
+                          onChange={e => setNewAppt(a => ({ ...a, appointment_type: e.target.value }))}
+                          style={{ width: '100%', padding: '10px 12px', border: `1px solid ${C.border}`, borderRadius: 10, fontSize: 13, color: C.text, outline: 'none', boxSizing: 'border-box', fontFamily: FONT_INTER, background: C.white }}>
+                          {APPT_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Motivo */}
+                    <div>
+                      <label style={{ fontSize: 11, fontWeight: 700, color: C.textBrown, display: 'block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Motivo</label>
+                      <textarea value={newAppt.reason}
+                        onChange={e => setNewAppt(a => ({ ...a, reason: e.target.value }))}
+                        rows={2} placeholder="Motivo de la consulta (opcional)..."
+                        style={{ width: '100%', padding: '10px 12px', border: `1px solid ${C.border}`, borderRadius: 10, fontSize: 13, color: C.text, outline: 'none', boxSizing: 'border-box', fontFamily: FONT_INTER, resize: 'vertical' }} />
+                    </div>
+
+                    {/* Botones */}
+                    <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 4 }}>
+                      <button onClick={() => setShowNewAppt(false)}
+                        style={{ padding: '10px 20px', background: C.bgPanel, border: `1px solid ${C.border}`, borderRadius: 10, fontSize: 12, fontWeight: 700, color: C.textBrown, cursor: 'pointer', fontFamily: FONT_INTER }}>
+                        Cancelar
+                      </button>
+                      <button onClick={handleCreateAppt} disabled={savingAppt || !newAppt.patient_id || !newAppt.appointment_date || !newAppt.appointment_time}
+                        style={{ padding: '10px 24px', background: newAppt.patient_id ? `linear-gradient(135deg, ${C.gold}, ${C.goldLight})` : C.bgPanel, border: 'none', borderRadius: 10, fontSize: 12, fontWeight: 700, color: newAppt.patient_id ? C.white : C.textMuted, cursor: newAppt.patient_id ? 'pointer' : 'not-allowed', fontFamily: FONT_INTER, display: 'flex', alignItems: 'center', gap: 6 }}>
+                        {savingAppt ? <><Loader2 size={13} className="spin" /> Guardando...</> : 'Guardar Cita'}
+                      </button>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            )}
 
           </div>
         </main>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Building2, Plus, Calendar, MapPin, User, Clock, ChevronRight, Edit2, Trash2, Repeat, Search, SlidersHorizontal, X, ToggleLeft, ToggleRight } from 'lucide-react';
+import { Building2, Plus, Calendar, MapPin, User, Clock, ChevronRight, Edit2, Trash2, Repeat, Search, SlidersHorizontal, X, ToggleLeft, ToggleRight, Briefcase } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FormularioServicio } from './FormularioServicio';
 import { generateOccurrences, DIA_NOMBRES } from './servicioSchema';
@@ -46,6 +46,15 @@ interface ServiceGroup {
   sessionCount: number;
   ids: string[];
   representative: any;
+}
+
+interface CatalogService {
+  prof_service_id: number;
+  name: string;
+  duration_minutes: number;
+  category: string;
+  description: string | null;
+  price: number | null;
 }
 
 function groupOffers(offers: any[]): ServiceGroup[] {
@@ -229,6 +238,15 @@ export const ServiciosDashboard: React.FC = () => {
   const [filterType, setFilterType]       = useState<string>('all');
   const filtersRef = useRef<HTMLDivElement>(null);
 
+  // ── Catalog tab state ─────────────────────────────────────────────────────
+  const [activeTab, setActiveTab] = useState<'catalog' | 'sessions'>('catalog');
+  const [catalog, setCatalog] = useState<CatalogService[]>([]);
+  const [catalogLoading, setCatalogLoading] = useState(false);
+  const [deletingCatalogId, setDeletingCatalogId] = useState<number | null>(null);
+  const [showNewServiceModal, setShowNewServiceModal] = useState(false);
+  const [newService, setNewService] = useState({ name: '', duration_minutes: 30, category: 'consultation', description: '' });
+  const [savingService, setSavingService] = useState(false);
+
   const showToast = (msg: string, ok: boolean) => {
     setToast({ msg, ok });
     setTimeout(() => setToast(null), ok ? 3000 : 6000);
@@ -242,7 +260,17 @@ export const ServiciosDashboard: React.FC = () => {
     } catch { /* ignore */ }
   };
 
-  useEffect(() => { loadServicios(); }, []);
+  const loadCatalog = async () => {
+    setCatalogLoading(true);
+    try {
+      const res = await fetch('/api/services/catalog', { headers: authH() });
+      const json = await res.json();
+      if (json.success) setCatalog(json.data || []);
+    } catch { /* ignore */ }
+    finally { setCatalogLoading(false); }
+  };
+
+  useEffect(() => { loadServicios(); loadCatalog(); }, []);
 
   // Close filter panel on outside click
   useEffect(() => {
@@ -310,6 +338,50 @@ export const ServiciosDashboard: React.FC = () => {
       showToast('Error al eliminar las sesiones', false);
     } finally {
       setDeletingKey(null);
+    }
+  };
+
+  // ── Create catalog service ────────────────────────────────────────────────
+  const handleCreateService = async () => {
+    if (!newService.name.trim()) return;
+    setSavingService(true);
+    try {
+      const res = await fetch('/api/services/catalog', {
+        method: 'POST', headers: authH(),
+        body: JSON.stringify(newService),
+      });
+      const json = await res.json();
+      if (res.ok && json.success) {
+        showToast('Servicio creado ✓', true);
+        setShowNewServiceModal(false);
+        setNewService({ name: '', duration_minutes: 30, category: 'consultation', description: '' });
+        await loadCatalog();
+      } else {
+        showToast(json.message ?? 'Error al crear el servicio', false);
+      }
+    } catch {
+      showToast('Error de red', false);
+    } finally {
+      setSavingService(false);
+    }
+  };
+
+  // ── Delete catalog service ────────────────────────────────────────────────
+  const handleDeleteCatalogService = async (profServiceId: number) => {
+    setDeletingCatalogId(profServiceId);
+    try {
+      const res = await fetch(`/api/services/catalog/${profServiceId}`, { method: 'DELETE', headers: authH() });
+      const json = await res.json();
+      if (res.ok) {
+        showToast('Servicio eliminado', true);
+        setCatalog(prev => prev.filter(s => s.prof_service_id !== profServiceId));
+      } else {
+        showToast(json.message ?? 'Error al eliminar', false);
+      }
+    } catch {
+      showToast('Error de red', false);
+    } finally {
+      setDeletingCatalogId(null);
     }
   };
 
@@ -497,7 +569,14 @@ export const ServiciosDashboard: React.FC = () => {
                   </p>
                 </div>
                 <button
-                  onClick={() => { setEditingGroup(null); setIsFormOpen(true); }}
+                  onClick={() => {
+                    if (activeTab === 'catalog') {
+                      setShowNewServiceModal(true);
+                    } else {
+                      setEditingGroup(null);
+                      setIsFormOpen(true);
+                    }
+                  }}
                   style={{ background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, padding: '12px 24px', borderRadius: 12, border: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', boxShadow: `0 4px 16px rgba(139,92,246,0.2)`, fontFamily: FONT_INTER, flexShrink: 0 }}
                 >
                   <Plus size={18} strokeWidth={3} /> Nuevo Servicio
@@ -632,8 +711,108 @@ export const ServiciosDashboard: React.FC = () => {
               </div>
             </div>
 
-            {/* ── EMPTY STATE ── */}
-            {groups.length === 0 ? (
+            {/* ── TABS ── */}
+            <div style={{ display: 'flex', gap: 4, marginBottom: 24, borderBottom: `2px solid ${C.borderLight}`, paddingBottom: 0 }}>
+              {([
+                { key: 'catalog',  label: 'Catálogo Médico',      count: catalog.length },
+                { key: 'sessions', label: 'Sesiones Programadas', count: groups.length  },
+              ] as const).map(tab => (
+                <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+                  style={{
+                    padding: '10px 20px', border: 'none', cursor: 'pointer', fontFamily: FONT_INTER,
+                    fontWeight: 700, fontSize: 13, background: 'none',
+                    color: activeTab === tab.key ? C.gold : C.textMuted,
+                    borderBottom: `2px solid ${activeTab === tab.key ? C.gold : 'transparent'}`,
+                    marginBottom: -2, transition: 'all 0.18s',
+                  }}
+                >
+                  {tab.label}
+                  <span style={{ marginLeft: 6, fontSize: 11, fontWeight: 800, padding: '2px 7px', borderRadius: 99,
+                    background: activeTab === tab.key ? `rgba(139,92,246,0.1)` : 'rgba(0,0,0,0.05)',
+                    color: activeTab === tab.key ? C.gold : C.textMuted,
+                  }}>
+                    {tab.count}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* ── CATÁLOGO MÉDICO ── */}
+            {activeTab === 'catalog' && (
+              <>
+                {catalogLoading ? (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }}>
+                    {[1,2,3].map(i => (
+                      <div key={i} style={{ height: 90, borderRadius: 14, background: 'rgba(139,92,246,0.06)', animation: 'pulse 1.5s ease-in-out infinite' }} />
+                    ))}
+                  </div>
+                ) : catalog.length === 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                    background: C.white, borderRadius: 24, border: `1px solid ${C.borderLight}`, padding: '60px 32px' }}>
+                    <div style={{ width: 56, height: 56, background: 'rgba(139,92,246,0.08)', borderRadius: '50%',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
+                      <Briefcase size={24} color={C.gold} />
+                    </div>
+                    <h3 style={{ fontFamily: FONT_BODONI, fontSize: 20, fontWeight: 700, color: C.text, marginBottom: 8 }}>
+                      Aún no hay servicios
+                    </h3>
+                    <p style={{ color: C.textMedium, textAlign: 'center', maxWidth: 360, marginBottom: 20, lineHeight: 1.5 }}>
+                      Créalos desde aquí o desde CuidameDoc (Mis Servicios).
+                    </p>
+                    <button onClick={() => setShowNewServiceModal(true)}
+                      style={{ color: C.gold, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4,
+                        background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 14, fontFamily: FONT_INTER }}>
+                      Crear primer servicio <ChevronRight size={16} />
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }}>
+                    {catalog.map((svc, i) => {
+                      const CATEGORY_LABEL: Record<string, string> = {
+                        consultation: 'Consulta', therapy: 'Terapia', procedure: 'Procedimiento', other: 'Otro',
+                      };
+                      const isDeleting = deletingCatalogId === svc.prof_service_id;
+                      return (
+                        <motion.div key={svc.prof_service_id} layout initial={{ opacity: 0, y: 12 }}
+                          animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
+                          style={{ background: C.white, border: `1.5px solid ${C.borderLight}`, borderRadius: 16,
+                            overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', display: 'flex', flexDirection: 'column' }}
+                        >
+                          <div style={{ height: 3, background: `linear-gradient(90deg, ${C.gold}, ${C.goldLight})` }} />
+                          <div style={{ padding: '16px 18px', flex: 1 }}>
+                            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 10 }}>
+                              <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+                                padding: '3px 9px', borderRadius: 6, background: 'rgba(37,99,235,0.08)', color: '#2563EB' }}>
+                                {CATEGORY_LABEL[svc.category] ?? svc.category}
+                              </span>
+                              <button onClick={() => handleDeleteCatalogService(svc.prof_service_id)} disabled={isDeleting}
+                                style={{ width: 28, height: 28, borderRadius: 7, background: 'rgba(239,68,68,0.07)', border: 'none',
+                                  cursor: isDeleting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center',
+                                  justifyContent: 'center', color: '#DC2626', opacity: isDeleting ? 0.5 : 1 }}>
+                                <Trash2 size={12} />
+                              </button>
+                            </div>
+                            <h3 style={{ fontFamily: FONT_BODONI, fontSize: 17, fontWeight: 700, color: C.text, margin: '0 0 6px', lineHeight: 1.25 }}>
+                              {svc.name}
+                            </h3>
+                            {svc.description && (
+                              <p style={{ fontSize: 12, color: C.textMuted, margin: '0 0 10px', lineHeight: 1.4 }}>{svc.description}</p>
+                            )}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: C.textMedium, fontSize: 12, fontWeight: 500 }}>
+                              <Clock size={13} color={C.goldLight} />
+                              {svc.duration_minutes} min
+                            </div>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* ── SESIONES PROGRAMADAS ── */}
+            {activeTab === 'sessions' && (groups.length === 0 ? (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.white, borderRadius: 24, border: `1px solid ${C.borderLight}`, padding: '80px 32px' }}>
                 <div style={{ width: 64, height: 64, background: 'rgba(139,92,246,0.08)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
                   {search || activeFilterCount > 0 ? <Search size={28} color={C.gold} /> : <Calendar size={28} color={C.gold} />}
@@ -812,6 +991,88 @@ export const ServiciosDashboard: React.FC = () => {
                     );
                   })}
                 </AnimatePresence>
+              </div>
+            ))}
+
+            {/* ── MODAL NUEVO SERVICIO CATÁLOGO ── */}
+            {showNewServiceModal && (
+              <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 200,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
+                onClick={() => setShowNewServiceModal(false)}>
+                <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }}
+                  onClick={e => e.stopPropagation()}
+                  style={{ background: C.white, borderRadius: 20, padding: 32, width: '100%', maxWidth: 420,
+                    boxShadow: '0 24px 64px rgba(0,0,0,0.16)' }}>
+                  <h2 style={{ fontFamily: FONT_BODONI, fontSize: 24, fontWeight: 700, color: C.text, margin: '0 0 20px' }}>
+                    Nuevo Servicio
+                  </h2>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                    <div>
+                      <label style={{ fontSize: 12, fontWeight: 700, color: C.textBrown, display: 'block', marginBottom: 6, fontFamily: FONT_INTER }}>
+                        Nombre *
+                      </label>
+                      <input value={newService.name} onChange={e => setNewService(s => ({ ...s, name: e.target.value }))}
+                        placeholder="Ej: Medicina General"
+                        style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${C.borderLight}`,
+                          fontSize: 14, fontFamily: FONT_INTER, outline: 'none', boxSizing: 'border-box' }}
+                        onFocus={e => e.currentTarget.style.borderColor = C.gold}
+                        onBlur={e => e.currentTarget.style.borderColor = C.borderLight}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: 12, fontWeight: 700, color: C.textBrown, display: 'block', marginBottom: 6, fontFamily: FONT_INTER }}>
+                        Duración (minutos) *
+                      </label>
+                      <input type="number" min={5} value={newService.duration_minutes}
+                        onChange={e => setNewService(s => ({ ...s, duration_minutes: parseInt(e.target.value) || 30 }))}
+                        style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${C.borderLight}`,
+                          fontSize: 14, fontFamily: FONT_INTER, outline: 'none', boxSizing: 'border-box' }}
+                        onFocus={e => e.currentTarget.style.borderColor = C.gold}
+                        onBlur={e => e.currentTarget.style.borderColor = C.borderLight}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: 12, fontWeight: 700, color: C.textBrown, display: 'block', marginBottom: 6, fontFamily: FONT_INTER }}>
+                        Categoría
+                      </label>
+                      <select value={newService.category} onChange={e => setNewService(s => ({ ...s, category: e.target.value }))}
+                        style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${C.borderLight}`,
+                          fontSize: 14, fontFamily: FONT_INTER, outline: 'none', boxSizing: 'border-box', background: C.white }}>
+                        <option value="consultation">Consulta</option>
+                        <option value="therapy">Terapia</option>
+                        <option value="procedure">Procedimiento</option>
+                        <option value="other">Otro</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={{ fontSize: 12, fontWeight: 700, color: C.textBrown, display: 'block', marginBottom: 6, fontFamily: FONT_INTER }}>
+                        Descripción (opcional)
+                      </label>
+                      <textarea value={newService.description}
+                        onChange={e => setNewService(s => ({ ...s, description: e.target.value }))}
+                        rows={2} placeholder="Descripción breve del servicio…"
+                        style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: `1.5px solid ${C.borderLight}`,
+                          fontSize: 14, fontFamily: FONT_INTER, outline: 'none', boxSizing: 'border-box', resize: 'vertical' }}
+                        onFocus={e => e.currentTarget.style.borderColor = C.gold}
+                        onBlur={e => e.currentTarget.style.borderColor = C.borderLight}
+                      />
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
+                    <button onClick={() => setShowNewServiceModal(false)}
+                      style={{ flex: 1, padding: '12px', borderRadius: 12, border: `1.5px solid ${C.borderLight}`,
+                        background: 'transparent', color: C.textBrown, fontWeight: 700, cursor: 'pointer', fontFamily: FONT_INTER }}>
+                      Cancelar
+                    </button>
+                    <button onClick={handleCreateService} disabled={savingService || !newService.name.trim()}
+                      style={{ flex: 1, padding: '12px', borderRadius: 12, border: 'none',
+                        background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white,
+                        fontWeight: 700, cursor: savingService || !newService.name.trim() ? 'not-allowed' : 'pointer',
+                        fontFamily: FONT_INTER, opacity: savingService || !newService.name.trim() ? 0.6 : 1 }}>
+                      {savingService ? 'Guardando…' : 'Crear servicio'}
+                    </button>
+                  </div>
+                </motion.div>
               </div>
             )}
           </motion.div>

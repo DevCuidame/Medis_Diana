@@ -3,17 +3,32 @@
 #  VM: cuidame-app | IP: 35.239.162.75 | Proyecto: esmart-health
 #
 #  USO:
-#    .\deploy-medisdiana.ps1
-#    .\deploy-medisdiana.ps1 -DbPass "OtraPass!" -SkipUpload
+#    .\deploy-medisdiana.ps1 -DocDianaPassword "contraseña-de-diana"
+#    .\deploy-medisdiana.ps1 -DbPass "OtraPass!" -DocDianaPassword "contraseña-de-diana" -SkipUpload
 # ============================================================
 
 param(
-    [string]$DbPass    = "medisdiana2024Secure!",
-    [string]$JwtSecret = "",
-    [string]$CertbotEmail = "admin@medisdiana.com",
+    [string]$DbPass           = "medisdiana2024Secure!",
+    [string]$JwtSecret        = "",
+    [string]$CertbotEmail     = "admin@medisdiana.com",
+    [string]$DocDianaEmail    = "dradianamedfamiliar@gmail.com",
+    [string]$DocDianaPassword = "",
     [switch]$SkipUpload
 )
 $DbPassword = $DbPass   # alias interno para compatibilidad con placeholders
+
+# Leer credenciales del .env local si no se pasaron como parámetros
+$localEnv = Join-Path $PSScriptRoot "apps/backend/.env"
+if (Test-Path $localEnv) {
+    $envLines = Get-Content $localEnv
+    if (-not $DocDianaPassword) {
+        $DocDianaPassword = ($envLines | Where-Object { $_ -match '^DOC_DIANA_PASSWORD=' }) -replace '^DOC_DIANA_PASSWORD=', ''
+    }
+    if ($DocDianaEmail -eq "dradianamedfamiliar@gmail.com") {
+        $fromEnv = ($envLines | Where-Object { $_ -match '^DOC_DIANA_EMAIL=' }) -replace '^DOC_DIANA_EMAIL=', ''
+        if ($fromEnv) { $DocDianaEmail = $fromEnv }
+    }
+}
 
 $ErrorActionPreference = "Continue"
 
@@ -339,6 +354,9 @@ EMAIL_SECURE=true
 EMAIL_PORT=465
 EMAIL_HOST=smtp.gmail.com
 ADMINPW=${ADMIN_PW}
+DOC_API_URL=https://doc-api.cuidame.tech/api
+DOC_DIANA_EMAIL=__DOC_DIANA_EMAIL__
+DOC_DIANA_PASSWORD=__DOC_DIANA_PASSWORD__
 ENVEOF
 
 echo "--- Instalando dependencias npm ---"
@@ -359,8 +377,10 @@ ls -la "${APP_DIR}"
     -replace '__APP_PORT__',   $APP_PORT `
     -replace '__WEB_PORT__',   $WEB_PORT `
     -replace '__SITE_HOST__',  $SITE_HOST `
-    -replace '__JWT_SECRET__', $JwtSecret `
-    -replace '__VM_IP__',      $VM_IP
+    -replace '__JWT_SECRET__',        $JwtSecret `
+    -replace '__VM_IP__',             $VM_IP `
+    -replace '__DOC_DIANA_EMAIL__',   $DocDianaEmail `
+    -replace '__DOC_DIANA_PASSWORD__',$DocDianaPassword
 
 Invoke-RemoteBash -Label "setup-project" -Script $s07
 Write-OK "Proyecto extraido + .env creado + npm install completado"
