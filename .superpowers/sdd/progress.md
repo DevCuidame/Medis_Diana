@@ -4,7 +4,7 @@ Plan: docs/superpowers/plans/2026-07-17-inventario-cotizaciones.md
 Worktree branch: feature/inventario-cotizaciones
 DB target: medisdiana_prod on VM cuidame-app via SSH tunnel 127.0.0.1:5433 (per user instruction — real test server, not local Postgres)
 
-Task 1: pending
+Task 1: complete (commits 1c8aca1..42d1cbd, review clean)
 Task 2: pending
 Task 3: pending
 Task 4: pending
