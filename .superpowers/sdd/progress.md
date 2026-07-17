@@ -7,7 +7,7 @@ DB target: medisdiana_prod on VM cuidame-app via SSH tunnel 127.0.0.1:5433 (per 
 Task 1: complete (commits 1c8aca1..42d1cbd, review clean)
 Task 2: complete (commits b6a0b5d..3b5d7f2, review clean)
 Task 3: complete (commits 3a93e87..9c2d255, review clean)
-Task 4: pending
+Task 4: complete (commits d225be0..70938f9, review clean; MINOR noted: external-quote.repository.test.ts has no cleanup, leaves rows on each re-run - inherited from plan-mandated test code, not blocking)
 Task 5: pending
 Task 6: pending
 Task 7: pending
