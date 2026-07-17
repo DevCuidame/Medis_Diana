@@ -10,6 +10,7 @@ import membershipsRoutes from './memberships.routes.js';
 import userMembershipsRoutes from './user-memberships.routes.js';
 import benefitsRoutes from './benefits.routes.js';
 import discountsRoutes from './discounts.routes.js';
+import inventoryRoutes from './inventory.routes.js';
 
 const router: Router = Router();
 
@@ -25,5 +26,6 @@ router.use('/memberships', membershipsRoutes);
 router.use('/user-memberships', userMembershipsRoutes);
 router.use('/benefits', benefitsRoutes);
 router.use('/discounts', discountsRoutes);
+router.use('/inventory', inventoryRoutes);
 
 export default router;
