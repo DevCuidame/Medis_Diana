@@ -175,6 +175,15 @@ async function setupDatabase() {
     await pool.query(sql018);
     console.log('✅ Migration 018 successful!');
 
+    // Run migration 019
+    console.log('🔄 Running migration 019 (Inventory Items)...');
+    const sql019 = fs.readFileSync(
+      path.resolve('migrations', '019_create_inventory_items.sql'),
+      'utf8'
+    );
+    await pool.query(sql019);
+    console.log('✅ Migration 019 successful!');
+
     console.log('\n🌟 MIGRATIONS COMPLETE! 🌟');
   } catch (err) {
     console.error('❌ Setup database execution failed:', err);
