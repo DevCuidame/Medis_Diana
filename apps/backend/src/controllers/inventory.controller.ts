@@ -6,7 +6,9 @@ export async function searchInventory(req: Request, res: Response): Promise<void
     const search = typeof req.query.search === 'string' ? req.query.search : undefined;
     const category = typeof req.query.category === 'string' ? req.query.category : undefined;
     const items = await InventoryRepository.listActive({ search, category });
-    res.json({ success: true, data: { items } });
+    // Endpoint público (sin auth) — no exponer stock/notas internas, solo lo necesario para cotizar.
+    const publicItems = items.map(({ id, name, category, unit, price }) => ({ id, name, category, unit, price }));
+    res.json({ success: true, data: { items: publicItems } });
   } catch (err: unknown) {
     res.status(500).json({ success: false, error: (err as Error).message });
   }

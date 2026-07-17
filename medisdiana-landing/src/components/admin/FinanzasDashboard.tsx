@@ -243,6 +243,17 @@ export const FinanzasDashboard: React.FC = () => {
     } catch { /* ignore */ }
   };
 
+  const fetchConfirmedQuotesTotal = async () => {
+    try {
+      const res = await fetch('/api/external-quotes?status=confirmed', { headers: adminHeaders() });
+      const data = await res.json();
+      if (data.success) {
+        const total = (data.data.quotes as ExternalQuote[]).reduce((sum, q) => sum + (q.totalAmount || 0), 0);
+        setConfirmedQuotesTotal(total);
+      }
+    } catch { /* ignore */ }
+  };
+
   const handleRejectPayment = async (id: string, userName: string) => {
     setRejectingId(id);
     try {
@@ -391,6 +402,7 @@ export const FinanzasDashboard: React.FC = () => {
     fetchPending();
     fetchPendingServices();
     fetchExternalQuotes();
+    fetchConfirmedQuotesTotal();
   }, []);
 
   useEffect(() => {

@@ -158,7 +158,9 @@ export const InventarioDashboard: React.FC = () => {
     const nextQuantity = Math.max(0, it.quantity + delta)
     setItems(prev => prev.map(x => x.id === it.id ? { ...x, quantity: nextQuantity } : x))
     try {
-      await fetch(`/api/inventory/${it.id}`, { method: 'PATCH', headers: adminHeaders(), body: JSON.stringify({ quantity: nextQuantity }) })
+      const res = await fetch(`/api/inventory/${it.id}`, { method: 'PATCH', headers: adminHeaders(), body: JSON.stringify({ quantity: nextQuantity }) })
+      const data = await res.json()
+      if (!data.success) await fetchItems()
     } catch {
       await fetchItems()
     }
