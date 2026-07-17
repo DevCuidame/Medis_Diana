@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Building2, Users, CalendarDays, DollarSign, CreditCard, CircleHelp, LogOut,
-  Search, Bell, RefreshCw, ChevronDown, ChevronRight, ChevronLeft,
-  ArrowRight, Briefcase, LayoutDashboard, Loader2, Clock, Menu, Percent, Plus, X, } from 'lucide-react'
+import { Search, Bell, RefreshCw, ChevronRight, ChevronLeft,
+  ArrowRight, Loader2, Clock, Menu, Plus, X, } from 'lucide-react'
+import { AdminSidebar } from './AdminSidebar'
 import './MainDashboard.css'
 
 const C = {
@@ -14,17 +14,6 @@ const C = {
 }
 const FONT_BODONI = '"Bodoni Moda", Georgia, serif'
 const FONT_INTER  = '"Hanken Grotesk", Inter, system-ui, sans-serif'
-
-const NAV_ITEMS = [
-  { icon: LayoutDashboard, label: 'Dashboard',     active: false },
-  { icon: Users,           label: 'Usuarios',      active: false },
-  { icon: CalendarDays,    label: 'Calendario',    active: true  },
-  { icon: Building2, label: 'Infraestructura', active: false },
-  { icon: Briefcase, label: 'Servicios', active: false },
-  { icon: Percent,       label: 'Descuentos',    active: false },
-  { icon: DollarSign,    label: 'Finanzas',      active: false },
-  { icon: CreditCard,    label: 'Planes',    active: false },
-]
 
 const OFFER_TYPE_LABEL: Record<string, string> = {
   appointment: 'Cita Individual', open_consultation: 'Consulta Abierta', workshop: 'Sesión Grupal', event: 'Evento',
@@ -215,9 +204,7 @@ export const AdminClasses: React.FC = () => {
   const [monthDate, setMonthDate]           = useState(() => new Date())
   const [offers, setOffers]                 = useState<any[]>([])
   const [loading, setLoading]               = useState(true)
-  const [hoveredNav, setHoveredNav]         = useState<number | null>(null)
   const [search, setSearch]                 = useState('')
-  const [isInfraExpanded, setIsInfraExpanded] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   // Nueva cita modal
@@ -324,17 +311,6 @@ export const AdminClasses: React.FC = () => {
     } finally { setSavingAppt(false) }
   }
 
-  const handleNavClick = (label: string) => {
-    if (label === 'Dashboard')     { navigate('/admin/dashboard');   setIsMobileMenuOpen(false) }
-    if (label === 'Calendario')    { navigate('/admin/classes');      setIsMobileMenuOpen(false) }
-    if (label === 'Usuarios')      { navigate('/admin/users');        setIsMobileMenuOpen(false) }
-    if (label === 'Descuentos')    { navigate('/admin/discounts');    setIsMobileMenuOpen(false) }
-    if (label === 'Finanzas')      { navigate('/admin/finances');     setIsMobileMenuOpen(false) }
-    if (label === 'Planes')        { navigate('/admin/memberships');  setIsMobileMenuOpen(false) }
-    if (label === 'Infraestructura') setIsInfraExpanded(v => !v)
-    if (label === 'Servicios') { navigate('/admin/services/create'); if (typeof setIsMobileMenuOpen !== 'undefined') setIsMobileMenuOpen(false); }
-  }
-
   // Week days (7 days from weekStart)
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i))
   const weekEnd  = weekDays[6]
@@ -386,65 +362,8 @@ export const AdminClasses: React.FC = () => {
         .spin { animation: spin 1s linear infinite; }
       `}</style>
 
-      {/* Mobile overlay */}
-      <div className={`mobile-overlay ${isMobileMenuOpen ? 'open' : ''}`} onClick={() => setIsMobileMenuOpen(false)} />
-
       {/* ── SIDEBAR ── */}
-      <aside className={`sidebar ${isMobileMenuOpen ? 'open' : ''}`} style={{ background: C.bgPanel, borderRight: `1px solid ${C.border}` }}>
-        <div style={{ padding: '28px 20px 20px', borderBottom: `1px solid ${C.borderLight}` }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 38, height: 46, background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <span style={{ fontFamily: FONT_BODONI, fontSize: 20, fontStyle: 'italic', fontWeight: 700, color: C.white }}>A</span>
-            </div>
-            <div>
-              <div style={{ fontFamily: FONT_BODONI, fontSize: 17, fontWeight: 600, color: C.gold, lineHeight: 1.2 }}>MEDIS</div>
-              <div style={{ fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 2 }}>Panel Admin</div>
-            </div>
-          </div>
-        </div>
-
-        <nav style={{ flex: 1, padding: '16px 10px' }}>
-          <span style={{ fontSize: 9, fontWeight: 700, color: C.textMuted, letterSpacing: '0.18em', textTransform: 'uppercase', padding: '0 10px', display: 'block', marginBottom: 10 }}>Menú Principal</span>
-          {NAV_ITEMS.map((item, i) => {
-            const Icon = item.icon
-            const isHovered = hoveredNav === i
-            const isActive  = item.active
-            return (
-              <div key={item.label} style={{ marginBottom: 4 }}>
-                <button onClick={() => handleNavClick(item.label)} onMouseEnter={() => setHoveredNav(i)} onMouseLeave={() => setHoveredNav(null)}
-                  style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 8, border: 'none', background: isActive ? `linear-gradient(90deg, ${C.gold}, ${C.goldLight})` : isHovered ? 'rgba(139,92,246,0.07)' : 'transparent', cursor: 'pointer', transition: 'background 0.18s' }}
-                >
-                  <Icon size={16} color={isActive ? C.white : isHovered ? C.gold : C.textMedium} strokeWidth={isActive ? 2.5 : 2} />
-                  <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: isActive ? C.white : isHovered ? C.gold : C.textBrown, transition: 'color 0.18s' }}>{item.label}</span>
-                  {item.label === 'Infraestructura' && <div style={{ marginLeft: 'auto' }}>{isInfraExpanded ? <ChevronDown size={14} color={isActive ? C.white : C.textMedium} /> : <ChevronRight size={14} color={isActive ? C.white : C.textMedium} />}</div>}
-                </button>
-                {item.label === 'Infraestructura' && isInfraExpanded && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginLeft: 34, marginTop: 4, marginBottom: 8, borderLeft: `2px solid ${C.goldLight}`, paddingLeft: 8 }}>
-                    {[['Sedes','/admin/services/locations'],['Espacios','/admin/services/rooms']].map(([l,p]) => (
-                      <span key={l} onClick={() => navigate(p)} style={{ fontSize: 11, fontWeight: 600, color: C.textBrown, cursor: 'pointer', padding: '6px 4px', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = C.gold} onMouseLeave={e => e.currentTarget.style.color = C.textBrown}>{l}</span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </nav>
-
-        <div style={{ padding: '12px 10px' }}>
-        </div>
-
-        <div style={{ padding: '10px 10px 20px', borderTop: `1px solid ${C.borderLight}` }}>
-          <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 8, textDecoration: 'none', color: C.textMedium }}>
-            <CircleHelp size={16} strokeWidth={2} />
-            <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Ayuda</span>
-          </a>
-          <button onClick={() => { localStorage.removeItem('accessToken'); localStorage.removeItem('refreshToken'); navigate('/login') }}
-            style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 8, background: 'none', border: 'none', cursor: 'pointer', color: C.textMedium }}>
-            <LogOut size={16} strokeWidth={2} />
-            <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Cerrar Sesión</span>
-          </button>
-        </div>
-      </aside>
+      <AdminSidebar isMobileOpen={isMobileMenuOpen} onCloseMobile={() => setIsMobileMenuOpen(false)} />
 
       {/* ── MAIN ── */}
       <div className="main-content">

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Building2, Users, CalendarDays, DollarSign, LogOut, Briefcase, ChevronDown, ChevronRight,
-  LayoutDashboard, CreditCard, Menu, Percent, Plus, X, Pencil, Trash2, Tag, } from 'lucide-react';
+import { Menu, Percent, Plus, X, Pencil, Trash2, Tag, } from 'lucide-react';
+import { AdminSidebar } from './AdminSidebar';
 import './MainDashboard.css';
 
 const C = {
@@ -17,16 +16,6 @@ const C = {
   borderLight: '#DDD6FE',
 };
 
-const NAV_ITEMS = [
-  { icon: LayoutDashboard, label: 'Dashboard',  active: false },
-  { icon: Users,           label: 'Usuarios',   active: false },
-  { icon: CalendarDays,    label: 'Calendario', active: false },
-  { icon: Building2, label: 'Infraestructura', active: false },
-  { icon: Briefcase, label: 'Servicios', active: false },
-  { icon: Percent,         label: 'Descuentos', active: true  },
-  { icon: DollarSign,      label: 'Finanzas',   active: false },
-  { icon: CreditCard,      label: 'Planes',     active: false },
-];
 
 type DiscountType = 'percentage' | 'fixed_amount' | 'buy_x_get_y';
 
@@ -88,11 +77,8 @@ function typeBadge(d: DiscountPublic): { label: string; color: string } {
 }
 
 export function DescuentosDashboard() {
-  const navigate = useNavigate();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isInfraExpanded, setIsInfraExpanded] = useState(false);
-  const [hoveredNav, setHoveredNav] = useState<number | null>(null);
 
   const [discounts, setDiscounts] = useState<DiscountPublic[]>([]);
   const [specialties, setSpecialties] = useState<Specialty[]>([]);
@@ -122,18 +108,6 @@ export function DescuentosDashboard() {
       if (d.success) setSpecialties(d.data.specialties ?? []);
     }).catch(() => {});
   }, []);
-
-  const handleNavClick = (label: string) => {
-    if (label === 'Dashboard') navigate('/admin/dashboard');
-    else if (label === 'Calendario') navigate('/admin/classes');
-    else if (label === 'Usuarios') navigate('/admin/users');
-    else if (label === 'Descuentos') navigate('/admin/discounts');
-    else if (label === 'Finanzas') navigate('/admin/finances');
-    else if (label === 'Planes') navigate('/admin/memberships');
-    else if (label === 'Infraestructura') setIsInfraExpanded(v => !v)
-    if (label === 'Servicios') { navigate('/admin/services/create'); if (typeof setIsMobileMenuOpen !== 'undefined') setIsMobileMenuOpen(false); };
-    if (label !== 'Servicios') setIsMobileMenuOpen(false);
-  };
 
   const openCreate = () => {
     setEditingId(null);
@@ -232,78 +206,10 @@ export function DescuentosDashboard() {
 
   return (
     <div className={`dashboard-container ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
-      <div className={`mobile-overlay ${isMobileMenuOpen ? 'open' : ''}`} onClick={() => setIsMobileMenuOpen(false)} />
-
       {/* ── SIDEBAR ── */}
-      <aside className={`sidebar ${isMobileMenuOpen ? 'open' : ''}`}>
-        <div style={{ padding: '28px 20px 20px', borderBottom: `1px solid ${C.borderLight}` }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 38, height: 46, background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <span style={{ fontFamily: '"Bodoni Moda", Georgia, serif', fontSize: 20, fontStyle: 'italic', fontWeight: 700, color: C.white }}>A</span>
-            </div>
-            <div>
-              <div style={{ fontFamily: '"Bodoni Moda", Georgia, serif', fontSize: 17, fontWeight: 600, color: C.gold, lineHeight: 1.2 }}>MEDIS</div>
-              <div style={{ fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 2 }}>Panel Admin</div>
-            </div>
-          </div>
-        </div>
-
-        <nav style={{ flex: 1, padding: '20px 14px' }}>
-          <span style={{ fontSize: 9, fontWeight: 700, color: C.textMuted, letterSpacing: '0.18em', textTransform: 'uppercase', padding: '0 10px', display: 'block', marginBottom: 10 }}>Menú Principal</span>
-          {NAV_ITEMS.map((item, i) => {
-            const Icon = item.icon;
-            const isHovered = hoveredNav === i;
-            const isActive = item.active;
-            return (
-              <div key={item.label} style={{ marginBottom: 4 }}>
-                <button
-                  onClick={() => handleNavClick(item.label)}
-                  onMouseEnter={() => setHoveredNav(i)}
-                  onMouseLeave={() => setHoveredNav(null)}
-                  style={{
-                    width: '100%', display: 'flex', alignItems: 'center', gap: 12,
-                    padding: '12px 14px', borderRadius: 10,
-                    background: isActive ? `linear-gradient(90deg, ${C.gold}, ${C.goldLight})` : isHovered ? 'rgba(139,92,246,0.07)' : 'transparent',
-                    border: 'none', transition: 'all 0.2s ease', cursor: 'pointer', position: 'relative', overflow: 'hidden',
-                  }}
-                >
-                  <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', width: '100%' }}>
-                    <Icon size={18} color={isActive ? C.white : isHovered ? C.gold : C.textMedium} strokeWidth={isActive ? 2.5 : 2} style={{ flexShrink: 0 }} />
-                    <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: '0.05em', marginLeft: 12, color: isActive ? C.white : isHovered ? C.gold : C.textBrown }}>
-                      {item.label}
-                    </span>
-                    {item.label === 'Infraestructura' && (
-                      <div style={{ marginLeft: 'auto' }}>
-                        {isInfraExpanded ? <ChevronDown size={14} color={C.textMedium} /> : <ChevronRight size={14} color={C.textMedium} />}
-                      </div>
-                    )}
-                  </div>
-                </button>
-                <AnimatePresence>
-                  {item.label === 'Infraestructura' && isInfraExpanded && (
-                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} style={{ overflow: 'hidden' }}>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginLeft: 38, marginTop: 8, marginBottom: 8, borderLeft: `2px solid ${C.goldLight}`, paddingLeft: 12 }}>
-                        <span onClick={() => navigate('/admin/services/locations')} style={{ fontSize: 12, fontWeight: 600, color: C.textBrown, cursor: 'pointer', padding: '6px 4px' }}>Sedes</span>
-                        <span onClick={() => navigate('/admin/services/rooms')} style={{ fontSize: 12, fontWeight: 600, color: C.textBrown, cursor: 'pointer', padding: '6px 4px' }}>Espacios</span>
-                        </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            );
-          })}
-        </nav>
-
-        <div style={{ padding: '16px 20px 24px', borderTop: `1px solid ${C.borderLight}` }}>
-          <button
-            onClick={() => { localStorage.removeItem('accessToken'); localStorage.removeItem('refreshToken'); navigate('/login'); }}
-            style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 10, background: 'none', border: 'none', cursor: 'pointer', color: C.textMedium }}
-          >
-            <LogOut size={18} strokeWidth={2} />
-            <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: '0.05em' }}>Cerrar Sesión</span>
-          </button>
-        </div>
-      </aside>
+      {!isSidebarCollapsed && (
+        <AdminSidebar isMobileOpen={isMobileMenuOpen} onCloseMobile={() => setIsMobileMenuOpen(false)} />
+      )}
 
       {/* ── MAIN CONTENT ── */}
       <div className="main-content">

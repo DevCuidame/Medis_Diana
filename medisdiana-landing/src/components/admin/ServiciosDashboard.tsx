@@ -467,7 +467,7 @@ export const ServiciosDashboard: React.FC = () => {
       professionalId:  data.instructorId || undefined,
       capacity:        data.capacidad ?? (data.roomCapacity ?? 1),
       durationMinutes,
-      price:           0,
+      price:           data.basePrice,
       currency:        'COP',
       
       // RIPS Fields
@@ -479,8 +479,8 @@ export const ServiciosDashboard: React.FC = () => {
       serviceCode: data.serviceCode,
       modality: data.modality,
       isActive: data.isActive,
-      basePrice: 0,
-      imageUrl: '',
+      basePrice: data.basePrice,
+      imageUrl: data.imageUrl || '',
       preparationInstructions: data.preparationInstructions,
       genderRestriction: data.genderRestriction,
       risks: data.risks,

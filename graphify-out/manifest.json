@@ -1,0 +1,1082 @@
+{
+  "apps/backend/check-tables.js": {
+    "mtime": 1781398490.7987478,
+    "ast_hash": "df0564fa7f6d744110a078199b66b302",
+    "semantic_hash": "df0564fa7f6d744110a078199b66b302"
+  },
+  "apps/backend/migrations/001_create_users.sql": {
+    "mtime": 1781655737.592418,
+    "ast_hash": "b69deb23d78203fb5db7ebd69378f9d4",
+    "semantic_hash": "b69deb23d78203fb5db7ebd69378f9d4"
+  },
+  "apps/backend/migrations/002_create_professionals.sql": {
+    "mtime": 1781655737.592418,
+    "ast_hash": "0cac810fbf5c519cfe7d9276ab779bc5",
+    "semantic_hash": "0cac810fbf5c519cfe7d9276ab779bc5"
+  },
+  "apps/backend/migrations/003_create_locations_and_rooms.sql": {
+    "mtime": 1783633452.122581,
+    "ast_hash": "da391cbe74b5ea314a04367e55c8f6de",
+    "semantic_hash": "da391cbe74b5ea314a04367e55c8f6de"
+  },
+  "apps/backend/migrations/004_create_memberships.sql": {
+    "mtime": 1781108873.6730704,
+    "ast_hash": "dcbf8cf0303c57c8c59ead1471062a90",
+    "semantic_hash": "dcbf8cf0303c57c8c59ead1471062a90"
+  },
+  "apps/backend/migrations/005_service_management.sql": {
+    "mtime": 1781110595.1872938,
+    "ast_hash": "487f8310e7a579564704842b45ef0e44",
+    "semantic_hash": "487f8310e7a579564704842b45ef0e44"
+  },
+  "apps/backend/migrations/006_add_membership_benefits.sql": {
+    "mtime": 1781109004.0317879,
+    "ast_hash": "f9ceb5ba1fe9266c0b41c1ee735701e5",
+    "semantic_hash": "f9ceb5ba1fe9266c0b41c1ee735701e5"
+  },
+  "apps/backend/migrations/007_user_memberships.sql": {
+    "mtime": 1781110715.5048666,
+    "ast_hash": "084038edf8d654fc7d43112b20de4c90",
+    "semantic_hash": "084038edf8d654fc7d43112b20de4c90"
+  },
+  "apps/backend/migrations/008_payment_method.sql": {
+    "mtime": 1779410429.8896155,
+    "ast_hash": "5106eca36a65c9220cf2ca0fc01c355a",
+    "semantic_hash": "5106eca36a65c9220cf2ca0fc01c355a"
+  },
+  "apps/backend/migrations/009_benefits_catalog.sql": {
+    "mtime": 1781109124.4303403,
+    "ast_hash": "390bbe13a6d882bdd8a1a499e60d8a93",
+    "semantic_hash": "390bbe13a6d882bdd8a1a499e60d8a93"
+  },
+  "apps/backend/migrations/010_benefit_types.sql": {
+    "mtime": 1779410429.8916135,
+    "ast_hash": "1e16bfe4ccd673ab452e30579556b19e",
+    "semantic_hash": "1e16bfe4ccd673ab452e30579556b19e"
+  },
+  "apps/backend/migrations/011_professional_type.sql": {
+    "mtime": 1779418109.3593564,
+    "ast_hash": "d7c33158cdd5d7142d21ed08c7bf4f6d",
+    "semantic_hash": "d7c33158cdd5d7142d21ed08c7bf4f6d"
+  },
+  "apps/backend/migrations/012_enrollment_groups.sql": {
+    "mtime": 1779461881.7815232,
+    "ast_hash": "e085f8e1ba52bf244d686f36b158a480",
+    "semantic_hash": "e085f8e1ba52bf244d686f36b158a480"
+  },
+  "apps/backend/migrations/013_booking_payment_fields.sql": {
+    "mtime": 1779479844.464036,
+    "ast_hash": "28e4e7f679ecea762979a8fbf4bdab41",
+    "semantic_hash": "28e4e7f679ecea762979a8fbf4bdab41"
+  },
+  "apps/backend/migrations/014_service_category.sql": {
+    "mtime": 1781028513.1883755,
+    "ast_hash": "565aac9b59966494c74b985647fb6258",
+    "semantic_hash": "565aac9b59966494c74b985647fb6258"
+  },
+  "apps/backend/migrations/015_operating_hours_blocks.sql": {
+    "mtime": 1781059654.1187716,
+    "ast_hash": "a35901a9d4546b36732aece4da695ea8",
+    "semantic_hash": "a35901a9d4546b36732aece4da695ea8"
+  },
+  "apps/backend/migrations/016_discounts.sql": {
+    "mtime": 1783467792.0458412,
+    "ast_hash": "e9c6130c2f06eff41a56fa8378bcf697",
+    "semantic_hash": "e9c6130c2f06eff41a56fa8378bcf697"
+  },
+  "apps/backend/migrations/017_registration_identity_fields.sql": {
+    "mtime": 1783630382.4746227,
+    "ast_hash": "ace6ee5b46ab54c4bb889350a9ff52e3",
+    "semantic_hash": "ace6ee5b46ab54c4bb889350a9ff52e3"
+  },
+  "apps/backend/migrations/018_service_catalog_rips.sql": {
+    "mtime": 1783635261.7239833,
+    "ast_hash": "68f44b70d847836a74fa612078f40173",
+    "semantic_hash": "68f44b70d847836a74fa612078f40173"
+  },
+  "apps/backend/package.json": {
+    "mtime": 1781655737.5854206,
+    "ast_hash": "cfa5e627e4179ef68ca7b7558d1242c7",
+    "semantic_hash": "cfa5e627e4179ef68ca7b7558d1242c7"
+  },
+  "apps/backend/seed-admin.ts": {
+    "mtime": 1781147628.979432,
+    "ast_hash": "c67341757b08f72bffa2c6e83355c55a",
+    "semantic_hash": "c67341757b08f72bffa2c6e83355c55a"
+  },
+  "apps/backend/src/config/database.ts": {
+    "mtime": 1779205832.2975495,
+    "ast_hash": "3df2f9f428b3395e0d1077f259ba03dd",
+    "semantic_hash": "3df2f9f428b3395e0d1077f259ba03dd"
+  },
+  "apps/backend/src/config/env.ts": {
+    "mtime": 1784137888.3105924,
+    "ast_hash": "3f1164c689a9ad6de4bdc5ec88c62486",
+    "semantic_hash": "3f1164c689a9ad6de4bdc5ec88c62486"
+  },
+  "apps/backend/src/controllers/auth.controller.ts": {
+    "mtime": 1779421808.5753503,
+    "ast_hash": "5f5148a8df4d8f77b11e82f0006f7d3c",
+    "semantic_hash": "5f5148a8df4d8f77b11e82f0006f7d3c"
+  },
+  "apps/backend/src/controllers/benefits.controller.ts": {
+    "mtime": 1781028775.6270635,
+    "ast_hash": "1c873bb6b45b38ab5b4c2ec5318b5112",
+    "semantic_hash": "1c873bb6b45b38ab5b4c2ec5318b5112"
+  },
+  "apps/backend/src/controllers/discounts.controller.ts": {
+    "mtime": 1783609373.273168,
+    "ast_hash": "f0d984b693a5be2829b06710ecc381a6",
+    "semantic_hash": "f0d984b693a5be2829b06710ecc381a6"
+  },
+  "apps/backend/src/controllers/docAppointments.controller.ts": {
+    "mtime": 1784140097.7956579,
+    "ast_hash": "b5e4a6b0836ac4bf1f8a73eb0973894b",
+    "semantic_hash": "b5e4a6b0836ac4bf1f8a73eb0973894b"
+  },
+  "apps/backend/src/controllers/docServices.controller.ts": {
+    "mtime": 1784137903.7752862,
+    "ast_hash": "e34243a397eaa355c174f3052025da59",
+    "semantic_hash": "e34243a397eaa355c174f3052025da59"
+  },
+  "apps/backend/src/controllers/location.controller.ts": {
+    "mtime": 1781655737.592418,
+    "ast_hash": "8c418ed808e31ec9985da4038e409834",
+    "semantic_hash": "8c418ed808e31ec9985da4038e409834"
+  },
+  "apps/backend/src/controllers/memberships.controller.ts": {
+    "mtime": 1781054717.6820757,
+    "ast_hash": "889559f059460068cede401b4ae36130",
+    "semantic_hash": "889559f059460068cede401b4ae36130"
+  },
+  "apps/backend/src/controllers/professional.controller.ts": {
+    "mtime": 1779418169.4350154,
+    "ast_hash": "07478916f13c3a4fb9d868c5d18f5417",
+    "semantic_hash": "07478916f13c3a4fb9d868c5d18f5417"
+  },
+  "apps/backend/src/controllers/services.controller.ts": {
+    "mtime": 1783637488.1658342,
+    "ast_hash": "28d0800d9830b6201a16a2540779e69a",
+    "semantic_hash": "28d0800d9830b6201a16a2540779e69a"
+  },
+  "apps/backend/src/controllers/user-memberships.controller.ts": {
+    "mtime": 1781477405.4172215,
+    "ast_hash": "802411c57c52ae503081fbf37a277d48",
+    "semantic_hash": "802411c57c52ae503081fbf37a277d48"
+  },
+  "apps/backend/src/controllers/users.controller.ts": {
+    "mtime": 1779417381.266293,
+    "ast_hash": "d63abf5abf44d9cc38057d92d2791229",
+    "semantic_hash": "d63abf5abf44d9cc38057d92d2791229"
+  },
+  "apps/backend/src/index.ts": {
+    "mtime": 1781655737.592418,
+    "ast_hash": "967f5a29050d40b97e945d51b9d4338b",
+    "semantic_hash": "967f5a29050d40b97e945d51b9d4338b"
+  },
+  "apps/backend/src/middleware/auth.middleware.ts": {
+    "mtime": 1779205832.3196332,
+    "ast_hash": "0c8d600f22e3bae534561870b0392200",
+    "semantic_hash": "0c8d600f22e3bae534561870b0392200"
+  },
+  "apps/backend/src/middleware/errorHandler.middleware.ts": {
+    "mtime": 1779205832.3221824,
+    "ast_hash": "2c3e673355dbde52c775764f5e23931d",
+    "semantic_hash": "2c3e673355dbde52c775764f5e23931d"
+  },
+  "apps/backend/src/middleware/index.ts": {
+    "mtime": 1779388691.7498834,
+    "ast_hash": "60969355496e22566c44ad607677463e",
+    "semantic_hash": "60969355496e22566c44ad607677463e"
+  },
+  "apps/backend/src/repositories/benefit.repository.ts": {
+    "mtime": 1781028754.486634,
+    "ast_hash": "35c57d4515720cea67cf67ec41e55cad",
+    "semantic_hash": "35c57d4515720cea67cf67ec41e55cad"
+  },
+  "apps/backend/src/repositories/discount.repository.ts": {
+    "mtime": 1783467874.1524394,
+    "ast_hash": "ad0d5cd7cac1d9b4fa75f7ca71556aca",
+    "semantic_hash": "ad0d5cd7cac1d9b4fa75f7ca71556aca"
+  },
+  "apps/backend/src/repositories/location.repository.ts": {
+    "mtime": 1781655737.5984137,
+    "ast_hash": "77135768e17d10de21a0557083a9ca67",
+    "semantic_hash": "77135768e17d10de21a0557083a9ca67"
+  },
+  "apps/backend/src/repositories/membership.repository.ts": {
+    "mtime": 1779410429.8063319,
+    "ast_hash": "6c9c4ab1e29a6641ad6c35021ff26b68",
+    "semantic_hash": "6c9c4ab1e29a6641ad6c35021ff26b68"
+  },
+  "apps/backend/src/repositories/professional-schedule.repository.ts": {
+    "mtime": 1779418124.4460723,
+    "ast_hash": "8e167f3102ca3b3f9b1c9845b1810268",
+    "semantic_hash": "8e167f3102ca3b3f9b1c9845b1810268"
+  },
+  "apps/backend/src/repositories/professional.repository.ts": {
+    "mtime": 1783631876.3725986,
+    "ast_hash": "88181f2cef6d0ebeabe90ac7ade72812",
+    "semantic_hash": "88181f2cef6d0ebeabe90ac7ade72812"
+  },
+  "apps/backend/src/repositories/services.repository.ts": {
+    "mtime": 1783637530.777948,
+    "ast_hash": "3e19e834484693c805383ff91db9c0df",
+    "semantic_hash": "3e19e834484693c805383ff91db9c0df"
+  },
+  "apps/backend/src/repositories/user-membership.repository.ts": {
+    "mtime": 1783464740.2307992,
+    "ast_hash": "f760baeb615e3cbee0e7cba3c48d1333",
+    "semantic_hash": "f760baeb615e3cbee0e7cba3c48d1333"
+  },
+  "apps/backend/src/repositories/user.repository.ts": {
+    "mtime": 1783632026.1113226,
+    "ast_hash": "6be3c704f685e3a231101ba280e44aa5",
+    "semantic_hash": "6be3c704f685e3a231101ba280e44aa5"
+  },
+  "apps/backend/src/routes/auth.routes.ts": {
+    "mtime": 1779205832.343914,
+    "ast_hash": "ec7d9d193a3ad57e9a3a0473d71f9999",
+    "semantic_hash": "ec7d9d193a3ad57e9a3a0473d71f9999"
+  },
+  "apps/backend/src/routes/benefits.routes.ts": {
+    "mtime": 1779410429.903711,
+    "ast_hash": "c2a7d2d9a8cc24b8567c51353822b0b7",
+    "semantic_hash": "c2a7d2d9a8cc24b8567c51353822b0b7"
+  },
+  "apps/backend/src/routes/discounts.routes.ts": {
+    "mtime": 1783609501.7380755,
+    "ast_hash": "cee9d78c69b57917cf23025df6fb5363",
+    "semantic_hash": "cee9d78c69b57917cf23025df6fb5363"
+  },
+  "apps/backend/src/routes/docAppointments.routes.ts": {
+    "mtime": 1784140101.3576612,
+    "ast_hash": "6698e2fe02f43261d880e22d5a2c03e2",
+    "semantic_hash": "6698e2fe02f43261d880e22d5a2c03e2"
+  },
+  "apps/backend/src/routes/docServices.routes.ts": {
+    "mtime": 1784137908.3342292,
+    "ast_hash": "f0c4de17e9413098555877e272489b82",
+    "semantic_hash": "f0c4de17e9413098555877e272489b82"
+  },
+  "apps/backend/src/routes/health.routes.ts": {
+    "mtime": 1779205832.3481536,
+    "ast_hash": "8472676a7338452ae832b35c8ded0421",
+    "semantic_hash": "8472676a7338452ae832b35c8ded0421"
+  },
+  "apps/backend/src/routes/index.ts": {
+    "mtime": 1784138696.8186932,
+    "ast_hash": "eb0fb38b8876ac07bd0dcb4acf8084f9",
+    "semantic_hash": "eb0fb38b8876ac07bd0dcb4acf8084f9"
+  },
+  "apps/backend/src/routes/memberships.routes.ts": {
+    "mtime": 1779410429.904698,
+    "ast_hash": "205b60620e32689272e1c7c4086e34de",
+    "semantic_hash": "205b60620e32689272e1c7c4086e34de"
+  },
+  "apps/backend/src/routes/professional.routes.ts": {
+    "mtime": 1779418184.7549891,
+    "ast_hash": "89667c9b1cf2b134193b5354976b0212",
+    "semantic_hash": "89667c9b1cf2b134193b5354976b0212"
+  },
+  "apps/backend/src/routes/services.routes.ts": {
+    "mtime": 1779856415.160349,
+    "ast_hash": "af029d98717cb3a23eadee039a4bba4e",
+    "semantic_hash": "af029d98717cb3a23eadee039a4bba4e"
+  },
+  "apps/backend/src/routes/services_react.routes.ts": {
+    "mtime": 1779388727.5289502,
+    "ast_hash": "830fc2de96bbe604d7fc152c8b5adfdb",
+    "semantic_hash": "830fc2de96bbe604d7fc152c8b5adfdb"
+  },
+  "apps/backend/src/routes/user-memberships.routes.ts": {
+    "mtime": 1781031402.2889452,
+    "ast_hash": "496b8d7284ef1cf48c0eb997f2fe1d39",
+    "semantic_hash": "496b8d7284ef1cf48c0eb997f2fe1d39"
+  },
+  "apps/backend/src/routes/users.routes.ts": {
+    "mtime": 1779388877.0587678,
+    "ast_hash": "b10746a4dc5081835c9a7992c303be66",
+    "semantic_hash": "b10746a4dc5081835c9a7992c303be66"
+  },
+  "apps/backend/src/scripts/alter-catalog.ts": {
+    "mtime": 1783637625.9512033,
+    "ast_hash": "524dbb0d3a8e135191c760d9f057964f",
+    "semantic_hash": "524dbb0d3a8e135191c760d9f057964f"
+  },
+  "apps/backend/src/scripts/run-migration.ts": {
+    "mtime": 1783639933.0365076,
+    "ast_hash": "7652b3c19712a8c3cf429fbf455f0035",
+    "semantic_hash": "7652b3c19712a8c3cf429fbf455f0035"
+  },
+  "apps/backend/src/server.ts": {
+    "mtime": 1779388736.5674996,
+    "ast_hash": "9ea0c4639afce6d7156d8f163bc076e8",
+    "semantic_hash": "9ea0c4639afce6d7156d8f163bc076e8"
+  },
+  "apps/backend/src/services/auth.service.ts": {
+    "mtime": 1783463716.0630744,
+    "ast_hash": "0b4c478c245046ae796e0dc577ed41fc",
+    "semantic_hash": "0b4c478c245046ae796e0dc577ed41fc"
+  },
+  "apps/backend/src/services/professional.service.ts": {
+    "mtime": 1783631928.2398803,
+    "ast_hash": "7f500f4e8694797f1627d8b2d2716f4e",
+    "semantic_hash": "7f500f4e8694797f1627d8b2d2716f4e"
+  },
+  "apps/backend/src/types/api.types.ts": {
+    "mtime": 1779205832.3655968,
+    "ast_hash": "be45da10474817fe7dc6ad81fdf51dc6",
+    "semantic_hash": "be45da10474817fe7dc6ad81fdf51dc6"
+  },
+  "apps/backend/src/types/auth.types.ts": {
+    "mtime": 1783632018.8570757,
+    "ast_hash": "1ff5565fc6666438da6954dacc269125",
+    "semantic_hash": "1ff5565fc6666438da6954dacc269125"
+  },
+  "apps/backend/src/types/index.ts": {
+    "mtime": 1779205832.375293,
+    "ast_hash": "600b170b65fa1b724157cd99773371d3",
+    "semantic_hash": "600b170b65fa1b724157cd99773371d3"
+  },
+  "apps/backend/src/types/membership.types.ts": {
+    "mtime": 1779410429.8123333,
+    "ast_hash": "d94bcd2200c623686344578b10ba8ee1",
+    "semantic_hash": "d94bcd2200c623686344578b10ba8ee1"
+  },
+  "apps/backend/src/types/professional.types.ts": {
+    "mtime": 1783631893.36462,
+    "ast_hash": "10996683ffaaee26cda4d2d14265f8cf",
+    "semantic_hash": "10996683ffaaee26cda4d2d14265f8cf"
+  },
+  "apps/backend/src/types/user-membership.types.ts": {
+    "mtime": 1781028531.7140582,
+    "ast_hash": "5577b2f922b9469a352a82e2e1e7efe3",
+    "semantic_hash": "5577b2f922b9469a352a82e2e1e7efe3"
+  },
+  "apps/backend/src/types/user.types.ts": {
+    "mtime": 1779205832.3808386,
+    "ast_hash": "e4f65bcc95e69809269156d82b1d9dbd",
+    "semantic_hash": "e4f65bcc95e69809269156d82b1d9dbd"
+  },
+  "apps/backend/src/utils/crypto.util.ts": {
+    "mtime": 1779205832.3845334,
+    "ast_hash": "676c68f0c8cf43d8dd37f2c7fa6b816f",
+    "semantic_hash": "676c68f0c8cf43d8dd37f2c7fa6b816f"
+  },
+  "apps/backend/src/utils/docAuth.ts": {
+    "mtime": 1784137894.7753413,
+    "ast_hash": "10127e0a4e22ba95e2034e59df2d5572",
+    "semantic_hash": "10127e0a4e22ba95e2034e59df2d5572"
+  },
+  "apps/backend/src/utils/email.util.ts": {
+    "mtime": 1781477961.6907318,
+    "ast_hash": "9652e8f6d1debfd4ab8626cd1427c7f4",
+    "semantic_hash": "9652e8f6d1debfd4ab8626cd1427c7f4"
+  },
+  "apps/backend/src/utils/errors.util.ts": {
+    "mtime": 1779205832.3870502,
+    "ast_hash": "a210876325edd5837aaecda9bfc6b477",
+    "semantic_hash": "a210876325edd5837aaecda9bfc6b477"
+  },
+  "apps/backend/src/utils/index.ts": {
+    "mtime": 1779205832.3895848,
+    "ast_hash": "8e0f64026286c2cd82e6942cd862866b",
+    "semantic_hash": "8e0f64026286c2cd82e6942cd862866b"
+  },
+  "apps/backend/src/utils/jwt.util.ts": {
+    "mtime": 1779388748.5053098,
+    "ast_hash": "4e92fe3c536f5ba54f94ff7c41acfefe",
+    "semantic_hash": "4e92fe3c536f5ba54f94ff7c41acfefe"
+  },
+  "apps/backend/src/utils/logger.util.ts": {
+    "mtime": 1779205832.396214,
+    "ast_hash": "2fd47f2a865657505e840645b70feaf1",
+    "semantic_hash": "2fd47f2a865657505e840645b70feaf1"
+  },
+  "apps/backend/tsconfig.json": {
+    "mtime": 1779410429.8133318,
+    "ast_hash": "06ea2cce0ff62034627d77c451dc8dd2",
+    "semantic_hash": "06ea2cce0ff62034627d77c451dc8dd2"
+  },
+  "deploy-Dianamedic.ps1": {
+    "mtime": 1784139418.522024,
+    "ast_hash": "adbe9659378b277f4441d42d3b19cb9a",
+    "semantic_hash": "adbe9659378b277f4441d42d3b19cb9a"
+  },
+  "deploy-rapido.ps1": {
+    "mtime": 1784248382.9410222,
+    "ast_hash": "0c750f58d48ef8204a7e40efbc8d5e50",
+    "semantic_hash": "0c750f58d48ef8204a7e40efbc8d5e50"
+  },
+  "medisdiana-landing/cleanup_servicios_submenu.cjs": {
+    "mtime": 1783633171.142007,
+    "ast_hash": "0c648b5c9e1a04c45546fcfa54481569",
+    "semantic_hash": "0c648b5c9e1a04c45546fcfa54481569"
+  },
+  "medisdiana-landing/cleanup_servicios_submenu_final.cjs": {
+    "mtime": 1783633203.5970187,
+    "ast_hash": "cde4a97a4bf5b14672f21e1397d7f110",
+    "semantic_hash": "cde4a97a4bf5b14672f21e1397d7f110"
+  },
+  "medisdiana-landing/eslint.config.js": {
+    "mtime": 1779205832.1401255,
+    "ast_hash": "75a0286de267d5393020e4439ed72f6a",
+    "semantic_hash": "75a0286de267d5393020e4439ed72f6a"
+  },
+  "medisdiana-landing/fix_sidebar.js": {
+    "mtime": 1781655737.6134152,
+    "ast_hash": "9b62a73ef2780a647da1d9a14fb55daa",
+    "semantic_hash": "9b62a73ef2780a647da1d9a14fb55daa"
+  },
+  "medisdiana-landing/package.json": {
+    "mtime": 1784256268.3865418,
+    "ast_hash": "1b4b1867e7d26f30ea9e9a1b1d0c242b",
+    "semantic_hash": "1b4b1867e7d26f30ea9e9a1b1d0c242b"
+  },
+  "medisdiana-landing/src/App.tsx": {
+    "mtime": 1784310113.1965678,
+    "ast_hash": "ad6a15d0c4b1e9e848ba19a19cec1c3b",
+    "semantic_hash": "ad6a15d0c4b1e9e848ba19a19cec1c3b"
+  },
+  "medisdiana-landing/src/components/About.tsx": {
+    "mtime": 1782317009.3433874,
+    "ast_hash": "25f89e79ab0d4402e73082605e79bb68",
+    "semantic_hash": "25f89e79ab0d4402e73082605e79bb68"
+  },
+  "medisdiana-landing/src/components/ArtistLogin.tsx": {
+    "mtime": 1783725576.9176617,
+    "ast_hash": "bec046dff2739ad618bd91403ede5051",
+    "semantic_hash": "bec046dff2739ad618bd91403ede5051"
+  },
+  "medisdiana-landing/src/components/Classes.tsx": {
+    "mtime": 1784248169.4666402,
+    "ast_hash": "709f6bee2dc1a58e6a716df9f61d50e4",
+    "semantic_hash": "709f6bee2dc1a58e6a716df9f61d50e4"
+  },
+  "medisdiana-landing/src/components/DianaBookingCalendar.tsx": {
+    "mtime": 1783658356.5164056,
+    "ast_hash": "2ff94abd6f21bb93b9782e126ebca821",
+    "semantic_hash": "2ff94abd6f21bb93b9782e126ebca821"
+  },
+  "medisdiana-landing/src/components/FinalCTA.tsx": {
+    "mtime": 1783463790.403432,
+    "ast_hash": "d29d13df4478e0fd52689596ae5e711c",
+    "semantic_hash": "d29d13df4478e0fd52689596ae5e711c"
+  },
+  "medisdiana-landing/src/components/Footer.tsx": {
+    "mtime": 1784248205.2587075,
+    "ast_hash": "bc0416c63525fc4f5373230d609ab2a6",
+    "semantic_hash": "bc0416c63525fc4f5373230d609ab2a6"
+  },
+  "medisdiana-landing/src/components/Hero.tsx": {
+    "mtime": 1783463777.1272504,
+    "ast_hash": "ed26214c0c9b2a49116d6ada82a06b2f",
+    "semantic_hash": "ed26214c0c9b2a49116d6ada82a06b2f"
+  },
+  "medisdiana-landing/src/components/Instructors.tsx": {
+    "mtime": 1782317663.8520806,
+    "ast_hash": "dc838c670b97bb484fde6ac1ce5c0dd5",
+    "semantic_hash": "dc838c670b97bb484fde6ac1ce5c0dd5"
+  },
+  "medisdiana-landing/src/components/Navbar.tsx": {
+    "mtime": 1783463771.394439,
+    "ast_hash": "8918d29fb449d305ed7fc6a2564394f6",
+    "semantic_hash": "8918d29fb449d305ed7fc6a2564394f6"
+  },
+  "medisdiana-landing/src/components/ProtectedRoute.tsx": {
+    "mtime": 1779419563.092311,
+    "ast_hash": "1f79beb9bd40a74372e5b9fb398eae62",
+    "semantic_hash": "1f79beb9bd40a74372e5b9fb398eae62"
+  },
+  "medisdiana-landing/src/components/PublicBooking.tsx": {
+    "mtime": 1783610465.120566,
+    "ast_hash": "e0f3ad6cc75df4d366abc58a3dd39586",
+    "semantic_hash": "e0f3ad6cc75df4d366abc58a3dd39586"
+  },
+  "medisdiana-landing/src/components/Testimonials.tsx": {
+    "mtime": 1781148509.7615242,
+    "ast_hash": "cbf9b28a36f441abf5f18d6def42f27a",
+    "semantic_hash": "cbf9b28a36f441abf5f18d6def42f27a"
+  },
+  "medisdiana-landing/src/components/admin/AdminClasses.tsx": {
+    "mtime": 1784310891.8383236,
+    "ast_hash": "fa8fadefe9fb8df2a37eaff5a659f322",
+    "semantic_hash": "fa8fadefe9fb8df2a37eaff5a659f322"
+  },
+  "medisdiana-landing/src/components/admin/AdminProfessionals.tsx": {
+    "mtime": 1783633189.698297,
+    "ast_hash": "aa8eeebd8893ee40d17e5cf1f3051c5d",
+    "semantic_hash": "aa8eeebd8893ee40d17e5cf1f3051c5d"
+  },
+  "medisdiana-landing/src/components/admin/AdminSidebar.tsx": {
+    "mtime": 1784310012.0992458,
+    "ast_hash": "6aa74bf39e6b74fc2ddd405f0153dc1c",
+    "semantic_hash": "6aa74bf39e6b74fc2ddd405f0153dc1c"
+  },
+  "medisdiana-landing/src/components/admin/BeneficiosDashboard.tsx": {
+    "mtime": 1784311009.5622756,
+    "ast_hash": "db87fcd43c8f2dc672b0afbbd9183dfc",
+    "semantic_hash": "db87fcd43c8f2dc672b0afbbd9183dfc"
+  },
+  "medisdiana-landing/src/components/admin/ConfirmationModal.tsx": {
+    "mtime": 1783633002.860698,
+    "ast_hash": "512fbd869db128e73e5433c8dfda1736",
+    "semantic_hash": "512fbd869db128e73e5433c8dfda1736"
+  },
+  "medisdiana-landing/src/components/admin/CreateLocation.tsx": {
+    "mtime": 1784310321.142494,
+    "ast_hash": "78233d754cd320d8b59399f7f8f8cbdd",
+    "semantic_hash": "78233d754cd320d8b59399f7f8f8cbdd"
+  },
+  "medisdiana-landing/src/components/admin/CreateProfessionalModal.tsx": {
+    "mtime": 1784308957.9792,
+    "ast_hash": "0bc0328b5f131920b8a01750750f82d4",
+    "semantic_hash": "0bc0328b5f131920b8a01750750f82d4"
+  },
+  "medisdiana-landing/src/components/admin/CreateRoom.tsx": {
+    "mtime": 1784310333.3603282,
+    "ast_hash": "b2c3b481c72f779194f29729fd548768",
+    "semantic_hash": "b2c3b481c72f779194f29729fd548768"
+  },
+  "medisdiana-landing/src/components/admin/CreateService.tsx": {
+    "mtime": 1784310353.3007095,
+    "ast_hash": "1eaddbc76162320296a950b3c17248c8",
+    "semantic_hash": "1eaddbc76162320296a950b3c17248c8"
+  },
+  "medisdiana-landing/src/components/admin/DescuentosDashboard.tsx": {
+    "mtime": 1783633002.880695,
+    "ast_hash": "713537358dffc9491343e11de78d6786",
+    "semantic_hash": "713537358dffc9491343e11de78d6786"
+  },
+  "medisdiana-landing/src/components/admin/EspacioTypes.ts": {
+    "mtime": 1779223804.5618153,
+    "ast_hash": "8d3a12ba955108130d46d7c686435112",
+    "semantic_hash": "8d3a12ba955108130d46d7c686435112"
+  },
+  "medisdiana-landing/src/components/admin/EspaciosDashboard.tsx": {
+    "mtime": 1784310469.0089264,
+    "ast_hash": "5a152bc0d1eca3eaa53b15a202fc958a",
+    "semantic_hash": "5a152bc0d1eca3eaa53b15a202fc958a"
+  },
+  "medisdiana-landing/src/components/admin/FinanzasDashboard.tsx": {
+    "mtime": 1784310828.5159118,
+    "ast_hash": "da185318adbd8978027e8dd8ba8e7d36",
+    "semantic_hash": "da185318adbd8978027e8dd8ba8e7d36"
+  },
+  "medisdiana-landing/src/components/admin/FormularioEspacio.tsx": {
+    "mtime": 1783633002.8947215,
+    "ast_hash": "80b24f460187cbba1717ffcf0ffc368f",
+    "semantic_hash": "80b24f460187cbba1717ffcf0ffc368f"
+  },
+  "medisdiana-landing/src/components/admin/FormularioSede.tsx": {
+    "mtime": 1783633482.268696,
+    "ast_hash": "a04e7396f350262796bfc1db0126a7b3",
+    "semantic_hash": "a04e7396f350262796bfc1db0126a7b3"
+  },
+  "medisdiana-landing/src/components/admin/FormularioServicio.tsx": {
+    "mtime": 1784254219.6164849,
+    "ast_hash": "5cc2374f51bf15c3a60ad9c10b84e1b7",
+    "semantic_hash": "5cc2374f51bf15c3a60ad9c10b84e1b7"
+  },
+  "medisdiana-landing/src/components/admin/InscripcionesDashboard.tsx": {
+    "mtime": 1783633002.9072437,
+    "ast_hash": "b3bec01544f3d5dca6e6689b9d939b40",
+    "semantic_hash": "b3bec01544f3d5dca6e6689b9d939b40"
+  },
+  "medisdiana-landing/src/components/admin/InventarioDashboard.tsx": {
+    "mtime": 1784310101.3167322,
+    "ast_hash": "c39468cea2a82267b501941c82b605d4",
+    "semantic_hash": "c39468cea2a82267b501941c82b605d4"
+  },
+  "medisdiana-landing/src/components/admin/MainDashboard.tsx": {
+    "mtime": 1784310296.6338766,
+    "ast_hash": "f27e611671908abb4fd20a1f752620ab",
+    "semantic_hash": "f27e611671908abb4fd20a1f752620ab"
+  },
+  "medisdiana-landing/src/components/admin/MembresiasDashboard.tsx": {
+    "mtime": 1784310950.0807025,
+    "ast_hash": "55569ae7f16dff6871100c49842b6dc0",
+    "semantic_hash": "55569ae7f16dff6871100c49842b6dc0"
+  },
+  "medisdiana-landing/src/components/admin/ProfessionalProfileModal.tsx": {
+    "mtime": 1783633002.9222462,
+    "ast_hash": "646997323ae006246fc4e1f6a009bee5",
+    "semantic_hash": "646997323ae006246fc4e1f6a009bee5"
+  },
+  "medisdiana-landing/src/components/admin/SedeCard.tsx": {
+    "mtime": 1783633002.9262419,
+    "ast_hash": "39789a4b27798d9f5521aac4034023d2",
+    "semantic_hash": "39789a4b27798d9f5521aac4034023d2"
+  },
+  "medisdiana-landing/src/components/admin/SedeTypes.ts": {
+    "mtime": 1779840027.7605815,
+    "ast_hash": "4f1a636e693fc0eb468d1c3bae38397a",
+    "semantic_hash": "4f1a636e693fc0eb468d1c3bae38397a"
+  },
+  "medisdiana-landing/src/components/admin/SedesDashboard.tsx": {
+    "mtime": 1784310417.827252,
+    "ast_hash": "7b4121de435d1bd37a3705bd5aa012db",
+    "semantic_hash": "7b4121de435d1bd37a3705bd5aa012db"
+  },
+  "medisdiana-landing/src/components/admin/ServiciosDashboard.tsx": {
+    "mtime": 1784254258.6995246,
+    "ast_hash": "d9c27e69ee5008c59bc473abf913909e",
+    "semantic_hash": "d9c27e69ee5008c59bc473abf913909e"
+  },
+  "medisdiana-landing/src/components/admin/UsuarioCard.tsx": {
+    "mtime": 1783633002.9392424,
+    "ast_hash": "0dbbfccf95d70efde84329196e666e4b",
+    "semantic_hash": "0dbbfccf95d70efde84329196e666e4b"
+  },
+  "medisdiana-landing/src/components/admin/UsuariosDashboard.tsx": {
+    "mtime": 1784310240.9264545,
+    "ast_hash": "e03d5f3229c213a6b0cc2bcd5478dad7",
+    "semantic_hash": "e03d5f3229c213a6b0cc2bcd5478dad7"
+  },
+  "medisdiana-landing/src/components/admin/servicioSchema.ts": {
+    "mtime": 1783640001.3114927,
+    "ast_hash": "224d555d748525477a41dc0a36127b4a",
+    "semantic_hash": "224d555d748525477a41dc0a36127b4a"
+  },
+  "medisdiana-landing/src/components/admin/types.ts": {
+    "mtime": 1779246622.6860232,
+    "ast_hash": "9afdb5a18b7ded247cd754a007ea3fef",
+    "semantic_hash": "9afdb5a18b7ded247cd754a007ea3fef"
+  },
+  "medisdiana-landing/src/components/professional/ProfessionalClasses.tsx": {
+    "mtime": 1781480004.6375213,
+    "ast_hash": "ab26366f05638406043833447b78c64a",
+    "semantic_hash": "ab26366f05638406043833447b78c64a"
+  },
+  "medisdiana-landing/src/components/professional/ProfessionalDashboard.tsx": {
+    "mtime": 1781148509.2400792,
+    "ast_hash": "8a4150a45a334d96200991a93566b87e",
+    "semantic_hash": "8a4150a45a334d96200991a93566b87e"
+  },
+  "medisdiana-landing/src/components/professional/ProfessionalProfile.tsx": {
+    "mtime": 1781148509.263638,
+    "ast_hash": "995f4b1e30f4b32e11bef4dc8972ad00",
+    "semantic_hash": "995f4b1e30f4b32e11bef4dc8972ad00"
+  },
+  "medisdiana-landing/src/components/user/UserCalendario.tsx": {
+    "mtime": 1781475837.281709,
+    "ast_hash": "fee097a3d05812e6badf094c5042660d",
+    "semantic_hash": "fee097a3d05812e6badf094c5042660d"
+  },
+  "medisdiana-landing/src/components/user/UserLayout.tsx": {
+    "mtime": 1781480157.8855765,
+    "ast_hash": "cff3fa866120ada86073f2878cc8d9fd",
+    "semantic_hash": "cff3fa866120ada86073f2878cc8d9fd"
+  },
+  "medisdiana-landing/src/components/user/UserMembresias.tsx": {
+    "mtime": 1781480112.8126676,
+    "ast_hash": "acca91dd3f91e51de77bafd6ab08fa5b",
+    "semantic_hash": "acca91dd3f91e51de77bafd6ab08fa5b"
+  },
+  "medisdiana-landing/src/components/user/UserMisServicios.tsx": {
+    "mtime": 1781452085.2860641,
+    "ast_hash": "4cb3ac31c7bc371e17add6acbd72a6fe",
+    "semantic_hash": "4cb3ac31c7bc371e17add6acbd72a6fe"
+  },
+  "medisdiana-landing/src/components/user/UserProfesionales.tsx": {
+    "mtime": 1781477131.6021223,
+    "ast_hash": "9f7117de748b6c1228f66b705189ba92",
+    "semantic_hash": "9f7117de748b6c1228f66b705189ba92"
+  },
+  "medisdiana-landing/src/components/user/UserServicios.tsx": {
+    "mtime": 1783616178.7796986,
+    "ast_hash": "862df5db77a9c63e9b67ce696e4b78b1",
+    "semantic_hash": "862df5db77a9c63e9b67ce696e4b78b1"
+  },
+  "medisdiana-landing/src/hooks/useDocServices.ts": {
+    "mtime": 1784248104.0921457,
+    "ast_hash": "b982b31dbab9268d62376f252de8dd7e",
+    "semantic_hash": "b982b31dbab9268d62376f252de8dd7e"
+  },
+  "medisdiana-landing/src/lib/schemas/espacioSchema.ts": {
+    "mtime": 1779223964.0706165,
+    "ast_hash": "031cc0bbcce612ec8c9bb88eba971147",
+    "semantic_hash": "031cc0bbcce612ec8c9bb88eba971147"
+  },
+  "medisdiana-landing/src/lib/schemas/sedeSchema.ts": {
+    "mtime": 1783633463.4277246,
+    "ast_hash": "9bc21e29f8312a571cfb9e737abcd8b4",
+    "semantic_hash": "9bc21e29f8312a571cfb9e737abcd8b4"
+  },
+  "medisdiana-landing/src/main.tsx": {
+    "mtime": 1781655739.3616989,
+    "ast_hash": "428f6c3ac0ddcf5bacac4d0f9ef15e9b",
+    "semantic_hash": "428f6c3ac0ddcf5bacac4d0f9ef15e9b"
+  },
+  "medisdiana-landing/src/pages/public/NotFoundPage.tsx": {
+    "mtime": 1783662451.1505075,
+    "ast_hash": "2401fce4686308f6b71655fe14008d8b",
+    "semantic_hash": "2401fce4686308f6b71655fe14008d8b"
+  },
+  "medisdiana-landing/src/seo/JsonLd.tsx": {
+    "mtime": 1783662447.3106987,
+    "ast_hash": "f25878904f8308701f7bf424b8c3d177",
+    "semantic_hash": "f25878904f8308701f7bf424b8c3d177"
+  },
+  "medisdiana-landing/src/seo/Seo.tsx": {
+    "mtime": 1783662437.590865,
+    "ast_hash": "b5fad08d089151a392df00328771e91d",
+    "semantic_hash": "b5fad08d089151a392df00328771e91d"
+  },
+  "medisdiana-landing/src/seo/schema/medicalClinic.ts": {
+    "mtime": 1783662443.586334,
+    "ast_hash": "4d4468b7321cd2e5dfa5612f9a12285a",
+    "semantic_hash": "4d4468b7321cd2e5dfa5612f9a12285a"
+  },
+  "medisdiana-landing/src/seo/seo.config.ts": {
+    "mtime": 1783662431.0729463,
+    "ast_hash": "2edbadf592b5cc311f68df2df6f6fbf5",
+    "semantic_hash": "2edbadf592b5cc311f68df2df6f6fbf5"
+  },
+  "medisdiana-landing/temp_original_classes.tsx": {
+    "mtime": 1783634356.5467267,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "medisdiana-landing/tsconfig.app.json": {
+    "mtime": 1779205832.2507753,
+    "ast_hash": "4cd9dda3b62ff2a571c2419a75074a39",
+    "semantic_hash": "4cd9dda3b62ff2a571c2419a75074a39"
+  },
+  "medisdiana-landing/tsconfig.json": {
+    "mtime": 1779205832.2538235,
+    "ast_hash": "852c3a5df14a4b43ac28e9554ebedf4a",
+    "semantic_hash": "852c3a5df14a4b43ac28e9554ebedf4a"
+  },
+  "medisdiana-landing/tsconfig.node.json": {
+    "mtime": 1779205832.2563646,
+    "ast_hash": "1cd4c6b260b0dccbad5bc0a25029f390",
+    "semantic_hash": "1cd4c6b260b0dccbad5bc0a25029f390"
+  },
+  "medisdiana-landing/update_sidebar.js": {
+    "mtime": 1781655737.6214178,
+    "ast_hash": "acc3959b330d41b41ffbbe25dbd7842a",
+    "semantic_hash": "acc3959b330d41b41ffbbe25dbd7842a"
+  },
+  "medisdiana-landing/update_sidebar_menu.cjs": {
+    "mtime": 1783632646.7882793,
+    "ast_hash": "b260dfe593c65d70a0a38fd1742c6c3c",
+    "semantic_hash": "b260dfe593c65d70a0a38fd1742c6c3c"
+  },
+  "medisdiana-landing/update_sidebar_menu2.cjs": {
+    "mtime": 1783632784.4182448,
+    "ast_hash": "6f7160d2b5048aaeffd2564a7dedac28",
+    "semantic_hash": "6f7160d2b5048aaeffd2564a7dedac28"
+  },
+  "medisdiana-landing/update_sidebar_menu3.cjs": {
+    "mtime": 1783632831.8528688,
+    "ast_hash": "0f7284b21324279a7df1a72003638e8b",
+    "semantic_hash": "0f7284b21324279a7df1a72003638e8b"
+  },
+  "medisdiana-landing/update_sidebar_menu4.cjs": {
+    "mtime": 1783632992.862719,
+    "ast_hash": "80a27c36fc8b621d057d11e55d51e5a2",
+    "semantic_hash": "80a27c36fc8b621d057d11e55d51e5a2"
+  },
+  "medisdiana-landing/vite.config.ts": {
+    "mtime": 1783663402.0481648,
+    "ast_hash": "e0d67c82db1772dd392210df5ac865d6",
+    "semantic_hash": "e0d67c82db1772dd392210df5ac865d6"
+  },
+  "package.json": {
+    "mtime": 1781656882.1583414,
+    "ast_hash": "fd1868cf8867ba45880708236fba387e",
+    "semantic_hash": "fd1868cf8867ba45880708236fba387e"
+  },
+  "packages/config/package.json": {
+    "mtime": 1781655737.6264231,
+    "ast_hash": "ef2cf1f638820bca1ec3a1cf6065ffab",
+    "semantic_hash": "ef2cf1f638820bca1ec3a1cf6065ffab"
+  },
+  "packages/database/package.json": {
+    "mtime": 1781655737.6344173,
+    "ast_hash": "eb4531f01d5e96ed9f47e8f88253750c",
+    "semantic_hash": "eb4531f01d5e96ed9f47e8f88253750c"
+  },
+  "packages/database/src/migrations/runner.ts": {
+    "mtime": 1779205832.441596,
+    "ast_hash": "644cb9b0a0725663a2a23a37695c2222",
+    "semantic_hash": "644cb9b0a0725663a2a23a37695c2222"
+  },
+  "packages/database/src/schema/init.sql": {
+    "mtime": 1781655737.6344173,
+    "ast_hash": "3a5c2befc63e0f64681877918498c0d7",
+    "semantic_hash": "3a5c2befc63e0f64681877918498c0d7"
+  },
+  "packages/shared-types/package.json": {
+    "mtime": 1781655737.6344173,
+    "ast_hash": "f2a7d3bdda265c43187bc5c6d4ba6a91",
+    "semantic_hash": "f2a7d3bdda265c43187bc5c6d4ba6a91"
+  },
+  "packages/shared-types/src/api/index.ts": {
+    "mtime": 1779205832.4643056,
+    "ast_hash": "a141c185fe44b5e7e11321999a965064",
+    "semantic_hash": "a141c185fe44b5e7e11321999a965064"
+  },
+  "packages/shared-types/src/api/requests.ts": {
+    "mtime": 1779205832.4673014,
+    "ast_hash": "617a1f5935c07b9672b7a6d888f47807",
+    "semantic_hash": "617a1f5935c07b9672b7a6d888f47807"
+  },
+  "packages/shared-types/src/api/responses.ts": {
+    "mtime": 1779205832.4688458,
+    "ast_hash": "f788fe1409a71ee2c1c6fa5d6ded9f41",
+    "semantic_hash": "f788fe1409a71ee2c1c6fa5d6ded9f41"
+  },
+  "packages/shared-types/src/enums/index.ts": {
+    "mtime": 1779205832.4730046,
+    "ast_hash": "f53626fe10c028beb81dcc37b3527ca8",
+    "semantic_hash": "f53626fe10c028beb81dcc37b3527ca8"
+  },
+  "packages/shared-types/src/index.ts": {
+    "mtime": 1779205832.4752965,
+    "ast_hash": "fcbae4515930da9b61c90ca3ea581bd8",
+    "semantic_hash": "fcbae4515930da9b61c90ca3ea581bd8"
+  },
+  "packages/shared-types/src/models/discounts.types.ts": {
+    "mtime": 1783467807.55214,
+    "ast_hash": "dee70b87fc23541dc8be7172aa49aa9f",
+    "semantic_hash": "dee70b87fc23541dc8be7172aa49aa9f"
+  },
+  "packages/shared-types/src/models/index.ts": {
+    "mtime": 1783467819.5591676,
+    "ast_hash": "33f9a28457de3ea41efa9131265e9f4d",
+    "semantic_hash": "33f9a28457de3ea41efa9131265e9f4d"
+  },
+  "packages/shared-types/src/models/services.types.ts": {
+    "mtime": 1783635339.3267038,
+    "ast_hash": "50b8f86add170b52be1911ca9ac3505e",
+    "semantic_hash": "50b8f86add170b52be1911ca9ac3505e"
+  },
+  "packages/shared-types/tsconfig.json": {
+    "mtime": 1779205832.4809325,
+    "ast_hash": "ec584403c895a85db2639f4b7c6954ef",
+    "semantic_hash": "ec584403c895a85db2639f4b7c6954ef"
+  },
+  "packages/ui-components/package.json": {
+    "mtime": 1781655737.6264231,
+    "ast_hash": "c687cae110ce560f79ab9c754616b244",
+    "semantic_hash": "c687cae110ce560f79ab9c754616b244"
+  },
+  "packages/ui-components/src/index.ts": {
+    "mtime": 1779205832.4952657,
+    "ast_hash": "c704f9bcc7c8d67194b1e74d296cbce8",
+    "semantic_hash": "c704f9bcc7c8d67194b1e74d296cbce8"
+  },
+  "packages/ui-components/tsconfig.json": {
+    "mtime": 1779205832.4976056,
+    "ast_hash": "e8fa7d8bc5413907ac867d7f52ba5969",
+    "semantic_hash": "e8fa7d8bc5413907ac867d7f52ba5969"
+  },
+  "tsconfig.json": {
+    "mtime": 1781655737.5674152,
+    "ast_hash": "aea19a0dbf40e8d456fee273a51c2114",
+    "semantic_hash": "aea19a0dbf40e8d456fee273a51c2114"
+  },
+  "turbo.json": {
+    "mtime": 1779205832.5109107,
+    "ast_hash": "98bac5f9a8526c1fdab32d91cccb3145",
+    "semantic_hash": "98bac5f9a8526c1fdab32d91cccb3145"
+  },
+  "CLAUDE.md": {
+    "mtime": 1784247754.83774,
+    "ast_hash": "ab42d5dfc6d2749ab7be6a1d88ecb2c4",
+    "semantic_hash": "ab42d5dfc6d2749ab7be6a1d88ecb2c4"
+  },
+  "QUICKSTART.md": {
+    "mtime": 1781656882.1908565,
+    "ast_hash": "71ef2ecd81574191fa1b40166a45fcf1",
+    "semantic_hash": "71ef2ecd81574191fa1b40166a45fcf1"
+  },
+  "README.md": {
+    "mtime": 1779205832.131475,
+    "ast_hash": "1a61f51466fa3e7e9257a158de431a96",
+    "semantic_hash": "1a61f51466fa3e7e9257a158de431a96"
+  },
+  "apps/backend/README.md": {
+    "mtime": 1781656882.15934,
+    "ast_hash": "5bfd5085f06ab70cd04d0d58e3df1773",
+    "semantic_hash": "5bfd5085f06ab70cd04d0d58e3df1773"
+  },
+  "arquitectura.md": {
+    "mtime": 1784247701.7051165,
+    "ast_hash": "9786438dea2f4446b0680c8afc020123",
+    "semantic_hash": "9786438dea2f4446b0680c8afc020123"
+  },
+  "convenciones.md": {
+    "mtime": 1784247710.1722138,
+    "ast_hash": "e8a03fca5562a988bda17508199fab7e",
+    "semantic_hash": "e8a03fca5562a988bda17508199fab7e"
+  },
+  "decisiones.md": {
+    "mtime": 1784247726.0487618,
+    "ast_hash": "adfae6fc8f08ad84e5fe5907d821ebc8",
+    "semantic_hash": "adfae6fc8f08ad84e5fe5907d821ebc8"
+  },
+  "docs/API.md": {
+    "mtime": 1781656882.1628494,
+    "ast_hash": "29eddd5e782ff711e6d774070ed3cee9",
+    "semantic_hash": "29eddd5e782ff711e6d774070ed3cee9"
+  },
+  "docs/ARCHITECTURE.md": {
+    "mtime": 1781656882.1623354,
+    "ast_hash": "95b520980f74be275a5aa9d45d0a1379",
+    "semantic_hash": "95b520980f74be275a5aa9d45d0a1379"
+  },
+  "docs/CONTRIBUTING.md": {
+    "mtime": 1781655737.5674152,
+    "ast_hash": "9af1ec0915b91d81f06d494559701d6d",
+    "semantic_hash": "9af1ec0915b91d81f06d494559701d6d"
+  },
+  "docs/DATABASE.md": {
+    "mtime": 1781655737.573426,
+    "ast_hash": "f2f3f620aa1e60edeb6a66bc46503139",
+    "semantic_hash": "f2f3f620aa1e60edeb6a66bc46503139"
+  },
+  "docs/SETUP.md": {
+    "mtime": 1781656882.1613355,
+    "ast_hash": "3100ef10eb97408891f9e8e61dabc538",
+    "semantic_hash": "3100ef10eb97408891f9e8e61dabc538"
+  },
+  "docs/superpowers/plans/2026-06-10-landing-rebranding-medica.md": {
+    "mtime": 1782317504.431299,
+    "ast_hash": "8da378fbf59a0afacb6b1951ed17e2f9",
+    "semantic_hash": "8da378fbf59a0afacb6b1951ed17e2f9"
+  },
+  "docs/superpowers/plans/2026-06-14-categorias-servicios-medicos.md": {
+    "mtime": 1781655737.5854206,
+    "ast_hash": "c50343bc6dacd5bb9707a8ca89736c26",
+    "semantic_hash": "c50343bc6dacd5bb9707a8ca89736c26"
+  },
+  "docs/superpowers/specs/2026-06-10-landing-rebranding-medica-design.md": {
+    "mtime": 1781655737.573426,
+    "ast_hash": "180b9b47e221de83b2910f2dfbd14406",
+    "semantic_hash": "180b9b47e221de83b2910f2dfbd14406"
+  },
+  "docs/superpowers/specs/2026-06-14-categorias-servicios-medicos-design.md": {
+    "mtime": 1781655737.573426,
+    "ast_hash": "688f5a016b2db9506a4351ae031e08cf",
+    "semantic_hash": "688f5a016b2db9506a4351ae031e08cf"
+  },
+  "docs/superpowers/specs/2026-07-09-registration-form-fields-design.md": {
+    "mtime": 1783630358.7431853,
+    "ast_hash": "2b34659db5aab38a707f5b55a341ca65",
+    "semantic_hash": "2b34659db5aab38a707f5b55a341ca65"
+  },
+  "errores-conocidos.md": {
+    "mtime": 1784247737.247038,
+    "ast_hash": "ff80707f34c82a9b55a5261eda956e8a",
+    "semantic_hash": "ff80707f34c82a9b55a5261eda956e8a"
+  },
+  "flujo-de-trabajo.md": {
+    "mtime": 1784247732.4663277,
+    "ast_hash": "fca302e093dbc84fe1b012f031f8cca6",
+    "semantic_hash": "fca302e093dbc84fe1b012f031f8cca6"
+  },
+  "glosario.md": {
+    "mtime": 1784247716.8844886,
+    "ast_hash": "8bd5c02da903ea4d40daa4f5220d8db9",
+    "semantic_hash": "8bd5c02da903ea4d40daa4f5220d8db9"
+  },
+  "medisdiana-landing/README.md": {
+    "mtime": 1779205832.137568,
+    "ast_hash": "1fd1975c826313d9af82af3562df872f",
+    "semantic_hash": "1fd1975c826313d9af82af3562df872f"
+  },
+  "medisdiana-landing/index.html": {
+    "mtime": 1783662440.4895756,
+    "ast_hash": "9c6b4e574fee36fe760609da9d087a92",
+    "semantic_hash": "9c6b4e574fee36fe760609da9d087a92"
+  },
+  "medisdiana-landing/public/robots.txt": {
+    "mtime": 1783662448.3491578,
+    "ast_hash": "1539db67fc8cabca10753c3d6d1a494d",
+    "semantic_hash": "1539db67fc8cabca10753c3d6d1a494d"
+  },
+  "packages/config/README.md": {
+    "mtime": 1781655737.6264231,
+    "ast_hash": "f4023be445fd95ae640491b361fb58ee",
+    "semantic_hash": "f4023be445fd95ae640491b361fb58ee"
+  },
+  "packages/database/README.md": {
+    "mtime": 1781655737.6344173,
+    "ast_hash": "bd44a526cdda688693670a80897e0b90",
+    "semantic_hash": "bd44a526cdda688693670a80897e0b90"
+  },
+  "packages/shared-types/README.md": {
+    "mtime": 1781655737.6344173,
+    "ast_hash": "9c287fde704d695e8b289a2362af57a1",
+    "semantic_hash": "9c287fde704d695e8b289a2362af57a1"
+  },
+  "packages/ui-components/README.md": {
+    "mtime": 1781655737.6304164,
+    "ast_hash": "2e409f86e5cb0abf5758bbf62f340c81",
+    "semantic_hash": "2e409f86e5cb0abf5758bbf62f340c81"
+  },
+  "pnpm-workspace.yaml": {
+    "mtime": 1781655737.5488937,
+    "ast_hash": "945c8e5463e10ac9a17ab63b1dc91c80",
+    "semantic_hash": "945c8e5463e10ac9a17ab63b1dc91c80"
+  },
+  "medisdiana-landing/public/Logo_Medis.jpeg": {
+    "mtime": 1781114794.917486,
+    "ast_hash": "326d7b40017e6c9725a39f6caa2a246d",
+    "semantic_hash": "326d7b40017e6c9725a39f6caa2a246d"
+  },
+  "medisdiana-landing/public/Logo_Medis.png": {
+    "mtime": 1782315180.4007792,
+    "ast_hash": "4d19843718620927557ece85c5580bf1",
+    "semantic_hash": "4d19843718620927557ece85c5580bf1"
+  },
+  "medisdiana-landing/public/favicon.svg": {
+    "mtime": 1779205832.1584222,
+    "ast_hash": "7e840862161341271697daa99a40d76b",
+    "semantic_hash": "7e840862161341271697daa99a40d76b"
+  },
+  "medisdiana-landing/public/icon.svg": {
+    "mtime": 1783661926.0330434,
+    "ast_hash": "6af71808962b7a883df5b915c3730960",
+    "semantic_hash": "6af71808962b7a883df5b915c3730960"
+  },
+  "medisdiana-landing/public/icons.svg": {
+    "mtime": 1779205832.16284,
+    "ast_hash": "21c7473c592c67dc87223d49892c8f0a",
+    "semantic_hash": "21c7473c592c67dc87223d49892c8f0a"
+  },
+  "medisdiana-landing/public/logo-icon.svg": {
+    "mtime": 1782316655.6453516,
+    "ast_hash": "d9167d1861a86514579f40a24023aa43",
+    "semantic_hash": "d9167d1861a86514579f40a24023aa43"
+  },
+  "medisdiana-landing/src/assets/hero.png": {
+    "mtime": 1779205832.1765208,
+    "ast_hash": "aead493361b27e7510691c5d7072dfc1",
+    "semantic_hash": "aead493361b27e7510691c5d7072dfc1"
+  },
+  "medisdiana-landing/src/assets/icon.svg": {
+    "mtime": 1781807655.2451317,
+    "ast_hash": "6af71808962b7a883df5b915c3730960",
+    "semantic_hash": "6af71808962b7a883df5b915c3730960"
+  },
+  "medisdiana-landing/src/assets/logo.svg": {
+    "mtime": 1781807655.2732909,
+    "ast_hash": "b88b0ae84f2cbca63355c063c85ed808",
+    "semantic_hash": "b88b0ae84f2cbca63355c063c85ed808"
+  },
+  "medisdiana-landing/src/assets/react.svg": {
+    "mtime": 1779205832.1790438,
+    "ast_hash": "f0402b67b6ce880f65666bb49e841696",
+    "semantic_hash": "f0402b67b6ce880f65666bb49e841696"
+  },
+  "medisdiana-landing/src/assets/vite.svg": {
+    "mtime": 1779205832.1821039,
+    "ast_hash": "6d5180a782d64c8cf51ba01c2a2184d8",
+    "semantic_hash": "6d5180a782d64c8cf51ba01c2a2184d8"
+  }
+}

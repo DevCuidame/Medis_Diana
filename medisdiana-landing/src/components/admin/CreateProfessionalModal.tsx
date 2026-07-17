@@ -54,7 +54,7 @@ const ID_TYPES = [
 
 const DEFAULT_AVATAR_URL = 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=600'
 
-type AccountRole = 'USER' | 'PROFESSIONAL' | 'ADMIN'
+type AccountRole = 'PROFESSIONAL' | 'ADMIN'
 
 interface FormData {
   firstName: string; lastName: string; idType: string; idNumber: string
@@ -399,7 +399,6 @@ export function CreateProfessionalModal({ onClose, onSuccess }: Props) {
                     style={{ ...INPUT(), cursor: 'pointer', appearance: 'none', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237F7665' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 14px center', paddingRight: 36 }}
                   >
                     <option value="PROFESSIONAL">Profesional</option>
-                    <option value="USER">Usuario normal</option>
                     <option value="ADMIN">Administrador</option>
                   </select>
                 </div>

@@ -1,8 +1,12 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
+import { useDocServices } from '../hooks/useDocServices'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
+
+// Fallback si el catálogo de CuidameDoc falla o viene vacío.
+const FALLBACK_SERVICES = ['Consulta Médica General', 'Promoción y Prevención', 'Enfermedades No Transmisibles', 'Sobrepeso y Obesidad', 'Salud de la Mujer', 'Salud Mental']
 
 const SOCIAL = [
   {
@@ -41,6 +45,10 @@ export default function Footer() {
   const inView = useInView(ref, { once: true, margin: '-50px' })
   const navigate = useNavigate()
   const year = new Date().getFullYear()
+  const { services } = useDocServices()
+  const serviceNames = services.length > 0
+    ? services.slice(0, 6).map(s => s.name.trim())
+    : FALLBACK_SERVICES
 
   return (
     <footer
@@ -178,7 +186,7 @@ export default function Footer() {
               Servicios
             </h4>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {['Consulta Médica General', 'Promoción y Prevención', 'Enfermedades No Transmisibles', 'Sobrepeso y Obesidad', 'Salud de la Mujer', 'Salud Mental'].map((item, i) => (
+              {serviceNames.map((item, i) => (
                 <motion.li
                   key={item}
                   initial={{ opacity: 0, x: -10 }}

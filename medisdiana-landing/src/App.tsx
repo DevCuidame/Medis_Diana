@@ -31,6 +31,7 @@ const MembresiasDashboard   = lazy(() => import('./components/admin/MembresiasDa
 const BeneficiosDashboard   = lazy(() => import('./components/admin/BeneficiosDashboard').then(m => ({ default: m.BeneficiosDashboard })))
 const InscripcionesDashboard = lazy(() => import('./components/admin/InscripcionesDashboard').then(m => ({ default: m.InscripcionesDashboard })))
 const DescuentosDashboard   = lazy(() => import('./components/admin/DescuentosDashboard').then(m => ({ default: m.DescuentosDashboard })))
+const InventarioDashboard   = lazy(() => import('./components/admin/InventarioDashboard').then(m => ({ default: m.InventarioDashboard })))
 const UserLayout            = lazy(() => import('./components/user/UserLayout').then(m => ({ default: m.UserLayout })))
 const ProfessionalDashboard = lazy(() => import('./components/professional/ProfessionalDashboard').then(m => ({ default: m.ProfessionalDashboard })))
 
@@ -321,6 +322,14 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={['ADMIN']}>
               <DescuentosDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/inventory"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <InventarioDashboard />
             </ProtectedRoute>
           }
         />

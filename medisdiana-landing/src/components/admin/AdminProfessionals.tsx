@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Building2, Users, Calendar, CalendarDays, DollarSign, CreditCard, Plus, CircleHelp, LogOut, Search, Bell, Settings, Star, UserPlus, MoreVertical, CheckCircle2, AlertCircle, RefreshCw, Briefcase, ChevronDown, ChevronRight, LayoutDashboard, Menu, Percent } from 'lucide-react'
+import { Users, Calendar, Plus, Search, Bell, Settings, Star, UserPlus, MoreVertical, CheckCircle2, AlertCircle, RefreshCw, Menu } from 'lucide-react'
+import { AdminSidebar } from './AdminSidebar'
 import './MainDashboard.css'
 import { CreateProfessionalModal } from './CreateProfessionalModal'
 import { ProfessionalProfileModal } from './ProfessionalProfileModal'
@@ -24,16 +24,6 @@ const C = {
 const FONT_BODONI = '"Bodoni Moda", Georgia, serif'
 const FONT_INTER = '"Hanken Grotesk", Inter, system-ui, sans-serif'
 
-const NAV_ITEMS = [
-  { icon: LayoutDashboard, label: 'Dashboard', active: false },
-  { icon: Users, label: 'Usuarios', active: true },
-  { icon: CalendarDays, label: 'Calendario', active: false },
-  { icon: Building2, label: 'Infraestructura', active: false },
-  { icon: Briefcase, label: 'Servicios', active: false },
-  { icon: Percent, label: 'Descuentos', active: false },
-  { icon: DollarSign,   label: 'Finanzas',      active: false },
-  { icon: CreditCard,   label: 'Planes',    active: false },
-]
 
 interface UserCard {
   id: string
@@ -105,19 +95,16 @@ function authHeaders(): HeadersInit {
 }
 
 export const AdminProfessionals: React.FC = () => {
-  const navigate = useNavigate()
   const [professionals, setProfessionals] = useState<UserCard[]>([])
   const [stats, setStats] = useState<Stats | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
-  const [hoveredNav, setHoveredNav] = useState<number | null>(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [selectedPro, setSelectedPro] = useState<UserCard | null>(null)
   const [toast, setToast] = useState<string | null>(null)
-  const [isInfraExpanded, setIsInfraExpanded] = useState(false);
 
   const fetchData = async () => {
     setLoading(true)
@@ -212,99 +199,12 @@ export const AdminProfessionals: React.FC = () => {
         @keyframes toastIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
       `}</style>
       <div className="dashboard-container" style={{ background: C.bg, color: C.text, fontFamily: FONT_INTER }}>
-        <div className={`mobile-overlay ${isMobileMenuOpen ? 'open' : ''}`} onClick={() => setIsMobileMenuOpen(false)} />
         {/* ── SIDEBAR ─────────────────────────────────────────────────── */}
-        <aside className={`sidebar ${isMobileMenuOpen ? 'open' : ''}`} style={{ background: C.bgPanel, borderRight: `1px solid ${C.border}` }}>
-
-          {/* Logo */}
-          <div style={{ padding: '28px 20px 20px', borderBottom: `1px solid ${C.borderLight}` }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 38, height: 46, background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <span style={{ fontFamily: FONT_BODONI, fontSize: 20, fontStyle: 'italic', fontWeight: 700, color: C.white }}>A</span>
-              </div>
-              <div>
-                <div style={{ fontFamily: FONT_BODONI, fontSize: 17, fontWeight: 600, color: C.gold, lineHeight: 1.2 }}>MEDIS</div>
-                <div style={{ fontFamily: FONT_INTER, fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 2 }}>Panel Admin</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Nav */}
-          <nav style={{ flex: 1, padding: '16px 10px' }}>
-            <div style={{ marginBottom: 6 }}>
-              <span style={{ fontFamily: FONT_INTER, fontSize: 9, fontWeight: 700, color: C.textMuted, letterSpacing: '0.18em', textTransform: 'uppercase', padding: '0 10px', display: 'block', marginBottom: 6 }}>Menú Principal</span>
-              {NAV_ITEMS.map((item, i) => {
-                const Icon = item.icon
-                const isHovered = hoveredNav === i
-                const isActive = item.active
-                const handleNavClick = () => {
-                  if (item.label === 'Dashboard') navigate('/admin/dashboard')
-                  if (item.label === 'Calendario') navigate('/admin/classes')
-                  if (item.label === 'Usuarios') navigate('/admin/users')
-                  if (item.label === 'Inscripciones') navigate('/admin/inscripciones')
-                if (item.label === 'Descuentos') navigate('/admin/discounts')
-                if (item.label === 'Finanzas') navigate('/admin/finances')
-                  if (item.label === 'Planes') navigate('/admin/memberships')
-                  if (item.label === 'Infraestructura') setIsInfraExpanded(!isInfraExpanded);
-    if (item.label === 'Servicios') { navigate('/admin/services/create'); if (typeof setIsMobileMenuOpen !== 'undefined') setIsMobileMenuOpen(false); }
-                }
-                return (
-                  <div key={item.label}>
-                    <button
-                      onClick={handleNavClick}
-                      onMouseEnter={() => setHoveredNav(i)}
-                      onMouseLeave={() => setHoveredNav(null)}
-                    style={{
-                      width: '100%', display: 'flex', alignItems: 'center', gap: 10,
-                      padding: '10px 12px', borderRadius: 8, marginBottom: 2,
-                      background: isActive ? `linear-gradient(90deg, ${C.gold}, ${C.goldLight})` : isHovered ? 'rgba(139,92,246,0.07)' : 'transparent',
-                      borderLeft: isActive ? `3px solid ${C.gold}` : '3px solid transparent',
-                      borderTop: 'none', borderRight: 'none', borderBottom: 'none',
-                      transition: 'background 0.18s ease',
-                      cursor: (item.label === 'Dashboard' || item.label === 'Calendario' || item.label === 'Usuarios' || item.label === 'Servicios') ? 'pointer' : 'default',
-                    }}
-                  >
-                    <Icon size={16} color={isActive ? C.white : isHovered ? C.gold : C.textMedium} strokeWidth={isActive ? 2.5 : 2} style={{ flexShrink: 0 }} />
-                    <span style={{ fontFamily: FONT_INTER, fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: isActive ? C.white : isHovered ? C.gold : C.textBrown, transition: 'color 0.18s ease' }}>
-                      {item.label}
-                    </span>
-                    {item.label === 'Infraestructura' && (
-                      <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
-                        {isInfraExpanded ? <ChevronDown size={14} color={isActive ? C.white : isHovered ? C.gold : C.textMedium} /> : <ChevronRight size={14} color={isActive ? C.white : isHovered ? C.gold : C.textMedium} />}
-                      </div>
-                    )}
-                  </button>
-                  {item.label === 'Infraestructura' && isInfraExpanded && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginLeft: 34, marginTop: 4, marginBottom: 8, borderLeft: `2px solid ${C.goldLight}`, paddingLeft: 8 }}>
-                      <span onClick={() => navigate('/admin/services/locations')} style={{ fontFamily: FONT_INTER, fontSize: 11, fontWeight: 600, color: C.textBrown, cursor: 'pointer', padding: '6px 4px' }}>Creación de Sedes</span>
-                      <span onClick={() => navigate('/admin/services/rooms')} style={{ fontFamily: FONT_INTER, fontSize: 11, fontWeight: 600, color: C.textBrown, cursor: 'pointer', padding: '6px 4px' }}>Creación de Espacios</span>
-                      </div>
-                  )}
-                  </div>
-                )
-              })}
-            </div>
-          </nav>
-
-          {/* New Class Button */}
-          <div style={{ padding: '12px 10px' }}>
-          </div>
-
-          {/* Bottom */}
-          <div style={{ padding: '10px 10px 20px', borderTop: `1px solid ${C.borderLight}` }}>
-            <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 8, textDecoration: 'none', color: C.textMedium }}>
-              <CircleHelp size={16} strokeWidth={2} />
-              <span style={{ fontFamily: FONT_INTER, fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Ayuda</span>
-            </a>
-            <button
-              onClick={() => { localStorage.removeItem('accessToken'); localStorage.removeItem('refreshToken'); navigate('/login') }}
-              style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 8, background: 'none', border: 'none', cursor: 'pointer', color: C.textMedium }}
-            >
-              <LogOut size={16} strokeWidth={2} />
-              <span style={{ fontFamily: FONT_INTER, fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Cerrar Sesión</span>
-            </button>
-          </div>
-        </aside>
+        <AdminSidebar
+          isMobileOpen={isMobileMenuOpen}
+          onCloseMobile={() => setIsMobileMenuOpen(false)}
+          onNewUser={() => setShowModal(true)}
+        />
 
         {/* ── MAIN ────────────────────────────────────────────────────── */}
         <div className="main-content">

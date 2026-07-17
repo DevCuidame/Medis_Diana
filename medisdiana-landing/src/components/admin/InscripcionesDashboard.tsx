@@ -1,10 +1,8 @@
 ﻿import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Building2, Users, CalendarDays, DollarSign, LogOut,
-  Briefcase, ChevronDown, ChevronRight, LayoutDashboard, CreditCard, Percent,
-  CheckCircle2, XCircle, AlertCircle, Clock, User, MapPin,
-  RefreshCw, ClipboardList, Loader2, } from 'lucide-react'
+import { CheckCircle2, XCircle, AlertCircle, Clock, User, MapPin,
+  RefreshCw, Loader2, ClipboardList, } from 'lucide-react'
+import { AdminSidebar } from './AdminSidebar'
 import './MainDashboard.css'
 
 const C = {
@@ -16,18 +14,6 @@ const C = {
 }
 const FONT_BODONI = '"Bodoni Moda", Georgia, serif'
 const FONT_INTER  = '"Hanken Grotesk", Inter, system-ui, sans-serif'
-
-const NAV_ITEMS = [
-  { icon: LayoutDashboard, label: 'Dashboard',      active: false },
-  { icon: Users,           label: 'Usuarios',       active: false },
-  { icon: CalendarDays,    label: 'Calendario',     active: false },
-  { icon: Building2, label: 'Infraestructura', active: false },
-  { icon: Briefcase, label: 'Servicios', active: false },
-  { icon: Percent,         label: 'Descuentos',     active: false },
-  { icon: ClipboardList,   label: 'Inscripciones',  active: true  },
-  { icon: DollarSign,  label: 'Finanzas',   active: false },
-  { icon: CreditCard,  label: 'Planes', active: false },
-]
 
 type Status = 'pending' | 'approved' | 'rejected' | 'cancelled'
 
@@ -74,7 +60,6 @@ const STATUS_CONFIG: Record<Status, { label: string; color: string; bg: string; 
 }
 
 export const InscripcionesDashboard: React.FC = () => {
-  const navigate = useNavigate()
   const [requests, setRequests]         = useState<Request[]>([])
   const [loading, setLoading]           = useState(true)
   const [filterStatus, setFilterStatus] = useState<'all' | Status>('all')
@@ -86,8 +71,6 @@ export const InscripcionesDashboard: React.FC = () => {
   const [chargeAmount, setChargeAmount]     = useState('')
   const [charging, setCharging]             = useState(false)
   const [toast, setToast]                   = useState<{ msg: string; ok: boolean } | null>(null)
-  const [hoveredNav, setHoveredNav]     = useState<number | null>(null)
-  const [isInfraExpanded, setIsInfraExpanded] = useState(false);
 
   const showToast = (msg: string, ok: boolean) => { setToast({ msg, ok }); setTimeout(() => setToast(null), 3500) }
 
@@ -154,18 +137,6 @@ export const InscripcionesDashboard: React.FC = () => {
     finally { setCharging(false) }
   }
 
-  const handleNavClick = (label: string) => {
-    if (label === 'Dashboard')     navigate('/admin/dashboard')
-    if (label === 'Usuarios')      navigate('/admin/users')
-    if (label === 'Calendario')    navigate('/admin/classes')
-    if (label === 'Descuentos')    navigate('/admin/discounts')
-    if (label === 'Finanzas')      navigate('/admin/finances')
-    if (label === 'Planes')    navigate('/admin/memberships')
-    if (label === 'Inscripciones') navigate('/admin/inscripciones')
-    if (label === 'Infraestructura') setIsInfraExpanded(v => !v)
-    if (label === 'Servicios') { navigate('/admin/services/create'); if (typeof setIsMobileMenuOpen !== 'undefined') setIsMobileMenuOpen(false); }
-  }
-
   const filtered = requests.filter(r => {
     if (filterStatus !== 'all' && r.status !== filterStatus) return false
     if (search) {
@@ -185,61 +156,7 @@ export const InscripcionesDashboard: React.FC = () => {
 
   return (
     <div className="dashboard-container">
-      <aside className="sidebar">
-        <div style={{ padding: '28px 20px 20px', borderBottom: `1px solid ${C.borderLight}` }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 38, height: 46, background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <span style={{ fontFamily: FONT_BODONI, fontSize: 20, fontStyle: 'italic', fontWeight: 700, color: C.white }}>A</span>
-            </div>
-            <div>
-              <div style={{ fontFamily: FONT_BODONI, fontSize: 17, fontWeight: 600, color: C.gold, lineHeight: 1.2 }}>MEDIS</div>
-              <div style={{ fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: 2 }}>Panel Admin</div>
-            </div>
-          </div>
-        </div>
-
-        <nav style={{ flex: 1, padding: '20px 14px' }}>
-          <span style={{ fontSize: 9, fontWeight: 700, color: C.textMuted, letterSpacing: '0.18em', textTransform: 'uppercase', padding: '0 10px', display: 'block', marginBottom: 10 }}>Menú Principal</span>
-          {NAV_ITEMS.map((item, i) => {
-            const Icon = item.icon
-            const isActive  = item.active
-            const isHovered = hoveredNav === i
-            return (
-              <div key={item.label} style={{ marginBottom: 4 }}>
-                <button onClick={() => handleNavClick(item.label)} onMouseEnter={() => setHoveredNav(i)} onMouseLeave={() => setHoveredNav(null)}
-                  style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 10, border: 'none', background: isActive ? `linear-gradient(90deg, ${C.gold}, ${C.goldLight})` : isHovered ? 'rgba(139,92,246,0.07)' : 'transparent', cursor: 'pointer', transition: 'all 0.2s' }}>
-                  <Icon size={18} color={isActive ? C.white : isHovered ? C.gold : C.textMedium} strokeWidth={isActive ? 2.5 : 2} />
-                  <span style={{ fontSize: 13, fontWeight: 600, color: isActive ? C.white : isHovered ? C.gold : C.textBrown, flex: 1, textAlign: 'left' }}>{item.label}</span>
-                  {item.label === 'Inscripciones' && counts.pending > 0 && !isActive && (
-                    <span style={{ background: '#DC2626', color: C.white, borderRadius: '50%', width: 18, height: 18, fontSize: 10, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      {counts.pending > 9 ? '9+' : counts.pending}
-                    </span>
-                  )}
-                  {item.label === 'Infraestructura' && <div style={{ marginLeft: 'auto' }}>{isInfraExpanded ? <ChevronDown size={14} color={isActive ? C.white : C.textMedium} /> : <ChevronRight size={14} color={isActive ? C.white : C.textMedium} />}</div>}
-                </button>
-                {item.label === 'Infraestructura' && isInfraExpanded && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginLeft: 38, marginTop: 8, marginBottom: 8, borderLeft: `2px solid ${C.goldLight}`, paddingLeft: 12 }}>
-                    {[['Sedes','/admin/services/locations'],['Espacios','/admin/services/rooms']].map(([l,p]) => (
-                      <span key={l} onClick={() => navigate(p)} style={{ fontSize: 12, fontWeight: 600, color: C.textBrown, cursor: 'pointer', padding: '6px 4px' }} onMouseEnter={e => e.currentTarget.style.color = C.gold} onMouseLeave={e => e.currentTarget.style.color = C.textBrown}>{l}</span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </nav>
-
-
-        <div style={{ padding: '16px 20px 24px', borderTop: `1px solid ${C.borderLight}` }}>
-          <button onClick={() => { localStorage.removeItem('accessToken'); localStorage.removeItem('refreshToken'); navigate('/login') }}
-            style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 10, background: 'none', border: 'none', cursor: 'pointer', color: C.textMedium }}
-            onMouseEnter={e => e.currentTarget.style.background = '#F3F0FB'}
-            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-            <LogOut size={18} strokeWidth={2} />
-            <span style={{ fontSize: 13, fontWeight: 600 }}>Cerrar Sesión</span>
-          </button>
-        </div>
-      </aside>
+      <AdminSidebar />
 
       <div className="main-content">
         {/* TOPBAR */}

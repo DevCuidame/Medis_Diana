@@ -1,7 +1,19 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
+import { useDocServices, categoryLabel } from '../hooks/useDocServices'
 
+// Paleta presentacional: se rota por índice para los servicios que vienen de la API.
+const CARD_STYLES = [
+  { accent: '#A78BFA', gradient: 'linear-gradient(160deg, #1e1b4b 0%, #4c1d95 50%, #1e3a8a 100%)' },
+  { accent: '#38BDF8', gradient: 'linear-gradient(160deg, #0f172a 0%, #1e3a8a 50%, #0c4a6e 100%)' },
+  { accent: '#A78BFA', gradient: 'linear-gradient(160deg, #1e1b4b 0%, #312e81 50%, #1e3a8a 100%)' },
+  { accent: '#38BDF8', gradient: 'linear-gradient(160deg, #0c1445 0%, #1e3a8a 50%, #164e63 100%)' },
+  { accent: '#A78BFA', gradient: 'linear-gradient(160deg, #1e1b4b 0%, #4c1d95 50%, #0f172a 100%)' },
+  { accent: '#38BDF8', gradient: 'linear-gradient(160deg, #0f172a 0%, #0c4a6e 50%, #1e3a8a 100%)' },
+]
+
+// Fallback estático: se muestra mientras carga o si la API falla / viene vacía.
 const CLASSES = [
   {
     title: 'Consulta Médica General',
@@ -86,7 +98,7 @@ const CLASSES = [
   },
 ]
 
-function ClassCard({ title, level, duration, description, accent, tag, gradient, delay }: { title: string, level: string, duration: string, description: string, accent: string, tag?: string, gradient: string, delay: number }) {
+function ClassCard({ title, level, duration, description, accent, tag, gradient, delay }: { title: string, level?: string, duration: string, description?: string, accent: string, tag?: string, gradient: string, delay: number }) {
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-50px' })
   const navigate = useNavigate()
@@ -128,29 +140,35 @@ function ClassCard({ title, level, duration, description, accent, tag, gradient,
         }} />
 
         {/* Tag */}
-        <div style={{
-          position: 'absolute', top: '1.5rem', left: '1.5rem',
-          padding: '0.3rem 0.8rem',
-          borderRadius: '9999px',
-          background: `rgba(${accent === '#A78BFA' ? '167,139,250' : '56,189,248'},0.20)`,
-          border: `1px solid ${accent}40`,
-          fontFamily: 'Inter, sans-serif',
-          fontSize: '0.62rem',
-          letterSpacing: '0.18em',
-          textTransform: 'uppercase',
-          color: accent === '#A78BFA' ? '#C4B5FD' : '#7DD3FC',
-          backdropFilter: 'blur(6px)',
-        }}>
-          {tag}
-        </div>
+        {tag && (
+          <div style={{
+            position: 'absolute', top: '1.5rem', left: '1.5rem',
+            padding: '0.3rem 0.8rem',
+            borderRadius: '9999px',
+            background: `rgba(${accent === '#A78BFA' ? '167,139,250' : '56,189,248'},0.20)`,
+            border: `1px solid ${accent}40`,
+            fontFamily: 'Inter, sans-serif',
+            fontSize: '0.62rem',
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            color: accent === '#A78BFA' ? '#C4B5FD' : '#7DD3FC',
+            backdropFilter: 'blur(6px)',
+          }}>
+            {tag}
+          </div>
+        )}
 
         {/* Content */}
         <div style={{ position: 'relative', zIndex: 2 }}>
           <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'center' }}>
-            <span style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.66rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)' }}>
-              {level}
-            </span>
-            <span style={{ color: 'rgba(255,255,255,0.2)' }}>·</span>
+            {level && (
+              <>
+                <span style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.66rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)' }}>
+                  {level}
+                </span>
+                <span style={{ color: 'rgba(255,255,255,0.2)' }}>·</span>
+              </>
+            )}
             <span style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.66rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)' }}>
               {duration}
             </span>
@@ -163,11 +181,13 @@ function ClassCard({ title, level, duration, description, accent, tag, gradient,
             {title}
           </h3>
 
-          <p
-            style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.82rem', lineHeight: 1.7, color: 'rgba(251,249,248,0.62)', fontWeight: 300, marginBottom: '1.25rem' }}
-          >
-            {description}
-          </p>
+          {description && (
+            <p
+              style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.82rem', lineHeight: 1.7, color: 'rgba(251,249,248,0.62)', fontWeight: 300, marginBottom: '1.25rem' }}
+            >
+              {description}
+            </p>
+          )}
 
           {/* Hover CTA */}
           <motion.div
@@ -202,6 +222,21 @@ export default function Classes() {
   const navigate = useNavigate()
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-100px' })
+  const { services } = useDocServices()
+
+  // Servicios del catálogo CuidameDoc (creados desde admin o desde la app de la
+  // doctora); si la API falla o viene vacía se muestra el fallback estático.
+  const cards = services.length > 0
+    ? services.map((s, i) => ({
+        key: `svc-${s.prof_service_id}`,
+        title: s.name.trim(),
+        level: undefined as string | undefined,
+        duration: `${s.duration_minutes} min`,
+        description: s.description?.trim() || undefined,
+        tag: categoryLabel(s.category),
+        ...CARD_STYLES[i % CARD_STYLES.length],
+      }))
+    : CLASSES.map(c => ({ key: c.title, ...c, level: c.level as string | undefined, description: c.description as string | undefined }))
 
   return (
     <section id="servicios" style={{ background: '#F3F0FB', padding: '9rem 1.5rem' }}>
@@ -266,8 +301,8 @@ export default function Classes() {
           gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
           gap: '1.25rem',
         }}>
-          {CLASSES.map((c, i) => (
-            <ClassCard key={c.title} {...c} delay={i * 0.08} />
+          {cards.map(({ key, ...c }, i) => (
+            <ClassCard key={key} {...c} delay={i * 0.08} />
           ))}
         </div>
       </div>
