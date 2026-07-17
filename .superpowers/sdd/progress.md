@@ -11,5 +11,5 @@ Task 4: complete (commits d225be0..70938f9, review clean; MINOR noted: external-
 Task 5: complete (commits 4f686aa..a468f29, review clean after 1 fix round: timing-safe compare + import alias)
 Task 6: complete (commits cfc0071..a201982, review clean)
 Task 7: complete (commits 4894deb..427caed, controller took over after implementer hit rate limit mid-task; verified directly via curl, no separate reviewer dispatched to save budget)
-Task 8: pending
-Task 9: pending
+Task 8: complete (commit e7f0291, no separate reviewer dispatched - controller reviewed directly given rate-limit pressure; fixed disabled-state on save button per implementer's own flagged gap)
+Task 9: complete (commit d519a58, no separate reviewer dispatched - controller reviewed directly; fixed balance KPI to include confirmedQuotesTotal per implementer's own flagged gap)
