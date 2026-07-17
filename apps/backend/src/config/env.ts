@@ -18,6 +18,7 @@ interface Env {
   DOC_API_URL: string;
   DOC_DIANA_EMAIL: string;
   DOC_DIANA_PASSWORD: string;
+  DIANA_INTERNAL_API_KEY: string;
 }
 
 const requiredEnvVars = ['DATABASE_URL', 'JWT_SECRET'];
@@ -46,4 +47,5 @@ export const env: Env = {
   DOC_API_URL: process.env.DOC_API_URL || 'https://doc-api.cuidame.tech/api',
   DOC_DIANA_EMAIL: process.env.DOC_DIANA_EMAIL || '',
   DOC_DIANA_PASSWORD: process.env.DOC_DIANA_PASSWORD || '',
+  DIANA_INTERNAL_API_KEY: process.env.DIANA_INTERNAL_API_KEY || '',
 };
