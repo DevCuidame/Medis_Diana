@@ -19,8 +19,13 @@ const FONT_INTER  = '"Hanken Grotesk", Inter, system-ui, sans-serif'
 const CATEGORIES = ['Medicamentos', 'Insumos médicos', 'Equipos', 'Papelería', 'Aseo y desinfección']
 const UNITS = ['unidades', 'cajas', 'frascos', 'paquetes', 'litros']
 
-// Sin API de inventario en el backend: los ítems se persisten en localStorage.
-const STORAGE_KEY = 'MEDIS_inventory'
+function adminHeaders(): HeadersInit {
+  const token = localStorage.getItem('accessToken')
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  }
+}
 
 interface InventoryItem {
   id: string
@@ -29,6 +34,7 @@ interface InventoryItem {
   quantity: number
   minStock: number
   unit: string
+  price: number
   notes: string
   updatedAt: string
 }
@@ -47,19 +53,45 @@ const STATUS_META: Record<ItemStatus, { label: string; color: string; bg: string
   out: { label: 'Agotado',    color: '#DC2626', bg: 'rgba(239,68,68,0.10)' },
 }
 
-function loadItems(): InventoryItem[] {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') }
-  catch { return [] }
+const fmtPrice = (n: number) =>
+  new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(n)
+
+interface ApiInventoryItem {
+  id: string; name: string; category: string; unit: string
+  price: number; quantity: number; minStock: number
+  notes: string | null; isActive: boolean
+}
+
+function fromApi(it: ApiInventoryItem): InventoryItem {
+  return { id: it.id, name: it.name, category: it.category, quantity: it.quantity, minStock: it.minStock, unit: it.unit, price: it.price, notes: it.notes ?? '', updatedAt: '' }
 }
 
 interface FormState {
-  name: string; category: string; quantity: string; minStock: string; unit: string; notes: string
+  name: string; category: string; quantity: string; minStock: string; unit: string; price: string; notes: string
 }
-const EMPTY_FORM: FormState = { name: '', category: CATEGORIES[0], quantity: '', minStock: '', unit: UNITS[0], notes: '' }
+const EMPTY_FORM: FormState = { name: '', category: CATEGORIES[0], quantity: '', minStock: '', unit: UNITS[0], price: '', notes: '' }
 
 export const InventarioDashboard: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [items, setItems] = useState<InventoryItem[]>(loadItems)
+  const [items, setItems] = useState<InventoryItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [apiError, setApiError] = useState('')
+
+  const fetchItems = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch('/api/inventory', { headers: adminHeaders() })
+      const data = await res.json()
+      if (data.success) setItems(data.data.items.filter((it: ApiInventoryItem) => it.isActive).map(fromApi))
+      else setApiError(data.error ?? 'Error al cargar inventario')
+    } catch {
+      setApiError('No se pudo conectar con el servidor.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  React.useEffect(() => { fetchItems() }, [])
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<string>('todas')
   const [showForm, setShowForm] = useState(false)
@@ -67,11 +99,6 @@ export const InventarioDashboard: React.FC = () => {
   const [form, setForm] = useState<FormState>(EMPTY_FORM)
   const [formError, setFormError] = useState('')
   const [deletingId, setDeletingId] = useState<string | null>(null)
-
-  const persist = (next: InventoryItem[]) => {
-    setItems(next)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
-  }
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -93,37 +120,48 @@ export const InventarioDashboard: React.FC = () => {
 
   const openEdit = (it: InventoryItem) => {
     setEditingId(it.id)
-    setForm({ name: it.name, category: it.category, quantity: String(it.quantity), minStock: String(it.minStock), unit: it.unit, notes: it.notes })
+    setForm({ name: it.name, category: it.category, quantity: String(it.quantity), minStock: String(it.minStock), unit: it.unit, price: String(it.price), notes: it.notes })
     setFormError('')
     setShowForm(true)
   }
 
-  const saveForm = () => {
+  const [saving, setSaving] = useState(false)
+
+  const saveForm = async () => {
     const name = form.name.trim()
     const quantity = Number(form.quantity)
     const minStock = Number(form.minStock || 0)
+    const price = Number(form.price)
     if (!name) { setFormError('El nombre es requerido'); return }
+    if (!Number.isFinite(price) || price < 0) { setFormError('Precio inválido'); return }
     if (!Number.isFinite(quantity) || quantity < 0) { setFormError('Cantidad inválida'); return }
     if (!Number.isFinite(minStock) || minStock < 0) { setFormError('Stock mínimo inválido'); return }
 
-    const now = new Date().toISOString()
-    if (editingId) {
-      persist(items.map(it => it.id === editingId
-        ? { ...it, name, category: form.category, quantity, minStock, unit: form.unit, notes: form.notes.trim(), updatedAt: now }
-        : it))
-    } else {
-      persist([...items, {
-        id: `inv_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-        name, category: form.category, quantity, minStock, unit: form.unit, notes: form.notes.trim(), updatedAt: now,
-      }])
+    setSaving(true)
+    try {
+      const body = { name, category: form.category, unit: form.unit, price, quantity, minStock, notes: form.notes.trim() || null }
+      const res = editingId
+        ? await fetch(`/api/inventory/${editingId}`, { method: 'PATCH', headers: adminHeaders(), body: JSON.stringify(body) })
+        : await fetch('/api/inventory', { method: 'POST', headers: adminHeaders(), body: JSON.stringify(body) })
+      const data = await res.json()
+      if (!data.success) { setFormError(data.error ?? 'Error al guardar'); return }
+      setShowForm(false)
+      await fetchItems()
+    } catch {
+      setFormError('No se pudo conectar con el servidor.')
+    } finally {
+      setSaving(false)
     }
-    setShowForm(false)
   }
 
-  const adjustQuantity = (id: string, delta: number) => {
-    persist(items.map(it => it.id === id
-      ? { ...it, quantity: Math.max(0, it.quantity + delta), updatedAt: new Date().toISOString() }
-      : it))
+  const adjustQuantity = async (it: InventoryItem, delta: number) => {
+    const nextQuantity = Math.max(0, it.quantity + delta)
+    setItems(prev => prev.map(x => x.id === it.id ? { ...x, quantity: nextQuantity } : x))
+    try {
+      await fetch(`/api/inventory/${it.id}`, { method: 'PATCH', headers: adminHeaders(), body: JSON.stringify({ quantity: nextQuantity }) })
+    } catch {
+      await fetchItems()
+    }
   }
 
   const INPUT: React.CSSProperties = {
@@ -234,7 +272,16 @@ export const InventarioDashboard: React.FC = () => {
           </div>
 
           {/* Table / empty state */}
-          {filtered.length === 0 ? (
+          {apiError && (
+            <div style={{ background: '#FFF0F0', border: '1px solid #FFCDD2', borderRadius: 12, padding: '14px 18px', marginBottom: 16, fontSize: 13, color: '#D32F2F', fontWeight: 500 }}>
+              {apiError}
+            </div>
+          )}
+          {loading ? (
+            <div style={{ background: C.white, border: `1px dashed ${C.border}`, borderRadius: 16, padding: '56px 24px', textAlign: 'center' }}>
+              <p style={{ fontSize: 13, color: C.textMuted, margin: 0 }}>Cargando inventario…</p>
+            </div>
+          ) : filtered.length === 0 ? (
             <div style={{ background: C.white, border: `1px dashed ${C.border}`, borderRadius: 16, padding: '56px 24px', textAlign: 'center' }}>
               <Package size={36} color={C.textMuted} style={{ marginBottom: 12 }} />
               <p style={{ fontFamily: FONT_BODONI, fontSize: 18, fontWeight: 600, color: C.text, margin: '0 0 6px' }}>
@@ -252,7 +299,7 @@ export const InventarioDashboard: React.FC = () => {
                 <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 720 }}>
                   <thead>
                     <tr style={{ borderBottom: `1px solid ${C.borderLight}`, background: C.bgPanel }}>
-                      {['Ítem', 'Categoría', 'Cantidad', 'Stock mínimo', 'Estado', 'Acciones'].map(h => (
+                      {['Ítem', 'Categoría', 'Precio', 'Cantidad', 'Stock mínimo', 'Estado', 'Acciones'].map(h => (
                         <th key={h} style={{ textAlign: 'left', padding: '13px 18px', fontSize: 10, fontWeight: 700, color: C.textMuted, letterSpacing: '0.12em', textTransform: 'uppercase' }}>{h}</th>
                       ))}
                     </tr>
@@ -267,12 +314,13 @@ export const InventarioDashboard: React.FC = () => {
                             {it.notes && <div style={{ fontSize: 12, color: C.textMuted, marginTop: 2 }}>{it.notes}</div>}
                           </td>
                           <td style={{ padding: '14px 18px', fontSize: 13, color: C.textBrown, fontWeight: 500 }}>{it.category}</td>
+                          <td style={{ padding: '14px 18px', fontSize: 13, fontWeight: 600, color: C.text }}>{fmtPrice(it.price)}</td>
                           <td style={{ padding: '14px 18px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                              <button onClick={() => adjustQuantity(it.id, -1)} title="Restar 1"
+                              <button onClick={() => adjustQuantity(it, -1)} title="Restar 1"
                                 style={{ width: 26, height: 26, borderRadius: 8, border: `1px solid ${C.border}`, background: C.white, cursor: 'pointer', color: C.textBrown, fontWeight: 700, lineHeight: 1 }}>−</button>
                               <span style={{ fontSize: 14, fontWeight: 700, color: C.text, minWidth: 34, textAlign: 'center' }}>{it.quantity}</span>
-                              <button onClick={() => adjustQuantity(it.id, 1)} title="Sumar 1"
+                              <button onClick={() => adjustQuantity(it, 1)} title="Sumar 1"
                                 style={{ width: 26, height: 26, borderRadius: 8, border: `1px solid ${C.border}`, background: C.white, cursor: 'pointer', color: C.textBrown, fontWeight: 700, lineHeight: 1 }}>+</button>
                               <span style={{ fontSize: 12, color: C.textMuted }}>{it.unit}</span>
                             </div>
@@ -332,6 +380,12 @@ export const InventarioDashboard: React.FC = () => {
                     onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setFormError('') }}
                     style={INPUT} />
                 </div>
+                <div>
+                  <label style={LABEL}>Precio (COP) <span style={{ color: '#ef4444' }}>*</span></label>
+                  <input type="number" min={0} value={form.price} placeholder="25000"
+                    onChange={e => { setForm(f => ({ ...f, price: e.target.value })); setFormError('') }}
+                    style={INPUT} />
+                </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                   <div>
                     <label style={LABEL}>Categoría</label>
@@ -376,10 +430,10 @@ export const InventarioDashboard: React.FC = () => {
                     style={{ padding: '11px 18px', background: 'transparent', border: `1.5px solid ${C.border}`, borderRadius: 9, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.textBrown, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer' }}>
                     Cancelar
                   </button>
-                  <button onClick={saveForm}
-                    style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '11px 22px', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, border: 'none', borderRadius: 9, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer', boxShadow: '0 4px 14px rgba(139,92,246,0.30)' }}>
+                  <button onClick={saveForm} disabled={saving}
+                    style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '11px 22px', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, border: 'none', borderRadius: 9, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, boxShadow: '0 4px 14px rgba(139,92,246,0.30)' }}>
                     <Check size={14} strokeWidth={2.5} />
-                    {editingId ? 'Guardar Cambios' : 'Crear Ítem'}
+                    {saving ? 'Guardando…' : editingId ? 'Guardar Cambios' : 'Crear Ítem'}
                   </button>
                 </div>
               </div>
@@ -409,7 +463,14 @@ export const InventarioDashboard: React.FC = () => {
                   style={{ padding: '11px 18px', background: 'transparent', border: `1.5px solid ${C.border}`, borderRadius: 9, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.textBrown, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer' }}>
                   Cancelar
                 </button>
-                <button onClick={() => { persist(items.filter(i => i.id !== deletingId)); setDeletingId(null) }}
+                <button onClick={async () => {
+                  const id = deletingId
+                  setDeletingId(null)
+                  try {
+                    await fetch(`/api/inventory/${id}`, { method: 'DELETE', headers: adminHeaders() })
+                    await fetchItems()
+                  } catch { /* ignore */ }
+                }}
                   style={{ padding: '11px 22px', background: '#DC2626', border: 'none', borderRadius: 9, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer' }}>
                   Eliminar
                 </button>
