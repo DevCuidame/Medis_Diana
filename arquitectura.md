@@ -134,3 +134,24 @@ Se crean desde `doc.cuidame.tech` → Mis Servicios (sidebar profesional). Cada 
 const DOC_API = 'https://doc-api.cuidame.tech/api'
 const DIANA_PROFESSIONAL_ID = 12
 ```
+
+---
+
+## Inventario (con precio) — Panel Admin
+
+- **Antes**: `InventarioDashboard.tsx` (`/admin/inventario`) era 100% frontend, persistía en `localStorage` (`MEDIS_inventory`), sin backend y sin campo de precio.
+- **Ahora**: tabla real `inventory_items` (migración `019_create_inventory_items.sql`) — `id, name, category, unit, price (INTEGER, COP), quantity, min_stock, notes, is_active, created_at, updated_at`. `is_active` permite "descontinuar" un ítem sin borrarlo (para no romper cotizaciones históricas que lo referencian por id).
+- **Backend** (`apps/backend/src/{repositories,controllers,routes}/inventory.*`, mismo patrón que `memberships`):
+  - `GET /api/inventory/search?search=&category=&isActive=true` — **público** (sin auth), proyecta solo `{id, name, category, unit, price}` (no expone `quantity`/`minStock`/`notes` a llamadas externas). Consumido por CuidameDoc (proxy `diana-inventory-search`, ver `CuidameDoc/cuidame_doc_frontend_react/arquitectura.md`).
+  - `GET /api/inventory` (admin, incluye inactivos), `POST/PATCH/DELETE /api/inventory[/:id]` (admin, `DELETE` es soft-delete → `is_active=false`).
+- **Frontend**: `InventarioDashboard.tsx` ya no usa `localStorage`, consume la API real; formulario ganó el campo **Precio** (COP).
+
+## Cotizaciones externas (Finanzas)
+
+- **Qué es**: cuando CuidameDoc cierra una historia clínica con medicamentos/procedimientos/plan de seguimiento vinculados a ítems reales de este Inventario o a un Plan, arma una cotización y la registra aquí como ingreso **pendiente** por confirmar — igual que ya pasa con compras de Planes y Servicios Adicionales.
+- **Tabla**: `external_quotes` (migración `020_create_external_quotes.sql`) — `id, source ('cuidamedoc'), external_reference (número de HC), patient_name, patient_email, professional_name, items (JSONB: [{type: 'inventory'|'plan', refId, name, unit_price, quantity, subtotal}]), total_amount, status ('pending'|'confirmed'|'rejected'), resolved_by, resolved_at, created_at, updated_at`. El precio se congela en `items` al momento de cotizar — si el precio del ítem/plan cambia después, las cotizaciones ya emitidas no se alteran.
+- **Backend** (`apps/backend/src/{repositories,controllers,routes}/external-quotes.*`):
+  - `POST /api/external-quotes` — **protegido con API key compartida** (header `x-internal-api-key`, comparación con `crypto.timingSafeEqual` para evitar timing attacks, contra `DIANA_INTERNAL_API_KEY` en `.env`). Lo llama el backend de CuidameDoc, server-to-server, nunca el navegador.
+  - `GET /api/external-quotes?status=` (admin), `PATCH /:id/confirm`, `PATCH /:id/reject` (admin) — el `resolve()` del repositorio tiene guard `WHERE status = 'pending'`, así que una doble-confirmación devuelve 409 en vez de re-confirmar en silencio.
+- **Frontend — pestaña "Cotizaciones CuidameDoc"** en `FinanzasDashboard.tsx` (`/admin/finanzas`), mismo patrón visual/de flujo que "Gestión de Planes"/"Servicios Adicionales" (tarjeta con detalle de ítems + botones Confirmar/Rechazar). Al confirmar una cotización, su `total_amount` se suma a "Ingresos del mes"/"Balance neto" — se trackea con un acumulador local (`confirmedQuotesTotal`) que se inicializa sumando `GET /api/external-quotes?status=confirmed` al montar (para que el número sobreviva a un refresh de página, no solo mientras dure la sesión del navegador) y se incrementa en cada confirmación nueva.
+- Planes (`GET /api/memberships/active`, ya existente) se reutiliza tal cual para el selector de "Plan asociado" del lado de CuidameDoc — no se creó ningún endpoint nuevo para eso.

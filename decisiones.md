@@ -30,8 +30,16 @@ Mis Servicios (sidebar profesional), no en este repositorio. Si no hay
 servicios configurados, el paso 0 del booking muestra un botón directo al
 calendario.
 
+### Inventario y Cotizaciones externas — API pública vs. protegida por key
+- **`GET /inventory/search` es 100% público** (sin JWT ni API key) — es solo un catálogo de precios de solo-lectura, y CuidameDoc (que sí requiere que el usuario esté autenticado ahí) lo consume server-to-server vía un proxy propio, no directo desde el navegador de la doctora.
+- **`POST /external-quotes` (escritura) sí está protegido**, pero con una API key compartida (`x-internal-api-key`) en vez de JWT de usuario — porque quien llama es el backend de CuidameDoc, no un usuario logueado de Medis. Comparación con `crypto.timingSafeEqual` (no `!==` directo) para evitar timing attacks, aunque el vector real de riesgo es bajo (llamada server-to-server, no expuesta a medición pública de latencia).
+- **`inventory_items.is_active` en vez de borrado físico**: una cotización ya emitida referencia un ítem de inventario por `id` dentro de su columna `items` (JSONB) — si se borrara la fila física, ese historial quedaría con una referencia rota. El soft-delete evita ese problema sin necesitar una FK con `ON DELETE SET NULL` que perdería el nombre/precio real del ítem borrado.
+- **`external_quotes.items` congela el precio al momento de cotizar** (no se recalcula contra el precio actual del ítem/plan) — una cotización ya emitida no debe cambiar de monto si alguien edita el catálogo después.
+- **Confirmar/Rechazar en vez de Eliminar** para cotizaciones de prueba/erróneas: no existe endpoint `DELETE` para `external_quotes` — el flujo pendiente→confirmar/rechazar ya cubre "descartar una cotización que no aplica" (rechazar), y se prefirió no agregar un tercer camino (delete físico) sin necesidad real todavía.
+
 ## Historial de cambios
 
 | Fecha | Cambio |
 |-------|--------|
 | 2026-07-09 | Añadido paso 0 "Selección de servicio" antes del calendario. `clinical_service_id` incluido en ambos POSTs. Resumen de form y card de éxito muestran el servicio elegido. `goBack` actualizado para navegar `service←calendar←slots←form`. Barra de progreso ahora 5 puntos. |
+| 2026-07-17 | Inventario con precio (backend real, antes localStorage) + Cotizaciones externas en Finanzas (`external_quotes`, flujo pendiente→confirmar/rechazar), para soportar la cotización del plan de tratamiento que arma CuidameDoc al cerrar una historia clínica. Detalle en [arquitectura.md](arquitectura.md#inventario-con-precio--panel-admin). |
