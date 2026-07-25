@@ -6,8 +6,10 @@ import { Building2, MapPin, Box, Tag, Users, Clock, DollarSign,
   Loader2, XCircle, FileWarning, X, Plus } from 'lucide-react';
 import type { ServicioFormValues } from './servicioSchema';
 import {
-  servicioSchema, RIPS_GRUPO_SERVICIO, RIPS_MODALIDAD, tipoAtencionEnum
+  servicioSchema, RIPS_MODALIDAD, tipoAtencionEnum
 } from './servicioSchema';
+import { GRUPOS, SUBGRUPOS, GRUPOS_DINAMICOS } from './serviciosCatalogo';
+import { CupsMappingModal } from './CupsMappingModal';
 
 const C = {
   gold: '#8B5CF6', goldLight: '#3B82F6',
@@ -58,7 +60,7 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
   const { register, handleSubmit, control, formState: { errors }, setValue, watch } = useForm<ServicioFormValues>({
     resolver: zodResolver(servicioSchema) as any,
     defaultValues: initialData || {
-      categoryGroup: '01 Consulta externa',
+      categoryGroup: '01',
       basePrice: 0,
       modality: [],
       isActive: true,
@@ -118,20 +120,74 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
     }
   }, [espacios, initialData?.roomId, setValue]);
 
-  // 6. Auto-calculate CUPS
-  const isMounted = React.useRef(false);
-  useEffect(() => {
-    if (!isMounted.current) {
-      isMounted.current = true;
-      if (initialData?.serviceCode) return;
-    }
-    if (categoryGroup) {
-      const code = `${categoryGroup.substring(0, 2)}${subcategoryGroup ? subcategoryGroup.substring(0, 2) : ''}${category ? category.substring(0, 2) : ''}${subcategory ? subcategory.substring(0, 2) : ''}`.toUpperCase().replace(/\s/g, '');
-      setValue('serviceCode', code, { shouldValidate: true });
-    }
-  }, [categoryGroup, subcategoryGroup, category, subcategory, setValue]);
+  const isEscapeGroup = categoryGroup === '06';
+  const isDynamicGroup = categoryGroup ? GRUPOS_DINAMICOS.includes(categoryGroup) : false;
 
-  const isGroup345 = categoryGroup && ['03', '04', '05'].some(prefix => categoryGroup.startsWith(prefix));
+  const [categoryOptions, setCategoryOptions] = useState<{ serviceCategory: string; categoryName: string }[]>([]);
+  const [subcategoryOptions, setSubcategoryOptions] = useState<{ serviceSubcategory: string; procedureName: string }[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(false);
+  const [loadingSubcategories, setLoadingSubcategories] = useState(false);
+  const [cupsLookupState, setCupsLookupState] = useState<
+    { status: 'idle' } | { status: 'loading' } | { status: 'unique'; procedureName: string }
+    | { status: 'ambiguous'; candidates: { cupsCode: string; procedureName: string }[] }
+    | { status: 'not-found' }
+  >({ status: 'idle' });
+  const [showMappingModal, setShowMappingModal] = useState(false);
+  const cupsTouchedRef = useRef(false);
+
+  function authHeaders(): HeadersInit {
+    const token = localStorage.getItem('accessToken');
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  }
+
+  // Fetch Categoría options when Grupo/Subgrupo change (dynamic groups only)
+  useEffect(() => {
+    if (!isDynamicGroup || !categoryGroup || !subcategoryGroup) { setCategoryOptions([]); return; }
+    setLoadingCategories(true);
+    fetch(`/api/services/classification-categories?serviceGroup=${categoryGroup}&serviceSubgroup=${subcategoryGroup}`, { headers: authHeaders() })
+      .then(r => r.json())
+      .then(j => { if (j.success) setCategoryOptions(j.data); })
+      .catch(() => {})
+      .finally(() => setLoadingCategories(false));
+  }, [isDynamicGroup, categoryGroup, subcategoryGroup]);
+
+  // Fetch Subcategoría options when Categoría changes
+  useEffect(() => {
+    if (!isDynamicGroup || !categoryGroup || !subcategoryGroup || !category) { setSubcategoryOptions([]); return; }
+    setLoadingSubcategories(true);
+    fetch(`/api/services/classification-subcategories?serviceGroup=${categoryGroup}&serviceSubgroup=${subcategoryGroup}&serviceCategory=${category}`, { headers: authHeaders() })
+      .then(r => r.json())
+      .then(j => { if (j.success) setSubcategoryOptions(j.data); })
+      .catch(() => {})
+      .finally(() => setLoadingSubcategories(false));
+  }, [isDynamicGroup, categoryGroup, subcategoryGroup, category]);
+
+  const runCupsLookup = React.useCallback(() => {
+    if (isEscapeGroup || !categoryGroup || !subcategoryGroup || !category || !subcategory) {
+      setCupsLookupState({ status: 'idle' });
+      return;
+    }
+    setCupsLookupState({ status: 'loading' });
+    fetch(`/api/services/cups-lookup?serviceGroup=${categoryGroup}&serviceSubgroup=${subcategoryGroup}&serviceCategory=${category}&serviceSubcategory=${subcategory}`, { headers: authHeaders() })
+      .then(async r => {
+        if (r.status === 404) { setCupsLookupState({ status: 'not-found' }); return; }
+        const j = await r.json();
+        if (j.data.match === 'unique') {
+          setValue('cups', j.data.cupsCode, { shouldValidate: true });
+          if (!cupsTouchedRef.current && !watch('serviceName')) {
+            setValue('serviceName', j.data.procedureName);
+          }
+          setCupsLookupState({ status: 'unique', procedureName: j.data.procedureName });
+        } else {
+          setCupsLookupState({ status: 'ambiguous', candidates: j.data.candidates });
+        }
+      })
+      .catch(() => setCupsLookupState({ status: 'not-found' }));
+  }, [isEscapeGroup, categoryGroup, subcategoryGroup, category, subcategory, setValue, watch]);
+
+  useEffect(() => { runCupsLookup(); }, [runCupsLookup]);
+
+  const subgrupoOptions = categoryGroup ? (SUBGRUPOS[categoryGroup] ?? []) : [];
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -272,21 +328,69 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
             <InputField label="Grupo de servicio" required icon={Box} error={errors.categoryGroup}>
               <select {...register('categoryGroup')} style={inlineInputStyle} className={FOCUS_RING}>
                 <option value="">Selecciona el grupo...</option>
-                {RIPS_GRUPO_SERVICIO.map(g => <option key={g} value={g}>{g}</option>)}
+                {GRUPOS.map(g => <option key={g.code} value={g.code}>{g.code} {g.name}</option>)}
               </select>
             </InputField>
-            <InputField label="Subgrupo" icon={Box} error={errors.subcategoryGroup}>
-              <input {...register('subcategoryGroup')} placeholder="Elige un subgrupo" disabled={isGroup345} style={{ ...inlineInputStyle, background: isGroup345 ? '#F1F5F9' : C.bgPanel }} className={FOCUS_RING} />
-            </InputField>
-            <InputField label="Categoría" icon={Tag} error={errors.category}>
-              <input {...register('category')} placeholder="Elige una categoría" disabled={isGroup345} style={{ ...inlineInputStyle, background: isGroup345 ? '#F1F5F9' : C.bgPanel }} className={FOCUS_RING} />
-            </InputField>
-            <InputField label="Subcategoría" icon={Tag} error={errors.subcategory}>
-              <input {...register('subcategory')} placeholder="Elige una subcategoría" disabled={isGroup345} style={{ ...inlineInputStyle, background: isGroup345 ? '#F1F5F9' : C.bgPanel }} className={FOCUS_RING} />
-            </InputField>
-            <InputField label="Código CUPS" required icon={Box} error={errors.serviceCode}>
-              <input {...register('serviceCode')} placeholder="Ej. 890201" style={inlineInputStyle} className={FOCUS_RING} />
-            </InputField>
+            {!isEscapeGroup && (
+              <>
+                <InputField label="Subgrupo" required icon={Box} error={errors.subcategoryGroup}>
+                  <select {...register('subcategoryGroup')} style={inlineInputStyle} className={FOCUS_RING} disabled={!categoryGroup}>
+                    <option value="">Elige un subgrupo...</option>
+                    {subgrupoOptions.map(s => <option key={s.code} value={s.code}>{s.name}</option>)}
+                  </select>
+                </InputField>
+                <InputField label="Categoría" required icon={Tag} error={errors.category}>
+                  <select {...register('category')} style={inlineInputStyle} className={FOCUS_RING} disabled={!subcategoryGroup || loadingCategories}>
+                    <option value="">{loadingCategories ? 'Cargando...' : 'Elige una categoría...'}</option>
+                    {categoryOptions.map(c => <option key={c.serviceCategory} value={c.serviceCategory}>{c.categoryName}</option>)}
+                  </select>
+                </InputField>
+                <InputField label="Subcategoría" required icon={Tag} error={errors.subcategory}>
+                  <select {...register('subcategory')} style={inlineInputStyle} className={FOCUS_RING} disabled={!category || loadingSubcategories}>
+                    <option value="">{loadingSubcategories ? 'Cargando...' : 'Elige una subcategoría...'}</option>
+                    {subcategoryOptions.map(s => <option key={s.serviceSubcategory} value={s.serviceSubcategory}>{s.procedureName}</option>)}
+                  </select>
+                </InputField>
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <InputField label="Código CUPS" required icon={Box} error={cupsLookupState.status === 'not-found' ? errors.cups : undefined}>
+                    <input
+                      {...register('cups')}
+                      readOnly
+                      placeholder="Se completa automáticamente"
+                      style={{ ...inlineInputStyle, background: '#F1F5F9' }}
+                      className={FOCUS_RING}
+                      onChange={() => { cupsTouchedRef.current = true; }}
+                    />
+                    {cupsLookupState.status === 'loading' && (
+                      <p style={{ fontSize: 12, color: C.textMuted, marginTop: 6 }}>Buscando código CUPS...</p>
+                    )}
+                    {cupsLookupState.status === 'ambiguous' && (
+                      <select
+                        style={{ ...inlineInputStyle, marginTop: 8 }}
+                        className={FOCUS_RING}
+                        onChange={e => setValue('cups', e.target.value, { shouldValidate: true })}
+                      >
+                        <option value="">Elige el procedimiento exacto...</option>
+                        {cupsLookupState.candidates.map(c => (
+                          <option key={c.cupsCode} value={c.cupsCode}>{c.cupsCode} — {c.procedureName}</option>
+                        ))}
+                      </select>
+                    )}
+                    {cupsLookupState.status === 'not-found' && (
+                      <div style={{ marginTop: 8 }}>
+                        <p style={{ fontSize: 12, color: C.textMuted, marginBottom: 6 }}>
+                          No existe un mapeo CUPS para esta clasificación todavía.
+                        </p>
+                        <button type="button" onClick={() => setShowMappingModal(true)}
+                          style={{ padding: '8px 14px', borderRadius: 10, border: `1px solid ${C.gold}`, background: 'transparent', color: C.gold, fontWeight: 600, cursor: 'pointer', fontSize: 13 }}>
+                          Crear mapeo
+                        </button>
+                      </div>
+                    )}
+                  </InputField>
+                </div>
+              </>
+            )}
             <div style={{ gridColumn: '1 / -1' }}>
               <InputField label="Modalidad de servicio" required icon={Users} error={errors.modality}>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
@@ -406,6 +510,16 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
           </button>
         </div>
       </form>
+      {showMappingModal && categoryGroup && subcategoryGroup && category && subcategory && (
+        <CupsMappingModal
+          serviceGroup={categoryGroup}
+          serviceSubgroup={subcategoryGroup}
+          serviceCategory={category}
+          serviceSubcategory={subcategory}
+          onClose={() => setShowMappingModal(false)}
+          onCreated={() => { setShowMappingModal(false); runCupsLookup(); }}
+        />
+      )}
     </div>
   );
 };
