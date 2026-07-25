@@ -4,7 +4,6 @@ import XLSX from 'xlsx';
 export interface CupsRow {
   cupsCode: string;
   procedureName: string;
-  seccion: string;
   quirurgico: 'S' | 'N';
   estancia: string;
 }
@@ -26,13 +25,12 @@ export function readCupsRows(filePath: string): CupsRow[] {
 
   const rows: CupsRow[] = [];
   for (const fila of raw) {
-    const cupsCode = String(fila[1] ?? '').trim().toUpperCase(); // CUPS codes are always stored/compared uppercase
+    const cupsCode = String(fila[1] ?? '').trim().toUpperCase().padStart(6, '0'); // CUPS codes are always stored/compared uppercase
     const procedureNameRaw = String(fila[2] ?? '').trim();
     if (!cupsCode || !procedureNameRaw) continue;
     rows.push({
       cupsCode,
       procedureName: toSentenceCase(procedureNameRaw),
-      seccion: String(fila[3] ?? '').trim(),
       quirurgico: (String(fila[5] ?? '').trim().toUpperCase() === 'S' ? 'S' : 'N'),
       estancia: String(fila[10] ?? '').trim(),
     });

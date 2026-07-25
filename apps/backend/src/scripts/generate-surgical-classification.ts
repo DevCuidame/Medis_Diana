@@ -27,14 +27,14 @@ function subgroupForChapter(chapterNum: number): { code: string; name: string } 
 }
 
 /** Derives a short category name for a chapter from the most frequent first 2 words across its procedure names. */
-function deriveCategoryName(chapterRows: CupsRow[]): string {
+function deriveCategoryName(chapterRows: CupsRow[], chapter: string): string {
   const wordCounts = new Map<string, number>();
   for (const r of chapterRows) {
     const words = r.procedureName.split(/\s+/).slice(0, 2).join(' ');
     wordCounts.set(words, (wordCounts.get(words) ?? 0) + 1);
   }
   const [topPhrase] = [...wordCounts.entries()].sort((a, b) => b[1] - a[1])[0];
-  return topPhrase;
+  return `${topPhrase} (cap. ${chapter})`;
 }
 
 async function main() {
@@ -58,7 +58,7 @@ async function main() {
     const subgroup = subgroupForChapter(chapterNum);
     if (!subgroup) { skippedChapters++; continue; } // chapter outside the 15 known surgical sections (e.g. stray non-numeric prefixes)
 
-    const categoryName = deriveCategoryName(chapterRows);
+    const categoryName = deriveCategoryName(chapterRows, chapter);
     await pool.query(
       `INSERT INTO service_classification_categories (service_group, service_subgroup, service_category, category_name)
        VALUES ('04', $1, $2, $3)

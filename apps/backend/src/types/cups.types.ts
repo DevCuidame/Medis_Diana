@@ -1,10 +1,3 @@
-export interface CupsLookupParams {
-  serviceGroup: string;
-  serviceSubgroup: string;
-  serviceCategory: string;
-  serviceSubcategory: string;
-}
-
 export interface CupsCandidate {
   cupsCode: string;
   procedureName: string;

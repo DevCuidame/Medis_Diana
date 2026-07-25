@@ -122,6 +122,7 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
 
   const isEscapeGroup = categoryGroup === '06';
   const isDynamicGroup = categoryGroup ? GRUPOS_DINAMICOS.includes(categoryGroup) : false;
+  const classificationComplete = Boolean(categoryGroup && subcategoryGroup && category && subcategory);
 
   const [categoryOptions, setCategoryOptions] = useState<{ serviceCategory: string; categoryName: string }[]>([]);
   const [subcategoryOptions, setSubcategoryOptions] = useState<{ serviceSubcategory: string; procedureName: string }[]>([]);
@@ -133,7 +134,6 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
     | { status: 'not-found' }
   >({ status: 'idle' });
   const [showMappingModal, setShowMappingModal] = useState(false);
-  const cupsTouchedRef = useRef(false);
 
   function authHeaders(): HeadersInit {
     const token = localStorage.getItem('accessToken');
@@ -174,7 +174,7 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
         const j = await r.json();
         if (j.data.match === 'unique') {
           setValue('cups', j.data.cupsCode, { shouldValidate: true });
-          if (!cupsTouchedRef.current && !watch('serviceName')) {
+          if (!watch('serviceName')) {
             setValue('serviceName', j.data.procedureName);
           }
           setCupsLookupState({ status: 'unique', procedureName: j.data.procedureName });
@@ -352,14 +352,13 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
                   </select>
                 </InputField>
                 <div style={{ gridColumn: '1 / -1' }}>
-                  <InputField label="Código CUPS" required icon={Box} error={cupsLookupState.status === 'not-found' ? errors.cups : undefined}>
+                  <InputField label="Código CUPS" required icon={Box} error={classificationComplete ? errors.cups : undefined}>
                     <input
                       {...register('cups')}
                       readOnly
                       placeholder="Se completa automáticamente"
                       style={{ ...inlineInputStyle, background: '#F1F5F9' }}
                       className={FOCUS_RING}
-                      onChange={() => { cupsTouchedRef.current = true; }}
                     />
                     {cupsLookupState.status === 'loading' && (
                       <p style={{ fontSize: 12, color: C.textMuted, marginTop: 6 }}>Buscando código CUPS...</p>

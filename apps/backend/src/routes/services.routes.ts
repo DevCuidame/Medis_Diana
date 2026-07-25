@@ -108,10 +108,10 @@ router.post( '/services/requests/bulk',  authenticate, createBulkBookingRequests
 router.post( '/services/requests',       authenticate, createBookingRequest);
 
 // ─── CUPS CLASSIFICATION ─────────────────────────────────────
-router.get('/cups-lookup', authenticate, authorize('ADMIN'), lookupCups);
-router.get('/classification-categories', authenticate, authorize('ADMIN'), listClassificationCategories);
-router.get('/classification-subcategories', authenticate, authorize('ADMIN'), listClassificationSubcategories);
-router.get('/cups-catalog', authenticate, authorize('ADMIN'), listCupsCatalog);
-router.post('/cups-mappings', authenticate, authorize('ADMIN'), createCupsMapping);
+router.get('/services/cups-lookup', authenticate, authorize('ADMIN'), lookupCups);
+router.get('/services/classification-categories', authenticate, authorize('ADMIN'), listClassificationCategories);
+router.get('/services/classification-subcategories', authenticate, authorize('ADMIN'), listClassificationSubcategories);
+router.get('/services/cups-catalog', authenticate, authorize('ADMIN'), listCupsCatalog);
+router.post('/services/cups-mappings', authenticate, authorize('ADMIN'), createCupsMapping);
 
 export default router;

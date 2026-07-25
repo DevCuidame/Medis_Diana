@@ -31,7 +31,9 @@ async function main() {
     const especialidadCode = r.cupsCode.substring(4, 6);
     const upperName = r.procedureName.toUpperCase();
     if (upperName.startsWith(PREFIX_02)) {
-      especialidadNames.set(especialidadCode, r.procedureName.substring(PREFIX_02.length));
+      const stripped = r.procedureName.substring(PREFIX_02.length);
+      const capitalized = stripped.charAt(0).toUpperCase() + stripped.slice(1);
+      especialidadNames.set(especialidadCode, capitalized);
     }
   }
   // Fallback: any especialidad codes only seen under other tipos get a generic name from that row.
