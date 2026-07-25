@@ -193,6 +193,15 @@ async function setupDatabase() {
     await pool.query(sql020);
     console.log('✅ Migration 020 successful!');
 
+    // Run migration 021
+    console.log('🔄 Running migration 021 (CUPS Classification System)...');
+    const sql021 = fs.readFileSync(
+      path.resolve('migrations', '021_cups_classification_system.sql'),
+      'utf8'
+    );
+    await pool.query(sql021);
+    console.log('✅ Migration 021 successful!');
+
     console.log('\n🌟 MIGRATIONS COMPLETE! 🌟');
   } catch (err) {
     console.error('❌ Setup database execution failed:', err);
