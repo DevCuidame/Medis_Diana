@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Building2, Plus, Calendar, MapPin, User, Clock, ChevronRight, Edit2, Trash2, Repeat, Search, SlidersHorizontal, X, ToggleLeft, ToggleRight } from 'lucide-react';
+import { Building2, Plus, Calendar, MapPin, User, Clock, ChevronRight, Edit2, Trash2, Repeat, Search, SlidersHorizontal, X, ToggleLeft, ToggleRight, Hash } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FormularioServicio } from './FormularioServicio';
 import { generateOccurrences, DIA_NOMBRES } from './servicioSchema';
@@ -46,6 +46,7 @@ interface ServiceGroup {
   sessionCount: number;
   ids: string[];
   representative: any;
+  cupsCode: string | null;
 }
 
 function groupOffers(offers: any[]): ServiceGroup[] {
@@ -87,6 +88,7 @@ function groupOffers(offers: any[]): ServiceGroup[] {
         days: [], sessionCount: 0,
         ids: [], representative: o,
         maxEnrolledCount: 0,
+        cupsCode: cat.serviceCode ?? null,
       });
     }
 
@@ -794,6 +796,18 @@ export const ServiciosDashboard: React.FC = () => {
                                   <User size={13} color={C.gold} />
                                 </div>
                                 <span style={{ fontSize: 13, color: C.textBrown, fontWeight: 600 }}>{profName}</span>
+                              </div>
+                            )}
+
+                            {/* CUPS code */}
+                            {g.cupsCode && (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(139,92,246,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                  <Hash size={13} color={C.gold} />
+                                </div>
+                                <span style={{ fontSize: 13, color: C.textBrown, fontWeight: 600 }}>
+                                  CUPS <span style={{ fontWeight: 700, color: C.gold }}>{g.cupsCode}</span>
+                                </span>
                               </div>
                             )}
 
