@@ -225,7 +225,7 @@ export default function Footer() {
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {[
-                { label: 'Dirección', value: '[Dirección del consultorio]' },
+                { label: 'Dirección', value: 'Diagonal al #52 - 102 Local 307, Tunja, Boyacá' },
                 { label: 'WhatsApp', value: '[+57 XXX XXX XXXX]' },
                 { label: 'Email', value: '[correo@consultorio.com]' },
                 { label: 'Horarios', value: '[Lun – Vie · X am – X pm]' },
