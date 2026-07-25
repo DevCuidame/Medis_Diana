@@ -341,7 +341,6 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
         avatarUrl:    restForm.avatarUrl.trim()    || undefined,
       }
       onUpdated(updated)
-      setMode('view')
       setForm(f => ({ ...f, password: '', confirmPassword: '', sisproPassword: '' }))
     } catch (err: any) {
       setError(err.message)
