@@ -515,7 +515,7 @@ export const ServiciosDashboard: React.FC = () => {
       // Create a single default occurrence for the new service template
       const defaultDate = new Date();
       defaultDate.setHours(8, 0, 0, 0);
-      const occurrences = [defaultDate.toISOString()];
+      const occurrences = [defaultDate];
       
       totalAttempts = occurrences.length;
       for (const occ of occurrences) {
