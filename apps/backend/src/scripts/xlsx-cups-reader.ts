@@ -25,9 +25,11 @@ export function readCupsRows(filePath: string): CupsRow[] {
 
   const rows: CupsRow[] = [];
   for (const fila of raw) {
-    const cupsCode = String(fila[1] ?? '').trim().toUpperCase().padStart(6, '0'); // CUPS codes are always stored/compared uppercase
+    const rawCode = String(fila[1] ?? '').trim();
     const procedureNameRaw = String(fila[2] ?? '').trim();
-    if (!cupsCode || !procedureNameRaw) continue;
+    if (!rawCode || !procedureNameRaw) continue;
+    // Pad after the emptiness check: Excel stores some codes as numbers, dropping their leading zero.
+    const cupsCode = rawCode.toUpperCase().padStart(6, '0');
     rows.push({
       cupsCode,
       procedureName: toSentenceCase(procedureNameRaw),
