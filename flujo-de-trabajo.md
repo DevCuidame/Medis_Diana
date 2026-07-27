@@ -26,8 +26,22 @@ una pantalla:
 
 - Producción: `https://dianamedic.cuidame.tech`, servida desde la VM
   `instance-esmart1` (zona `us-east1-b`).
-- Script de despliegue: `deploy-Dianamedic.ps1` (raíz del repo).
-  Existe también `deploy-rapido.ps1` para despliegues rápidos.
+- Script de despliegue: `deploy-Dianamedic.ps1` (raíz del repo), con
+  parámetro `-Target` para elegir qué desplegar:
+
+  | Comando | Qué hace |
+  |---------|----------|
+  | `.\deploy-Dianamedic.ps1 -Target front` | Sube el código y recompila solo el frontend (Vite) |
+  | `.\deploy-Dianamedic.ps1 -Target back` | Sube el código, `pnpm install` y reinicia el backend (PM2) |
+  | `.\deploy-Dianamedic.ps1 -Target both` | Frontend + backend, **sin** migraciones ni re-provisión |
+  | `.\deploy-Dianamedic.ps1` (o `-Target full`) | Todo: deps del sistema, BD, migraciones, nginx, SSL, front y back |
+
+  Los targets `front`/`back`/`both` actualizan el código sobre la instalación
+  existente (preservan `.env`, `node_modules` y la base de datos); `full`
+  borra `/var/www/medisdiana`, regenera el `.env` (nuevo `JWT_SECRET` →
+  invalida sesiones) y aplica las migraciones SQL. Requieren un `full`
+  previo: si no hay instalación en la VM, los targets parciales fallan con
+  un mensaje indicándolo.
 
 ## Gestión de servicios clínicos (fuera del repo)
 

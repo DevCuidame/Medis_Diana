@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 // ─── Config ────────────────────────────────────────────────────────────────
-const DOC_API = 'https://doc-api.cuidame.tech/api'
+// En dev pasa por el proxy de Vite (evita CORS de doc-api contra localhost).
+const DOC_API = import.meta.env.DEV ? '/doc-api/api' : 'https://doc-api.cuidame.tech/api'
 const DIANA_PROFESSIONAL_ID = 12
 
 // ─── Types ─────────────────────────────────────────────────────────────────

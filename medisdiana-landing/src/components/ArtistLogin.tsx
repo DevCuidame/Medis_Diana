@@ -3,6 +3,9 @@ import { motion } from 'framer-motion'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
+// En dev pasa por el proxy de Vite (evita CORS de doc-api contra localhost).
+const DOC_API = import.meta.env.DEV ? '/doc-api/api' : 'https://doc-api.cuidame.tech/api'
+
 // ─── Design Tokens ────────────────────────────────────────────────
 const C = {
   brand: '#8B5CF6',
@@ -76,11 +79,17 @@ export default function ArtistLogin({
     } catch (_dianaErr) {
       // ── 2. Fallback: intentar contra CuidameDoc ─────────────────
       try {
-        const docRes = await fetch('https://doc-api.cuidame.tech/api/auth/login', {
+        const docRes = await fetch(`${DOC_API}/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: email.toLowerCase(), password }),
         })
+
+        const docContentType = docRes.headers.get('content-type')
+        if (!docContentType || !docContentType.includes('application/json')) {
+          throw new Error('Credenciales inválidas. Verifica tu correo y contraseña.')
+        }
+
         const docData = await docRes.json()
 
         if (!docRes.ok || !docData.success || !docData.data?.access_token) {
