@@ -27,6 +27,15 @@ export default defineConfig({
       '/api': {
         target: 'http://127.0.0.1:3008',
         changeOrigin: true,
+      },
+      // Solo dev: evita el bloqueo CORS de doc-api.cuidame.tech contra
+      // el origen http://localhost:5173 (no whitelisteado ahí). En
+      // producción el navegador sigue llamando directo a doc-api (ver
+      // decisiones.md — "Agendamiento delegado a CuidameDoc").
+      '/doc-api': {
+        target: 'https://doc-api.cuidame.tech',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/doc-api/, ''),
       }
     }
   }

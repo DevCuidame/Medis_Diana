@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useRef, useState } from 'react'
 import { Building2, X, Edit2, Check, Phone, Mail, AtSign, Star,
   Calendar, ShieldCheck, AlertCircle, Trash2, Save, XCircle,
-  Eye, EyeOff, Lock, MapPin, Clock, Plus, } from 'lucide-react'
+  Eye, EyeOff, Lock, MapPin, Clock, Plus, IdCard, } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
 
 const C = {
@@ -15,8 +15,8 @@ const FONT_BODONI = '"Bodoni Moda", Georgia, serif'
 const FONT_INTER  = '"Hanken Grotesk", Inter, system-ui, sans-serif'
 
 const DISCIPLINES = [
-  'Pole Exotic', 'Pole Sport', 'Flexibilidad',
-  'Core y Fuerza', 'Flow Principiante', 'Coreografía Sensual',
+  'Medicina General', 'Pediatría', 'Medicina Familiar',
+  'Ginecología y Obstetricia', 'Medicina Interna', 'Nutrición y Dietética',
 ]
 
 const STATUS_OPTIONS = [
@@ -63,11 +63,24 @@ export interface Professional {
   totalReviews?: number
   createdAt: string
   role?: 'USER' | 'PROFESSIONAL' | 'ADMIN'
+  idType?: string | null
+  idNumber?: string | null
+  middleName?: string | null
+  secondLastName?: string | null
+  personalAddress?: string | null
+  medicalRegistrationNumber?: string | null
+  sisproUsername?: string | null
+  professionalType?: 'dependiente' | 'independiente'
 }
 
 interface EditForm {
   firstName: string
   lastName: string
+  middleName: string
+  secondLastName: string
+  idType: string
+  idNumber: string
+  personalAddress: string
   email: string
   phone: string
   bio: string
@@ -77,6 +90,10 @@ interface EditForm {
   status: 'available' | 'in_session' | 'offline'
   isVerified: boolean
   isActive: boolean
+  professionalType: 'dependiente' | 'independiente'
+  medicalRegistrationNumber: string
+  sisproUsername: string
+  sisproPassword: string
   password: string
   confirmPassword: string
 }
@@ -150,9 +167,25 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
   const specialties = Array.isArray(pro.specialties) ? pro.specialties : []
   const isProfessional = pro.role === 'PROFESSIONAL'
 
+  const [customSpecialties, setCustomSpecialties] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem('MEDIS_custom_specialties') || '[]') }
+    catch { return [] }
+  })
+  const [hiddenSpecialties, setHiddenSpecialties] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem('MEDIS_hidden_specialties') || '[]') }
+    catch { return [] }
+  })
+  const [showAddSpecialty, setShowAddSpecialty] = useState(false)
+  const [newSpecialtyText, setNewSpecialtyText] = useState('')
+
   const [form, setForm] = useState<EditForm>({
     firstName:   pro.firstName,
     lastName:    pro.lastName,
+    middleName:  pro.middleName ?? '',
+    secondLastName: pro.secondLastName ?? '',
+    idType:      pro.idType ?? ID_TYPES[0],
+    idNumber:    pro.idNumber ?? '',
+    personalAddress: pro.personalAddress ?? '',
     email:       pro.email,
     phone:       pro.phone ?? '',
     bio:         pro.bio ?? '',
@@ -162,6 +195,10 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
     status:      pro.status ?? 'offline',
     isVerified:  pro.isVerified,
     isActive:    pro.isActive,
+    professionalType: pro.professionalType ?? 'dependiente',
+    medicalRegistrationNumber: pro.medicalRegistrationNumber ?? '',
+    sisproUsername: pro.sisproUsername ?? '',
+    sisproPassword: '',
     password:    '',
     confirmPassword: '',
   })
@@ -191,11 +228,51 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
     reader.readAsDataURL(file)
   }
 
+  const saveCustomSpecialties = (updated: string[]) => {
+    setCustomSpecialties(updated)
+    localStorage.setItem('MEDIS_custom_specialties', JSON.stringify(updated))
+  }
+
+  const saveHiddenSpecialties = (updated: string[]) => {
+    setHiddenSpecialties(updated)
+    localStorage.setItem('MEDIS_hidden_specialties', JSON.stringify(updated))
+  }
+
+  const handleAddSpecialty = () => {
+    const trimmed = newSpecialtyText.trim()
+    if (!trimmed) return
+    if (!customSpecialties.includes(trimmed) && !DISCIPLINES.includes(trimmed)) {
+      saveCustomSpecialties([...customSpecialties, trimmed])
+    }
+    if (!form.specialties.includes(trimmed)) {
+      setForm(f => ({ ...f, specialties: [...f.specialties, trimmed] }))
+      clearErr('specialties')
+    }
+    setShowAddSpecialty(false)
+    setNewSpecialtyText('')
+  }
+
+  const handleDeleteSpecialty = (specialty: string) => {
+    if (DISCIPLINES.includes(specialty)) {
+      saveHiddenSpecialties([...hiddenSpecialties, specialty])
+    } else {
+      saveCustomSpecialties(customSpecialties.filter(s => s !== specialty))
+    }
+    if (form.specialties.includes(specialty)) {
+      setForm(f => ({ ...f, specialties: f.specialties.filter(x => x !== specialty) }))
+    }
+  }
+
   const validate = () => {
     const e: Record<string, string> = {}
     if (!form.firstName.trim()) e.firstName = 'Requerido'
     if (!form.lastName.trim())  e.lastName  = 'Requerido'
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Email inválido'
+    if (form.idNumber.trim() && !/^\d+$/.test(form.idNumber.trim())) e.idNumber = 'Solo dígitos'
+    if (isProfessional) {
+      if (!form.medicalRegistrationNumber.trim()) e.medicalRegistrationNumber = 'Requerido'
+      if (!form.sisproUsername.trim()) e.sisproUsername = 'Requerido'
+    }
     if (form.password || form.confirmPassword) {
       if (form.password.length < 8) e.password = 'Mínimo 8 caracteres'
       if (form.password !== form.confirmPassword) e.confirmPassword = 'No coinciden'
@@ -209,11 +286,16 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
     setLoading(true)
     setError(null)
     try {
-      const { password, confirmPassword, ...restForm } = form
+      const { password, confirmPassword, sisproPassword, ...restForm } = form
       const basePayload = {
-        email:        restForm.email.toLowerCase().trim(),
-        firstName:    restForm.firstName.trim(),
-        lastName:     restForm.lastName.trim(),
+        email:           restForm.email.toLowerCase().trim(),
+        firstName:       restForm.firstName.trim(),
+        lastName:        restForm.lastName.trim(),
+        middleName:      restForm.middleName.trim()      || undefined,
+        secondLastName:  restForm.secondLastName.trim()  || undefined,
+        idType:          restForm.idType.trim()          || undefined,
+        idNumber:        restForm.idNumber.trim()        || undefined,
+        personalAddress: restForm.personalAddress.trim() || undefined,
         phone:        restForm.phone.trim()        || undefined,
         bio:          restForm.bio.trim()          || undefined,
         instagramUrl: restForm.instagramUrl.trim() || undefined,
@@ -228,7 +310,11 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
         headers: authHeaders(),
         body: JSON.stringify(isProfessional ? {
           ...basePayload,
-          specialties: form.specialties.length ? form.specialties : undefined,
+          specialties:               form.specialties.length ? form.specialties : undefined,
+          professionalType:          restForm.professionalType,
+          medicalRegistrationNumber: restForm.medicalRegistrationNumber.trim(),
+          sisproUsername:            restForm.sisproUsername.trim(),
+          sisproPassword:            sisproPassword ? sisproPassword : undefined,
         } : basePayload),
       })
       const data = await res.json()
@@ -255,8 +341,7 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
         avatarUrl:    restForm.avatarUrl.trim()    || undefined,
       }
       onUpdated(updated)
-      setMode('view')
-      setForm(f => ({ ...f, password: '', confirmPassword: '' }))
+      setForm(f => ({ ...f, password: '', confirmPassword: '', sisproPassword: '' }))
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -487,7 +572,7 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
                   {/* Names */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                     <div>
-                      <label style={LABEL}>Nombres <span style={{ color: '#ef4444' }}>*</span></label>
+                      <label style={LABEL}>Primer Nombre <span style={{ color: '#ef4444' }}>*</span></label>
                       <input
                         type="text" value={form.firstName}
                         onChange={e => { set('firstName', e.target.value); clearErr('firstName') }}
@@ -498,7 +583,17 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
                       {errors.firstName && <p style={ERR}>{errors.firstName}</p>}
                     </div>
                     <div>
-                      <label style={LABEL}>Apellidos <span style={{ color: '#ef4444' }}>*</span></label>
+                      <label style={LABEL}>Segundo Nombre</label>
+                      <input
+                        type="text" value={form.middleName}
+                        onChange={e => set('middleName', e.target.value)}
+                        onFocus={e => (e.target.style.borderColor = C.gold)}
+                        onBlur={e => (e.target.style.borderColor = C.border)}
+                        style={INPUT()}
+                      />
+                    </div>
+                    <div>
+                      <label style={LABEL}>Primer Apellido <span style={{ color: '#ef4444' }}>*</span></label>
                       <input
                         type="text" value={form.lastName}
                         onChange={e => { set('lastName', e.target.value); clearErr('lastName') }}
@@ -507,6 +602,50 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
                         style={INPUT(errors.lastName)}
                       />
                       {errors.lastName && <p style={ERR}>{errors.lastName}</p>}
+                    </div>
+                    <div>
+                      <label style={LABEL}>Segundo Apellido</label>
+                      <input
+                        type="text" value={form.secondLastName}
+                        onChange={e => set('secondLastName', e.target.value)}
+                        onFocus={e => (e.target.style.borderColor = C.gold)}
+                        onBlur={e => (e.target.style.borderColor = C.border)}
+                        style={INPUT()}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Documento de identidad */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                    <div>
+                      <label style={LABEL}>Tipo de Identificación</label>
+                      <select
+                        value={form.idType}
+                        onChange={e => set('idType', e.target.value)}
+                        onFocus={e => (e.target.style.borderColor = C.gold)}
+                        onBlur={e => (e.target.style.borderColor = C.border)}
+                        style={{
+                          ...INPUT(), cursor: 'pointer', appearance: 'none',
+                          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237F7665' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
+                          backgroundRepeat: 'no-repeat', backgroundPosition: 'right 14px center', paddingRight: 36,
+                        }}
+                      >
+                        {ID_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label style={LABEL}>Número de Identificación</label>
+                      <div style={{ position: 'relative' }}>
+                        <IdCard size={14} color={C.textMuted} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                        <input
+                          type="text" value={form.idNumber}
+                          onChange={e => { set('idNumber', e.target.value.replace(/\D/g, '')); clearErr('idNumber') }}
+                          onFocus={e => (e.target.style.borderColor = C.gold)}
+                          onBlur={e => (e.target.style.borderColor = errors.idNumber ? '#ef4444' : C.border)}
+                          style={{ ...INPUT(errors.idNumber), paddingLeft: 36 }}
+                        />
+                      </div>
+                      {errors.idNumber && <p style={ERR}>{errors.idNumber}</p>}
                     </div>
                   </div>
 
@@ -583,6 +722,21 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
                     </div>
                   </div>
 
+                  {/* Dirección */}
+                  <div>
+                    <label style={LABEL}>Dirección Personal</label>
+                    <div style={{ position: 'relative' }}>
+                      <MapPin size={14} color={C.textMuted} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                      <input
+                        type="text" value={form.personalAddress}
+                        onChange={e => set('personalAddress', e.target.value)}
+                        onFocus={e => (e.target.style.borderColor = C.gold)}
+                        onBlur={e => (e.target.style.borderColor = C.border)}
+                        style={{ ...INPUT(), paddingLeft: 36 }}
+                      />
+                    </div>
+                  </div>
+
                   {/* Bio */}
                   <div>
                     <label style={LABEL}>Biografía</label>
@@ -600,22 +754,115 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
                   {isProfessional && (
                     <div>
                       <label style={LABEL}>Especialidades</label>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                        {DISCIPLINES.map(d => {
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 8 }}>
+                        {[...DISCIPLINES.filter(d => !hiddenSpecialties.includes(d)), ...customSpecialties].map(d => {
                           const on = form.specialties.includes(d)
                           return (
-                            <button
+                            <div
                               key={d}
                               onClick={() => setForm(f => ({ ...f, specialties: on ? f.specialties.filter(x => x !== d) : [...f.specialties, d] }))}
-                              style={{ padding: '7px 14px', borderRadius: 9999, border: `1.5px solid ${on ? C.gold : C.border}`, background: on ? 'rgba(139,92,246,0.09)' : 'transparent', fontFamily: FONT_INTER, fontSize: 12, fontWeight: 600, color: on ? C.gold : C.textBrown, cursor: 'pointer', letterSpacing: '0.04em', transition: 'all 0.15s ease', display: 'flex', alignItems: 'center', gap: 5 }}
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '7px 7px 7px 14px', borderRadius: 9999, border: `1.5px solid ${on ? C.gold : C.border}`, background: on ? 'rgba(139,92,246,0.09)' : 'transparent', fontFamily: FONT_INTER, fontSize: 12, fontWeight: 600, color: on ? C.gold : C.textBrown, cursor: 'pointer', letterSpacing: '0.04em', transition: 'all 0.15s ease' }}
                             >
                               {on && <Check size={11} strokeWidth={3} />}
                               {d}
-                            </button>
+                              <button type="button"
+                                onClick={e => { e.stopPropagation(); handleDeleteSpecialty(d) }}
+                                title="Eliminar especialidad"
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 18, height: 18, borderRadius: '50%', border: 'none', background: on ? 'rgba(139,92,246,0.15)' : 'rgba(0,0,0,0.06)', color: on ? C.gold : C.textMuted, cursor: 'pointer', padding: 0, flexShrink: 0 }}>
+                                <X size={10} />
+                              </button>
+                            </div>
                           )
                         })}
+                        {!showAddSpecialty && (
+                          <button type="button" onClick={() => setShowAddSpecialty(true)}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '7px 14px', borderRadius: 9999, border: `1.5px dashed ${C.gold}`, background: 'rgba(139,92,246,0.04)', color: C.gold, cursor: 'pointer', fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700 }}>
+                            <Plus size={13} /> Nueva especialidad
+                          </button>
+                        )}
                       </div>
+                      {showAddSpecialty && (
+                        <div style={{ display: 'flex', gap: 8, marginBottom: 4 }}>
+                          <input
+                            value={newSpecialtyText}
+                            onChange={e => setNewSpecialtyText(e.target.value)}
+                            onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddSpecialty())}
+                            placeholder="Ej: Fisioterapia..."
+                            autoFocus
+                            onFocus={e => (e.target.style.borderColor = C.gold)}
+                            onBlur={e => (e.target.style.borderColor = C.border)}
+                            style={{ ...INPUT(), flex: 1 }}
+                          />
+                          <button type="button" onClick={handleAddSpecialty}
+                            style={{ padding: '0 16px', borderRadius: 10, background: `linear-gradient(135deg,${C.gold},${C.goldLight})`, color: C.white, border: 'none', fontWeight: 700, cursor: 'pointer', fontSize: 13, whiteSpace: 'nowrap', fontFamily: FONT_INTER }}>
+                            Agregar
+                          </button>
+                          <button type="button" onClick={() => { setShowAddSpecialty(false); setNewSpecialtyText('') }}
+                            style={{ padding: '0 12px', borderRadius: 10, background: 'transparent', color: C.textMuted, border: `1px solid ${C.border}`, cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                            <X size={14} />
+                          </button>
+                        </div>
+                      )}
                     </div>
+                  )}
+
+                  {/* Datos profesionales */}
+                  {isProfessional && (
+                    <>
+                      <div>
+                        <label style={LABEL}>Tipo de vinculación</label>
+                        <div style={{ display: 'flex', gap: 10 }}>
+                          {(['dependiente', 'independiente'] as const).map(t => (
+                            <button
+                              key={t} type="button"
+                              onClick={() => set('professionalType', t)}
+                              style={{ flex: 1, padding: '10px 14px', borderRadius: 10, border: `2px solid ${form.professionalType === t ? C.gold : C.border}`, background: form.professionalType === t ? 'rgba(139,92,246,0.07)' : 'transparent', color: form.professionalType === t ? C.gold : C.textBrown, fontWeight: 700, fontSize: 12, cursor: 'pointer', transition: 'all 0.18s', fontFamily: FONT_INTER }}
+                            >
+                              {t === 'dependiente' ? 'Dependiente' : 'Independiente'}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <label style={LABEL}>Registro Médico <span style={{ color: '#ef4444' }}>*</span></label>
+                        <input
+                          type="text" value={form.medicalRegistrationNumber} placeholder="RM-123456"
+                          onChange={e => { set('medicalRegistrationNumber', e.target.value); clearErr('medicalRegistrationNumber') }}
+                          onFocus={e => (e.target.style.borderColor = C.gold)}
+                          onBlur={e => (e.target.style.borderColor = errors.medicalRegistrationNumber ? '#ef4444' : C.border)}
+                          style={INPUT(errors.medicalRegistrationNumber)}
+                        />
+                        {errors.medicalRegistrationNumber && <p style={ERR}>{errors.medicalRegistrationNumber}</p>}
+                      </div>
+
+                      <div>
+                        <label style={LABEL}>Usuario SISPRO <span style={{ color: '#ef4444' }}>*</span></label>
+                        <input
+                          type="text" value={form.sisproUsername} placeholder="usuario.sispro"
+                          onChange={e => { set('sisproUsername', e.target.value); clearErr('sisproUsername') }}
+                          onFocus={e => (e.target.style.borderColor = C.gold)}
+                          onBlur={e => (e.target.style.borderColor = errors.sisproUsername ? '#ef4444' : C.border)}
+                          style={INPUT(errors.sisproUsername)}
+                        />
+                        {errors.sisproUsername && <p style={ERR}>{errors.sisproUsername}</p>}
+                      </div>
+
+                      <div>
+                        <label style={LABEL}>Contraseña SISPRO</label>
+                        <div style={{ position: 'relative' }}>
+                          <Lock size={14} color={C.textMuted} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                          <input
+                            type="password" value={form.sisproPassword} placeholder="Dejar en blanco para no cambiarla"
+                            autoComplete="new-password"
+                            onChange={e => set('sisproPassword', e.target.value)}
+                            onFocus={e => (e.target.style.borderColor = C.gold)}
+                            onBlur={e => (e.target.style.borderColor = C.border)}
+                            style={{ ...INPUT(), paddingLeft: 36 }}
+                          />
+                        </div>
+                      </div>
+                    </>
                   )}
 
                   {/* Instagram */}

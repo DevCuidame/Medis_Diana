@@ -56,6 +56,9 @@ const STATUS_META: Record<ItemStatus, { label: string; color: string; bg: string
 const fmtPrice = (n: number) =>
   new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(n)
 
+// Separador de miles para el input de precio (el estado guarda solo dígitos)
+const fmtMiles = (digits: string) => digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+
 interface ApiInventoryItem {
   id: string; name: string; category: string; unit: string
   price: number; quantity: number; minStock: number
@@ -384,8 +387,8 @@ export const InventarioDashboard: React.FC = () => {
                 </div>
                 <div>
                   <label style={LABEL}>Precio (COP) <span style={{ color: '#ef4444' }}>*</span></label>
-                  <input type="number" min={0} value={form.price} placeholder="25000"
-                    onChange={e => { setForm(f => ({ ...f, price: e.target.value })); setFormError('') }}
+                  <input type="text" inputMode="numeric" value={fmtMiles(form.price)} placeholder="25.000"
+                    onChange={e => { const digits = e.target.value.replace(/\D/g, ''); setForm(f => ({ ...f, price: digits })); setFormError('') }}
                     style={INPUT} />
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>

@@ -1,12 +1,6 @@
 import { z } from 'zod';
 
-export const RIPS_GRUPO_SERVICIO = [
-  '01 Consulta externa',
-  '02 Apoyo diagnóstico y complementación terapéutica',
-  '03 Internación',
-  '04 Quirúrgico',
-  '05 Atención inmediata'
-] as const;
+export const RIPS_GRUPO_SERVICIO = ['01', '02', '03', '04', '05', '06'] as const;
 
 export const RIPS_MODALIDAD = [
   '01 INTRAMURAL',
@@ -41,7 +35,7 @@ const baseSchema = z.object({
   subcategoryGroup: z.string().optional(),
   category: z.string().optional(),
   subcategory: z.string().optional(),
-  serviceCode: z.string().optional(), // CUPS
+  cups: z.string().optional(), // CUPS
   modality: z.array(z.string()).min(1, 'Selecciona al menos una modalidad'),
   isActive: z.boolean().default(true),
   basePrice: z.number().min(0, 'El precio no puede ser negativo'),
@@ -61,10 +55,9 @@ const baseSchema = z.object({
 });
 
 export const servicioSchema = baseSchema.superRefine((data, ctx) => {
-  // Logic: "Si el grupo de servicio es 03, 04 y 05, no se diligencia el campo 5,6,7"
-  const isGroup345 = ['03', '04', '05'].some(prefix => data.categoryGroup.startsWith(prefix));
-  
-  if (!isGroup345) {
+  const isEscapeGroup = data.categoryGroup === '06';
+
+  if (!isEscapeGroup) {
     if (!data.subcategoryGroup) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'El subgrupo es obligatorio para este grupo', path: ['subcategoryGroup'] });
     }
@@ -73,6 +66,9 @@ export const servicioSchema = baseSchema.superRefine((data, ctx) => {
     }
     if (!data.subcategory) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'La subcategoría es obligatoria para este grupo', path: ['subcategory'] });
+    }
+    if (!data.cups || !/^[A-Za-z0-9]{6}$/.test(data.cups)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'El código CUPS es obligatorio y debe tener 6 caracteres alfanuméricos', path: ['cups'] });
     }
   }
 });

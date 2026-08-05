@@ -3,11 +3,21 @@
 #  VM: cuidame-app | IP: 35.239.162.75 | Proyecto: esmart-health
 #
 #  USO:
-#    .\deploy-medisdiana.ps1 -DocDianaPassword "contraseña-de-diana"
-#    .\deploy-medisdiana.ps1 -DbPass "OtraPass!" -DocDianaPassword "contraseña-de-diana" -SkipUpload
+#    .\deploy-Dianamedic.ps1                    # full: deps + BD + migraciones + nginx + SSL + front + back
+#    .\deploy-Dianamedic.ps1 -Target front      # solo frontend (sube codigo + vite build)
+#    .\deploy-Dianamedic.ps1 -Target back       # solo backend  (sube codigo + pnpm install + restart PM2)
+#    .\deploy-Dianamedic.ps1 -Target both       # front + back, SIN migraciones ni re-provision
+#    .\deploy-Dianamedic.ps1 -Target full       # todo, incluye migraciones (default)
+#    .\deploy-Dianamedic.ps1 -DocDianaPassword "contraseña-de-diana"
+#    .\deploy-Dianamedic.ps1 -DbPass "OtraPass!" -DocDianaPassword "contraseña-de-diana" -SkipUpload
+#
+#  NOTA: front/back/both actualizan el codigo sobre la instalacion
+#  existente (preservan .env y node_modules). full re-provisiona todo.
 # ============================================================
 
 param(
+    [ValidateSet('front','back','both','full')]
+    [string]$Target           = "full",
     [string]$DbPass           = "medisdiana2024Secure!",
     [string]$JwtSecret        = "",
     [string]$CertbotEmail     = "admin@medisdiana.com",
@@ -31,6 +41,14 @@ if (Test-Path $localEnv) {
 }
 
 $ErrorActionPreference = "Continue"
+
+# ── TARGET ──────────────────────────────────────────────────
+# front = compilar/publicar frontend | back = reiniciar backend | full = todo + migraciones
+$DoFront = $Target -in @('front', 'both', 'full')
+$DoBack  = $Target -in @('back',  'both', 'full')
+$DoFull  = $Target -eq 'full'
+Write-Host ""
+Write-Host "  Target de despliegue: $Target" -ForegroundColor Magenta
 
 # ── CONFIG ──────────────────────────────────────────────────
 $VM_NAME     = "cuidame-app"
@@ -130,7 +148,7 @@ function Invoke-RemoteBash {
 }
 
 # ── PASO 1: Verificar gcloud ──────────────────────────────────
-Write-Step "PASO 1/11  Verificando gcloud CLI"
+Write-Step "Verificando gcloud CLI"
 
 $v = gcloud version 2>$null | Select-String "Google Cloud SDK"
 if (-not $v) {
@@ -141,8 +159,9 @@ Write-OK $v
 gcloud config set project $PROJECT_ID 2>&1 | Out-Null
 Write-OK "Proyecto activo: $PROJECT_ID"
 
-# ── PASO 2: Firewall ──────────────────────────────────────────
-Write-Step "PASO 2/11  Configurando firewall GCP (puertos 80 y 443)"
+# ── PASO 2: Firewall (solo full) ─────────────────────────────
+if ($DoFull) {
+Write-Step "Configurando firewall GCP (puertos 80 y 443)"
 
 $rule = gcloud compute firewall-rules list `
     --filter="name=medisdiana-allow-web" --format="value(name)" 2>$null
@@ -155,10 +174,11 @@ if (-not $rule) {
 } else {
     Write-OK "Regla TCP:80/443 ya existe"
 }
+}  # end if $DoFull (firewall)
 
 # ── PASO 3: Empaquetar proyecto ───────────────────────────────
 if (-not $SkipUpload) {
-    Write-Step "PASO 3/11  Creando paquete de despliegue"
+    Write-Step "Creando paquete de despliegue"
 
     $staging = "$env:TEMP\media-staging"
     $zipPath = "$env:TEMP\media-deploy.zip"
@@ -181,17 +201,18 @@ if (-not $SkipUpload) {
     Remove-Item $staging -Recurse -Force
 
     # ── PASO 4: Subir archivo ─────────────────────────────────
-    Write-Step "PASO 4/11  Subiendo paquete a la VM"
+    Write-Step "Subiendo paquete a la VM"
     gcloud compute scp $zipPath "${VM_NAME}:/tmp/media-deploy.zip" `
         --zone=$ZONE --project=$PROJECT_ID --quiet
     if ($LASTEXITCODE -ne 0) { throw "gcloud scp fallo" }
     Write-OK "Paquete subido a /tmp/media-deploy.zip"
 } else {
-    Write-Step "PASO 3-4/11  Upload omitido (-SkipUpload)"
+    Write-Step "Upload omitido (-SkipUpload)"
 }
 
-# ── PASO 5: Instalar dependencias ────────────────────────────
-Write-Step "PASO 5/11  Instalando dependencias en VM"
+# ── PASO 5: Instalar dependencias del sistema (solo full) ────
+if ($DoFull) {
+Write-Step "Instalando dependencias en VM"
 
 # Nota: @'...'@ es literal — bash usa sus propias variables $()
 Invoke-RemoteBash -Label "install-deps" -Script @'
@@ -252,8 +273,8 @@ echo "=== Dependencias OK ==="
 
 Write-OK "Dependencias instaladas (Node/pnpm/PM2/PostgreSQL/nginx)"
 
-# ── PASO 6: Configurar PostgreSQL ────────────────────────────
-Write-Step "PASO 6/11  Configurando PostgreSQL"
+# ── PASO 6: Configurar PostgreSQL (solo full) ────────────────
+Write-Step "Configurando PostgreSQL"
 
 # Usamos placeholders __VAR__ que PowerShell reemplaza antes de subir
 $s06 = (@'
@@ -307,9 +328,12 @@ echo "=== PostgreSQL OK ==="
 
 Invoke-RemoteBash -Label "setup-db" -Script $s06
 Write-OK "Base de datos '$DB_NAME' lista"
+}  # end if $DoFull (deps + postgres)
 
 # ── PASO 7: Extraer y configurar proyecto ────────────────────
-Write-Step "PASO 7/11  Configurando proyecto en VM"
+if ($DoFull) {
+# full: instalacion limpia (borra APP_DIR, regenera .env, pnpm install)
+Write-Step "Configurando proyecto en VM (instalacion limpia)"
 
 $s07 = (@'
 #!/bin/bash
@@ -385,8 +409,49 @@ ls -la "${APP_DIR}"
 Invoke-RemoteBash -Label "setup-project" -Script $s07
 Write-OK "Proyecto extraido + .env creado + npm install completado"
 
-# ── PASO 8: Build frontend ────────────────────────────────────
-Write-Step "PASO 8/11  Compilando frontend (Vite/React)"
+} else {
+# front/back/both: actualizar codigo sobre la instalacion existente
+# (preserva .env, node_modules y dist; no toca la base de datos)
+Write-Step "Actualizando codigo en VM (target: $Target)"
+
+$s07u = (@'
+#!/bin/bash
+set -euo pipefail
+APP_DIR="__APP_DIR__"
+
+if [ ! -d "${APP_DIR}" ] || [ ! -f "${APP_DIR}/apps/backend/.env" ]; then
+    echo "ERROR: no hay instalacion previa en ${APP_DIR}."
+    echo "Ejecuta primero un despliegue completo:  .\\deploy-Dianamedic.ps1 -Target full"
+    exit 1
+fi
+
+echo "--- Extrayendo codigo actualizado (sin borrar .env) ---"
+sudo chown -R "$USER":"$USER" "${APP_DIR}"
+set +e
+unzip -o /tmp/media-deploy.zip -d "${APP_DIR}" > /dev/null
+UNZIP_RC=$?
+set -e
+[ $UNZIP_RC -le 1 ] || { echo "ERROR: unzip fallo con codigo $UNZIP_RC"; exit $UNZIP_RC; }
+
+echo "--- Corrigiendo permisos (sin tocar node_modules) ---"
+sudo find "${APP_DIR}" -name node_modules -prune -o -type d -exec chmod 755 {} +
+sudo find "${APP_DIR}" -name node_modules -prune -o -type f -exec chmod 644 {} +
+
+echo "--- Actualizando dependencias npm ---"
+cd "${APP_DIR}"
+pnpm install --no-frozen-lockfile 2>&1
+
+echo ""
+echo "=== Codigo actualizado en ${APP_DIR} ==="
+'@) -replace '__APP_DIR__', $APP_DIR
+
+Invoke-RemoteBash -Label "update-code" -Script $s07u
+Write-OK "Codigo actualizado (.env y base de datos intactos)"
+}  # end if/else $DoFull (proyecto)
+
+# ── PASO 8: Build frontend (front / both / full) ─────────────
+if ($DoFront) {
+Write-Step "Compilando frontend (Vite/React)"
 
 $s08 = (@'
 #!/bin/bash
@@ -405,9 +470,11 @@ ls -lh dist/
 
 Invoke-RemoteBash -Label "build-frontend" -Script $s08
 Write-OK "Frontend compilado en $APP_DIR/medisdiana-landing/dist"
+}  # end if $DoFront (build)
 
-# ── PASO 9: Migraciones SQL ───────────────────────────────────
-Write-Step "PASO 9/11  Ejecutando migraciones de base de datos (13 archivos)"
+# ── PASO 9: Migraciones SQL (solo full) ──────────────────────
+if ($DoFull) {
+Write-Step "Ejecutando migraciones de base de datos"
 
 $s09 = (@'
 #!/bin/bash
@@ -449,8 +516,8 @@ PGPASSWORD="${DB_PASS}" psql -h 127.0.0.1 -U "${DB_USER}" -d "${DB_NAME}" -c "\d
 Invoke-RemoteBash -Label "migrations" -Script $s09
 Write-OK "Migraciones aplicadas"
 
-# ── PASO 10: Configurar nginx ─────────────────────────────────
-Write-Step "PASO 10/11  Configurando nginx"
+# ── PASO 10: Configurar nginx (solo full) ────────────────────
+Write-Step "Configurando nginx"
 
 # El bloque nginx usa $uri, $http_upgrade etc. (variables nginx, no PS)
 # Con @'...'@ estas se preservan literales; solo reemplazamos __PLACEHOLDERS__
@@ -537,8 +604,8 @@ sudo systemctl status nginx --no-pager | head -5
 Invoke-RemoteBash -Label "setup-nginx" -Script $s10
 Write-OK "nginx configurado: SPA + proxy /api"
 
-# ── PASO 11: Emitir certificado SSL ──────────────────────────
-Write-Step "PASO 11/12  Solicitando certificado SSL con Certbot"
+# ── PASO 11: Emitir certificado SSL (solo full) ──────────────
+Write-Step "Solicitando certificado SSL con Certbot"
 
 $s11Cert = (@'
 #!/bin/bash
@@ -561,9 +628,11 @@ fi
 
 Invoke-RemoteBash -Label "certbot" -Script $s11Cert
 Write-OK "Certificado SSL solicitado"
+}  # end if $DoFull (migraciones + nginx + certbot)
 
-# ── PASO 12: Iniciar backend con PM2 + tsx ────────────────────
-Write-Step "PASO 12/12  Iniciando backend con PM2"
+# ── PASO 12: Iniciar backend con PM2 (back / both / full) ────
+if ($DoBack) {
+Write-Step "Iniciando backend con PM2"
 
 # tsx resuelve los path-aliases TypeScript (@config/*, @utils/*, etc.)
 # sin necesidad de compilar con tsc (evita problemas de aliases en node)
@@ -615,10 +684,11 @@ $s11 = $s11 -replace "'__APP_DIR__/apps/backend'", "'${APP_DIR}/apps/backend'"
 
 Invoke-RemoteBash -Label "start-backend" -Script $s11
 Write-OK "Backend iniciado con PM2 + tsx"
+}  # end if $DoBack (PM2)
 
 # ── VERIFICACION ──────────────────────────────────────────────
 Write-Step "VERIFICACION FINAL"
-Start-Sleep -Seconds 6
+if ($DoBack) { Start-Sleep -Seconds 6 }
 
 Invoke-RemoteBash -Label "verify" -Script (@'
 #!/bin/bash
@@ -645,18 +715,20 @@ pm2 logs medisdiana-backend --lines 10 --nostream 2>/dev/null || true
 # ── RESUMEN ───────────────────────────────────────────────────
 Write-Host ""
 Write-Host ("=" * 62) -ForegroundColor Green
-Write-Host "  DESPLIEGUE COMPLETADO" -ForegroundColor Green
+Write-Host "  DESPLIEGUE COMPLETADO  (target: $Target)" -ForegroundColor Green
 Write-Host ("=" * 62) -ForegroundColor Green
 Write-Host ""
 Write-Host "  App:         https://$SITE_HOST" -ForegroundColor White
 Write-Host "  API:         https://$SITE_HOST/api" -ForegroundColor White
 Write-Host "  Health:      https://$SITE_HOST/health" -ForegroundColor White
 Write-Host ""
+if ($DoFull) {
 Write-Host "  Base de datos" -ForegroundColor Yellow
 Write-Host "    Nombre:    $DB_NAME" -ForegroundColor Gray
 Write-Host "    Usuario:   $DB_USER" -ForegroundColor Gray
 Write-Host "    Password:  $DbPassword" -ForegroundColor Gray
 Write-Host ""
+}
 Write-Host "  Comandos utiles en la VM:" -ForegroundColor Yellow
 Write-Host "    pm2 status" -ForegroundColor Gray
 Write-Host "    pm2 logs medisdiana-backend" -ForegroundColor Gray

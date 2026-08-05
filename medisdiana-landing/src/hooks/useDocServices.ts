@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 // ─── Config (misma fuente que DianaBookingCalendar) ───────────────────────────
-const DOC_API = 'https://doc-api.cuidame.tech/api'
+const DOC_API = import.meta.env.DEV ? '/doc-api/api' : 'https://doc-api.cuidame.tech/api'
 const DIANA_PROFESSIONAL_ID = 12
 
 export interface DocService {

@@ -63,6 +63,10 @@ import {
   updateLocation,
   deleteLocation,
 } from '@controllers/location.controller.js';
+import {
+  lookupCups, listClassificationCategories, listClassificationSubcategories,
+  listCupsCatalog, createCupsMapping,
+} from '@controllers/cups.controller.js';
 
 const router: Router = Router();
 
@@ -102,5 +106,12 @@ router.get(  '/services/my-requests',    authenticate, myBookingRequests);
 router.get(  '/services/my-sessions',    authenticate, myCalendarSessions);
 router.post( '/services/requests/bulk',  authenticate, createBulkBookingRequests);
 router.post( '/services/requests',       authenticate, createBookingRequest);
+
+// ─── CUPS CLASSIFICATION ─────────────────────────────────────
+router.get('/services/cups-lookup', authenticate, authorize('ADMIN'), lookupCups);
+router.get('/services/classification-categories', authenticate, authorize('ADMIN'), listClassificationCategories);
+router.get('/services/classification-subcategories', authenticate, authorize('ADMIN'), listClassificationSubcategories);
+router.get('/services/cups-catalog', authenticate, authorize('ADMIN'), listCupsCatalog);
+router.post('/services/cups-mappings', authenticate, authorize('ADMIN'), createCupsMapping);
 
 export default router;
