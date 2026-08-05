@@ -80,6 +80,7 @@ async function createDocService(params: {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body,
+        signal: AbortSignal.timeout(8000),
       })
     );
     const json = await res.json() as { success: boolean; data?: { prof_service_id: number }; message?: string };
@@ -98,6 +99,7 @@ async function deleteDocService(profServiceId: number): Promise<{ ok: boolean; e
       fetch(`${env.DOC_API_URL}/booking/my-services/${profServiceId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
+        signal: AbortSignal.timeout(8000),
       })
     );
     // 404 = ya no existía en CuidameDoc; lo tratamos como éxito (idempotente).
