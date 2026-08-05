@@ -204,6 +204,89 @@ test('updateOffer: un PATCH que sí cambia basePrice dispara sync como antes', a
   assert(fetchSpy.mock.callCount() > callsBefore, 'Hay fetch nuevo a CuidameDoc');
 });
 
+test('updateOffer: un PATCH que solo cambia durationMinutes dispara sync', async (t) => {
+  const locationId = await createTestLocation();
+  t.after(() => deleteTestLocation(locationId));
+  const fetchSpy = mockDocApiAlwaysSucceeds(t);
+
+  const createReq: any = {
+    body: {
+      locationId, offerType: 'appointment', title: 'Consulta test duration',
+      capacity: 1, durationMinutes: 30, scheduledAt: new Date().toISOString(),
+      price: 45000, currency: 'COP',
+      serviceName: 'Consulta test duration', categoryGroup: '01 Consulta externa',
+      isActive: true, basePrice: 45000,
+    },
+  };
+  const createRes = makeRes();
+  await createOffer(createReq, createRes);
+  const offerId = createRes.body.data.offer.id;
+  const catalogId = createRes.body.data.offer.catalogId;
+  t.after(async () => {
+    await pool.query('DELETE FROM service_offers WHERE id = $1', [offerId]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalogId]);
+  });
+
+  const callsBefore = fetchSpy.mock.callCount();
+
+  // PATCH que solo cambia durationMinutes, manteniendo todos los campos de catálogo idénticos
+  const patchReq: any = {
+    params: { id: offerId },
+    body: {
+      serviceName: 'Consulta test duration', categoryGroup: '01 Consulta externa',
+      description: null, isActive: true, basePrice: 45000,
+      durationMinutes: 60, // cambia solo la duración
+    },
+  };
+  const patchRes = makeRes();
+  await updateOffer(patchReq, patchRes);
+
+  assert.equal(patchRes.statusCode, 200);
+  assert.equal(patchRes.body.docSync.ok, true, 'Un cambio en durationMinutes dispara sync');
+  assert(fetchSpy.mock.callCount() > callsBefore, 'Hay fetch nuevo a CuidameDoc para actualizar duración');
+});
+
+test('updateOffer: un PATCH con SOLO durationMinutes (sin campos de catálogo) dispara sync', async (t) => {
+  const locationId = await createTestLocation();
+  t.after(() => deleteTestLocation(locationId));
+  const fetchSpy = mockDocApiAlwaysSucceeds(t);
+
+  const createReq: any = {
+    body: {
+      locationId, offerType: 'appointment', title: 'Consulta test duration-only',
+      capacity: 1, durationMinutes: 30, scheduledAt: new Date().toISOString(),
+      price: 48000, currency: 'COP',
+      serviceName: 'Consulta test duration-only', categoryGroup: '01 Consulta externa',
+      isActive: true, basePrice: 48000,
+    },
+  };
+  const createRes = makeRes();
+  await createOffer(createReq, createRes);
+  const offerId = createRes.body.data.offer.id;
+  const catalogId = createRes.body.data.offer.catalogId;
+  t.after(async () => {
+    await pool.query('DELETE FROM service_offers WHERE id = $1', [offerId]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalogId]);
+  });
+
+  const callsBefore = fetchSpy.mock.callCount();
+
+  // PATCH con SOLO durationMinutes — ningún campo de catálogo — esto ejercita el bug real:
+  // catalogTouched sería false, así que sin la OR correcta, el sync nunca dispara.
+  const patchReq: any = {
+    params: { id: offerId },
+    body: {
+      durationMinutes: 60, // SOLO la duración, sin serviceName/categoryGroup/isActive/basePrice/description
+    },
+  };
+  const patchRes = makeRes();
+  await updateOffer(patchReq, patchRes);
+
+  assert.equal(patchRes.statusCode, 200);
+  assert.equal(patchRes.body.docSync.ok, true, 'Cambio solo de durationMinutes dispara sync incluso sin campos de catálogo');
+  assert(fetchSpy.mock.callCount() > callsBefore, 'Hay fetch nuevo a CuidameDoc aunque catalogTouched sea false');
+});
+
 test('deleteOffer: al borrar la última oferta de un catálogo sincronizado, también borra en CuidameDoc', async (t) => {
   const locationId = await createTestLocation();
   t.after(() => deleteTestLocation(locationId));

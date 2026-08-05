@@ -259,8 +259,10 @@ export async function updateOffer(req: Request, res: Response): Promise<void> {
     //    un PATCH que reenvía los mismos valores RIPS sin cambios reales
     //    (evita re-sincronizar N veces cuando un grupo de N sesiones comparte
     //    un mismo catalogId y el frontend manda un PATCH por sesión).
+    //    Además, un cambio en durationMinutes (campo de la oferta, no del
+    //    catálogo) también justifica una re-sync a CuidameDoc.
     let docSync: { ok: boolean; error?: string } | undefined;
-    if (offer?.catalogId && catalogTouched && docSyncRelevantFieldsChanged(catalogBefore, offer.catalog)) {
+    if (offer?.catalogId && ((catalogTouched && docSyncRelevantFieldsChanged(catalogBefore, offer.catalog)) || offer.durationMinutes !== existingOffer.durationMinutes)) {
       docSync = await ensureDocSync(buildDocSyncParams(offer, offer.catalog?.isActive !== false));
     }
 
