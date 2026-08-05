@@ -39,7 +39,7 @@ function fetchMock(t: TestContext, handler: (url: string, init: any) => Response
 
 test('mapCategoryGroupToDocCategory: mapea los grupos RIPS conocidos y usa consultation por defecto', () => {
   assert.equal(mapCategoryGroupToDocCategory('01 Consulta externa'), 'consultation');
-  assert.equal(mapCategoryGroupToDocCategory('02 Apoyo diagnóstico y complementación terapéutica'), 'exam');
+  assert.equal(mapCategoryGroupToDocCategory('02 Apoyo diagnóstico y complementación terapéutica'), 'diagnostic');
   assert.equal(mapCategoryGroupToDocCategory('03 Internación'), 'procedure');
   assert.equal(mapCategoryGroupToDocCategory('04 Quirúrgico'), 'procedure');
   assert.equal(mapCategoryGroupToDocCategory('05 Atención inmediata'), 'consultation');
@@ -102,6 +102,35 @@ test('ensureDocSync: active=true con doc_prof_service_id previo → borra el vie
   assert.equal(result.ok, true);
   assert.deepEqual(calls, ['delete-123', 'create-new']);
   assert.equal(await getDocProfServiceId(catalogId), 777);
+});
+
+test('ensureDocSync: active=true con doc_prof_service_id previo, delete OK pero create falla → DB queda en estado consistente (null)', async (t) => {
+  const catalogId = await createTestCatalog();
+  await pool.query('UPDATE service_catalog SET doc_prof_service_id = $1 WHERE id = $2', [456, catalogId]);
+  t.after(() => deleteTestCatalog(catalogId));
+
+  fetchMock(t, (url, init) => {
+    if (url.endsWith('/auth/login')) {
+      return new Response(JSON.stringify({ success: true, data: { access_token: 'tok1', refresh_token: 'ref1' } }), { status: 200 });
+    }
+    if (url.endsWith('/booking/my-services/456') && init?.method === 'DELETE') {
+      return new Response(JSON.stringify({ success: true, message: 'Servicio eliminado' }), { status: 200 });
+    }
+    if (url.endsWith('/booking/my-services') && init?.method === 'POST') {
+      throw new TypeError('fetch failed: network error');
+    }
+    return new Response(JSON.stringify({ success: false }), { status: 404 });
+  });
+
+  const result = await ensureDocSync({
+    catalogId, active: true, serviceName: 'Consulta de prueba doc-sync',
+    durationMinutes: 30, categoryGroup: '01 Consulta externa', description: null, price: 80000,
+  });
+
+  assert.equal(result.ok, false);
+  assert.ok(result.error);
+  // DB should be left in accurate "not synced" state, not with stale ID
+  assert.equal(await getDocProfServiceId(catalogId), null);
 });
 
 test('ensureDocSync: active=false con doc_prof_service_id previo → borra en CuidameDoc y limpia la columna', async (t) => {

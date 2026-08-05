@@ -29,7 +29,7 @@ export interface EnsureDocSyncResult {
 
 const CATEGORY_MAP: Record<string, string> = {
   '01 Consulta externa': 'consultation',
-  '02 Apoyo diagnóstico y complementación terapéutica': 'exam',
+  '02 Apoyo diagnóstico y complementación terapéutica': 'diagnostic',
   '03 Internación': 'procedure',
   '04 Quirúrgico': 'procedure',
   '05 Atención inmediata': 'consultation',
@@ -127,6 +127,9 @@ export async function ensureDocSync(params: EnsureDocSyncParams): Promise<Ensure
   if (currentId !== null) {
     const del = await deleteDocService(currentId);
     if (!del.ok) return { ok: false, error: del.error };
+    // Immediately clear DB after successful delete but before create attempt,
+    // so if create fails, the DB is left in accurate "not synced" state.
+    await setDocProfServiceId(params.catalogId, null);
   }
 
   const created = await createDocService({
