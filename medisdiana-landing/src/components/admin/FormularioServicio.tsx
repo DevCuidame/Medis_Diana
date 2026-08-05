@@ -436,7 +436,13 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
             <InputField label="Precio por sesión (COP)" required icon={DollarSign} error={errors.basePrice}>
               <input type="number" {...register('basePrice', { valueAsNumber: true })} placeholder="0 para gratuito" style={inlineInputStyle} min={0} className={FOCUS_RING} />
             </InputField>
-            
+            <InputField label="Precio de control (2do en adelante)" icon={DollarSign} error={errors.controlPrice}>
+              <input type="number" {...register('controlPrice', { valueAsNumber: true })} placeholder="Déjalo vacío si no aplica" style={inlineInputStyle} min={0} className={FOCUS_RING} />
+            </InputField>
+            <p style={{ gridColumn: '1 / -1', margin: '-12px 0 8px', fontSize: 12, color: C.textMuted }}>
+              Si lo defines, el 1er control de este servicio siempre es gratis y desde el 2do se cobra este precio. Déjalo vacío para que el servicio no tenga niveles (comportamiento actual).
+            </p>
+
             <div style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', gap: 12, padding: '16px', background: C.bgPanel, borderRadius: 12, border: `1px solid ${C.borderLight}` }}>
               <div style={{ flex: 1 }}>
                 <span style={{ fontSize: 14, fontWeight: 600, color: C.text, display: 'block' }}>Estado del servicio</span>
