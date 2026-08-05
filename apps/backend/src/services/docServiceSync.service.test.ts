@@ -172,6 +172,21 @@ test('ensureDocSync: active=false sin doc_prof_service_id previo → no hace nin
   assert.equal(await getDocProfServiceId(catalogId), null);
 });
 
+test('ensureDocSync: si la consulta a la BD falla (catalogId inválido), retorna ok:false en vez de lanzar', async (t) => {
+  // No debería haber ninguna llamada de red: la excepción ocurre en el
+  // primer SELECT (getCurrentDocProfServiceId) antes de tocar la red.
+  fetchMock(t, (url) => { throw new Error(`fetch inesperado: ${url}`); });
+
+  await assert.doesNotReject(async () => {
+    const result = await ensureDocSync({
+      catalogId: 'not-a-valid-uuid', active: true, serviceName: 'x', durationMinutes: 30,
+      categoryGroup: '01 Consulta externa', description: null, price: 10000,
+    });
+    assert.equal(result.ok, false);
+    assert.ok(result.error);
+  });
+});
+
 test('ensureDocSync: si CuidameDoc falla, retorna ok:false y no cambia el estado guardado', async (t) => {
   const catalogId = await createTestCatalog();
   t.after(() => deleteTestCatalog(catalogId));

@@ -113,34 +113,43 @@ async function deleteDocService(profServiceId: number): Promise<{ ok: boolean; e
 }
 
 export async function ensureDocSync(params: EnsureDocSyncParams): Promise<EnsureDocSyncResult> {
-  const currentId = await getCurrentDocProfServiceId(params.catalogId);
+  try {
+    const currentId = await getCurrentDocProfServiceId(params.catalogId);
 
-  if (!params.active) {
-    if (currentId === null) return { ok: true }; // ya estaba fuera, nada que hacer
-    const del = await deleteDocService(currentId);
-    if (!del.ok) return { ok: false, error: del.error };
-    await setDocProfServiceId(params.catalogId, null);
+    if (!params.active) {
+      if (currentId === null) return { ok: true }; // ya estaba fuera, nada que hacer
+      const del = await deleteDocService(currentId);
+      if (!del.ok) return { ok: false, error: del.error };
+      await setDocProfServiceId(params.catalogId, null);
+      return { ok: true };
+    }
+
+    // active === true
+    if (currentId !== null) {
+      const del = await deleteDocService(currentId);
+      if (!del.ok) return { ok: false, error: del.error };
+      // Immediately clear DB after successful delete but before create attempt,
+      // so if create fails, the DB is left in accurate "not synced" state.
+      await setDocProfServiceId(params.catalogId, null);
+    }
+
+    const created = await createDocService({
+      serviceName: params.serviceName,
+      durationMinutes: params.durationMinutes,
+      categoryGroup: params.categoryGroup,
+      description: params.description,
+      price: params.price,
+    });
+    if (!created.ok) return { ok: false, error: created.error };
+
+    await setDocProfServiceId(params.catalogId, created.profServiceId);
     return { ok: true };
+  } catch (err: unknown) {
+    // Nunca lanza: cualquier error inesperado (p.ej. las consultas directas a
+    // la BD en getCurrentDocProfServiceId/setDocProfServiceId, que no tienen
+    // su propio try/catch) se convierte en un resultado { ok: false } en vez
+    // de propagarse y tumbar la respuesta del controlador con un 500 cuando
+    // el guardado local ya se completó con éxito.
+    return { ok: false, error: (err as Error).message };
   }
-
-  // active === true
-  if (currentId !== null) {
-    const del = await deleteDocService(currentId);
-    if (!del.ok) return { ok: false, error: del.error };
-    // Immediately clear DB after successful delete but before create attempt,
-    // so if create fails, the DB is left in accurate "not synced" state.
-    await setDocProfServiceId(params.catalogId, null);
-  }
-
-  const created = await createDocService({
-    serviceName: params.serviceName,
-    durationMinutes: params.durationMinutes,
-    categoryGroup: params.categoryGroup,
-    description: params.description,
-    price: params.price,
-  });
-  if (!created.ok) return { ok: false, error: created.error };
-
-  await setDocProfServiceId(params.catalogId, created.profServiceId);
-  return { ok: true };
 }
