@@ -303,10 +303,28 @@ export const ServiciosDashboard: React.FC = () => {
   const handleDeleteGroup = async (group: ServiceGroup) => {
     setDeletingKey(group.key);
     try {
-      await Promise.all(group.ids.map(id =>
+      const responses = await Promise.all(group.ids.map(id =>
         fetch(`/api/services/offers/${id}`, { method: 'DELETE', headers: authH() })
       ));
-      showToast(`${group.sessionCount} sesión${group.sessionCount !== 1 ? 'es' : ''} eliminada${group.sessionCount !== 1 ? 's' : ''}`, true);
+
+      // Same toast-priority pattern as handleFormSuccess: a failed CuidameDoc
+      // sync is otherwise invisible here, since Promise.all above never reads
+      // the response bodies.
+      let docSyncWarning = '';
+      for (const res of responses) {
+        try {
+          const json = await res.json();
+          if (json?.docSync && json.docSync.ok === false && !docSyncWarning) {
+            docSyncWarning = json.docSync.error ?? 'motivo desconocido';
+          }
+        } catch { /* respuesta sin JSON — ignorar */ }
+      }
+
+      if (docSyncWarning) {
+        showToast(`Eliminado localmente, pero no se pudo quitar de CuidameDoc: ${docSyncWarning}`, false);
+      } else {
+        showToast(`${group.sessionCount} sesión${group.sessionCount !== 1 ? 'es' : ''} eliminada${group.sessionCount !== 1 ? 's' : ''}`, true);
+      }
       await loadServicios();
     } catch {
       showToast('Error al eliminar las sesiones', false);
@@ -420,6 +438,7 @@ export const ServiciosDashboard: React.FC = () => {
     let errCount = 0;
     let lastError = '';
     let totalAttempts = 0;
+    let docSyncWarning = '';
 
     // If editing, we update the existing offers
     if (editingGroup) {
@@ -432,6 +451,9 @@ export const ServiciosDashboard: React.FC = () => {
             body: JSON.stringify(basePayload)
           });
           const json = await res.json();
+          if (json.docSync && json.docSync.ok === false && !docSyncWarning) {
+            docSyncWarning = json.docSync.error ?? 'motivo desconocido';
+          }
           if (!res.ok || !json.success) {
             errCount++;
             lastError = json.error ?? `Error ${res.status}`;
@@ -452,6 +474,9 @@ export const ServiciosDashboard: React.FC = () => {
         try {
           const res  = await fetch('/api/services/offers', { method: 'POST', headers, body: JSON.stringify({ ...basePayload, scheduledAt: occ.toISOString() }) });
           const json = await res.json();
+          if (json.docSync && json.docSync.ok === false && !docSyncWarning) {
+            docSyncWarning = json.docSync.error ?? 'motivo desconocido';
+          }
           if (!res.ok || !json.success) {
             errCount++;
             lastError = json.error ?? `Error ${res.status}`;
@@ -471,6 +496,8 @@ export const ServiciosDashboard: React.FC = () => {
           : `No se ${editingGroup ? 'actualizaron' : 'crearon'} sesiones. Error: ${lastError}`,
         false
       );
+    } else if (docSyncWarning) {
+      showToast(`Guardado, pero no se pudo publicar en CuidameDoc: ${docSyncWarning}`, false);
     } else {
       showToast(`${totalAttempts} sesión${totalAttempts !== 1 ? 'es' : ''} ${editingGroup ? 'actualizadas' : 'creadas'} ✓`, true);
     }

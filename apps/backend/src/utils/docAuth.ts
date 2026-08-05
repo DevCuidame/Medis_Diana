@@ -8,6 +8,7 @@ async function loginDiana(): Promise<void> {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: env.DOC_DIANA_EMAIL, password: env.DOC_DIANA_PASSWORD }),
+    signal: AbortSignal.timeout(8000),
   });
 
   if (!res.ok) {
@@ -30,6 +31,7 @@ async function tryRefresh(): Promise<void> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refresh_token: refreshToken }),
+      signal: AbortSignal.timeout(8000),
     });
 
     if (!res.ok) {

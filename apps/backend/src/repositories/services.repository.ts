@@ -191,7 +191,7 @@ export const ServiceCatalogRepository = {
 
 // ─── SERVICE OFFERS ──────────────────────────────────────────
 
-function rowToOffer(row: Record<string, unknown>): ServiceOfferPublic & { catalog?: any } {
+function rowToOffer(row: Record<string, unknown>): ServiceOfferPublic {
   return {
     id:              row['id'] as string,
     catalogId:       (row['catalog_id'] as string) ?? null,
@@ -226,26 +226,26 @@ function rowToOffer(row: Record<string, unknown>): ServiceOfferPublic & { catalo
       level: row['specialty_level'] as string,
     } : null,
     catalog: row['catalog_id'] ? {
-      serviceName: row['c_service_name'],
-      description: row['c_description'],
-      categoryGroup: row['c_category_group'],
-      subcategoryGroup: row['c_subcategory_group'],
-      category: row['c_category'],
-      subcategory: row['c_subcategory'],
-      serviceCode: row['c_service_code'],
+      serviceName: row['c_service_name'] as string,
+      description: (row['c_description'] as string) ?? null,
+      categoryGroup: (row['c_category_group'] as string) ?? null,
+      subcategoryGroup: (row['c_subcategory_group'] as string) ?? null,
+      category: (row['c_category'] as string) ?? null,
+      subcategory: (row['c_subcategory'] as string) ?? null,
+      serviceCode: (row['c_service_code'] as string) ?? null,
       modality: (() => {
         const raw = row['c_modality'];
         if (!raw) return [];
-        if (Array.isArray(raw)) return raw;
+        if (Array.isArray(raw)) return raw as string[];
         try { return JSON.parse(raw as string); } catch { return [String(raw)]; }
       })(),
-      isActive: row['c_is_active'],
-      basePrice: row['c_base_price'],
-      imageUrl: row['c_image_url'],
-      preparationInstructions: row['c_preparation_instructions'],
-      genderRestriction: row['c_gender_restriction'],
-      risks: row['c_risks'],
-      contraindications: row['c_contraindications'],
+      isActive: row['c_is_active'] as boolean,
+      basePrice: (row['c_base_price'] as number) ?? null,
+      imageUrl: (row['c_image_url'] as string) ?? null,
+      preparationInstructions: (row['c_preparation_instructions'] as string) ?? null,
+      genderRestriction: (row['c_gender_restriction'] as string) ?? null,
+      risks: (row['c_risks'] as string) ?? null,
+      contraindications: (row['c_contraindications'] as string) ?? null,
     } : null,
   };
 }
@@ -363,6 +363,49 @@ export const ServiceOfferRepository = {
       `DELETE FROM service_offers WHERE id = $1`, [id]
     );
     return (rowCount ?? 0) > 0;
+  },
+
+  /**
+   * Delete an offer and, atomically, count how many offers remain on its
+   * catalog. Locks the service_catalog row (SELECT ... FOR UPDATE) for the
+   * duration of the transaction, following the same client/BEGIN/COMMIT
+   * pattern as OperatingHoursRepository.upsertMany.
+   *
+   * Without this lock, two concurrent deletes of offers sharing a catalog
+   * (e.g. the frontend's handleDeleteGroup firing a Promise.all of DELETEs)
+   * can each see the other's row as "still there" via a plain SELECT COUNT,
+   * so neither ever counts as the last one — permanently stranding the
+   * catalog's CuidameDoc service with no offer left to trigger a retry.
+   * Locking the catalog row serializes the two transactions so the count
+   * each of them sees, once it acquires the lock, is always accurate.
+   */
+  async deleteAndCountRemaining(
+    id: string,
+    catalogId: string | null
+  ): Promise<{ deleted: boolean; remaining: number }> {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      if (catalogId) {
+        await client.query('SELECT id FROM service_catalog WHERE id = $1 FOR UPDATE', [catalogId]);
+      }
+      const { rowCount } = await client.query('DELETE FROM service_offers WHERE id = $1', [id]);
+      let remaining = 0;
+      if (catalogId) {
+        const { rows } = await client.query(
+          'SELECT COUNT(*)::int AS count FROM service_offers WHERE catalog_id = $1',
+          [catalogId]
+        );
+        remaining = rows[0].count;
+      }
+      await client.query('COMMIT');
+      return { deleted: (rowCount ?? 0) > 0, remaining };
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
   },
 };
 

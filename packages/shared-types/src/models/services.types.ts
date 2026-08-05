@@ -147,6 +147,23 @@ export interface ServiceOfferPublic {
     name: string;
     level: string;
   } | null;
+  catalog: {
+    serviceName: string;
+    description: string | null;
+    categoryGroup: string | null;
+    subcategoryGroup: string | null;
+    category: string | null;
+    subcategory: string | null;
+    serviceCode: string | null;
+    modality: string[];
+    isActive: boolean;
+    basePrice: number | null;
+    imageUrl: string | null;
+    preparationInstructions: string | null;
+    genderRestriction: string | null;
+    risks: string | null;
+    contraindications: string | null;
+  } | null;
 }
 
 export interface CreateServiceOfferPayload {

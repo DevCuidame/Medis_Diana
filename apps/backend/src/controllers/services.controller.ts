@@ -17,6 +17,7 @@ import {
 import { UserMembershipRepository } from '@repositories/user-membership.repository.js';
 import { DiscountRepository } from '@repositories/discount.repository.js';
 import { sendServicePaymentConfirmation } from '@utils/email.util.js';
+import { ensureDocSync } from '@services/docServiceSync.service.js';
 import type {
   ServiceOffersFilter,
   ResolveBookingRequestPayload,
@@ -29,6 +30,26 @@ function getDisciplineCategory(disciplineName: string | null | undefined): strin
   if (n.includes('pole')) return 'pole';
   if (n.includes('fuerza') || n.includes('flexibilidad') || n.includes('flex')) return 'complementary';
   return 'general';
+}
+
+/** Build parameters for ensureDocSync call from offer data */
+function buildDocSyncParams(
+  offer: { catalogId: string | null; durationMinutes: number; price: number | null; title: string; catalog?: { serviceName: string; categoryGroup: string | null; description: string | null; basePrice: number | null; isActive: boolean } | null },
+  active: boolean,
+) {
+  return {
+    catalogId: offer.catalogId!,
+    active,
+    serviceName: offer.catalog?.serviceName ?? offer.title,
+    durationMinutes: offer.durationMinutes,
+    categoryGroup: offer.catalog?.categoryGroup ?? '01 Consulta externa',
+    description: offer.catalog?.description ?? null,
+    // basePrice is typed as number | null but pg returns NUMERIC columns as
+    // strings at runtime (no type parser registered for numerics here) — wrap
+    // with Number(...) so CuidameDoc gets a real JSON number, consistent with
+    // backfill-doc-sync.ts's Number(row.base_price).
+    price: Number(offer.catalog?.basePrice ?? offer.price ?? 0),
+  };
 }
 
 // ─── OPERATING HOURS ─────────────────────────────────────────
@@ -155,14 +176,18 @@ export async function createOffer(req: Request, res: Response): Promise<void> {
       return;
     }
     const payload = req.body as any;
-    
+
     // 1. Create Catalog Entry
     const catalogEntry = await ServiceCatalogRepository.create(payload);
     payload.catalogId = catalogEntry.id;
 
     // 2. Create Offer
     const offer = await ServiceOfferRepository.create(payload, adminId);
-    res.status(201).json({ success: true, data: { offer } });
+
+    // 3. Sync with CuidameDoc
+    const docSync = await ensureDocSync(buildDocSyncParams(offer, offer.catalog?.isActive !== false));
+
+    res.status(201).json({ success: true, data: { offer }, docSync });
   } catch (err: unknown) {
     const msg = (err as Error).message;
     const status = msg.includes('supera la del salón') ? 400 : 500;
@@ -170,21 +195,52 @@ export async function createOffer(req: Request, res: Response): Promise<void> {
   }
 }
 
+const CATALOG_PAYLOAD_KEYS = [
+  'serviceName', 'description', 'categoryGroup', 'subcategoryGroup', 'category',
+  'subcategory', 'serviceCode', 'modality', 'isActive', 'basePrice', 'imageUrl',
+  'preparationInstructions', 'genderRestriction', 'risks', 'contraindications',
+];
+
+/** Campos del catálogo que le importan a CuidameDoc — sólo un cambio en alguno de estos justifica un delete+create. */
+const DOC_SYNC_RELEVANT_FIELDS = ['isActive', 'serviceName', 'categoryGroup', 'description', 'basePrice'] as const;
+
+type DocSyncRelevantCatalog = {
+  isActive: boolean;
+  serviceName: string;
+  categoryGroup: string | null;
+  description: string | null;
+  basePrice: number | null;
+} | null | undefined;
+
+/**
+ * Compara el catálogo antes/después de un update y dice si algún campo relevante
+ * para CuidameDoc cambió de verdad. Cuando un grupo con N sesiones comparte un
+ * mismo catalogId, el frontend manda N PATCH idénticos — sin esta comparación
+ * cada uno dispararía su propio delete+create en CuidameDoc, dejando N-1
+ * registros huérfanos en su catálogo global.
+ */
+function docSyncRelevantFieldsChanged(before: DocSyncRelevantCatalog, after: DocSyncRelevantCatalog): boolean {
+  if (!before || !after) return true; // no había catálogo antes, o no hay ahora — lo tratamos como cambio
+  return DOC_SYNC_RELEVANT_FIELDS.some((f) => before[f] !== after[f]);
+}
+
 /** ADMIN ONLY */
 export async function updateOffer(req: Request, res: Response): Promise<void> {
   try {
     const payload = req.body as any;
     const offerId = req.params['id']!;
-    
+
     // Verify offer exists
     const existingOffer = await ServiceOfferRepository.findById(offerId);
     if (!existingOffer) { res.status(404).json({ success: false, error: 'Oferta no encontrada' }); return; }
 
     let catalogId = existingOffer.catalogId;
+    const catalogTouched = CATALOG_PAYLOAD_KEYS.some((k) => payload[k] !== undefined);
+    const catalogBefore = existingOffer.catalog;
 
     // 1. Upsert catalog — create if not exists, update if exists
     if (catalogId) {
-      await ServiceCatalogRepository.update(catalogId, payload);
+      if (catalogTouched) await ServiceCatalogRepository.update(catalogId, payload);
     } else if (payload.serviceName) {
       // Old offer without catalog — create one now and link it
       const newCatalog = await ServiceCatalogRepository.create(payload);
@@ -195,7 +251,22 @@ export async function updateOffer(req: Request, res: Response): Promise<void> {
 
     // 2. Update the rest of the offer fields
     const offer = await ServiceOfferRepository.update(offerId, { ...payload, catalogId: catalogId ?? undefined });
-    res.json({ success: true, data: { offer } });
+
+    // 3. Sync with CuidameDoc — solo cuando el guardado realmente tocó datos
+    //    de catálogo (nombre/precio/estado/etc) Y ese toque cambió algo que a
+    //    CuidameDoc le importa. Un PATCH de solo {status} (el toggle
+    //    Activo/Inactivo de la tarjeta) no dispara re-sync, y tampoco lo hace
+    //    un PATCH que reenvía los mismos valores RIPS sin cambios reales
+    //    (evita re-sincronizar N veces cuando un grupo de N sesiones comparte
+    //    un mismo catalogId y el frontend manda un PATCH por sesión).
+    //    Además, un cambio en durationMinutes (campo de la oferta, no del
+    //    catálogo) también justifica una re-sync a CuidameDoc.
+    let docSync: { ok: boolean; error?: string } | undefined;
+    if (offer?.catalogId && ((catalogTouched && docSyncRelevantFieldsChanged(catalogBefore, offer.catalog)) || offer.durationMinutes !== existingOffer.durationMinutes)) {
+      docSync = await ensureDocSync(buildDocSyncParams(offer, offer.catalog?.isActive !== false));
+    }
+
+    res.json({ success: true, data: { offer }, ...(docSync ? { docSync } : {}) });
   } catch (err: unknown) {
     const msg = (err as Error).message;
     const status = msg.includes('supera la del salón') ? 400 : 500;
@@ -206,9 +277,23 @@ export async function updateOffer(req: Request, res: Response): Promise<void> {
 /** ADMIN ONLY */
 export async function deleteOffer(req: Request, res: Response): Promise<void> {
   try {
-    const deleted = await ServiceOfferRepository.delete(req.params['id']!);
+    const id = req.params['id']!;
+    const existing = await ServiceOfferRepository.findById(id);
+    if (!existing) { res.status(404).json({ success: false, error: 'Oferta no encontrada' }); return; }
+
+    // Delete + count remaining offers on the same catalog inside one
+    // transaction with a row lock on the catalog, so concurrent deletes of
+    // sibling offers (e.g. handleDeleteGroup's Promise.all) serialize instead
+    // of racing on the "am I the last one" check.
+    const { deleted, remaining } = await ServiceOfferRepository.deleteAndCountRemaining(id, existing.catalogId);
     if (!deleted) { res.status(404).json({ success: false, error: 'Oferta no encontrada' }); return; }
-    res.json({ success: true, data: null });
+
+    let docSync: { ok: boolean; error?: string } | undefined;
+    if (existing.catalogId && remaining === 0) {
+      docSync = await ensureDocSync(buildDocSyncParams(existing, false));
+    }
+
+    res.json({ success: true, data: null, ...(docSync ? { docSync } : {}) });
   } catch (err: unknown) {
     res.status(500).json({ success: false, error: (err as Error).message });
   }
