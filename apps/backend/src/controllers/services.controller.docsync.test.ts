@@ -23,6 +23,12 @@ async function createTestLocation(): Promise<string> {
 }
 
 async function deleteTestLocation(locationId: string) {
+  // t.after hooks run in registration order (FIFO), and this is always the
+  // first one registered in a test (right after createTestLocation). Delete
+  // any offers still pointing at this location first so that a later-run
+  // offer cleanup can never race against the FK (service_offers.location_id
+  // is ON DELETE RESTRICT) regardless of hook ordering.
+  await pool.query('DELETE FROM service_offers WHERE location_id = $1', [locationId]);
   await pool.query('DELETE FROM locations WHERE id = $1', [locationId]);
 }
 
@@ -61,6 +67,10 @@ test('createOffer: crea el catálogo+oferta y sincroniza con CuidameDoc cuando i
   };
   const res = makeRes();
   await createOffer(req, res);
+  t.after(async () => {
+    await pool.query('DELETE FROM service_offers WHERE id = $1', [res.body.data.offer.id]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [res.body.data.offer.catalogId]);
+  });
 
   assert.equal(res.statusCode, 201);
   assert.equal(res.body.success, true);
@@ -70,9 +80,6 @@ test('createOffer: crea el catálogo+oferta y sincroniza con CuidameDoc cuando i
     'SELECT doc_prof_service_id FROM service_catalog WHERE id = $1', [res.body.data.offer.catalogId]
   );
   assert.ok(rows[0].doc_prof_service_id > 0);
-
-  await pool.query('DELETE FROM service_offers WHERE id = $1', [res.body.data.offer.id]);
-  await pool.query('DELETE FROM service_catalog WHERE id = $1', [res.body.data.offer.catalogId]);
 });
 
 test('updateOffer: un PATCH que solo trae {status} no dispara sync (no toca campos de catálogo)', async (t) => {
@@ -93,6 +100,10 @@ test('updateOffer: un PATCH que solo trae {status} no dispara sync (no toca camp
   await createOffer(createReq, createRes);
   const offerId = createRes.body.data.offer.id;
   const catalogId = createRes.body.data.offer.catalogId;
+  t.after(async () => {
+    await pool.query('DELETE FROM service_offers WHERE id = $1', [offerId]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalogId]);
+  });
 
   const callsBefore = fetchSpy.mock.callCount();
 
@@ -103,9 +114,6 @@ test('updateOffer: un PATCH que solo trae {status} no dispara sync (no toca camp
   assert.equal(patchRes.statusCode, 200);
   assert.equal(patchRes.body.docSync, undefined);
   assert.equal(fetchSpy.mock.callCount(), callsBefore); // no llamadas nuevas a CuidameDoc
-
-  await pool.query('DELETE FROM service_offers WHERE id = $1', [offerId]);
-  await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalogId]);
 });
 
 test('deleteOffer: al borrar la última oferta de un catálogo sincronizado, también borra en CuidameDoc', async (t) => {
@@ -126,6 +134,10 @@ test('deleteOffer: al borrar la última oferta de un catálogo sincronizado, tam
   await createOffer(createReq, createRes);
   const offerId = createRes.body.data.offer.id;
   const catalogId = createRes.body.data.offer.catalogId;
+  t.after(async () => {
+    await pool.query('DELETE FROM service_offers WHERE id = $1', [offerId]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalogId]);
+  });
 
   const delReq: any = { params: { id: offerId } };
   const delRes = makeRes();
@@ -138,8 +150,6 @@ test('deleteOffer: al borrar la última oferta de un catálogo sincronizado, tam
     'SELECT doc_prof_service_id FROM service_catalog WHERE id = $1', [catalogId]
   );
   assert.equal(rows[0].doc_prof_service_id, null);
-
-  await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalogId]);
 });
 
 test('deleteOffer: cuando hay múltiples ofertas del mismo catálogo, solo la última dispara sync', async (t) => {
@@ -161,6 +171,10 @@ test('deleteOffer: cuando hay múltiples ofertas del mismo catálogo, solo la ú
   await createOffer(req1, res1);
   const offerId1 = res1.body.data.offer.id;
   const catalogId = res1.body.data.offer.catalogId;
+  t.after(async () => {
+    await pool.query('DELETE FROM service_offers WHERE id = $1', [offerId1]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalogId]);
+  });
 
   // 2. Crear segunda oferta (con su propio catálogo) que después apuntará al del primero
   const req2: any = {
@@ -176,6 +190,10 @@ test('deleteOffer: cuando hay múltiples ofertas del mismo catálogo, solo la ú
   await createOffer(req2, res2);
   const offerId2 = res2.body.data.offer.id;
   const catalogId2 = res2.body.data.offer.catalogId;
+  t.after(async () => {
+    await pool.query('DELETE FROM service_offers WHERE id = $1', [offerId2]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalogId2]);
+  });
 
   // 3. Apuntar segunda oferta al mismo catálogo
   await pool.query('UPDATE service_offers SET catalog_id = $1 WHERE id = $2', [catalogId, offerId2]);
@@ -199,7 +217,4 @@ test('deleteOffer: cuando hay múltiples ofertas del mismo catálogo, solo la ú
   assert.equal(delRes2.statusCode, 200);
   assert.equal(delRes2.body.docSync.ok, true, 'docSync cuando borra la última oferta');
   assert(fetchSpy.mock.callCount() > callsBefore, 'Fetch cuando borra la última');
-
-  await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalogId]);
-  await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalogId2]);
 });
