@@ -126,7 +126,61 @@ step: 'service'|'calendar'|'slots'|'form'|'success'
 
 ### Servicios de Diana en CuidameDoc
 
-Se crean desde `doc.cuidame.tech` → Mis Servicios (sidebar profesional). Cada servicio tiene `prof_service_id`, `name`, `description`, `duration_minutes`, `category`. Si no hay servicios configurados, el paso 0 muestra un botón directo para ir al calendario.
+**Desactualizado desde el 2026-08-05** — ya NO se crean desde `doc.cuidame.tech`
+→ Mis Servicios; ese formulario quedó deshabilitado para Diana a propósito (ver
+"Sincronización de Servicios Medis → CuidameDoc" más abajo). Ahora se crean
+desde el formulario "Nuevo Servicio" de este panel admin (Medis) y se
+sincronizan automáticamente hacia CuidameDoc. Cada servicio tiene
+`prof_service_id`, `name`, `description`, `duration_minutes`, `category`,
+`price`. Si no hay servicios configurados, el paso 0 muestra un botón directo
+para ir al calendario.
+
+### Sincronización de Servicios Medis → CuidameDoc (2026-08-05)
+
+**Qué resuelve**: el formulario "Nuevo Servicio" del panel admin (Sede, CUPS,
+Modalidad, Precio) guardaba solo en la base local de Medis (`service_offers`/
+`service_catalog`) — nunca llegaba a CuidameDoc, así que ni el catálogo público
+de citas de Diana ni la cotización de sus historias clínicas veían el precio
+real. Ver spec/plan completos en
+`docs/superpowers/specs/2026-08-05-sync-servicios-cuidamedoc-design.md` y
+`docs/superpowers/plans/2026-08-05-sync-servicios-cuidamedoc.md`.
+
+- **Esquema**: `service_catalog.doc_prof_service_id INTEGER` (migración
+  `022_service_catalog_doc_sync.sql`) — guarda el `prof_service_id` de
+  CuidameDoc correspondiente. `NULL` = no sincronizado o actualmente inactivo
+  en CuidameDoc.
+- **Motor** (`apps/backend/src/services/docServiceSync.service.ts`,
+  `ensureDocSync`): dado un catálogo y si debe estar `active` o no, crea/borra
+  el servicio en CuidameDoc vía el proxy existente (login como Diana,
+  `docAuth.ts`). CuidameDoc no tiene endpoint de edición — "actualizar" es
+  siempre borrar + crear, así que cada edición real deja un huérfano en el
+  catálogo global de CuidameDoc (limitación aceptada, no resuelta — requeriría
+  tocar `cuidame_doc_backend`, fuera de alcance).
+  - `active` se decide **solo** por `catalog.isActive` (el toggle "Estado del
+    servicio" del formulario) — nunca por `service_offers.status`, porque
+    `ServiceOfferRepository.create()` nunca guarda `status` (bug preexistente,
+    documentado abajo, no corregido a propósito).
+  - Categoría RIPS → categoría de CuidameDoc: `01→consultation`,
+    `02→diagnostic`, `03/04→procedure`, `05→consultation`, default
+    `consultation`.
+  - Precio: Postgres devuelve `NUMERIC` como string vía `pg` (sin type parser
+    registrado) — `ensureDocSync` siempre hace `Number(...)` con guard
+    `Number.isFinite` antes de mandarlo a CuidameDoc.
+- **Disparadores** (`apps/backend/src/controllers/services.controller.ts`):
+  `createOffer`/`updateOffer`/`deleteOffer`. `updateOffer` solo sincroniza si
+  cambió algo relevante de catálogo O la duración (`durationMinutes`, campo del
+  offer, no del catálogo) — para no repetir el ciclo borrar+crear en cada
+  guardado del formulario sin cambios reales. `deleteOffer` sincroniza la baja
+  solo si era la última oferta de ese catálogo (con lock `FOR UPDATE` en
+  `service_catalog` para evitar una condición de carrera si se borran varias
+  sesiones a la vez desde el dashboard).
+- **Backfill** (`apps/backend/src/scripts/backfill-doc-sync.ts`): script manual
+  de una sola corrida para publicar en CuidameDoc los servicios que ya
+  existían antes de este feature. Se corrió una vez en producción el
+  2026-08-05 (1 servicio publicado).
+- **Frontend**: sin cambios — `useDocServices.ts`/`Classes.tsx` (landing,
+  sección "Nuestros Servicios") ya leían de CuidameDoc, así que un servicio
+  sincronizado aparece ahí solo, sin redeploy de frontend.
 
 ### Constantes clave del componente
 
