@@ -341,6 +341,10 @@ export const FinanzasDashboard: React.FC = () => {
     fetchPending();
     fetchPendingServices();
     fetchConfirmedQuotesTotal();
+    fetch('/api/external-quotes?status=pending', { headers: adminHeaders() })
+      .then(res => res.json())
+      .then(data => { if (data.success) setCotizacionesPendingCount(data.data.quotes.length); })
+      .catch(() => { /* ignore */ });
   }, []);
 
   useEffect(() => {

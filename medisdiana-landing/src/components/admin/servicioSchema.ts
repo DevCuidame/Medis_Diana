@@ -39,7 +39,10 @@ const baseSchema = z.object({
   modality: z.array(z.string()).min(1, 'Selecciona al menos una modalidad'),
   isActive: z.boolean().default(true),
   basePrice: z.number().min(0, 'El precio no puede ser negativo'),
-  controlPrice: z.number().min(0, 'El precio no puede ser negativo').optional(),
+  controlPrice: z.preprocess(
+    (v) => (v === '' || v === null || (typeof v === 'number' && Number.isNaN(v)) ? undefined : v),
+    z.number().min(0, 'El precio no puede ser negativo').optional()
+  ),
   imageUrl: z.string().optional(),
   preparationInstructions: z.string().optional(),
   genderRestriction: z.string().optional(),
