@@ -116,6 +116,94 @@ test('updateOffer: un PATCH que solo trae {status} no dispara sync (no toca camp
   assert.equal(fetchSpy.mock.callCount(), callsBefore); // no llamadas nuevas a CuidameDoc
 });
 
+test('updateOffer: dos PATCH consecutivos con los mismos valores RIPS — el segundo no dispara sync', async (t) => {
+  const locationId = await createTestLocation();
+  t.after(() => deleteTestLocation(locationId));
+  const fetchSpy = mockDocApiAlwaysSucceeds(t);
+
+  const createReq: any = {
+    body: {
+      locationId, offerType: 'appointment', title: 'Consulta test 2b',
+      capacity: 1, durationMinutes: 30, scheduledAt: new Date().toISOString(),
+      price: 55000, currency: 'COP',
+      serviceName: 'Consulta test 2b', categoryGroup: '01 Consulta externa',
+      isActive: true, basePrice: 55000,
+    },
+  };
+  const createRes = makeRes();
+  await createOffer(createReq, createRes);
+  const offerId = createRes.body.data.offer.id;
+  const catalogId = createRes.body.data.offer.catalogId;
+  t.after(async () => {
+    await pool.query('DELETE FROM service_offers WHERE id = $1', [offerId]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalogId]);
+  });
+
+  const sameRipsPayload = {
+    serviceName: 'Consulta test 2b', categoryGroup: '01 Consulta externa',
+    description: null, isActive: true, basePrice: 55000,
+  };
+
+  // Primer PATCH: mismos valores que ya tiene el catálogo — no debería haber
+  // cambiado nada relevante para CuidameDoc, así que tampoco dispara sync.
+  const patch1Req: any = { params: { id: offerId }, body: sameRipsPayload };
+  const patch1Res = makeRes();
+  await updateOffer(patch1Req, patch1Res);
+  assert.equal(patch1Res.statusCode, 200);
+  assert.equal(patch1Res.body.docSync, undefined, 'Primer PATCH sin cambios reales no dispara sync');
+
+  const callsBefore = fetchSpy.mock.callCount();
+
+  // Segundo PATCH: de nuevo los mismos valores exactos.
+  const patch2Req: any = { params: { id: offerId }, body: sameRipsPayload };
+  const patch2Res = makeRes();
+  await updateOffer(patch2Req, patch2Res);
+
+  assert.equal(patch2Res.statusCode, 200);
+  assert.equal(patch2Res.body.docSync, undefined, 'Segundo PATCH sin cambios reales no dispara sync');
+  assert.equal(fetchSpy.mock.callCount(), callsBefore, 'No hay fetch nuevo a CuidameDoc');
+});
+
+test('updateOffer: un PATCH que sí cambia basePrice dispara sync como antes', async (t) => {
+  const locationId = await createTestLocation();
+  t.after(() => deleteTestLocation(locationId));
+  const fetchSpy = mockDocApiAlwaysSucceeds(t);
+
+  const createReq: any = {
+    body: {
+      locationId, offerType: 'appointment', title: 'Consulta test 2c',
+      capacity: 1, durationMinutes: 30, scheduledAt: new Date().toISOString(),
+      price: 55000, currency: 'COP',
+      serviceName: 'Consulta test 2c', categoryGroup: '01 Consulta externa',
+      isActive: true, basePrice: 55000,
+    },
+  };
+  const createRes = makeRes();
+  await createOffer(createReq, createRes);
+  const offerId = createRes.body.data.offer.id;
+  const catalogId = createRes.body.data.offer.catalogId;
+  t.after(async () => {
+    await pool.query('DELETE FROM service_offers WHERE id = $1', [offerId]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalogId]);
+  });
+
+  const callsBefore = fetchSpy.mock.callCount();
+
+  const patchReq: any = {
+    params: { id: offerId },
+    body: {
+      serviceName: 'Consulta test 2c', categoryGroup: '01 Consulta externa',
+      description: null, isActive: true, basePrice: 99000, // cambia el precio
+    },
+  };
+  const patchRes = makeRes();
+  await updateOffer(patchReq, patchRes);
+
+  assert.equal(patchRes.statusCode, 200);
+  assert.equal(patchRes.body.docSync.ok, true, 'Un cambio real de basePrice sí dispara sync');
+  assert(fetchSpy.mock.callCount() > callsBefore, 'Hay fetch nuevo a CuidameDoc');
+});
+
 test('deleteOffer: al borrar la última oferta de un catálogo sincronizado, también borra en CuidameDoc', async (t) => {
   const locationId = await createTestLocation();
   t.after(() => deleteTestLocation(locationId));

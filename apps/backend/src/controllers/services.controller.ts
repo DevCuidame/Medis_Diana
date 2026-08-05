@@ -197,6 +197,29 @@ const CATALOG_PAYLOAD_KEYS = [
   'preparationInstructions', 'genderRestriction', 'risks', 'contraindications',
 ];
 
+/** Campos del catálogo que le importan a CuidameDoc — sólo un cambio en alguno de estos justifica un delete+create. */
+const DOC_SYNC_RELEVANT_FIELDS = ['isActive', 'serviceName', 'categoryGroup', 'description', 'basePrice'] as const;
+
+type DocSyncRelevantCatalog = {
+  isActive: boolean;
+  serviceName: string;
+  categoryGroup: string | null;
+  description: string | null;
+  basePrice: number | null;
+} | null | undefined;
+
+/**
+ * Compara el catálogo antes/después de un update y dice si algún campo relevante
+ * para CuidameDoc cambió de verdad. Cuando un grupo con N sesiones comparte un
+ * mismo catalogId, el frontend manda N PATCH idénticos — sin esta comparación
+ * cada uno dispararía su propio delete+create en CuidameDoc, dejando N-1
+ * registros huérfanos en su catálogo global.
+ */
+function docSyncRelevantFieldsChanged(before: DocSyncRelevantCatalog, after: DocSyncRelevantCatalog): boolean {
+  if (!before || !after) return true; // no había catálogo antes, o no hay ahora — lo tratamos como cambio
+  return DOC_SYNC_RELEVANT_FIELDS.some((f) => before[f] !== after[f]);
+}
+
 /** ADMIN ONLY */
 export async function updateOffer(req: Request, res: Response): Promise<void> {
   try {
@@ -209,6 +232,7 @@ export async function updateOffer(req: Request, res: Response): Promise<void> {
 
     let catalogId = existingOffer.catalogId;
     const catalogTouched = CATALOG_PAYLOAD_KEYS.some((k) => payload[k] !== undefined);
+    const catalogBefore = existingOffer.catalog;
 
     // 1. Upsert catalog — create if not exists, update if exists
     if (catalogId) {
@@ -225,10 +249,14 @@ export async function updateOffer(req: Request, res: Response): Promise<void> {
     const offer = await ServiceOfferRepository.update(offerId, { ...payload, catalogId: catalogId ?? undefined });
 
     // 3. Sync with CuidameDoc — solo cuando el guardado realmente tocó datos
-    //    de catálogo (nombre/precio/estado/etc). Un PATCH de solo {status}
-    //    (el toggle Activo/Inactivo de la tarjeta) no dispara re-sync.
+    //    de catálogo (nombre/precio/estado/etc) Y ese toque cambió algo que a
+    //    CuidameDoc le importa. Un PATCH de solo {status} (el toggle
+    //    Activo/Inactivo de la tarjeta) no dispara re-sync, y tampoco lo hace
+    //    un PATCH que reenvía los mismos valores RIPS sin cambios reales
+    //    (evita re-sincronizar N veces cuando un grupo de N sesiones comparte
+    //    un mismo catalogId y el frontend manda un PATCH por sesión).
     let docSync: { ok: boolean; error?: string } | undefined;
-    if (offer?.catalogId && catalogTouched) {
+    if (offer?.catalogId && catalogTouched && docSyncRelevantFieldsChanged(catalogBefore, offer.catalog)) {
       docSync = await ensureDocSync(buildDocSyncParams(offer, offer.catalog?.isActive !== false));
     }
 
