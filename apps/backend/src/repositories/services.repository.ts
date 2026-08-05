@@ -364,6 +364,49 @@ export const ServiceOfferRepository = {
     );
     return (rowCount ?? 0) > 0;
   },
+
+  /**
+   * Delete an offer and, atomically, count how many offers remain on its
+   * catalog. Locks the service_catalog row (SELECT ... FOR UPDATE) for the
+   * duration of the transaction, following the same client/BEGIN/COMMIT
+   * pattern as OperatingHoursRepository.upsertMany.
+   *
+   * Without this lock, two concurrent deletes of offers sharing a catalog
+   * (e.g. the frontend's handleDeleteGroup firing a Promise.all of DELETEs)
+   * can each see the other's row as "still there" via a plain SELECT COUNT,
+   * so neither ever counts as the last one — permanently stranding the
+   * catalog's CuidameDoc service with no offer left to trigger a retry.
+   * Locking the catalog row serializes the two transactions so the count
+   * each of them sees, once it acquires the lock, is always accurate.
+   */
+  async deleteAndCountRemaining(
+    id: string,
+    catalogId: string | null
+  ): Promise<{ deleted: boolean; remaining: number }> {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      if (catalogId) {
+        await client.query('SELECT id FROM service_catalog WHERE id = $1 FOR UPDATE', [catalogId]);
+      }
+      const { rowCount } = await client.query('DELETE FROM service_offers WHERE id = $1', [id]);
+      let remaining = 0;
+      if (catalogId) {
+        const { rows } = await client.query(
+          'SELECT COUNT(*)::int AS count FROM service_offers WHERE catalog_id = $1',
+          [catalogId]
+        );
+        remaining = rows[0].count;
+      }
+      await client.query('COMMIT');
+      return { deleted: (rowCount ?? 0) > 0, remaining };
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
+  },
 };
 
 // ─── BOOKING REQUESTS ────────────────────────────────────────

@@ -275,19 +275,16 @@ export async function deleteOffer(req: Request, res: Response): Promise<void> {
     const existing = await ServiceOfferRepository.findById(id);
     if (!existing) { res.status(404).json({ success: false, error: 'Oferta no encontrada' }); return; }
 
-    const deleted = await ServiceOfferRepository.delete(id);
+    // Delete + count remaining offers on the same catalog inside one
+    // transaction with a row lock on the catalog, so concurrent deletes of
+    // sibling offers (e.g. handleDeleteGroup's Promise.all) serialize instead
+    // of racing on the "am I the last one" check.
+    const { deleted, remaining } = await ServiceOfferRepository.deleteAndCountRemaining(id, existing.catalogId);
     if (!deleted) { res.status(404).json({ success: false, error: 'Oferta no encontrada' }); return; }
 
     let docSync: { ok: boolean; error?: string } | undefined;
-    if (existing.catalogId) {
-      const { rows } = await pool.query(
-        'SELECT COUNT(*)::int AS count FROM service_offers WHERE catalog_id = $1',
-        [existing.catalogId]
-      );
-      const remaining = rows[0].count as number;
-      if (remaining === 0) {
-        docSync = await ensureDocSync(buildDocSyncParams(existing, false));
-      }
+    if (existing.catalogId && remaining === 0) {
+      docSync = await ensureDocSync(buildDocSyncParams(existing, false));
     }
 
     res.json({ success: true, data: null, ...(docSync ? { docSync } : {}) });

@@ -306,3 +306,68 @@ test('deleteOffer: cuando hay múltiples ofertas del mismo catálogo, solo la ú
   assert.equal(delRes2.body.docSync.ok, true, 'docSync cuando borra la última oferta');
   assert(fetchSpy.mock.callCount() > callsBefore, 'Fetch cuando borra la última');
 });
+
+test('deleteOffer: dos deletes concurrentes del mismo catálogo — el sync ocurre exactamente una vez', async (t) => {
+  const locationId = await createTestLocation();
+  t.after(() => deleteTestLocation(locationId));
+  mockDocApiAlwaysSucceeds(t);
+
+  // 1. Crear primera oferta (con catálogo)
+  const req1: any = {
+    body: {
+      locationId, offerType: 'appointment', title: 'Consulta test 5a',
+      capacity: 1, durationMinutes: 30, scheduledAt: new Date().toISOString(),
+      price: 80000, currency: 'COP',
+      serviceName: 'Consulta test 5', categoryGroup: '01 Consulta externa',
+      isActive: true, basePrice: 80000,
+    },
+  };
+  const res1 = makeRes();
+  await createOffer(req1, res1);
+  const offerId1 = res1.body.data.offer.id;
+  const catalogId = res1.body.data.offer.catalogId;
+  t.after(async () => {
+    await pool.query('DELETE FROM service_offers WHERE id = $1', [offerId1]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalogId]);
+  });
+
+  // 2. Crear segunda oferta (con su propio catálogo temporal) y apuntarla al mismo catálogo
+  const req2: any = {
+    body: {
+      locationId, offerType: 'appointment', title: 'Consulta test 5b',
+      capacity: 1, durationMinutes: 30, scheduledAt: new Date().toISOString(),
+      price: 80000, currency: 'COP',
+      serviceName: 'Consulta test 5b-temp', categoryGroup: '01 Consulta externa',
+      isActive: true, basePrice: 80000,
+    },
+  };
+  const res2 = makeRes();
+  await createOffer(req2, res2);
+  const offerId2 = res2.body.data.offer.id;
+  const catalogId2 = res2.body.data.offer.catalogId;
+  t.after(async () => {
+    await pool.query('DELETE FROM service_offers WHERE id = $1', [offerId2]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalogId2]);
+  });
+
+  await pool.query('UPDATE service_offers SET catalog_id = $1 WHERE id = $2', [catalogId, offerId2]);
+
+  // 3. Disparar ambos deletes concurrentemente, como hace handleDeleteGroup en el frontend.
+  const delReq1: any = { params: { id: offerId1 } };
+  const delRes1 = makeRes();
+  const delReq2: any = { params: { id: offerId2 } };
+  const delRes2 = makeRes();
+
+  await Promise.all([
+    deleteOffer(delReq1, delRes1),
+    deleteOffer(delReq2, delRes2),
+  ]);
+
+  assert.equal(delRes1.statusCode, 200);
+  assert.equal(delRes2.statusCode, 200);
+
+  const docSyncs = [delRes1.body.docSync, delRes2.body.docSync];
+  const withSync = docSyncs.filter((d) => d !== undefined);
+  assert.equal(withSync.length, 1, 'Exactamente una de las dos respuestas debe traer docSync');
+  assert.equal(withSync[0].ok, true);
+});
