@@ -490,6 +490,7 @@ export const ServiciosDashboard: React.FC = () => {
     let errCount = 0;
     let lastError = '';
     let totalAttempts = 0;
+    let docSyncWarning = '';
 
     // If editing, we update the existing offers
     if (editingGroup) {
@@ -502,6 +503,9 @@ export const ServiciosDashboard: React.FC = () => {
             body: JSON.stringify(basePayload)
           });
           const json = await res.json();
+          if (json.docSync && json.docSync.ok === false && !docSyncWarning) {
+            docSyncWarning = json.docSync.error ?? 'motivo desconocido';
+          }
           if (!res.ok || !json.success) {
             errCount++;
             lastError = json.error ?? `Error ${res.status}`;
@@ -522,6 +526,9 @@ export const ServiciosDashboard: React.FC = () => {
         try {
           const res  = await fetch('/api/services/offers', { method: 'POST', headers, body: JSON.stringify({ ...basePayload, scheduledAt: occ.toISOString() }) });
           const json = await res.json();
+          if (json.docSync && json.docSync.ok === false && !docSyncWarning) {
+            docSyncWarning = json.docSync.error ?? 'motivo desconocido';
+          }
           if (!res.ok || !json.success) {
             errCount++;
             lastError = json.error ?? `Error ${res.status}`;
@@ -541,6 +548,8 @@ export const ServiciosDashboard: React.FC = () => {
           : `No se ${editingGroup ? 'actualizaron' : 'crearon'} sesiones. Error: ${lastError}`,
         false
       );
+    } else if (docSyncWarning) {
+      showToast(`Guardado, pero no se pudo publicar en CuidameDoc: ${docSyncWarning}`, false);
     } else {
       showToast(`${totalAttempts} sesión${totalAttempts !== 1 ? 'es' : ''} ${editingGroup ? 'actualizadas' : 'creadas'} ✓`, true);
     }
