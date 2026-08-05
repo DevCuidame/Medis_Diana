@@ -32,6 +32,22 @@ function getDisciplineCategory(disciplineName: string | null | undefined): strin
   return 'general';
 }
 
+/** Build parameters for ensureDocSync call from offer data */
+function buildDocSyncParams(
+  offer: { catalogId: string | null; durationMinutes: number; price: number | null; title: string; catalog?: { serviceName: string; categoryGroup: string | null; description: string | null; basePrice: number | null; isActive: boolean } | null },
+  active: boolean,
+) {
+  return {
+    catalogId: offer.catalogId!,
+    active,
+    serviceName: offer.catalog?.serviceName ?? offer.title,
+    durationMinutes: offer.durationMinutes,
+    categoryGroup: offer.catalog?.categoryGroup ?? '01 Consulta externa',
+    description: offer.catalog?.description ?? null,
+    price: offer.catalog?.basePrice ?? offer.price ?? 0,
+  };
+}
+
 // ─── OPERATING HOURS ─────────────────────────────────────────
 
 export async function getOperatingHours(req: Request, res: Response): Promise<void> {
@@ -165,15 +181,7 @@ export async function createOffer(req: Request, res: Response): Promise<void> {
     const offer = await ServiceOfferRepository.create(payload, adminId);
 
     // 3. Sync with CuidameDoc
-    const docSync = await ensureDocSync({
-      catalogId: offer.catalogId!,
-      active: offer.catalog?.isActive !== false,
-      serviceName: offer.catalog?.serviceName ?? offer.title,
-      durationMinutes: offer.durationMinutes,
-      categoryGroup: offer.catalog?.categoryGroup ?? '01 Consulta externa',
-      description: offer.catalog?.description ?? null,
-      price: offer.catalog?.basePrice ?? offer.price ?? 0,
-    });
+    const docSync = await ensureDocSync(buildDocSyncParams(offer, offer.catalog?.isActive !== false));
 
     res.status(201).json({ success: true, data: { offer }, docSync });
   } catch (err: unknown) {
@@ -221,15 +229,7 @@ export async function updateOffer(req: Request, res: Response): Promise<void> {
     //    (el toggle Activo/Inactivo de la tarjeta) no dispara re-sync.
     let docSync: { ok: boolean; error?: string } | undefined;
     if (offer?.catalogId && catalogTouched) {
-      docSync = await ensureDocSync({
-        catalogId: offer.catalogId,
-        active: offer.catalog?.isActive !== false,
-        serviceName: offer.catalog?.serviceName ?? offer.title,
-        durationMinutes: offer.durationMinutes,
-        categoryGroup: offer.catalog?.categoryGroup ?? '01 Consulta externa',
-        description: offer.catalog?.description ?? null,
-        price: offer.catalog?.basePrice ?? offer.price ?? 0,
-      });
+      docSync = await ensureDocSync(buildDocSyncParams(offer, offer.catalog?.isActive !== false));
     }
 
     res.json({ success: true, data: { offer }, ...(docSync ? { docSync } : {}) });
@@ -258,15 +258,7 @@ export async function deleteOffer(req: Request, res: Response): Promise<void> {
       );
       const remaining = rows[0].count as number;
       if (remaining === 0) {
-        docSync = await ensureDocSync({
-          catalogId: existing.catalogId,
-          active: false,
-          serviceName: existing.catalog?.serviceName ?? existing.title,
-          durationMinutes: existing.durationMinutes,
-          categoryGroup: existing.catalog?.categoryGroup ?? '01 Consulta externa',
-          description: existing.catalog?.description ?? null,
-          price: existing.catalog?.basePrice ?? existing.price ?? 0,
-        });
+        docSync = await ensureDocSync(buildDocSyncParams(existing, false));
       }
     }
 

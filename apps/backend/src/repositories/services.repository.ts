@@ -191,7 +191,7 @@ export const ServiceCatalogRepository = {
 
 // ─── SERVICE OFFERS ──────────────────────────────────────────
 
-function rowToOffer(row: Record<string, unknown>): ServiceOfferPublic & { catalog?: any } {
+function rowToOffer(row: Record<string, unknown>): ServiceOfferPublic {
   return {
     id:              row['id'] as string,
     catalogId:       (row['catalog_id'] as string) ?? null,
@@ -226,26 +226,26 @@ function rowToOffer(row: Record<string, unknown>): ServiceOfferPublic & { catalo
       level: row['specialty_level'] as string,
     } : null,
     catalog: row['catalog_id'] ? {
-      serviceName: row['c_service_name'],
-      description: row['c_description'],
-      categoryGroup: row['c_category_group'],
-      subcategoryGroup: row['c_subcategory_group'],
-      category: row['c_category'],
-      subcategory: row['c_subcategory'],
-      serviceCode: row['c_service_code'],
+      serviceName: row['c_service_name'] as string,
+      description: (row['c_description'] as string) ?? null,
+      categoryGroup: (row['c_category_group'] as string) ?? null,
+      subcategoryGroup: (row['c_subcategory_group'] as string) ?? null,
+      category: (row['c_category'] as string) ?? null,
+      subcategory: (row['c_subcategory'] as string) ?? null,
+      serviceCode: (row['c_service_code'] as string) ?? null,
       modality: (() => {
         const raw = row['c_modality'];
         if (!raw) return [];
-        if (Array.isArray(raw)) return raw;
+        if (Array.isArray(raw)) return raw as string[];
         try { return JSON.parse(raw as string); } catch { return [String(raw)]; }
       })(),
-      isActive: row['c_is_active'],
-      basePrice: row['c_base_price'],
-      imageUrl: row['c_image_url'],
-      preparationInstructions: row['c_preparation_instructions'],
-      genderRestriction: row['c_gender_restriction'],
-      risks: row['c_risks'],
-      contraindications: row['c_contraindications'],
+      isActive: row['c_is_active'] as boolean,
+      basePrice: (row['c_base_price'] as number) ?? null,
+      imageUrl: (row['c_image_url'] as string) ?? null,
+      preparationInstructions: (row['c_preparation_instructions'] as string) ?? null,
+      genderRestriction: (row['c_gender_restriction'] as string) ?? null,
+      risks: (row['c_risks'] as string) ?? null,
+      contraindications: (row['c_contraindications'] as string) ?? null,
     } : null,
   };
 }

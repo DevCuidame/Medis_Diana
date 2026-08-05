@@ -141,3 +141,65 @@ test('deleteOffer: al borrar la última oferta de un catálogo sincronizado, tam
 
   await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalogId]);
 });
+
+test('deleteOffer: cuando hay múltiples ofertas del mismo catálogo, solo la última dispara sync', async (t) => {
+  const locationId = await createTestLocation();
+  t.after(() => deleteTestLocation(locationId));
+  const fetchSpy = mockDocApiAlwaysSucceeds(t);
+
+  // 1. Crear primera oferta (con catálogo)
+  const req1: any = {
+    body: {
+      locationId, offerType: 'appointment', title: 'Consulta test 4a',
+      capacity: 1, durationMinutes: 30, scheduledAt: new Date().toISOString(),
+      price: 70000, currency: 'COP',
+      serviceName: 'Consulta test 4', categoryGroup: '01 Consulta externa',
+      isActive: true, basePrice: 70000,
+    },
+  };
+  const res1 = makeRes();
+  await createOffer(req1, res1);
+  const offerId1 = res1.body.data.offer.id;
+  const catalogId = res1.body.data.offer.catalogId;
+
+  // 2. Crear segunda oferta (con su propio catálogo) que después apuntará al del primero
+  const req2: any = {
+    body: {
+      locationId, offerType: 'appointment', title: 'Consulta test 4b',
+      capacity: 1, durationMinutes: 30, scheduledAt: new Date().toISOString(),
+      price: 70000, currency: 'COP',
+      serviceName: 'Consulta test 4b-temp', categoryGroup: '01 Consulta externa',
+      isActive: true, basePrice: 70000,
+    },
+  };
+  const res2 = makeRes();
+  await createOffer(req2, res2);
+  const offerId2 = res2.body.data.offer.id;
+  const catalogId2 = res2.body.data.offer.catalogId;
+
+  // 3. Apuntar segunda oferta al mismo catálogo
+  await pool.query('UPDATE service_offers SET catalog_id = $1 WHERE id = $2', [catalogId, offerId2]);
+
+  const callsBefore = fetchSpy.mock.callCount();
+
+  // 4. Borrar la primera oferta — NO debe disparar sync
+  const delReq1: any = { params: { id: offerId1 } };
+  const delRes1 = makeRes();
+  await deleteOffer(delReq1, delRes1);
+
+  assert.equal(delRes1.statusCode, 200);
+  assert.equal(delRes1.body.docSync, undefined, 'No docSync cuando quedan ofertas del catálogo');
+  assert.equal(fetchSpy.mock.callCount(), callsBefore, 'No fetch cuando quedan ofertas');
+
+  // 5. Borrar la segunda oferta (última) — SÍ debe disparar sync
+  const delReq2: any = { params: { id: offerId2 } };
+  const delRes2 = makeRes();
+  await deleteOffer(delReq2, delRes2);
+
+  assert.equal(delRes2.statusCode, 200);
+  assert.equal(delRes2.body.docSync.ok, true, 'docSync cuando borra la última oferta');
+  assert(fetchSpy.mock.callCount() > callsBefore, 'Fetch cuando borra la última');
+
+  await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalogId]);
+  await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalogId2]);
+});
