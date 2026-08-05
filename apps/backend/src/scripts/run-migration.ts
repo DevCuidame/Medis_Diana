@@ -211,6 +211,15 @@ async function setupDatabase() {
     await pool.query(sql022);
     console.log('✅ Migration 022 successful!');
 
+    // Run migration 023
+    console.log('🔄 Running migration 023 (Control Price Column)...');
+    const sql023 = fs.readFileSync(
+      path.resolve('migrations', '023_service_catalog_control_price.sql'),
+      'utf8'
+    );
+    await pool.query(sql023);
+    console.log('✅ Migration 023 successful!');
+
     console.log('\n🌟 MIGRATIONS COMPLETE! 🌟');
   } catch (err) {
     console.error('❌ Setup database execution failed:', err);
