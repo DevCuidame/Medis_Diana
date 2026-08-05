@@ -197,7 +197,7 @@ export async function createOffer(req: Request, res: Response): Promise<void> {
 
 const CATALOG_PAYLOAD_KEYS = [
   'serviceName', 'description', 'categoryGroup', 'subcategoryGroup', 'category',
-  'subcategory', 'serviceCode', 'modality', 'isActive', 'basePrice', 'imageUrl',
+  'subcategory', 'serviceCode', 'modality', 'isActive', 'basePrice', 'controlPrice', 'imageUrl',
   'preparationInstructions', 'genderRestriction', 'risks', 'contraindications',
 ];
 

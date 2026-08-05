@@ -89,6 +89,7 @@ export interface ServiceCatalogPublic {
   modality: string | null;
   isActive: boolean;
   basePrice: number | null;
+  controlPrice: number | null;
   imageUrl: string | null;
   preparationInstructions: string | null;
   genderRestriction: string | null;
@@ -109,6 +110,7 @@ export interface CreateServiceCatalogPayload {
   modality?: string;
   isActive?: boolean;
   basePrice?: number;
+  controlPrice?: number;
   imageUrl?: string;
   preparationInstructions?: string;
   genderRestriction?: string;
@@ -158,6 +160,7 @@ export interface ServiceOfferPublic {
     modality: string[];
     isActive: boolean;
     basePrice: number | null;
+    controlPrice: number | null;
     imageUrl: string | null;
     preparationInstructions: string | null;
     genderRestriction: string | null;

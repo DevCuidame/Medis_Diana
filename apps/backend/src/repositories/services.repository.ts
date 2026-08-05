@@ -143,14 +143,14 @@ export const ServiceCatalogRepository = {
     const { rows } = await pool.query(
       `INSERT INTO service_catalog
          (service_name, description, category_group, subcategory_group, category, subcategory,
-          service_code, modality, is_active, base_price, image_url, preparation_instructions,
+          service_code, modality, is_active, base_price, control_price, image_url, preparation_instructions,
           gender_restriction, risks, contraindications)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
        RETURNING id`,
       [
         data.serviceName, data.description ?? null, data.categoryGroup, data.subcategoryGroup ?? null,
         data.category ?? null, data.subcategory ?? null, data.serviceCode ?? null,
-        modalityStr, data.isActive ?? true, data.basePrice ?? 0,
+        modalityStr, data.isActive ?? true, data.basePrice ?? 0, data.controlPrice ?? null,
         data.imageUrl ?? null, data.preparationInstructions ?? null, data.genderRestriction ?? null,
         data.risks ?? null, data.contraindications ?? null
       ]
@@ -163,7 +163,7 @@ export const ServiceCatalogRepository = {
       serviceName: 'service_name', description: 'description', categoryGroup: 'category_group',
       subcategoryGroup: 'subcategory_group', category: 'category', subcategory: 'subcategory',
       serviceCode: 'service_code', modality: 'modality', isActive: 'is_active',
-      basePrice: 'base_price', imageUrl: 'image_url', preparationInstructions: 'preparation_instructions',
+      basePrice: 'base_price', controlPrice: 'control_price', imageUrl: 'image_url', preparationInstructions: 'preparation_instructions',
       genderRestriction: 'gender_restriction', risks: 'risks', contraindications: 'contraindications'
     };
     const sets: string[] = [];
@@ -241,6 +241,7 @@ function rowToOffer(row: Record<string, unknown>): ServiceOfferPublic {
       })(),
       isActive: row['c_is_active'] as boolean,
       basePrice: (row['c_base_price'] as number) ?? null,
+      controlPrice: (row['c_control_price'] as number) ?? null,
       imageUrl: (row['c_image_url'] as string) ?? null,
       preparationInstructions: (row['c_preparation_instructions'] as string) ?? null,
       genderRestriction: (row['c_gender_restriction'] as string) ?? null,
@@ -264,7 +265,7 @@ const OFFER_SELECT = `
     c.category_group AS c_category_group, c.subcategory_group AS c_subcategory_group,
     c.category AS c_category, c.subcategory AS c_subcategory,
     c.service_code AS c_service_code, c.modality AS c_modality,
-    c.is_active AS c_is_active, c.base_price AS c_base_price,
+    c.is_active AS c_is_active, c.base_price AS c_base_price, c.control_price AS c_control_price,
     c.image_url AS c_image_url, c.preparation_instructions AS c_preparation_instructions,
     c.gender_restriction AS c_gender_restriction, c.risks AS c_risks,
     c.contraindications AS c_contraindications
