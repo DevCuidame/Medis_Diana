@@ -17,6 +17,7 @@ import {
 import { UserMembershipRepository } from '@repositories/user-membership.repository.js';
 import { DiscountRepository } from '@repositories/discount.repository.js';
 import { sendServicePaymentConfirmation } from '@utils/email.util.js';
+import { ensureDocSync } from '@services/docServiceSync.service.js';
 import type {
   ServiceOffersFilter,
   ResolveBookingRequestPayload,
@@ -155,14 +156,26 @@ export async function createOffer(req: Request, res: Response): Promise<void> {
       return;
     }
     const payload = req.body as any;
-    
+
     // 1. Create Catalog Entry
     const catalogEntry = await ServiceCatalogRepository.create(payload);
     payload.catalogId = catalogEntry.id;
 
     // 2. Create Offer
     const offer = await ServiceOfferRepository.create(payload, adminId);
-    res.status(201).json({ success: true, data: { offer } });
+
+    // 3. Sync with CuidameDoc
+    const docSync = await ensureDocSync({
+      catalogId: offer.catalogId!,
+      active: offer.catalog?.isActive !== false,
+      serviceName: offer.catalog?.serviceName ?? offer.title,
+      durationMinutes: offer.durationMinutes,
+      categoryGroup: offer.catalog?.categoryGroup ?? '01 Consulta externa',
+      description: offer.catalog?.description ?? null,
+      price: offer.catalog?.basePrice ?? offer.price ?? 0,
+    });
+
+    res.status(201).json({ success: true, data: { offer }, docSync });
   } catch (err: unknown) {
     const msg = (err as Error).message;
     const status = msg.includes('supera la del salón') ? 400 : 500;
@@ -170,21 +183,28 @@ export async function createOffer(req: Request, res: Response): Promise<void> {
   }
 }
 
+const CATALOG_PAYLOAD_KEYS = [
+  'serviceName', 'description', 'categoryGroup', 'subcategoryGroup', 'category',
+  'subcategory', 'serviceCode', 'modality', 'isActive', 'basePrice', 'imageUrl',
+  'preparationInstructions', 'genderRestriction', 'risks', 'contraindications',
+];
+
 /** ADMIN ONLY */
 export async function updateOffer(req: Request, res: Response): Promise<void> {
   try {
     const payload = req.body as any;
     const offerId = req.params['id']!;
-    
+
     // Verify offer exists
     const existingOffer = await ServiceOfferRepository.findById(offerId);
     if (!existingOffer) { res.status(404).json({ success: false, error: 'Oferta no encontrada' }); return; }
 
     let catalogId = existingOffer.catalogId;
+    const catalogTouched = CATALOG_PAYLOAD_KEYS.some((k) => payload[k] !== undefined);
 
     // 1. Upsert catalog — create if not exists, update if exists
     if (catalogId) {
-      await ServiceCatalogRepository.update(catalogId, payload);
+      if (catalogTouched) await ServiceCatalogRepository.update(catalogId, payload);
     } else if (payload.serviceName) {
       // Old offer without catalog — create one now and link it
       const newCatalog = await ServiceCatalogRepository.create(payload);
@@ -195,7 +215,24 @@ export async function updateOffer(req: Request, res: Response): Promise<void> {
 
     // 2. Update the rest of the offer fields
     const offer = await ServiceOfferRepository.update(offerId, { ...payload, catalogId: catalogId ?? undefined });
-    res.json({ success: true, data: { offer } });
+
+    // 3. Sync with CuidameDoc — solo cuando el guardado realmente tocó datos
+    //    de catálogo (nombre/precio/estado/etc). Un PATCH de solo {status}
+    //    (el toggle Activo/Inactivo de la tarjeta) no dispara re-sync.
+    let docSync: { ok: boolean; error?: string } | undefined;
+    if (offer?.catalogId && catalogTouched) {
+      docSync = await ensureDocSync({
+        catalogId: offer.catalogId,
+        active: offer.catalog?.isActive !== false,
+        serviceName: offer.catalog?.serviceName ?? offer.title,
+        durationMinutes: offer.durationMinutes,
+        categoryGroup: offer.catalog?.categoryGroup ?? '01 Consulta externa',
+        description: offer.catalog?.description ?? null,
+        price: offer.catalog?.basePrice ?? offer.price ?? 0,
+      });
+    }
+
+    res.json({ success: true, data: { offer }, ...(docSync ? { docSync } : {}) });
   } catch (err: unknown) {
     const msg = (err as Error).message;
     const status = msg.includes('supera la del salón') ? 400 : 500;
@@ -206,9 +243,34 @@ export async function updateOffer(req: Request, res: Response): Promise<void> {
 /** ADMIN ONLY */
 export async function deleteOffer(req: Request, res: Response): Promise<void> {
   try {
-    const deleted = await ServiceOfferRepository.delete(req.params['id']!);
+    const id = req.params['id']!;
+    const existing = await ServiceOfferRepository.findById(id);
+    if (!existing) { res.status(404).json({ success: false, error: 'Oferta no encontrada' }); return; }
+
+    const deleted = await ServiceOfferRepository.delete(id);
     if (!deleted) { res.status(404).json({ success: false, error: 'Oferta no encontrada' }); return; }
-    res.json({ success: true, data: null });
+
+    let docSync: { ok: boolean; error?: string } | undefined;
+    if (existing.catalogId) {
+      const { rows } = await pool.query(
+        'SELECT COUNT(*)::int AS count FROM service_offers WHERE catalog_id = $1',
+        [existing.catalogId]
+      );
+      const remaining = rows[0].count as number;
+      if (remaining === 0) {
+        docSync = await ensureDocSync({
+          catalogId: existing.catalogId,
+          active: false,
+          serviceName: existing.catalog?.serviceName ?? existing.title,
+          durationMinutes: existing.durationMinutes,
+          categoryGroup: existing.catalog?.categoryGroup ?? '01 Consulta externa',
+          description: existing.catalog?.description ?? null,
+          price: existing.catalog?.basePrice ?? existing.price ?? 0,
+        });
+      }
+    }
+
+    res.json({ success: true, data: null, ...(docSync ? { docSync } : {}) });
   } catch (err: unknown) {
     res.status(500).json({ success: false, error: (err as Error).message });
   }
