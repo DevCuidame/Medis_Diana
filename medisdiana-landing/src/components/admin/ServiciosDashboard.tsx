@@ -329,10 +329,28 @@ export const ServiciosDashboard: React.FC = () => {
   const handleDeleteGroup = async (group: ServiceGroup) => {
     setDeletingKey(group.key);
     try {
-      await Promise.all(group.ids.map(id =>
+      const responses = await Promise.all(group.ids.map(id =>
         fetch(`/api/services/offers/${id}`, { method: 'DELETE', headers: authH() })
       ));
-      showToast(`${group.sessionCount} sesión${group.sessionCount !== 1 ? 'es' : ''} eliminada${group.sessionCount !== 1 ? 's' : ''}`, true);
+
+      // Same toast-priority pattern as handleFormSuccess: a failed CuidameDoc
+      // sync is otherwise invisible here, since Promise.all above never reads
+      // the response bodies.
+      let docSyncWarning = '';
+      for (const res of responses) {
+        try {
+          const json = await res.json();
+          if (json?.docSync && json.docSync.ok === false && !docSyncWarning) {
+            docSyncWarning = json.docSync.error ?? 'motivo desconocido';
+          }
+        } catch { /* respuesta sin JSON — ignorar */ }
+      }
+
+      if (docSyncWarning) {
+        showToast(`Eliminado localmente, pero no se pudo quitar de CuidameDoc: ${docSyncWarning}`, false);
+      } else {
+        showToast(`${group.sessionCount} sesión${group.sessionCount !== 1 ? 'es' : ''} eliminada${group.sessionCount !== 1 ? 's' : ''}`, true);
+      }
       await loadServicios();
     } catch {
       showToast('Error al eliminar las sesiones', false);
