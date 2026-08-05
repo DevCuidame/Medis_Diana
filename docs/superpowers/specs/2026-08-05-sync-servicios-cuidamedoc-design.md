@@ -51,6 +51,17 @@ precio — sin resucitar la pestaña "Catálogo Médico" separada, sin cambios e
 - **Desactivar/eliminar:** se refleja 1:1 — desactivar en Medis elimina el
   servicio en CuidameDoc; reactivar lo vuelve a crear; eliminar en Medis elimina
   en CuidameDoc.
+- **Qué campo define "activo" para CuidameDoc:** únicamente el toggle "Estado
+  del servicio" del formulario (`catalog.isActive`, nace en `true` al crear).
+  Se descubrió durante la planificación que `ServiceOfferRepository.create()`
+  nunca guarda `status` en el INSERT, así que todo servicio nuevo cae en el
+  default de la tabla (`'draft'`) sin importar lo que diga el formulario — si
+  la sincronización dependiera también de `status==='published'`, nada se
+  publicaría al crear, contradiciendo el pedido. Por decisión explícita del
+  usuario, este bug de `status` **no se corrige en este trabajo** — queda
+  fuera de alcance, documentado como hallazgo separado. El botón
+  "Activo/Inactivo" de la tarjeta del dashboard (que mueve `status`) no afecta
+  la sincronización con CuidameDoc por ahora.
 - **Servicios existentes (huérfanos):** se publican todos hacia CuidameDoc en un
   backfill de una sola corrida al desplegar este fix.
 
@@ -58,7 +69,8 @@ precio — sin resucitar la pestaña "Catálogo Médico" separada, sin cambios e
 
 ### 1. Esquema — nueva columna
 
-Migración `019_service_catalog_doc_sync.sql`:
+Migración `021_service_catalog_doc_sync.sql` (siguiente número libre — el
+repo ya llega hasta `020_create_external_quotes.sql`):
 
 ```sql
 ALTER TABLE service_catalog
@@ -118,17 +130,18 @@ Comportamiento:
 ### 3. Puntos de integración — `apps/backend/src/controllers/services.controller.ts`
 
 - **`createOffer`**: después de crear `service_catalog` + `service_offers`,
-  llama `ensureDocSync({ ..., active: offer.status === 'published' })`.
+  llama `ensureDocSync({ ..., active: catalog.isActive !== false })`.
   Agrega el resultado a la respuesta como `docSync`.
-- **`updateOffer`**: después de aplicar los cambios (tanto guardado completo
-  del formulario como el toggle Activo/Inactivo, que hoy solo manda
-  `{status}`), relee el registro completo (catálogo + oferta actualizados) y
-  calcula `active = offer.status === 'published' && catalog.isActive !== false`.
-  Llama `ensureDocSync` con eso. Agrega `docSync` a la respuesta.
+- **`updateOffer`**: después de aplicar los cambios, relee el catálogo
+  actualizado y calcula `active = catalog.isActive !== false`. Llama
+  `ensureDocSync` con eso. Agrega `docSync` a la respuesta. (El toggle
+  Activo/Inactivo de la tarjeta del dashboard solo manda `{status}`, que no
+  toca `catalog.isActive` — por eso no dispara re-sync; ver nota en
+  "Decisiones" sobre por qué `status` queda fuera del cálculo.)
 - **`deleteOffer`**: antes de borrar la oferta, si esta es la última oferta
-  publicada que referencia ese `catalogId` (`COUNT` de otras ofertas activas
-  con el mismo `catalog_id`), llama `ensureDocSync({ active: false, ... })`.
-  Luego procede con el borrado local normal.
+  que referencia ese `catalogId` (`COUNT` de otras ofertas con el mismo
+  `catalog_id`), llama `ensureDocSync({ active: false, ... })`. Luego procede
+  con el borrado local normal.
 
 ### 4. Frontend — `ServiciosDashboard.tsx`
 
@@ -159,3 +172,8 @@ Script de una sola corrida manual (mismo patrón que `alter-catalog.ts` /
   funcionaba el proxy antes de este fix.
 - No hay reintento automático en segundo plano para syncs fallidos — el
   próximo guardado del mismo servicio reintenta de forma natural.
+- **No se corrige** que `ServiceOfferRepository.create()` nunca guarda
+  `status` (todo servicio nuevo cae en el default `'draft'` de la tabla,
+  aunque el formulario diga "estará visible"). Es un bug real, preexistente,
+  detectado durante esta planificación — el usuario decidió explícitamente
+  dejarlo fuera de este trabajo.
