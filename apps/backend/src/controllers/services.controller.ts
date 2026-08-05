@@ -44,7 +44,11 @@ function buildDocSyncParams(
     durationMinutes: offer.durationMinutes,
     categoryGroup: offer.catalog?.categoryGroup ?? '01 Consulta externa',
     description: offer.catalog?.description ?? null,
-    price: offer.catalog?.basePrice ?? offer.price ?? 0,
+    // basePrice is typed as number | null but pg returns NUMERIC columns as
+    // strings at runtime (no type parser registered for numerics here) — wrap
+    // with Number(...) so CuidameDoc gets a real JSON number, consistent with
+    // backfill-doc-sync.ts's Number(row.base_price).
+    price: Number(offer.catalog?.basePrice ?? offer.price ?? 0),
   };
 }
 
