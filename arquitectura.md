@@ -207,5 +207,56 @@ const DIANA_PROFESSIONAL_ID = 12
 - **Backend** (`apps/backend/src/{repositories,controllers,routes}/external-quotes.*`):
   - `POST /api/external-quotes` — **protegido con API key compartida** (header `x-internal-api-key`, comparación con `crypto.timingSafeEqual` para evitar timing attacks, contra `DIANA_INTERNAL_API_KEY` en `.env`). Lo llama el backend de CuidameDoc, server-to-server, nunca el navegador.
   - `GET /api/external-quotes?status=` (admin), `PATCH /:id/confirm`, `PATCH /:id/reject` (admin) — el `resolve()` del repositorio tiene guard `WHERE status = 'pending'`, así que una doble-confirmación devuelve 409 en vez de re-confirmar en silencio.
-- **Frontend — pestaña "Cotizaciones CuidameDoc"** en `FinanzasDashboard.tsx` (`/admin/finanzas`), mismo patrón visual/de flujo que "Gestión de Planes"/"Servicios Adicionales" (tarjeta con detalle de ítems + botones Confirmar/Rechazar). Al confirmar una cotización, su `total_amount` se suma a "Ingresos del mes"/"Balance neto" — se trackea con un acumulador local (`confirmedQuotesTotal`) que se inicializa sumando `GET /api/external-quotes?status=confirmed` al montar (para que el número sobreviva a un refresh de página, no solo mientras dure la sesión del navegador) y se incrementa en cada confirmación nueva.
+- **Frontend — visible en DOS pantallas** (2026-08-05: antes solo en Finanzas): el panel se extrajo a un componente compartido, `medisdiana-landing/src/components/admin/shared/CotizacionesCuidameDocPanel.tsx` (recibe `showToast` y los callbacks opcionales `onQuoteConfirmed`/`onPendingCountChange` del host), y se monta en:
+  - **`FinanzasDashboard.tsx`** (`/admin/finanzas`), pestaña "Cotizaciones CuidameDoc" — comportamiento sin cambios: confirmar suma a "Ingresos del mes"/"Balance neto" vía un acumulador local (`confirmedQuotesTotal`) inicializado sumando `GET /api/external-quotes?status=confirmed` al montar, y el badge de la pestaña (`cotizacionesPendingCount`) se alimenta tanto de un fetch propio en el `useEffect` de montaje (para que muestre el conteo correcto ni bien se abre el dashboard, sin esperar a que se abra esa pestaña) como del callback `onPendingCountChange` del panel (que lo mantiene actualizado mientras esa pestaña está abierta).
+  - **`MembresiasDashboard.tsx`** (`/admin/planes`, "Planes y Membresías") — sección nueva "Cotizaciones de pacientes", separada visualmente del catálogo de planes reutilizables (Plan Mensual, etc.) de abajo, con su propio texto explicativo. Mismo componente, mismos endpoints — confirmar/rechazar desde cualquiera de las dos pantallas actualiza el mismo registro en `external_quotes`, sin duplicar datos.
 - Planes (`GET /api/memberships/active`, ya existente) se reutiliza tal cual para el selector de "Plan asociado" del lado de CuidameDoc — no se creó ningún endpoint nuevo para eso.
+- **Incidente 2026-08-05** — `DIANA_INTERNAL_API_KEY` nunca se configuró en el `.env` de producción, así que `requireInternalApiKey` rechazaba con 401 *toda* petición a `POST /external-quotes` sin importar la clave enviada, y del lado de CuidameDoc `submitExternalQuote` no revisaba `response.ok` — la cotización simplemente desaparecía, sin cerrar la HC con error ni loguear nada en ningún lado. Detalle completo, causa raíz y fix en [errores-conocidos.md](errores-conocidos.md).
+
+## Precios escalonados de control (2026-08-05)
+
+**Qué resuelve**: Diana cobra un precio fijo por "Consulta de primera vez",
+pero quiere que el 1er control/seguimiento de un tratamiento no tenga costo, y
+que del 2do control en adelante se cobre un precio fijo o promocional —
+calculado automáticamente, sin que el profesional tenga que acordarse de
+poner el precio correcto a mano en cada seguimiento. Ver spec/plan completos
+en `docs/superpowers/specs/2026-08-05-precios-control-y-plan-cotizacion-design.md`
+y `docs/superpowers/plans/2026-08-05-precios-control-y-plan-cotizacion.md`
+(ambos en el repo `cuidame_doc_backend`, por ser un feature cross-repo).
+
+- **Esquema**: `service_catalog.control_price NUMERIC(10,2)` (migración
+  `023_service_catalog_control_price.sql`), nullable. `NULL` = el servicio no
+  tiene niveles, se comporta igual que antes (precio plano). Con un valor:
+  el servicio queda marcado como "servicio con controles" — la regla es fija,
+  no configurable por nivel: el 1er control siempre es gratis ($0), el 2do en
+  adelante cobra `control_price`.
+- **Formulario** (`FormularioServicio.tsx`): campo nuevo "Precio de control
+  (2do en adelante)", opcional, junto al de "Precio por sesión". Ojo con dos
+  bugs que la revisión final de rama encontró y corrigió antes de mergear (no
+  llegaron a producción rotos):
+  - `ServiciosDashboard.tsx` (`handleFormSuccess`) reconstruye el payload
+    campo por campo en vez de reenviar el objeto del formulario tal cual —
+    `controlPrice` no estaba en esa lista y se perdía silenciosamente antes de
+    llegar a la API.
+  - El input de precio de control usa `valueAsNumber: true`; vacío se
+    convierte en `NaN`, que zod con `.optional()` rechaza (`.optional()` solo
+    acepta `undefined`) — un campo vacío bloqueaba el guardado de **cualquier**
+    servicio, no solo los que usan niveles. Se resolvió con `z.preprocess`
+    (mismo patrón ya usado en este archivo para `tipoAtencion`).
+  - `mapGroupToFormValues` tampoco precargaba `controlPrice` al editar un
+    servicio existente — el campo aparecía vacío aunque ya tuviera un valor
+    guardado.
+- **Sincronización hacia CuidameDoc**: viaja por el proxy de solo lectura ya
+  existente, `getExternalServices` (`cuidame_doc_backend`), que ahora incluye
+  `controlPrice: number | null` en cada servicio devuelto. **No** se agregó a
+  `DOC_SYNC_RELEVANT_FIELDS` — un cambio de solo `controlPrice` no dispara el
+  ciclo borrar+crear del catálogo de reservas de CuidameDoc, porque es
+  irrelevante para ese motor.
+- **Cálculo automático** (`cuidame_doc_frontend_react`, `CloseRecordModal.tsx`,
+  sección Seguimiento de "Cerrar historia clínica"): dos funciones puras
+  exportadas, `countPriorOccurrences` y `computeFollowUpPrice`, cuentan en qué
+  posición está un servicio dentro de los seguimientos ya agregados de **esta
+  misma historia clínica** (el conteo se reinicia en cada HC nueva) y fijan el
+  precio: posición 1 → $0, posición 2+ → `controlPrice`. El precio del
+  seguimiento queda bloqueado (no editable) cuando el servicio tiene
+  `controlPrice` configurado.
