@@ -243,7 +243,16 @@ export const AdminClasses: React.FC = () => {
         // Map clinical appointments to the shape the calendar expects
         const mapped = (json.data as any[]).map((appt: any) => ({
           id:              appt.appointment_id,
-          scheduledAt:     `${(appt.appointment_date as string).substring(0, 10)}T${appt.appointment_time ?? '08:00'}:00`,
+          // appt.appointment_time ya llega como "HH:MM:SS" (columna `time` de
+          // TypeORM en CuidameDoc) — NO es el mismo shape "HH:MM" que entrega
+          // el <input type="time"> del formulario "Nueva Cita" (línea ~298,
+          // donde el ':00' extra sí hace falta). Tomar solo "HH:MM" con
+          // substring y agregar ':00' nosotros mismos evita construir un
+          // datetime inválido tipo "...T08:30:00:00" (new Date(...) => Invalid
+          // Date), que hacía que TODAS las citas reales cargaran bien en el
+          // contador pero quedaran invisibles en cualquier vista por fecha
+          // (grilla del calendario, "Esta Semana").
+          scheduledAt:     `${(appt.appointment_date as string).substring(0, 10)}T${(appt.appointment_time ?? '08:00').substring(0, 5)}:00`,
           title:           appt.patient
                              ? `${appt.patient.first_name} ${appt.patient.last_name}`
                              : (appt.appointment_type ?? 'Cita'),
