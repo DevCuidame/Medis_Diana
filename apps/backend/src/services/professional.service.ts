@@ -67,11 +67,22 @@ export const ProfessionalService = {
       medicalRegistrationNumber: dto.medicalRegistrationNumber!,
       specialties: dto.specialties,
     })
+    let docSyncResult = { ok: docSync.ok, error: docSync.error }
     if (docSync.ok && docSync.docProfessionalId) {
-      await ProfessionalRepository.setDocProfessionalId(professional.id, docSync.docProfessionalId)
+      try {
+        await ProfessionalRepository.setDocProfessionalId(professional.id, docSync.docProfessionalId)
+      } catch (err: any) {
+        // El aprovisionado en CuidameDoc sí funcionó — no dejemos que un fallo
+        // al guardar el enlace local convierta una creación exitosa en un 500.
+        console.error('❌ setDocProfessionalId falló tras aprovisionado exitoso en CuidameDoc:', err)
+        docSyncResult = {
+          ok: false,
+          error: `Profesional aprovisionado en CuidameDoc (id ${docSync.docProfessionalId}) pero no se pudo guardar el enlace local: ${err.message}`,
+        }
+      }
     }
 
-    return { professional, docSync: { ok: docSync.ok, error: docSync.error } }
+    return { professional, docSync: docSyncResult }
   },
 
   async update(id: string, dto: UpdateProfessionalDTO): Promise<ProfessionalPublic> {

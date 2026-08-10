@@ -406,7 +406,7 @@ export const UsuariosDashboard: React.FC = () => {
             transition={{ type: 'spring', stiffness: 350, damping: 28 }}
             style={{
               position: 'fixed', bottom: 28, right: 28, zIndex: 999,
-              background: toast.type === 'error' ? '#1B1C1C' : '#1B1C1C',
+              background: toast.type === 'error' ? '#2A1B1B' : '#1B1C1C',
               color: C.white,
               padding: '14px 22px', borderRadius: 14,
               fontFamily: FONT_INTER, fontSize: 13, fontWeight: 500,
@@ -416,7 +416,9 @@ export const UsuariosDashboard: React.FC = () => {
             }}
           >
             <div style={{ width: 32, height: 32, borderRadius: 10, background: toast.type === 'error' ? 'rgba(244,63,94,0.15)' : 'rgba(34,197,94,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <CheckCircle2 size={16} color="#22c55e" />
+              {toast.type === 'error'
+                ? <AlertCircle size={16} color="#f43f5e" />
+                : <CheckCircle2 size={16} color="#22c55e" />}
             </div>
             {toast.msg}
           </motion.div>

@@ -104,7 +104,7 @@ export const AdminProfessionals: React.FC = () => {
   const [search, setSearch] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [selectedPro, setSelectedPro] = useState<UserCard | null>(null)
-  const [toast, setToast] = useState<string | null>(null)
+  const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null)
 
   const fetchData = async () => {
     setLoading(true)
@@ -135,7 +135,7 @@ export const AdminProfessionals: React.FC = () => {
   const handleUpdated = (updated: any) => {
     setProfessionals(prev => prev.map(p => p.id === updated.id ? { ...p, ...updated } : p))
     setSelectedPro(null)
-    setToast(`${updated.firstName} ${updated.lastName} fue actualizada.`)
+    setToast({ msg: `${updated.firstName} ${updated.lastName} fue actualizada.`, type: 'success' })
     setTimeout(() => setToast(null), 4000)
   }
 
@@ -143,7 +143,7 @@ export const AdminProfessionals: React.FC = () => {
     setProfessionals(prev => prev.filter(p => p.id !== id))
     setStats(s => s ? { ...s, totalProfessionals: Math.max(0, s.totalProfessionals - 1), activeProfessionals: Math.max(0, s.activeProfessionals - 1) } : s)
     setSelectedPro(null)
-    setToast('Profesional eliminada del equipo.')
+    setToast({ msg: 'Profesional eliminada del equipo.', type: 'success' })
     setTimeout(() => setToast(null), 4000)
   }
 
@@ -154,9 +154,9 @@ export const AdminProfessionals: React.FC = () => {
     }
     setShowModal(false)
     if (docSync && !docSync.ok) {
-      setToast(`${created.firstName} ${created.lastName} fue incorporada al equipo, pero no se pudo habilitar su acceso a CuidameDoc: ${docSync.error ?? 'motivo desconocido'}`)
+      setToast({ msg: `${created.firstName} ${created.lastName} fue incorporada al equipo, pero no se pudo habilitar su acceso a CuidameDoc: ${docSync.error ?? 'motivo desconocido'}`, type: 'error' })
     } else {
-      setToast(`${created.firstName} ${created.lastName} fue incorporada al equipo.`)
+      setToast({ msg: `${created.firstName} ${created.lastName} fue incorporada al equipo.`, type: 'success' })
     }
     setTimeout(() => setToast(null), 4000)
   }
@@ -192,9 +192,11 @@ export const AdminProfessionals: React.FC = () => {
 
       {/* Toast */}
       {toast && (
-        <div style={{ position: 'fixed', bottom: 28, right: 28, zIndex: 300, background: C.text, color: C.white, padding: '14px 20px', borderRadius: 12, fontFamily: FONT_INTER, fontSize: 13, fontWeight: 500, boxShadow: '0 8px 32px rgba(0,0,0,0.22)', display: 'flex', alignItems: 'center', gap: 10, animation: 'toastIn 0.3s cubic-bezier(0.22,1,0.36,1)' }}>
-          <CheckCircle2 size={16} color="#22c55e" />
-          {toast}
+        <div style={{ position: 'fixed', bottom: 28, right: 28, zIndex: 300, maxWidth: 420, width: 'calc(100vw - 56px)', background: C.text, color: C.white, padding: '14px 20px', borderRadius: 12, fontFamily: FONT_INTER, fontSize: 13, fontWeight: 500, boxShadow: '0 8px 32px rgba(0,0,0,0.22)', display: 'flex', alignItems: 'flex-start', gap: 10, animation: 'toastIn 0.3s cubic-bezier(0.22,1,0.36,1)' }}>
+          {toast.type === 'error'
+            ? <AlertCircle size={16} color="#f43f5e" style={{ flexShrink: 0, marginTop: 1 }} />
+            : <CheckCircle2 size={16} color="#22c55e" style={{ flexShrink: 0, marginTop: 1 }} />}
+          <span style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}>{toast.msg}</span>
         </div>
       )}
 
