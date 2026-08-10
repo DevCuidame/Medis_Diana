@@ -217,6 +217,10 @@ clasificación RIPS del formulario. Ver spec/plan completos en
   obligatorio en el resto de grupos.
 - **Sin sync a CuidameDoc**: es un dato puramente regulatorio/local a Medis
   — el modelo de servicios de CuidameDoc no tiene un campo equivalente.
+- **Actualización (2026-08-10)**: las tarjetas de `ServiciosDashboard.tsx`
+  ahora muestran un badge "Servicio {code}" junto al de "CUPS {code}"
+  cuando el servicio tiene `repsServiceCode` (mismo patrón visual, ícono
+  `Tag`).
 
 ---
 
@@ -342,6 +346,16 @@ y `docs/superpowers/plans/2026-08-05-precios-control-y-plan-cotizacion.md`
   `DOC_SYNC_RELEVANT_FIELDS` — un cambio de solo `controlPrice` no dispara el
   ciclo borrar+crear del catálogo de reservas de CuidameDoc, porque es
   irrelevante para ese motor.
+- **Actualización (2026-08-10)**: el campo "Precio de control (2do en
+  adelante)" se **quitó de `FormularioServicio.tsx`** (confundía en el
+  formulario). Deja de pedirse/enviarse desde ahí — `ServiciosDashboard.tsx`
+  ya no manda `controlPrice` en el payload de guardado (ni siquiera `null`,
+  para no pisar valores ya guardados en servicios existentes). La columna
+  `service_catalog.control_price`, el backend (`ServiceCatalogRepository`,
+  `docSyncRelevantFieldsChanged`, tests) y el proxy hacia CuidameDoc
+  **quedan intactos** — un servicio que ya tenía niveles configurados sigue
+  cobrando igual, solo que ya no hay forma de editarlo desde este
+  formulario.
 - **Cálculo automático** (`cuidame_doc_frontend_react`, `CloseRecordModal.tsx`,
   sección Seguimiento de "Cerrar historia clínica"): dos funciones puras
   exportadas, `countPriorOccurrences` y `computeFollowUpPrice`, cuentan en qué
