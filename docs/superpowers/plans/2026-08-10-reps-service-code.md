@@ -1,5 +1,19 @@
 # Código de servicio REPS (habilitación) — Implementation Plan
 
+> **Estado: completado (2026-08-10).** Task 1 (migración) ejecutada
+> directamente. Tasks 2-4 despachadas como 3 subagentes en paralelo (un
+> reintento tras denegaciones accidentales de permisos que mataron la
+> primera tanda). Verificación final: suite backend 36/36 en verde,
+> `tsc --noEmit` limpio en frontend y backend (salvo errores preexistentes
+> no relacionados en `docAppointments.*`/`docServices.routes.ts`/
+> `run-migration.ts`, confirmados con `git stash` contra HEAD limpio),
+> y prueba manual end-to-end contra la BD real vía HTTP (`GET
+> /services/reps-service-codes`, `POST`/`DELETE /services/offers` con
+> `repsServiceCode`). Documentado en
+> [arquitectura.md](../../../arquitectura.md#código-de-servicio-reps-habilitación--panel-admin-2026-08-10).
+> Commits: `1fda7a3` (migración), `01fac53` (endpoint), `72bc388`
+> (persistencia), `5915b4b` (frontend).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add a new "Código del servicio" (REPS habilitación) selector to the service-creation form, backed by a new DB table seeded from the official 157-row Excel reference table, filtered by the already-selected "Grupo de servicio".

@@ -189,6 +189,35 @@ const DOC_API = 'https://doc-api.cuidame.tech/api'
 const DIANA_PROFESSIONAL_ID = 12
 ```
 
+### Código de servicio REPS (habilitación) — Panel Admin (2026-08-10)
+
+**Qué es**: catálogo oficial de los 157 servicios habilitables REPS
+(Resolución 3100), distinto del código **CUPS** ya capturado en la
+clasificación RIPS del formulario. Ver spec/plan completos en
+`docs/superpowers/specs/2026-08-10-reps-service-code-design.md` y
+`docs/superpowers/plans/2026-08-10-reps-service-code.md`.
+
+- **Esquema**: `reps_service_catalog(code VARCHAR(4) PK, name, service_group,
+  is_active)` (migración `025_reps_service_codes.sql`, sembrada con las 157
+  filas del Excel — 154 activas, 3 inactivas de transporte
+  asistencial/prehospitalario). `service_group` reutiliza el mismo dominio
+  `'01'..'05'` que `service_catalog.category_group` (no existe grupo `06` en
+  este catálogo). Nueva columna `service_catalog.reps_service_code
+  VARCHAR(4)` (FK a `reps_service_catalog.code`), nullable.
+- **Backend**: `GET /services/reps-service-codes` (ADMIN) devuelve el
+  catálogo completo activo de una sola vez — mismo patrón de "traer todo y
+  filtrar en cliente" que `GET /services/cups-catalog`. `repsServiceCode` se
+  suma a `CATALOG_PAYLOAD_KEYS` y al create/update de
+  `ServiceCatalogRepository`, igual que el resto de campos RIPS.
+- **Frontend** (`FormularioServicio.tsx`): nuevo select "Código del
+  servicio", justo después de "Código CUPS" y antes de "Modalidad de
+  servicio", filtrado client-side por el `categoryGroup` ya elegido. Se
+  oculta por completo en el grupo `06 Otros servicios` (mismo
+  `isEscapeGroup` que ya oculta Subgrupo/Categoría/Subcategoría/CUPS) y es
+  obligatorio en el resto de grupos.
+- **Sin sync a CuidameDoc**: es un dato puramente regulatorio/local a Medis
+  — el modelo de servicios de CuidameDoc no tiene un campo equivalente.
+
 ---
 
 ## Inventario (con precio) — Panel Admin
