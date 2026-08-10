@@ -302,10 +302,14 @@ export const UsuariosDashboard: React.FC = () => {
     setSelectedPro(null)
     showToast('Usuario eliminado del equipo.')
   }
-  const handleCreated = (created: any) => {
+  const handleCreated = (created: any, docSync?: { ok: boolean; error?: string }) => {
     setUsers(prev => [created, ...prev])
     setShowModal(false)
-    showToast(`${created.firstName} ${created.lastName} fue incorporado/a al equipo.`)
+    if (docSync && !docSync.ok) {
+      showToast(`${created.firstName} ${created.lastName} fue incorporado/a al equipo, pero no se pudo habilitar su acceso a CuidameDoc: ${docSync.error ?? 'motivo desconocido'}`, 'error')
+    } else {
+      showToast(`${created.firstName} ${created.lastName} fue incorporado/a al equipo.`)
+    }
   }
 
   const handleToggleStatus = async (userRaw: any, newStatus: boolean) => {

@@ -147,13 +147,17 @@ export const AdminProfessionals: React.FC = () => {
     setTimeout(() => setToast(null), 4000)
   }
 
-  const handleCreated = (created: UserCard) => {
+  const handleCreated = (created: UserCard, docSync?: { ok: boolean; error?: string }) => {
     setProfessionals(prev => [created, ...prev])
     if (created.role === 'PROFESSIONAL') {
       setStats(s => s ? { ...s, totalProfessionals: s.totalProfessionals + 1, activeProfessionals: s.activeProfessionals + 1 } : s)
     }
     setShowModal(false)
-    setToast(`${created.firstName} ${created.lastName} fue incorporada al equipo.`)
+    if (docSync && !docSync.ok) {
+      setToast(`${created.firstName} ${created.lastName} fue incorporada al equipo, pero no se pudo habilitar su acceso a CuidameDoc: ${docSync.error ?? 'motivo desconocido'}`)
+    } else {
+      setToast(`${created.firstName} ${created.lastName} fue incorporada al equipo.`)
+    }
     setTimeout(() => setToast(null), 4000)
   }
 
