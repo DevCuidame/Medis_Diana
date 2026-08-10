@@ -175,6 +175,11 @@ export const ProfessionalRepository = {
     return (rowCount ?? 0) > 0
   },
 
+  /** Store the CuidameDoc professional_id this user was provisioned as (best-effort link) */
+  async setDocProfessionalId(id: string, docProfessionalId: number): Promise<void> {
+    await pool.query(`UPDATE users SET doc_professional_id = $1 WHERE id = $2`, [docProfessionalId, id])
+  },
+
   /** Dashboard stats */
   async getStats(): Promise<ProfessionalStats> {
     const [profResult, bookingsResult, disciplinesResult, ratingResult] = await Promise.all([
