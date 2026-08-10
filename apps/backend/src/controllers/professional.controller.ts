@@ -48,8 +48,8 @@ export async function getProfessional(req: Request, res: Response): Promise<void
 // ─── POST /api/professionals ──────────────────────────────────────────────────
 export async function createProfessional(req: Request, res: Response): Promise<void> {
   try {
-    const professional = await ProfessionalService.create(req.body)
-    res.status(201).json({ success: true, data: { professional } })
+    const { professional, docSync } = await ProfessionalService.create(req.body)
+    res.status(201).json({ success: true, data: { professional }, ...(docSync ? { docSync } : {}) })
   } catch (err: any) {
     res.status(err.statusCode ?? 500).json({ success: false, error: err.message })
   }

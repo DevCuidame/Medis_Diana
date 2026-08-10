@@ -2,6 +2,7 @@ import { ProfessionalRepository } from '@repositories/professional.repository.js
 import { UserRepository } from '@repositories/user.repository.js'
 import { hashPassword } from '@utils/index.js'
 import { pool } from '@config/database.js'
+import { provisionDocProfessional } from './docProfessionalProvision.service.js'
 import type {
   ProfessionalPublic,
   CreateProfessionalDTO,
@@ -23,7 +24,10 @@ export const ProfessionalService = {
     return pro
   },
 
-  async create(dto: CreateProfessionalDTO & { role?: UserRole }): Promise<ProfessionalPublic | UserPublic> {
+  async create(dto: CreateProfessionalDTO & { role?: UserRole }): Promise<{
+    professional: ProfessionalPublic | UserPublic
+    docSync?: { ok: boolean; error?: string }
+  }> {
     const exists = await UserRepository.emailExists(dto.email)
     if (exists) throw Object.assign(new Error('El email ya está registrado.'), { statusCode: 409 })
 
@@ -42,9 +46,32 @@ export const ProfessionalService = {
 
     const passwordHash = hashPassword(dto.password)
     if (dto.role && dto.role !== 'PROFESSIONAL') {
-      return UserRepository.create({ ...dto, role: dto.role, passwordHash })
+      const user = await UserRepository.create({ ...dto, role: dto.role, passwordHash })
+      return { professional: user }
     }
-    return ProfessionalRepository.create({ ...dto, passwordHash })
+
+    const professional = await ProfessionalRepository.create({ ...dto, passwordHash })
+
+    // Aprovisiona la cuenta correspondiente en CuidameDoc — best-effort, nunca
+    // bloquea la creación local ya exitosa. Ver
+    // docs/superpowers/specs/2026-08-10-doctores-cuidamedoc-provision-design.md.
+    const docSync = await provisionDocProfessional({
+      email: dto.email,
+      password: dto.password,
+      firstName: dto.firstName,
+      lastName: dto.lastName,
+      idType: dto.idType,
+      idNumber: dto.idNumber,
+      phone: dto.phone ?? '',
+      address: dto.personalAddress,
+      medicalRegistrationNumber: dto.medicalRegistrationNumber!,
+      specialties: dto.specialties,
+    })
+    if (docSync.ok && docSync.docProfessionalId) {
+      await ProfessionalRepository.setDocProfessionalId(professional.id, docSync.docProfessionalId)
+    }
+
+    return { professional, docSync: { ok: docSync.ok, error: docSync.error } }
   },
 
   async update(id: string, dto: UpdateProfessionalDTO): Promise<ProfessionalPublic> {
