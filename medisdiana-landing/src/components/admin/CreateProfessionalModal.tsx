@@ -67,7 +67,7 @@ interface FormData {
 
 interface Props {
   onClose: () => void
-  onSuccess: (pro: any) => void
+  onSuccess: (pro: any, docSync?: { ok: boolean; error?: string }) => void
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -248,7 +248,7 @@ export function CreateProfessionalModal({ onClose, onSuccess }: Props) {
           })
         }
       }
-      onSuccess(data.data.professional)
+      onSuccess(data.data.professional, data.docSync)
     } catch (err: any) {
       setErrors({ submit: err.message })
     } finally {
