@@ -1,5 +1,16 @@
 # Provisión automática de doctores en CuidameDoc + vínculo cabeza-trabajador — Implementation Plan
 
+> **Estado: completado y mergeado a `main` (2026-08-10).** Ejecutado con
+> `superpowers:subagent-driven-development`, 1 subagente implementador por
+> tarea + revisión por tarea + revisión final de rama por repo. Todas las
+> tareas pasaron limpio o con hallazgos corregidos en el mismo ciclo — ver
+> hallazgos reales encontrados en la revisión final (no cubiertos por los
+> tests con mocks) en
+> [arquitectura.md](../../../arquitectura.md#aprovisionamiento-automático-de-doctores-en-cuidamedoc--vínculo-cabeza-trabajador-2026-08-10)
+> y [errores-conocidos.md](../../../errores-conocidos.md).
+> `cuidame_doc_backend` main: commit `15bb6d5` (merge). `diana/medis` main:
+> commit `eb4f65a` (fast-forward).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Cuando un admin crea un profesional (doctor) en Medis, se le aprovisiona automáticamente una cuenta activa en CuidameDoc con las mismas credenciales, enlazada como "trabajador" del profesional cabeza del sitio (hoy Diana en `cuidame_doc_backend`, `professional_id=12`).
