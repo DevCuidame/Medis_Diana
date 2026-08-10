@@ -86,6 +86,7 @@ export interface ServiceCatalogPublic {
   category: string | null;
   subcategory: string | null;
   serviceCode: string | null;
+  repsServiceCode: string | null;
   modality: string | null;
   isActive: boolean;
   basePrice: number | null;
@@ -107,6 +108,7 @@ export interface CreateServiceCatalogPayload {
   category?: string;
   subcategory?: string;
   serviceCode?: string;
+  repsServiceCode?: string;
   modality?: string;
   isActive?: boolean;
   basePrice?: number;
@@ -157,6 +159,7 @@ export interface ServiceOfferPublic {
     category: string | null;
     subcategory: string | null;
     serviceCode: string | null;
+    repsServiceCode: string | null;
     modality: string[];
     isActive: boolean;
     basePrice: number | null;
