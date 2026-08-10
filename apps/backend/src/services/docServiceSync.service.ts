@@ -10,7 +10,7 @@
 
 import { pool } from '@config/database.js';
 import { env } from '@config/env.js';
-import { getDocToken, refreshDocToken } from '@utils/docAuth.js';
+import { withDocAuth } from '@utils/docAuth.js';
 
 export interface EnsureDocSyncParams {
   catalogId: string;
@@ -50,17 +50,6 @@ async function setDocProfServiceId(catalogId: string, value: number | null): Pro
   await pool.query(
     'UPDATE service_catalog SET doc_prof_service_id = $1 WHERE id = $2', [value, catalogId]
   );
-}
-
-/** Llama `fetchFn` con el token actual; si CuidameDoc responde 401, refresca una vez y reintenta. */
-async function withDocAuth(fetchFn: (token: string) => Promise<Response>): Promise<Response> {
-  let token = await getDocToken();
-  let res = await fetchFn(token);
-  if (res.status === 401) {
-    token = await refreshDocToken();
-    res = await fetchFn(token);
-  }
-  return res;
 }
 
 async function createDocService(params: {

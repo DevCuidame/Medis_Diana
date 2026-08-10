@@ -62,3 +62,14 @@ export async function refreshDocToken(): Promise<string> {
   await tryRefresh();
   return accessToken!;
 }
+
+/** Llama `fetchFn` con el token actual; si CuidameDoc responde 401, refresca una vez y reintenta. */
+export async function withDocAuth(fetchFn: (token: string) => Promise<Response>): Promise<Response> {
+  let token = await getDocToken();
+  let res = await fetchFn(token);
+  if (res.status === 401) {
+    token = await refreshDocToken();
+    res = await fetchFn(token);
+  }
+  return res;
+}
