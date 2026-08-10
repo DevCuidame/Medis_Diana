@@ -69,6 +69,13 @@ export async function deleteLocation(req: Request, res: Response): Promise<void>
     if (!deleted) { res.status(404).json({ success: false, error: 'Sede no encontrada' }); return; }
     res.json({ success: true, data: null });
   } catch (err: unknown) {
+    if ((err as { code?: string }).code === '23503') {
+      res.status(409).json({
+        success: false,
+        error: 'No se puede eliminar esta sede: tiene consultorios o servicios asociados. Desactívala en su lugar.',
+      });
+      return;
+    }
     res.status(500).json({ success: false, error: (err as Error).message });
   }
 }

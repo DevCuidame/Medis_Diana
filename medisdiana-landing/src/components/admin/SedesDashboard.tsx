@@ -162,6 +162,7 @@ export const SedesDashboard: React.FC = () => {
   const [search, setSearch] = useState('');
   const [modalState, setModalState] = useState<ModalState>({ type: 'none' });
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const [filterMode, setFilterMode] = useState<'all' | 'active' | 'inactive'>('all');
 
@@ -187,14 +188,20 @@ export const SedesDashboard: React.FC = () => {
   const handleDelete = async () => {
     if (modalState.type === 'delete') {
       try {
-        await fetch(`/api/locations/${modalState.sede.id}`, {
+        const res = await fetch(`/api/locations/${modalState.sede.id}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
         });
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+          setDeleteError(json.error || 'No se pudo eliminar la sede.');
+          return;
+        }
         loadSedes();
         setModalState({ type: 'none' });
       } catch (error) {
         console.error('Error deleting sede', error);
+        setDeleteError('No se pudo eliminar la sede. Intenta de nuevo.');
       }
     }
   };
@@ -347,8 +354,8 @@ export const SedesDashboard: React.FC = () => {
                   >
                     <Edit3 size={15} />
                   </button>
-                  <button 
-                    onClick={() => setModalState({ type: 'delete', sede })}
+                  <button
+                    onClick={() => { setDeleteError(null); setModalState({ type: 'delete', sede }); }}
                     title="Eliminar Sede"
                     style={{ background: '#fef2f2', border: '1px solid #fca5a5', width: 32, height: 32, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#ef4444' }}
                   >
@@ -481,12 +488,12 @@ export const SedesDashboard: React.FC = () => {
           {/* MODAL DE ELIMINAR */}
           {modalState.type === 'delete' && (
             <>
-              <motion.div 
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} 
+              <motion.div
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                 style={{ position: 'fixed', inset: 0, background: 'rgba(27,28,28,0.2)', backdropFilter: 'blur(2px)', zIndex: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                onClick={() => setModalState({ type: 'none' })}
+                onClick={() => { setDeleteError(null); setModalState({ type: 'none' }); }}
               >
-                <motion.div 
+                <motion.div
                   initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
                   onClick={e => e.stopPropagation()}
                   style={{ background: C.white, borderRadius: 24, padding: 32, width: '100%', maxWidth: 360, textAlign: 'center', boxShadow: '0 24px 48px rgba(0,0,0,0.1)' }}
@@ -495,9 +502,12 @@ export const SedesDashboard: React.FC = () => {
                     <Trash2 size={24} />
                   </div>
                   <h3 style={{ fontFamily: FONT_BODONI, fontSize: 20, fontWeight: 700, color: C.text, margin: '0 0 8px 0' }}>Eliminar Sede</h3>
-                  <p style={{ fontSize: 14, color: C.textMedium, margin: '0 0 32px 0' }}>¿Estás seguro de eliminar <strong>{modalState.sede.name}</strong>? Esta acción no se puede deshacer.</p>
+                  <p style={{ fontSize: 14, color: C.textMedium, margin: '0 0 16px 0' }}>¿Estás seguro de eliminar <strong>{modalState.sede.name}</strong>? Esta acción no se puede deshacer.</p>
+                  {deleteError && (
+                    <p style={{ fontSize: 13, color: '#ef4444', background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 10, padding: '10px 12px', margin: '0 0 16px 0', textAlign: 'left' }}>{deleteError}</p>
+                  )}
                   <div style={{ display: 'flex', gap: 12 }}>
-                    <button onClick={() => setModalState({ type: 'none' })} style={{ flex: 1, padding: '10px 0', background: C.bgPanel, border: 'none', borderRadius: 12, fontWeight: 700, fontSize: 12, textTransform: 'uppercase', color: C.textMedium, cursor: 'pointer' }}>Cancelar</button>
+                    <button onClick={() => { setDeleteError(null); setModalState({ type: 'none' }); }} style={{ flex: 1, padding: '10px 0', background: C.bgPanel, border: 'none', borderRadius: 12, fontWeight: 700, fontSize: 12, textTransform: 'uppercase', color: C.textMedium, cursor: 'pointer' }}>Cancelar</button>
                     <button onClick={handleDelete} style={{ flex: 1, padding: '10px 0', background: '#ef4444', border: 'none', borderRadius: 12, fontWeight: 700, fontSize: 12, textTransform: 'uppercase', color: C.white, cursor: 'pointer' }}>Sí, Eliminar</button>
                   </div>
                 </motion.div>

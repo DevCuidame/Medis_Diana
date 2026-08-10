@@ -105,7 +105,7 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
   // 4. Load rooms
   useEffect(() => {
     if (!locationId) { setEspacios([]); return; }
-    fetch(`/api/rooms?locationId=${locationId}`).then(r => r.json()).then(j => {
+    fetch(`/api/locations/${locationId}/rooms`).then(r => r.json()).then(j => {
       if (j.success) setEspacios(j.data.rooms);
     }).catch(() => {});
   }, [locationId]);
