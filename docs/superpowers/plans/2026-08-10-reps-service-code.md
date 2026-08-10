@@ -28,7 +28,7 @@
 - Modify: `apps/backend/src/scripts/run-migration.ts`
 
 **Interfaces:**
-- Produces: table `reps_service_catalog(code VARCHAR(3) PK, name VARCHAR(255), service_group VARCHAR(10), is_active BOOLEAN)`, 154 active + 3 inactive rows. Column `service_catalog.reps_service_code VARCHAR(3) REFERENCES reps_service_catalog(code)`, nullable.
+- Produces: table `reps_service_catalog(code VARCHAR(4) PK, name VARCHAR(255), service_group VARCHAR(10), is_active BOOLEAN)`, 154 active + 3 inactive rows (codes are 3-4 digits — `1101`-`1105` are the only 4-digit codes). Column `service_catalog.reps_service_code VARCHAR(4) REFERENCES reps_service_catalog(code)`, nullable.
 - No code-level interface (pure SQL) — Tasks 2 and 3 depend on this table/column existing in the target database before their tests can pass.
 
 - [ ] **Step 1: Write the migration file**
@@ -44,7 +44,7 @@ Create `apps/backend/migrations/025_reps_service_codes.sql` with this exact cont
 -- Fuente: TablaReferencia_Servicios__1.xlsx (157 filas).
 
 CREATE TABLE IF NOT EXISTS reps_service_catalog (
-  code          VARCHAR(3)   PRIMARY KEY,
+  code          VARCHAR(4)   PRIMARY KEY,
   name          VARCHAR(255) NOT NULL,
   service_group VARCHAR(10)  NOT NULL,  -- '01'..'05', mismo dominio que category_group
   is_active     BOOLEAN      NOT NULL DEFAULT TRUE
@@ -55,7 +55,7 @@ CREATE INDEX IF NOT EXISTS idx_reps_service_catalog_group
   WHERE is_active = TRUE;
 
 ALTER TABLE service_catalog
-  ADD COLUMN IF NOT EXISTS reps_service_code VARCHAR(3) REFERENCES reps_service_catalog(code);
+  ADD COLUMN IF NOT EXISTS reps_service_code VARCHAR(4) REFERENCES reps_service_catalog(code);
 
 INSERT INTO reps_service_catalog (code, name, service_group, is_active) VALUES
   ('105', 'CUIDADO INTERMEDIO NEONATAL', '03', TRUE),

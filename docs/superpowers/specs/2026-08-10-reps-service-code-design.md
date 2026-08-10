@@ -53,7 +53,7 @@ puramente regulatorio/local a Medis).
 
 ```sql
 CREATE TABLE reps_service_catalog (
-  code          VARCHAR(3) PRIMARY KEY,
+  code          VARCHAR(4) PRIMARY KEY,  -- 3-4 dígitos (ej. '328', '1101')
   name          VARCHAR(255) NOT NULL,
   service_group VARCHAR(10) NOT NULL,  -- '01'..'05'
   is_active     BOOLEAN NOT NULL DEFAULT TRUE
@@ -61,7 +61,7 @@ CREATE TABLE reps_service_catalog (
 CREATE INDEX idx_reps_service_catalog_group ON reps_service_catalog(service_group);
 
 ALTER TABLE service_catalog
-  ADD COLUMN reps_service_code VARCHAR(3) REFERENCES reps_service_catalog(code);
+  ADD COLUMN reps_service_code VARCHAR(4) REFERENCES reps_service_catalog(code);
 ```
 
 Seguido de 157 `INSERT INTO reps_service_catalog (code, name, service_group,
