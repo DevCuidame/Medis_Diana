@@ -16,19 +16,10 @@ const CARD_STYLES = [
 // Fallback estático: se muestra mientras carga o si la API falla / viene vacía.
 const CLASSES = [
   {
-    title: 'Consulta Médica General',
-    level: 'Todas las edades',
-    duration: '30 min',
-    description: 'Evaluación integral, diagnóstico y tratamiento de enfermedades comunes. La puerta de entrada a tu bienestar.',
-    accent: '#A78BFA',
-    tag: 'Más solicitada',
-    gradient: 'linear-gradient(160deg, #1e1b4b 0%, #4c1d95 50%, #1e3a8a 100%)',
-  },
-  {
     title: 'Promoción y Prevención',
     level: 'Todas las edades',
     duration: '45 min',
-    description: 'Chequeos y orientación integral para identificar factores de riesgo y fomentar hábitos saludables a largo plazo.',
+    description: 'Tamizajes y orientación integral para identificar factores de riesgo y fomentar hábitos saludables a largo plazo.',
     accent: '#38BDF8',
     tag: 'Preventivo',
     gradient: 'linear-gradient(160deg, #0f172a 0%, #1e3a8a 50%, #0c4a6e 100%)',
@@ -46,9 +37,9 @@ const CLASSES = [
     title: 'Sobrepeso y Obesidad',
     level: 'Jóvenes y Adultos',
     duration: '40 min',
-    description: 'Acompañamiento médico integral para el manejo del peso, con un enfoque clínico seguro, sostenible y sin estigmas, con integración y acompañamiento al grupo familiar.',
+    description: 'Evaluación integral y biopsicosocial para el abordaje y tratamiento de sobrepeso y obesidad, con plan intervencionista y terapéutico.',
     accent: '#38BDF8',
-    tag: 'Metabolismo',
+    tag: 'Medicina Familiar',
     gradient: 'linear-gradient(160deg, #0c1445 0%, #1e3a8a 50%, #164e63 100%)',
   },
   {
@@ -88,10 +79,10 @@ const CLASSES = [
     gradient: 'linear-gradient(160deg, #0f172a 0%, #0c4a6e 50%, #1e3a8a 100%)',
   },
   {
-    title: 'Masajes',
+    title: 'Terapias Complementarias',
     level: 'Jóvenes y Adultos',
     duration: '30 min',
-    description: 'Masajes terapéuticos orientados al alivio de la tensión muscular, la mejora de la circulación y la relajación integral.',
+    description: 'Terapias complementarias orientadas al alivio de la tensión muscular, la mejora de la circulación y la relajación integral.',
     accent: '#A78BFA',
     tag: 'Bienestar Físico',
     gradient: 'linear-gradient(160deg, #1e1b4b 0%, #4c1d95 50%, #1e3a8a 100%)',
@@ -239,7 +230,7 @@ export default function Classes() {
     : CLASSES.map(c => ({ key: c.title, ...c, level: c.level as string | undefined, description: c.description as string | undefined }))
 
   return (
-    <section id="servicios" style={{ background: '#F3F0FB', padding: '9rem 1.5rem' }}>
+    <section id="servicios" style={{ background: '#F3F0FB', padding: 'clamp(4rem, 12vw, 9rem) 1.5rem' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         {/* Header */}
         <div ref={ref} style={{ marginBottom: '4rem', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-end', gap: '2rem' }}>
@@ -295,10 +286,10 @@ export default function Classes() {
           </motion.a>
         </div>
 
-        {/* Cards Grid */}
+        {/* Cards Grid — min(320px, 100%) evita overflow en pantallas angostas (320-360px) */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(min(320px, 100%), 1fr))',
           gap: '1.25rem',
         }}>
           {cards.map(({ key, ...c }, i) => (

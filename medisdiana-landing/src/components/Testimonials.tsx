@@ -1,35 +1,17 @@
-﻿import { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 
 const TESTIMONIALS = [
   {
-    quote: 'La Dra. Medina escucha con atención y explica todo con claridad. Me sentí en muy buenas manos desde la primera consulta. La recomiendo ampliamente.',
-    author: 'María L.',
-    role: 'Paciente · Consulta Médica General',
+    quote: 'La doc Dianita es una persona profundamente dedicada, acertada en cada una de sus valoraciones y con un compromiso admirable por el bienestar de sus pacientes. Doy fe y testimonio de la gran labor que ha realizado en mi vida y en la de mi familia. Siempre nos ha brindado acompañamiento, confianza, tranquilidad y seguridad en cada proceso, haciendo que cada situación sea mucho más llevadera. Gracias, doctora Diana, por su entrega, su vocación, su profesionalismo y, sobre todo, por ser un ser humano tan valioso.',
+    author: 'Angiee Bonilla',
+    role: 'Paciente',
     stars: 5,
   },
   {
-    quote: 'Llevo el control de mi diabetes con la doctora hace más de dos años. Su seguimiento constante y sus consejos han marcado una diferencia real en mi calidad de vida.',
-    author: 'Carlos R.',
-    role: 'Paciente · Control de Enfermedades Crónicas',
-    stars: 5,
-  },
-  {
-    quote: 'Las consultas pediátricas de mis hijos siempre son tranquilas. La doctora sabe cómo hablarles a los niños y cómo orientar a los padres. Excelente profesional.',
-    author: 'Juliana P.',
-    role: 'Madre de paciente · Control de Niño Sano',
-    stars: 5,
-  },
-  {
-    quote: 'Mi control prenatal fue un proceso tranquilo y bien acompañado. Siempre respondió mis dudas con paciencia, profesionalismo y mucha calidez humana.',
-    author: 'Sofía M.',
-    role: 'Paciente · Control Prenatal',
-    stars: 5,
-  },
-  {
-    quote: 'Excelente atención. Llega puntual, explica el diagnóstico con detalle y el trato es muy amable. Sin duda la mejor decisión para el cuidado de mi salud familiar.',
-    author: 'Andrés V.',
-    role: 'Paciente · Medicina Preventiva',
+    quote: 'Hablar de la doc Dianita es hablar de profesionalismo, dedicación y, sobre todo, de calidad humana. Es una persona que inspira confianza desde el primer momento, que escucha, comprende y acompaña cada proceso con una empatía y una sensibilidad que realmente hacen la diferencia. He tenido la oportunidad de contar con su acompañamiento y puedo decir con total sinceridad que ha sido una experiencia muy positiva. Su manera de ejercer la medicina, su compromiso y el interés genuino por sus pacientes reflejan la gran persona que es. Es un privilegio encontrar profesionales que, además de ser excelentes en lo que hacen, sean seres humanos tan especiales.',
+    author: 'Angel niño',
+    role: 'Paciente',
     stars: 5,
   },
 ]
@@ -53,7 +35,7 @@ export default function Testimonials() {
   const next = () => setActive((a) => (a + 1) % TESTIMONIALS.length)
 
   return (
-    <section id="testimonios" style={{ background: '#F3F0FB', padding: '9rem 1.5rem', position: 'relative', overflow: 'hidden' }}>
+    <section id="testimonios" style={{ background: '#F3F0FB', padding: 'clamp(4rem, 12vw, 9rem) 1.5rem', position: 'relative', overflow: 'hidden' }}>
       {/* Background decoration */}
       <div style={{
         position: 'absolute', top: '10%', left: '5%',
@@ -124,7 +106,7 @@ export default function Testimonials() {
             {/* Opening quote mark */}
             <div
               className="font-cormorant brand-text-gradient"
-              style={{ fontSize: '8rem', lineHeight: 0.6, marginBottom: '1.5rem', opacity: 0.35, fontWeight: 300 }}
+              style={{ fontSize: 'clamp(4rem, 12vw, 8rem)', lineHeight: 0.6, marginBottom: '1.5rem', opacity: 0.35, fontWeight: 300 }}
               aria-hidden
             >
               "

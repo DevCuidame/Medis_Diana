@@ -6,6 +6,38 @@ const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 // En dev pasa por el proxy de Vite (evita CORS de doc-api contra localhost).
 const DOC_API = import.meta.env.DEV ? '/doc-api/api' : 'https://doc-api.cuidame.tech/api'
 
+// Autentica contra CuidameDoc y, si funciona, hace el handoff SSO redirigiendo
+// el navegador a doc.cuidame.tech con la sesión en el fragmento de la URL (nunca
+// llega a ningún servidor ni queda en logs; CuidameDoc lo lee una vez y lo borra
+// del historial). Devuelve false sin redirigir si CuidameDoc rechaza las
+// credenciales, para que quien llama pueda decidir el fallback.
+async function redirectToCuidameDocSSO(email: string, password: string): Promise<boolean> {
+  try {
+    const docRes = await fetch(`${DOC_API}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email.toLowerCase(), password }),
+    })
+
+    const docContentType = docRes.headers.get('content-type')
+    if (!docContentType || !docContentType.includes('application/json')) return false
+
+    const docData = await docRes.json()
+    if (!docRes.ok || !docData.success || !docData.data?.access_token) return false
+
+    const ssoPayload = encodeURIComponent(JSON.stringify({
+      u: docData.data.user,
+      t: docData.data.access_token,
+      r: docData.data.refresh_token,
+      p: docData.data.professional ?? null,
+    }))
+    window.location.href = `https://doc.cuidame.tech/#sso=${ssoPayload}`
+    return true
+  } catch {
+    return false
+  }
+}
+
 // ─── Design Tokens ────────────────────────────────────────────────
 const C = {
   brand: '#8B5CF6',
@@ -69,47 +101,31 @@ export default function ArtistLogin({
       const data = await response.json()
       if (!response.ok || !data.success) throw new Error(data.error || 'invalid_credentials')
 
+      const jwtPayload = JSON.parse(atob(data.data.tokens.accessToken.split('.')[1]))
+
+      // El agendamiento y el portal profesional real viven en CuidameDoc (ver
+      // decisiones.md "Agendamiento delegado a CuidameDoc"). Diana también tiene
+      // cuenta con rol PROFESSIONAL en el backend propio (legado de la migración
+      // desde medisdiana), así que este login SIEMPRE tiene éxito aquí y nunca
+      // caía al fallback de abajo — por eso terminaba en el panel interno vacío
+      // en vez de en CuidameDoc. Se fuerza el mismo handoff SSO también en el
+      // camino feliz para cualquier PROFESSIONAL.
+      if (jwtPayload.role === 'PROFESSIONAL') {
+        const redirected = await redirectToCuidameDocSSO(email, password)
+        if (redirected) return
+        // CuidameDoc no reconoció estas credenciales: no la dejamos sin acceso,
+        // cae al panel interno como red de seguridad.
+      }
+
       localStorage.setItem('accessToken', data.data.tokens.accessToken)
       localStorage.setItem('refreshToken', data.data.tokens.refreshToken)
-
-      const jwtPayload = JSON.parse(atob(data.data.tokens.accessToken.split('.')[1]))
       if (onLoginSuccess) onLoginSuccess(jwtPayload.role)
       else alert('¡Bienvenido/a de vuelta!')
 
     } catch (_dianaErr) {
       // ── 2. Fallback: intentar contra CuidameDoc ─────────────────
-      try {
-        const docRes = await fetch(`${DOC_API}/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email.toLowerCase(), password }),
-        })
-
-        const docContentType = docRes.headers.get('content-type')
-        if (!docContentType || !docContentType.includes('application/json')) {
-          throw new Error('Credenciales inválidas. Verifica tu correo y contraseña.')
-        }
-
-        const docData = await docRes.json()
-
-        if (!docRes.ok || !docData.success || !docData.data?.access_token) {
-          throw new Error('Credenciales inválidas. Verifica tu correo y contraseña.')
-        }
-
-        // Serializar sesión en el fragmento URL (#sso=).
-        // Los fragmentos NUNCA se envían a ningún servidor ni quedan en logs.
-        // CuidameDoc los lee una sola vez y los borra del historial inmediatamente.
-        const ssoPayload = encodeURIComponent(JSON.stringify({
-          u: docData.data.user,
-          t: docData.data.access_token,
-          r: docData.data.refresh_token,
-          p: docData.data.professional ?? null,
-        }))
-        window.location.href = `https://doc.cuidame.tech/#sso=${ssoPayload}`
-
-      } catch (docErr: any) {
-        alert(docErr.message || 'Credenciales inválidas')
-      }
+      const redirected = await redirectToCuidameDocSSO(email, password)
+      if (!redirected) alert('Credenciales inválidas. Verifica tu correo y contraseña.')
     } finally {
       setIsSubmitting(false)
     }

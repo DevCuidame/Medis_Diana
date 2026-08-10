@@ -11,7 +11,7 @@ export default function FinalCTA() {
     <section
       style={{
         position: 'relative',
-        padding: '9rem 1.5rem',
+        padding: 'clamp(4rem, 12vw, 9rem) 1.5rem',
         overflow: 'hidden',
         background: '#1B1C1C',
       }}

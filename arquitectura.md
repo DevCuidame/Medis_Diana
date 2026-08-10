@@ -213,6 +213,67 @@ const DIANA_PROFESSIONAL_ID = 12
 - Planes (`GET /api/memberships/active`, ya existente) se reutiliza tal cual para el selector de "Plan asociado" del lado de CuidameDoc — no se creó ningún endpoint nuevo para eso.
 - **Incidente 2026-08-05** — `DIANA_INTERNAL_API_KEY` nunca se configuró en el `.env` de producción, así que `requireInternalApiKey` rechazaba con 401 *toda* petición a `POST /external-quotes` sin importar la clave enviada, y del lado de CuidameDoc `submitExternalQuote` no revisaba `response.ok` — la cotización simplemente desaparecía, sin cerrar la HC con error ni loguear nada en ningún lado. Detalle completo, causa raíz y fix en [errores-conocidos.md](errores-conocidos.md).
 
+## Aprovisionamiento automático de doctores en CuidameDoc + vínculo cabeza-trabajador (2026-08-10)
+
+**Qué resuelve**: cuando el admin crea un profesional (doctor) desde "Nueva
+Cuenta" en Usuarios (`UsuariosDashboard.tsx`/`AdminProfessionals.tsx`), ese
+profesional solo existía en la BD propia de Medis — no había cuenta
+correspondiente en CuidameDoc. Esto se volvió un problema real con el fix de
+login de esa misma fecha (`ArtistLogin.tsx`: un `PROFESSIONAL` ahora hace
+handoff SSO hacia `doc.cuidame.tech` con las mismas credenciales) — si esa
+cuenta nunca se creó del otro lado, el SSO fallaba. Ver diseño completo en
+`docs/superpowers/specs/2026-08-10-doctores-cuidamedoc-provision-design.md` y
+plan en `docs/superpowers/plans/2026-08-10-doctores-cuidamedoc-provision.md`.
+
+- **Esquema (Medis)**: `users.doc_professional_id INTEGER` (migración
+  `024_professional_doc_link.sql`, registrada en `run-migration.ts`). `NULL`
+  = no aprovisionado todavía, o el intento falló.
+- **Esquema (CuidameDoc, repo `cuidame_doc_backend`)**:
+  `professionals.head_professional_id INTEGER` (self-FK, `ON DELETE SET
+  NULL`, migración `051-professional-head-link.sql`). `NULL` = profesional
+  independiente (comportamiento de siempre). Un valor = `professional_id` de
+  la cabeza que lo dio de alta. Puramente organizacional — **cada doctor ve
+  solo lo suyo** clínicamente, no habilita ningún acceso cruzado a HC ni
+  pacientes.
+- **Endpoint nuevo (CuidameDoc)**: `POST /professionals/team-members`
+  (autenticado — quien llama se vuelve la cabeza). Crea `User` + rol
+  `professional` + `Professional`, todo en una transacción, ya
+  **activo/verificado** (sin correo de verificación — quien da de alta ya es
+  de confianza). `gender` no se recoge del caller → se manda `'Otro'` por
+  defecto (el valor `'No especifica'` original no cabía en
+  `users.gender VARCHAR(10)` — bug real encontrado en la revisión final,
+  corregido antes de mergear). `city_id` hereda el de la cabeza (necesario:
+  `auth.service.ts::login` asume que todo usuario activo tiene una ciudad
+  resoluble). Valida email único y `license_number` único (409 en ambos
+  casos) y los 6 campos obligatorios del DTO (400 si falta alguno).
+- **Motor (Medis)**: `apps/backend/src/services/docProfessionalProvision.service.ts`
+  — mismo patrón best-effort que `docServiceSync.service.ts` (nunca lanza,
+  siempre `{ ok, docProfessionalId?, error? }`). Reutiliza `withDocAuth`
+  (extraído a `docAuth.ts` desde `docServiceSync.service.ts` para
+  compartirlo entre ambos motores de sincronización).
+- **Disparador**: `ProfessionalService.create()` — solo si `role ===
+  'PROFESSIONAL'` (un `ADMIN` nunca llama a CuidameDoc). Un fallo de
+  CuidameDoc **nunca bloquea ni revierte** la creación local ya exitosa; el
+  guardado de `doc_professional_id` en sí también está envuelto en su propio
+  try/catch para que un error ahí tampoco pueda tumbar una respuesta que ya
+  era exitosa. `POST /api/professionals` ahora responde
+  `{ success, data: { professional }, docSync? }` — `docSync` como hermano
+  de `data`, ausente por completo (no `undefined`) cuando no aplica.
+- **Frontend**: `CreateProfessionalModal.tsx`'s `onSuccess` ahora recibe
+  `docSync` como segundo argumento opcional. `UsuariosDashboard.tsx` y
+  `AdminProfessionals.tsx` muestran un toast de advertencia (ícono/color
+  diferenciado, no solo texto) si `docSync.ok === false`, sin cambiar el
+  flujo de éxito local.
+- **Multi-tenant por diseño**: la "cabeza" nunca se hardcodea a Diana — es,
+  en cada deployment de Medis, quien sea que autentique `docAuth.ts` (sus
+  propias credenciales de `.env`). El mismo mecanismo sirve tal cual para
+  Ximena (`professional_id 2` en CuidameDoc) o futuros clientes del plan.
+- **Limitación abierta, sin resolver a propósito**: el reintento manual que
+  describe el spec no funciona en la práctica una vez que el email ya quedó
+  registrado localmente (choca con el guard 409 de `ProfessionalService.create`).
+  Detalle en [errores-conocidos.md](errores-conocidos.md) — pendiente de
+  decisión de producto, no es un bug de código.
+
 ## Precios escalonados de control (2026-08-05)
 
 **Qué resuelve**: Diana cobra un precio fijo por "Consulta de primera vez",

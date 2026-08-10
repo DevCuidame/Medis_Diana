@@ -6,7 +6,7 @@ import { useDocServices } from '../hooks/useDocServices'
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
 // Fallback si el catálogo de CuidameDoc falla o viene vacío.
-const FALLBACK_SERVICES = ['Consulta Médica General', 'Promoción y Prevención', 'Enfermedades No Transmisibles', 'Sobrepeso y Obesidad', 'Salud de la Mujer', 'Salud Mental']
+const FALLBACK_SERVICES = ['Promoción y Prevención', 'Enfermedades No Transmisibles', 'Sobrepeso y Obesidad', 'Salud de la Mujer', 'Salud Mental']
 
 const SOCIAL = [
   {

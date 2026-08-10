@@ -28,7 +28,7 @@
 **Interfaces:**
 - Produces: `Professional.head_professional_id?: number` — usado por Task 2.
 
-- [ ] **Step 1: Escribir la migración**
+- [x] **Step 1: Escribir la migración**
 
 ```sql
 -- cuidame_doc_backend/src/scripts/051-professional-head-link.sql
@@ -41,7 +41,7 @@ CREATE INDEX IF NOT EXISTS idx_professionals_head
   WHERE head_professional_id IS NOT NULL;
 ```
 
-- [ ] **Step 2: Agregar el campo a la entidad TypeORM**
+- [x] **Step 2: Agregar el campo a la entidad TypeORM**
 
 En `cuidame_doc_backend/src/models/professional.model.ts`, agregar dentro de
 `class Professional`, junto a los demás `@Column` (después de
@@ -55,7 +55,7 @@ En `cuidame_doc_backend/src/models/professional.model.ts`, agregar dentro de
 No agregar relación `@ManyToOne` — evita eager-loading accidental en queries
 existentes que ya seleccionan campos explícitos (`getAllProfessionals`).
 
-- [ ] **Step 3: Correr la migración localmente y verificar la columna**
+- [x] **Step 3: Correr la migración localmente y verificar la columna**
 
 ```bash
 cd cuidame_doc_backend
@@ -72,7 +72,7 @@ WHERE table_name = 'professionals' AND column_name = 'head_professional_id';
 
 Expected: una fila.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/scripts/051-professional-head-link.sql src/models/professional.model.ts
@@ -94,7 +94,7 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 - Consumes: `Professional.head_professional_id` (Task 1); `UserRepository` (`findByEmail(email)`, `create(data)`, `assignRole(userId, roleId)`) de `../user/user.repository`; `RoleRepository.findByName(name)` de `../role/role.repository`; `PasswordService.hashPassword(password)` de `../../utils/password.util`; `ForbiddenError`, `ConflictError`, `BadRequestError` de `../../utils/error-handler`; `User`, `UserStatus` de `../../models/user.model`.
 - Produces: `ProfessionalService.createTeamMember(headUser: User, dto: CreateTeamMemberDto): Promise<{ professional_id: number; user_id: number }>` — usado por Task 3. Lanza `ForbiddenError` (403) si `headUser` no tiene fila en `professionals`; `BadRequestError` (400) si falta `medical_license_number`; `ConflictError` (409) si el email ya existe.
 
-- [ ] **Step 1: Agregar el DTO**
+- [x] **Step 1: Agregar el DTO**
 
 En `cuidame_doc_backend/src/modules/professional/professional.dto.ts`, agregar al final:
 
@@ -118,7 +118,7 @@ export interface TeamMemberResponseDto {
 }
 ```
 
-- [ ] **Step 2: Escribir el test que falla primero**
+- [x] **Step 2: Escribir el test que falla primero**
 
 ```ts
 // cuidame_doc_backend/src/tests/professional-create-team-member.test.ts
@@ -219,12 +219,12 @@ describe('ProfessionalService.createTeamMember', () => {
 });
 ```
 
-- [ ] **Step 3: Correr el test para verificar que falla**
+- [x] **Step 3: Correr el test para verificar que falla**
 
 Run: `cd cuidame_doc_backend && npx jest professional-create-team-member -v`
 Expected: FAIL — `service.createTeamMember is not a function`.
 
-- [ ] **Step 4: Implementar `createTeamMember`**
+- [x] **Step 4: Implementar `createTeamMember`**
 
 En `cuidame_doc_backend/src/modules/professional/professional.service.ts`:
 
@@ -319,12 +319,12 @@ Agregar el método nuevo (al final de la clase, antes del `}` de cierre):
   }
 ```
 
-- [ ] **Step 5: Correr el test para verificar que pasa**
+- [x] **Step 5: Correr el test para verificar que pasa**
 
 Run: `cd cuidame_doc_backend && npx jest professional-create-team-member -v`
 Expected: PASS (4 tests).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/modules/professional/professional.service.ts src/modules/professional/professional.dto.ts src/tests/professional-create-team-member.test.ts
@@ -346,7 +346,7 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 - Consumes: `ProfessionalService.createTeamMember` (Task 2); `authMiddleware` de `../../middlewares/auth.middleware` (ya importado en `professional.routes.ts`).
 - Produces: ruta `POST /professionals/team-members` (montada como `/api/professionals/team-members` vía `routes/index.ts`, ya existente) — consumida por Medis en Task 5.
 
-- [ ] **Step 1: Escribir el test que falla primero**
+- [x] **Step 1: Escribir el test que falla primero**
 
 ```ts
 // cuidame_doc_backend/src/tests/professional-create-team-member.controller.test.ts
@@ -404,12 +404,12 @@ describe('ProfessionalController.createTeamMember', () => {
 });
 ```
 
-- [ ] **Step 2: Correr el test para verificar que falla**
+- [x] **Step 2: Correr el test para verificar que falla**
 
 Run: `cd cuidame_doc_backend && npx jest professional-create-team-member.controller -v`
 Expected: FAIL — `controller.createTeamMember is not a function`.
 
-- [ ] **Step 3: Implementar el método del controller**
+- [x] **Step 3: Implementar el método del controller**
 
 En `cuidame_doc_backend/src/modules/professional/professional.controller.ts`, cambiar el import del tope:
 
@@ -435,7 +435,7 @@ y agregar el método (al final de la clase, antes del `}` de cierre):
   }
 ```
 
-- [ ] **Step 4: Montar la ruta**
+- [x] **Step 4: Montar la ruta**
 
 En `cuidame_doc_backend/src/modules/professional/professional.routes.ts`, agregar
 justo después de la línea `router.post('/', authMiddleware, professionalController.createProfessional.bind(professionalController));`:
@@ -444,12 +444,12 @@ justo después de la línea `router.post('/', authMiddleware, professionalContro
 router.post('/team-members', authMiddleware, professionalController.createTeamMember.bind(professionalController));
 ```
 
-- [ ] **Step 5: Correr el test para verificar que pasa**
+- [x] **Step 5: Correr el test para verificar que pasa**
 
 Run: `cd cuidame_doc_backend && npx jest professional-create-team-member.controller -v`
 Expected: PASS (2 tests).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/modules/professional/professional.controller.ts src/modules/professional/professional.routes.ts src/tests/professional-create-team-member.controller.test.ts
@@ -469,7 +469,7 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 **Interfaces:**
 - Produces: `ProfessionalRepository.setDocProfessionalId(id: string, docProfessionalId: number): Promise<void>` — usado por Task 6.
 
-- [ ] **Step 1: Escribir la migración**
+- [x] **Step 1: Escribir la migración**
 
 ```sql
 -- apps/backend/migrations/024_professional_doc_link.sql
@@ -477,7 +477,7 @@ ALTER TABLE users
   ADD COLUMN IF NOT EXISTS doc_professional_id INTEGER;
 ```
 
-- [ ] **Step 2: Correrla localmente**
+- [x] **Step 2: Correrla localmente**
 
 ```bash
 cd apps/backend
@@ -493,7 +493,7 @@ WHERE table_name = 'users' AND column_name = 'doc_professional_id';
 
 Expected: una fila.
 
-- [ ] **Step 3: Agregar el método al repositorio**
+- [x] **Step 3: Agregar el método al repositorio**
 
 En `apps/backend/src/repositories/professional.repository.ts`, agregar dentro
 del objeto `ProfessionalRepository`, después de `updateStatus`:
@@ -505,7 +505,7 @@ del objeto `ProfessionalRepository`, después de `updateStatus`:
   },
 ```
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add apps/backend/migrations/024_professional_doc_link.sql apps/backend/src/repositories/professional.repository.ts
@@ -528,7 +528,7 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 - Consumes: `getDocToken`, `refreshDocToken` de `docAuth.ts` (ya existen); `env.DOC_API_URL` de `@config/env.js`.
 - Produces: `withDocAuth(fetchFn)` ahora exportado desde `docAuth.ts` (movido desde `docServiceSync.service.ts`, mismo comportamiento). `provisionDocProfessional(params: ProvisionDocProfessionalParams): Promise<ProvisionDocProfessionalResult>` — usado por Task 6.
 
-- [ ] **Step 1: Mover `withDocAuth` a `docAuth.ts` (elimina duplicación entre los dos servicios de sync)**
+- [x] **Step 1: Mover `withDocAuth` a `docAuth.ts` (elimina duplicación entre los dos servicios de sync)**
 
 En `apps/backend/src/utils/docAuth.ts`, agregar al final del archivo:
 
@@ -551,12 +551,12 @@ En `apps/backend/src/services/docServiceSync.service.ts`:
 - Borrar la función local `withDocAuth` (líneas 55-64, la que dice
   `async function withDocAuth(fetchFn...`) — ya no se define aquí, se importa.
 
-- [ ] **Step 2: Correr los tests existentes para verificar que el refactor no rompió nada**
+- [x] **Step 2: Correr los tests existentes para verificar que el refactor no rompió nada**
 
 Run: `cd apps/backend && npx tsx --test src/services/docServiceSync.service.test.ts`
 Expected: PASS (todos los tests existentes, sin cambios de comportamiento).
 
-- [ ] **Step 3: Escribir el test que falla primero para el servicio nuevo**
+- [x] **Step 3: Escribir el test que falla primero para el servicio nuevo**
 
 ```ts
 // apps/backend/src/services/docProfessionalProvision.service.test.ts
@@ -625,12 +625,12 @@ test('provisionDocProfessional: fallo de red → ok:false, nunca lanza', async (
 });
 ```
 
-- [ ] **Step 4: Correr el test para verificar que falla**
+- [x] **Step 4: Correr el test para verificar que falla**
 
 Run: `cd apps/backend && npx tsx --test src/services/docProfessionalProvision.service.test.ts`
 Expected: FAIL — no se encuentra el módulo `./docProfessionalProvision.service.js`.
 
-- [ ] **Step 5: Implementar el servicio**
+- [x] **Step 5: Implementar el servicio**
 
 ```ts
 // apps/backend/src/services/docProfessionalProvision.service.ts
@@ -701,12 +701,12 @@ export async function provisionDocProfessional(
 }
 ```
 
-- [ ] **Step 6: Correr el test para verificar que pasa**
+- [x] **Step 6: Correr el test para verificar que pasa**
 
 Run: `cd apps/backend && npx tsx --test src/services/docProfessionalProvision.service.test.ts`
 Expected: PASS (3 tests).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add apps/backend/src/utils/docAuth.ts apps/backend/src/services/docServiceSync.service.ts apps/backend/src/services/docProfessionalProvision.service.ts apps/backend/src/services/docProfessionalProvision.service.test.ts
@@ -728,7 +728,7 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 - Consumes: `provisionDocProfessional` (Task 5); `ProfessionalRepository.setDocProfessionalId` (Task 4).
 - Produces: `ProfessionalService.create(...)` ahora devuelve `Promise<{ professional: ProfessionalPublic | UserPublic; docSync?: { ok: boolean; error?: string } }>` (cambio de forma — antes devolvía `ProfessionalPublic | UserPublic` directo). El controller responde `{ success: true, data: { professional }, docSync }`, consumido por el frontend en Task 7.
 
-- [ ] **Step 1: Escribir el test que falla primero**
+- [x] **Step 1: Escribir el test que falla primero**
 
 ```ts
 // apps/backend/src/services/professional.service.docsync.test.ts
@@ -818,12 +818,12 @@ test('create: role ADMIN → no llama a CuidameDoc, docSync es undefined', async
 });
 ```
 
-- [ ] **Step 2: Correr el test para verificar que falla**
+- [x] **Step 2: Correr el test para verificar que falla**
 
 Run: `cd apps/backend && npx tsx --test src/services/professional.service.docsync.test.ts`
 Expected: FAIL — `result.docSync` es `undefined` en los dos primeros tests (el service todavía no llama a `provisionDocProfessional`).
 
-- [ ] **Step 3: Implementar el cambio en `professional.service.ts`**
+- [x] **Step 3: Implementar el cambio en `professional.service.ts`**
 
 Agregar el import al inicio de `apps/backend/src/services/professional.service.ts`:
 
@@ -885,7 +885,7 @@ Reemplazar el método `create` completo por:
   },
 ```
 
-- [ ] **Step 4: Actualizar el controller para el nuevo shape de retorno**
+- [x] **Step 4: Actualizar el controller para el nuevo shape de retorno**
 
 En `apps/backend/src/controllers/professional.controller.ts`, reemplazar:
 
@@ -913,17 +913,17 @@ export async function createProfessional(req: Request, res: Response): Promise<v
 }
 ```
 
-- [ ] **Step 5: Correr el test para verificar que pasa**
+- [x] **Step 5: Correr el test para verificar que pasa**
 
 Run: `cd apps/backend && npx tsx --test src/services/professional.service.docsync.test.ts`
 Expected: PASS (3 tests).
 
-- [ ] **Step 6: Correr la suite completa de `apps/backend` para verificar que nada más se rompió**
+- [x] **Step 6: Correr la suite completa de `apps/backend` para verificar que nada más se rompió**
 
 Run: `cd apps/backend && npm test`
 Expected: PASS (todos los tests, incluidos los de `services.controller.docsync.test.ts` y `docServiceSync.service.test.ts` del Task 5).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add apps/backend/src/services/professional.service.ts apps/backend/src/controllers/professional.controller.ts apps/backend/src/services/professional.service.docsync.test.ts
@@ -943,7 +943,7 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 - Consumes: respuesta de `POST /api/professionals` ahora incluye `docSync?: { ok: boolean; error?: string }` (Task 6).
 - Produces: `Props.onSuccess` cambia de `(pro: any) => void` a `(pro: any, docSync?: { ok: boolean; error?: string }) => void` — usado por Task 8.
 
-- [ ] **Step 1: Cambiar la firma de `onSuccess` en `Props`**
+- [x] **Step 1: Cambiar la firma de `onSuccess` en `Props`**
 
 ```ts
 interface Props {
@@ -952,7 +952,7 @@ interface Props {
 }
 ```
 
-- [ ] **Step 2: Pasar `data.docSync` al llamar `onSuccess`**
+- [x] **Step 2: Pasar `data.docSync` al llamar `onSuccess`**
 
 En el método `submit`, cambiar:
 
@@ -966,12 +966,12 @@ por:
       onSuccess(data.data.professional, data.docSync)
 ```
 
-- [ ] **Step 3: Verificar que compila**
+- [x] **Step 3: Verificar que compila**
 
 Run: `cd medisdiana-landing && npx tsc --noEmit`
 Expected: sin errores (los dos consumidores se actualizan en el Task 8, antes de este paso ya deberían tipar bien porque `docSync` es opcional).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add medisdiana-landing/src/components/admin/CreateProfessionalModal.tsx
@@ -991,7 +991,7 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 **Interfaces:**
 - Consumes: `onSuccess(pro, docSync)` (Task 7).
 
-- [ ] **Step 1: `UsuariosDashboard.tsx` — actualizar `handleCreated`**
+- [x] **Step 1: `UsuariosDashboard.tsx` — actualizar `handleCreated`**
 
 Reemplazar:
 
@@ -1017,7 +1017,7 @@ por:
   }
 ```
 
-- [ ] **Step 2: `AdminProfessionals.tsx` — actualizar `handleCreated`**
+- [x] **Step 2: `AdminProfessionals.tsx` — actualizar `handleCreated`**
 
 Reemplazar:
 
@@ -1051,12 +1051,12 @@ por:
   }
 ```
 
-- [ ] **Step 3: Verificar que compila**
+- [x] **Step 3: Verificar que compila**
 
 Run: `cd medisdiana-landing && npx tsc --noEmit`
 Expected: sin errores.
 
-- [ ] **Step 4: Verificación manual**
+- [x] **Step 4: Verificación manual**
 
 Levantar `apps/backend` y `medisdiana-landing` en dev, crear un profesional
 nuevo desde el panel de Usuarios con datos de prueba, y confirmar:
@@ -1070,7 +1070,7 @@ nuevo desde el panel de Usuarios con datos de prueba, y confirmar:
    temporalmente en `.env`), el profesional igual queda creado en Medis y el
    toast muestra la advertencia con el motivo.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add medisdiana-landing/src/components/admin/UsuariosDashboard.tsx medisdiana-landing/src/components/admin/AdminProfessionals.tsx

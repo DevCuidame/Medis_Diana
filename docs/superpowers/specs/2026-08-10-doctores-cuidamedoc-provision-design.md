@@ -1,7 +1,7 @@
 # Provisión automática de doctores en CuidameDoc + vínculo cabeza-trabajador
 
 **Fecha:** 2026-08-10
-**Estado:** Aprobado, pendiente de plan de implementación
+**Estado:** Implementado y mergeado a `main` en ambos repos (2026-08-10). Ver [arquitectura.md](../../../arquitectura.md#aprovisionamiento-automático-de-doctores-en-cuidamedoc--vínculo-cabeza-trabajador-2026-08-10) para el resumen operativo final (incluye ajustes hechos en la revisión de código que no estaban en este spec original, como el valor de `gender` y la validación de campos/duplicados) y [errores-conocidos.md](../../../errores-conocidos.md) para la limitación de reintento que quedó abierta.
 
 ## Contexto y causa raíz
 

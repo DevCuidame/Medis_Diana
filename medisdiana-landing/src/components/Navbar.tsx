@@ -29,6 +29,7 @@ export default function Navbar({ onLoginClick, onAgendarClick }: NavbarProps) {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+      className="navbar-header"
       style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', justifyContent: 'center', padding: '1rem 1.5rem' }}
     >
       <nav
@@ -48,22 +49,29 @@ export default function Navbar({ onLoginClick, onAgendarClick }: NavbarProps) {
             : '0 10px 40px rgba(139,92,246,0.10)',
         }}
       >
-        {/* Logo — solo texto */}
-        <a href="#inicio" style={{ textDecoration: 'none', flexShrink: 0, display: 'flex', alignItems: 'center' }}>
-          <div style={{ lineHeight: 1.3 }}>
-            <div style={{
-              fontSize: '0.9rem', fontWeight: 600, color: '#1e293b',
-              fontFamily: 'Cormorant Garamond, Georgia, serif',
-              whiteSpace: 'nowrap', letterSpacing: '0.02em',
-            }}>
+        {/* Logo — solo texto. minWidth:0 permite que el flex item se achique
+            en vez de forzar overflow del pill nav en pantallas angostas. */}
+        <a href="#inicio" style={{ textDecoration: 'none', flexShrink: 1, minWidth: 0, display: 'flex', alignItems: 'center' }}>
+          <div style={{ lineHeight: 1.3, minWidth: 0 }}>
+            <div
+              className="navbar-logo-name"
+              style={{
+                fontSize: '0.9rem', fontWeight: 600, color: '#1e293b',
+                fontFamily: 'Cormorant Garamond, Georgia, serif',
+                whiteSpace: 'nowrap', letterSpacing: '0.02em',
+                overflow: 'hidden', textOverflow: 'ellipsis',
+              }}>
               Dra. Diana Cristina Medina Camargo
             </div>
-            <div style={{
-              fontSize: '0.58rem', color: '#8B5CF6',
-              fontFamily: 'Inter, sans-serif', whiteSpace: 'nowrap',
-              letterSpacing: '0.09em', textTransform: 'uppercase',
-              marginTop: '2px', opacity: 0.85,
-            }}>
+            <div
+              className="navbar-logo-sub"
+              style={{
+                fontSize: '0.58rem', color: '#8B5CF6',
+                fontFamily: 'Inter, sans-serif', whiteSpace: 'nowrap',
+                letterSpacing: '0.09em', textTransform: 'uppercase',
+                marginTop: '2px', opacity: 0.85,
+                overflow: 'hidden', textOverflow: 'ellipsis',
+              }}>
               Especialista en Medicina Familiar y Comunitaria
             </div>
           </div>
@@ -258,6 +266,12 @@ export default function Navbar({ onLoginClick, onAgendarClick }: NavbarProps) {
           .desktop-nav { display: none !important; }
           .desktop-cta { display: none !important; }
           .mobile-menu-btn { display: flex !important; }
+        }
+        @media (max-width: 480px) {
+          .navbar-header { padding: 0.75rem 0.9rem !important; }
+          .navbar-header nav { padding: 0.5rem 1rem !important; gap: 0.75rem !important; }
+          .navbar-logo-name { font-size: 0.72rem !important; }
+          .navbar-logo-sub { display: none !important; }
         }
       `}</style>
     </motion.header>

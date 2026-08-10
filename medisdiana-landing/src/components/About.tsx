@@ -11,7 +11,7 @@ const PILLARS = [
   {
     icon: '◈',
     title: 'Medicina Preventiva',
-    desc: 'Detectar a tiempo es cuidar mejor. Orientamos hacia hábitos y chequeos que protegen tu salud a largo plazo.',
+    desc: 'Detectar a tiempo es cuidar mejor. Orientamos hacia hábitos y tamizajes que protegen tu salud a largo plazo.',
   },
   {
     icon: '❋',
@@ -21,7 +21,7 @@ const PILLARS = [
   {
     icon: '⟡',
     title: 'Bienestar Integral',
-    desc: 'La salud abarca cuerpo, mente y familia. Acompañamos a cada paciente en todas las etapas de su vida.',
+    desc: 'La salud abarca cuerpo, mente, familia y entorno — la esencia de la Medicina Familiar. Acompañamos a cada paciente en todas las etapas de su vida.',
   },
 ]
 
@@ -87,7 +87,7 @@ export default function About() {
   return (
     <section
       id="sobre-nosotros"
-      style={{ background: '#FFFFFF', padding: '9rem 1.5rem' }}
+      style={{ background: '#FFFFFF', padding: 'clamp(4rem, 12vw, 9rem) 1.5rem' }}
     >
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         {/* Header — responsive layout: text left, logo right on desktop; stacked on mobile */}
@@ -97,14 +97,14 @@ export default function About() {
             marginBottom: '5rem',
             display: 'flex',
             flexDirection: 'row',
-            flexWrap: 'wrap-reverse', // On mobile, logo will appear below or above depending on layout. Let's use wrap to put logo below text if it doesn't fit, or wrap normally. Actually, standard flex-wrap will put logo below text.
+            flexWrap: 'wrap', // En mobile el texto queda primero y el logo cae debajo (orden natural del DOM).
             gap: '3rem',
             alignItems: 'center',
             justifyContent: 'space-between'
           }}
         >
           {/* Texto */}
-          <div style={{ flex: '1 1 500px', maxWidth: '620px' }}>
+          <div style={{ flex: '1 1 500px', maxWidth: '620px', minWidth: 0 }}>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -154,7 +154,7 @@ export default function About() {
             initial={{ opacity: 0, x: 40 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            style={{ flex: '1 1 300px', display: 'flex', justifyContent: 'center' }}
+            style={{ flex: '1 1 300px', display: 'flex', justifyContent: 'center', minWidth: 0 }}
           >
             <img
               src="/Logo_Medis.png"

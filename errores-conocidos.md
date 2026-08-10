@@ -39,6 +39,12 @@ para no re-diagnosticarlos desde cero.
 - **Causa:** `AdminClasses.tsx` (`loadOffers()`) construye `scheduledAt` como `` `${fecha}T${appt.appointment_time}:00` `` — pero `appt.appointment_time` ya llega como `"HH:MM:SS"` desde CuidameDoc (columna `time` de TypeORM), no `"HH:MM"`. El `:00` extra (copiado del flujo de creación de citas, donde el valor sí viene de un `<input type="time">` sin segundos) produce un datetime inválido tipo `"2026-08-09T08:30:00:00"` — `new Date(...)` devuelve `Invalid Date`, y `isSameDay`/`offersForDay` nunca ubican esa cita en ningún día real. El contador (`offers.length`) sigue siendo correcto porque no depende de parsear la fecha.
 - **Estado:** resuelto (2026-08-06). Fix: tomar solo los primeros 5 caracteres (`HH:MM`) de `appointment_time` antes de agregar `:00`, robusto sin importar si el valor trae segundos o no.
 
+### [2026-08-10] Reintentar un aprovisionamiento fallido en CuidameDoc no tiene un camino real
+- **Síntoma:** si al crear un profesional en Medis el aprovisionamiento automático en CuidameDoc falla (ver [arquitectura.md](arquitectura.md#aprovisionamiento-automático-de-doctores-en-cuidamedoc--vínculo-cabeza-trabajador-2026-08-10)), el admin ve el toast de advertencia — pero "repetir la acción más adelante" (como dice el spec original) significa volver a enviar el formulario "Nueva Cuenta" con el mismo email, y eso choca con el guard `El email ya está registrado.` (409) de `ProfessionalService.create`, porque el profesional ya quedó creado localmente en el primer intento.
+- **Causa:** no existe ningún endpoint ni acción de "solo reintentar el enlace a CuidameDoc" para un profesional que ya existe en Medis con `doc_professional_id: NULL` — el aprovisionamiento solo se dispara una vez, en el momento de creación.
+- **Estado:** abierto, a propósito — encontrado durante la revisión final de rama (2026-08-10), pero construir el remedio (¿botón "reintentar" en el panel? ¿editar y reintentar? ¿cambiar el texto del spec para decir que no hay reintento?) es una decisión de producto, no un bug de código, y quedó fuera del alcance de esa implementación.
+- **Workaround:** hoy, si esto pasa, el profesional puede auto-registrarse directamente en CuidameDoc (`doc.cuidame.tech`) con el mismo email/password — quedará como profesional independiente (`head_professional_id: NULL`) en vez de enlazado a la cabeza, hasta que se decida el remedio real.
+
 ## Comportamientos a tener en cuenta (no son bugs)
 
 - Si Diana no tiene servicios configurados en CuidameDoc, el paso 0 del
