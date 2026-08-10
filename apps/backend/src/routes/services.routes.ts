@@ -65,7 +65,7 @@ import {
 } from '@controllers/location.controller.js';
 import {
   lookupCups, listClassificationCategories, listClassificationSubcategories,
-  listCupsCatalog, createCupsMapping,
+  listCupsCatalog, createCupsMapping, listRepsServiceCodes,
 } from '@controllers/cups.controller.js';
 
 const router: Router = Router();
@@ -113,5 +113,6 @@ router.get('/services/classification-categories', authenticate, authorize('ADMIN
 router.get('/services/classification-subcategories', authenticate, authorize('ADMIN'), listClassificationSubcategories);
 router.get('/services/cups-catalog', authenticate, authorize('ADMIN'), listCupsCatalog);
 router.post('/services/cups-mappings', authenticate, authorize('ADMIN'), createCupsMapping);
+router.get('/services/reps-service-codes', authenticate, authorize('ADMIN'), listRepsServiceCodes);
 
 export default router;

@@ -56,3 +56,8 @@ export async function createCupsMapping(req: Request, res: Response): Promise<vo
   const created = await CupsRepository.createMapping({ serviceGroup, serviceSubgroup, serviceCategory, serviceSubcategory, cupsCode });
   res.status(201).json({ success: true, data: created });
 }
+
+export async function listRepsServiceCodes(_req: Request, res: Response): Promise<void> {
+  const codes = await CupsRepository.listRepsServiceCodes();
+  res.status(200).json({ success: true, data: codes });
+}

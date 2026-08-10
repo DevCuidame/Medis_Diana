@@ -6,7 +6,7 @@
 import { pool } from '@config/database.js';
 import type {
   CupsLookupResult, ClassificationCategory, ClassificationSubcategory,
-  CreateMappingDTO, CupsCandidate,
+  CreateMappingDTO, CupsCandidate, RepsServiceCode,
 } from '../types/cups.types.js';
 
 export const CupsRepository = {
@@ -72,5 +72,13 @@ export const CupsRepository = {
       [dto.serviceGroup, dto.serviceSubgroup, dto.serviceCategory, dto.serviceSubcategory, dto.cupsCode]
     );
     return rows[0];
+  },
+
+  async listRepsServiceCodes(): Promise<RepsServiceCode[]> {
+    const { rows } = await pool.query<{ code: string; name: string; service_group: string }>(
+      `SELECT code, name, service_group FROM reps_service_catalog
+       WHERE is_active = TRUE ORDER BY service_group, code`
+    );
+    return rows.map(r => ({ code: r.code, name: r.name, serviceGroup: r.service_group }));
   },
 };

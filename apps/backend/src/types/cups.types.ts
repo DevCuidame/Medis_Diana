@@ -24,3 +24,9 @@ export interface CreateMappingDTO {
   serviceSubcategory: string;
   cupsCode: string;
 }
+
+export interface RepsServiceCode {
+  code: string;
+  name: string;
+  serviceGroup: string;
+}
