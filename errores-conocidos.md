@@ -57,6 +57,11 @@ para no re-diagnosticarlos desde cero.
 - **Estado:** resuelto (2026-08-10). Se cambió la URL en `FormularioServicio.tsx` a `GET /locations/:locationId/rooms`. Verificado contra la BD real: antes devolvía los 4 consultorios de las 2 sedes sin importar cuál se eligiera; después, cada sede devuelve solo los suyos.
 - **Comportamiento a tener en cuenta (no es bug):** `findByLocation` solo devuelve consultorios con `is_active = TRUE` (mismo criterio que el resto del endpoint "público"). Si todos los consultorios de una sede están inactivos, el selector queda vacío para esa sede — hay que reactivar al menos uno desde "Infraestructura → Espacios" antes de poder crear un servicio ahí.
 
+### [2026-08-10] No existía `DELETE /rooms/:id` — "Eliminar Espacio" siempre daba 404
+- **Síntoma:** en "Infraestructura → Espacios", el botón "Eliminar Espacio" no hacía nada — el modal se cerraba pero el espacio seguía en la lista.
+- **Causa:** `EspaciosDashboard.tsx` (`handleDelete`) siempre llamó `DELETE /api/rooms/:id`, pero esa ruta nunca se registró en `services.routes.ts` — no existía ni el controller ni el método de repositorio. Express devolvía 404 sobre una ruta que jamás existió. Mismo bug adicional que la entrada anterior de Sedes: `handleDelete` tampoco revisaba `res.ok`/`json.success`, así que el 404 pasaba desapercibido.
+- **Estado:** resuelto (2026-08-10). Se agregó `RoomRepository.delete()`, el controller `deleteRoom` (mismo manejo de FK `23503` → 409 que `deleteLocation`, ya que `service_offers.room_id`/`appointments.room_id` también son `ON DELETE RESTRICT`) y la ruta `DELETE /rooms/:id`. Se corrigió `EspaciosDashboard.tsx` para mostrar el error en el modal en vez de cerrarlo en silencio. Verificado con la BD real: un espacio con un servicio asociado da 409 con mensaje claro; un espacio sin servicios se borra (200) y desaparece de la tabla.
+
 ## Comportamientos a tener en cuenta (no son bugs)
 
 - Si Diana no tiene servicios configurados en CuidameDoc, el paso 0 del

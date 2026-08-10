@@ -129,6 +129,13 @@ export const RoomRepository = {
     );
     return rows[0] ?? null;
   },
+
+  async delete(id: string): Promise<boolean> {
+    const { rowCount } = await pool.query(
+      `DELETE FROM rooms WHERE id = $1`, [id]
+    );
+    return (rowCount ?? 0) > 0;
+  },
 };
 
 // ─── SERVICE CATALOG ──────────────────────────────────────────
