@@ -47,6 +47,24 @@ test('provisionDocProfessional: CuidameDoc responde error (ej. email duplicado) 
   assert.equal(result.error, 'Este correo ya está registrado.');
 });
 
+test('provisionDocProfessional: success:true pero data sin professional_id → ok:false, no reporta éxito falso', async (t) => {
+  fetchMock(t, (url, init) => {
+    if (url.endsWith('/auth/login')) {
+      return new Response(JSON.stringify({ success: true, data: { access_token: 'tok1', refresh_token: 'ref1' } }), { status: 200 });
+    }
+    if (url.endsWith('/professionals/team-members') && init?.method === 'POST') {
+      return new Response(JSON.stringify({ success: true, data: {} }), { status: 201 });
+    }
+    return new Response(JSON.stringify({ success: false }), { status: 404 });
+  });
+
+  const result = await provisionDocProfessional(baseParams);
+
+  assert.equal(result.ok, false);
+  assert.equal(result.docProfessionalId, undefined);
+  assert.ok(result.error);
+});
+
 test('provisionDocProfessional: fallo de red → ok:false, nunca lanza', async (t) => {
   fetchMock(t, (url) => {
     if (url.endsWith('/auth/login')) {

@@ -55,7 +55,7 @@ export async function provisionDocProfessional(
     );
 
     const json = await res.json() as { success: boolean; data?: { professional_id: number }; message?: string };
-    if (!res.ok || !json.success || !json.data) {
+    if (!res.ok || !json.success || typeof json.data?.professional_id !== 'number') {
       return { ok: false, error: json.message ?? `CuidameDoc respondió ${res.status}` };
     }
     return { ok: true, docProfessionalId: json.data.professional_id };
