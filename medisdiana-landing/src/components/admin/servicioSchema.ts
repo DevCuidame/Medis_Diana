@@ -9,8 +9,7 @@ export const RIPS_MODALIDAD = [
   '04 TELEMEDICINA INTERACTIVA',
   '05 TELEMEDICINA NO INTERACTIVA',
   '06 TELESALUD',
-  '08 EXTRAMURAL CENTRO DE ENCUENTRO',
-  '09 EXTRAMURAL OTROS'
+  '07 EXTRAMURAL JORNADA DE SALUD',
 ] as const;
 
 export const tipoAtencionEnum = z.enum(['Primera vez', 'Control o seguimiento', 'Urgencia']);
@@ -40,10 +39,6 @@ const baseSchema = z.object({
   modality: z.array(z.string()).min(1, 'Selecciona al menos una modalidad'),
   isActive: z.boolean().default(true),
   basePrice: z.number().min(0, 'El precio no puede ser negativo'),
-  controlPrice: z.preprocess(
-    (v) => (v === '' || v === null || (typeof v === 'number' && Number.isNaN(v)) ? undefined : v),
-    z.number().min(0, 'El precio no puede ser negativo').optional()
-  ),
   imageUrl: z.string().optional(),
   preparationInstructions: z.string().optional(),
   genderRestriction: z.string().optional(),

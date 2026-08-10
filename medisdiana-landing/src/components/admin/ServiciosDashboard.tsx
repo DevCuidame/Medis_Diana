@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Building2, Plus, Calendar, MapPin, User, Clock, ChevronRight, Edit2, Trash2, Repeat, Search, SlidersHorizontal, X, ToggleLeft, ToggleRight, Hash } from 'lucide-react';
+import { Building2, Plus, Calendar, MapPin, User, Clock, ChevronRight, Edit2, Trash2, Repeat, Search, SlidersHorizontal, X, ToggleLeft, ToggleRight, Hash, Tag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FormularioServicio } from './FormularioServicio';
 import { generateOccurrences, DIA_NOMBRES } from './servicioSchema';
@@ -47,6 +47,7 @@ interface ServiceGroup {
   ids: string[];
   representative: any;
   cupsCode: string | null;
+  repsServiceCode: string | null;
 }
 
 function groupOffers(offers: any[]): ServiceGroup[] {
@@ -89,6 +90,7 @@ function groupOffers(offers: any[]): ServiceGroup[] {
         ids: [], representative: o,
         maxEnrolledCount: 0,
         cupsCode: cat.serviceCode ?? null,
+        repsServiceCode: cat.repsServiceCode ?? null,
       });
     }
 
@@ -381,7 +383,6 @@ export const ServiciosDashboard: React.FC = () => {
       modality: Array.isArray(cat.modality) ? cat.modality : (cat.modality ? [cat.modality] : []) as any[],
       isActive: cat.isActive ?? true,
       basePrice: cat.basePrice ?? s.price ?? 0,
-      controlPrice: cat.controlPrice != null ? Number(cat.controlPrice) : undefined,
       imageUrl: cat.imageUrl || '',
       preparationInstructions: cat.preparationInstructions || '',
       genderRestriction: cat.genderRestriction || '',
@@ -431,7 +432,6 @@ export const ServiciosDashboard: React.FC = () => {
       modality: data.modality,
       isActive: data.isActive,
       basePrice: data.basePrice,
-      controlPrice:    data.controlPrice ?? null,
       imageUrl: data.imageUrl || '',
       preparationInstructions: data.preparationInstructions,
       genderRestriction: data.genderRestriction,
@@ -838,6 +838,18 @@ export const ServiciosDashboard: React.FC = () => {
                                 </div>
                                 <span style={{ fontSize: 13, color: C.textBrown, fontWeight: 600 }}>
                                   CUPS <span style={{ fontWeight: 700, color: C.gold }}>{g.cupsCode}</span>
+                                </span>
+                              </div>
+                            )}
+
+                            {/* REPS service code */}
+                            {g.repsServiceCode && (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(139,92,246,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                  <Tag size={13} color={C.gold} />
+                                </div>
+                                <span style={{ fontSize: 13, color: C.textBrown, fontWeight: 600 }}>
+                                  Servicio <span style={{ fontWeight: 700, color: C.gold }}>{g.repsServiceCode}</span>
                                 </span>
                               </div>
                             )}

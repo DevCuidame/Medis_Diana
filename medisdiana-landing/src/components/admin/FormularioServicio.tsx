@@ -3,7 +3,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Building2, MapPin, Box, Tag, Users, Clock, DollarSign,
   AlertTriangle, FileText, Image as ImageIcon, CheckCircle,
-  Loader2, XCircle, FileWarning, X, Plus } from 'lucide-react';
+  Loader2, XCircle, FileWarning, X } from 'lucide-react';
 import type { ServicioFormValues } from './servicioSchema';
 import {
   servicioSchema, RIPS_MODALIDAD, tipoAtencionEnum
@@ -52,8 +52,7 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
   const [espacios, setEspacios]       = useState<{ id: string; name: string; capacity: number; locationId: string }[]>([]);
   const [instructores, setInstructores] = useState<{ id: string; name: string }[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [customMod, setCustomMod] = useState('');
-  
+
   const [imagePreview, setImagePreview] = useState<string | null>(initialData?.imageUrl || null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -237,16 +236,6 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
     setValue('modality', next, { shouldValidate: true });
   };
 
-  const addCustomModality = () => {
-    const val = customMod.trim();
-    if (!val) return;
-    const current = (watch('modality') ?? []) as string[];
-    if (!current.includes(val)) {
-      setValue('modality', [...current, val], { shouldValidate: true });
-    }
-    setCustomMod('');
-  };
-
   const inputStyle = `w-full p-3 rounded-xl border border-[${C.borderLight}] bg-[${C.bgPanel}] text-[14px] text-[${C.text}] transition-all duration-200 ${FOCUS_RING}`;
   const inlineInputStyle = {
     width: '100%', padding: '12px 16px', borderRadius: 12, border: `1px solid ${C.borderLight}`,
@@ -423,18 +412,6 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
                       </button>
                     )
                   })}
-                  {modality?.filter((m: string) => !RIPS_MODALIDAD.includes(m as any)).map((custom: string) => (
-                    <button type="button" key={custom} onClick={() => toggleModality(custom)}
-                      style={{ padding: '8px 16px', borderRadius: 20, border: `1px solid ${C.gold}`, background: 'rgba(139,92,246,0.1)', color: C.gold, fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: 6 }}>
-                      {custom} <X size={14} />
-                    </button>
-                  ))}
-                </div>
-                <div style={{ display: 'flex', gap: 8, marginTop: 12, maxWidth: 400 }}>
-                  <input type="text" placeholder="Agregar otra modalidad..." value={customMod} onChange={e => setCustomMod(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCustomModality(); } }} style={inlineInputStyle} className={FOCUS_RING} />
-                  <button type="button" onClick={addCustomModality} style={{ padding: '0 16px', borderRadius: 12, border: `1px solid ${C.gold}`, background: C.gold, color: C.white, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }}>
-                    <Plus size={18} />
-                  </button>
                 </div>
               </InputField>
             </div>
@@ -457,13 +434,6 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
             <InputField label="Precio por sesión (COP)" required icon={DollarSign} error={errors.basePrice}>
               <input type="number" {...register('basePrice', { valueAsNumber: true })} placeholder="0 para gratuito" style={inlineInputStyle} min={0} className={FOCUS_RING} />
             </InputField>
-            <InputField label="Precio de control (2do en adelante)" icon={DollarSign} error={errors.controlPrice}>
-              <input type="number" {...register('controlPrice', { valueAsNumber: true })} placeholder="Déjalo vacío si no aplica" style={inlineInputStyle} min={0} className={FOCUS_RING} />
-            </InputField>
-            <p style={{ gridColumn: '1 / -1', margin: '-12px 0 8px', fontSize: 12, color: C.textMuted }}>
-              Si lo defines, el 1er control de este servicio siempre es gratis y desde el 2do se cobra este precio. Déjalo vacío para que el servicio no tenga niveles (comportamiento actual).
-            </p>
-
             <div style={{ gridColumn: '1 / -1', display: 'flex', alignItems: 'center', gap: 12, padding: '16px', background: C.bgPanel, borderRadius: 12, border: `1px solid ${C.borderLight}` }}>
               <div style={{ flex: 1 }}>
                 <span style={{ fontSize: 14, fontWeight: 600, color: C.text, display: 'block' }}>Estado del servicio</span>
