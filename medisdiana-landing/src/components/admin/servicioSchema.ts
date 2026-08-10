@@ -36,6 +36,7 @@ const baseSchema = z.object({
   category: z.string().optional(),
   subcategory: z.string().optional(),
   cups: z.string().optional(), // CUPS
+  repsServiceCode: z.string().optional(), // Código de servicio REPS (habilitación)
   modality: z.array(z.string()).min(1, 'Selecciona al menos una modalidad'),
   isActive: z.boolean().default(true),
   basePrice: z.number().min(0, 'El precio no puede ser negativo'),
@@ -73,6 +74,9 @@ export const servicioSchema = baseSchema.superRefine((data, ctx) => {
     }
     if (!data.cups || !/^[A-Za-z0-9]{6}$/.test(data.cups)) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'El código CUPS es obligatorio y debe tener 6 caracteres alfanuméricos', path: ['cups'] });
+    }
+    if (!data.repsServiceCode) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'El código del servicio es obligatorio para este grupo', path: ['repsServiceCode'] });
     }
   }
 });

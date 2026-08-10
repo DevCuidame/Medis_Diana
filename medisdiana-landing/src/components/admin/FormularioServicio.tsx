@@ -134,6 +134,8 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
     | { status: 'not-found' }
   >({ status: 'idle' });
   const [showMappingModal, setShowMappingModal] = useState(false);
+  const [repsServiceCodes, setRepsServiceCodes] = useState<{ code: string; name: string; serviceGroup: string }[]>([]);
+  const [loadingRepsServiceCodes, setLoadingRepsServiceCodes] = useState(false);
 
   function authHeaders(): HeadersInit {
     const token = localStorage.getItem('accessToken');
@@ -187,7 +189,18 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
 
   useEffect(() => { runCupsLookup(); }, [runCupsLookup]);
 
+  // Load REPS service-code catalog once (small, static reference table)
+  useEffect(() => {
+    setLoadingRepsServiceCodes(true);
+    fetch('/api/services/reps-service-codes', { headers: authHeaders() })
+      .then(r => r.json())
+      .then(j => { if (j.success) setRepsServiceCodes(j.data); })
+      .catch(() => {})
+      .finally(() => setLoadingRepsServiceCodes(false));
+  }, []);
+
   const subgrupoOptions = categoryGroup ? (SUBGRUPOS[categoryGroup] ?? []) : [];
+  const repsCodeOptions = categoryGroup ? repsServiceCodes.filter(r => r.serviceGroup === categoryGroup) : [];
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -386,6 +399,14 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
                         </button>
                       </div>
                     )}
+                  </InputField>
+                </div>
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <InputField label="Código del servicio" required icon={Box} error={errors.repsServiceCode}>
+                    <select {...register('repsServiceCode')} style={inlineInputStyle} className={FOCUS_RING} disabled={!categoryGroup || loadingRepsServiceCodes}>
+                      <option value="">{loadingRepsServiceCodes ? 'Cargando...' : 'Elige el código del servicio...'}</option>
+                      {repsCodeOptions.map(r => <option key={r.code} value={r.code}>{r.code} - {r.name}</option>)}
+                    </select>
                   </InputField>
                 </div>
               </>
