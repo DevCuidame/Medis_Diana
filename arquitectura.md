@@ -364,3 +364,57 @@ y `docs/superpowers/plans/2026-08-05-precios-control-y-plan-cotizacion.md`
   precio: posición 1 → $0, posición 2+ → `controlPrice`. El precio del
   seguimiento queda bloqueado (no editable) cuando el servicio tiene
   `controlPrice` configurado.
+
+## Gastos del consultorio — submenú Finanzas Pagos/Gastos (2026-08-10)
+
+**Qué resuelve**: "Finanzas" era una sola pantalla con el KPI "Egresos del
+mes" hardcodeado en `$0` (no existía ningún concepto de gasto). Ahora
+"Finanzas" en el sidebar se expande en dos submenús — **Pagos** (la pantalla
+que ya existía, sin cambios de contenido) y **Gastos** (pantalla nueva) —,
+igual mecanismo que ya usaba "Infraestructura" (Sedes/Espacios). Ver
+spec/plan completos en
+`docs/superpowers/specs/2026-08-10-gastos-finanzas-design.md` y
+`docs/superpowers/plans/2026-08-10-gastos-finanzas.md`.
+
+- **Esquema**: `expenses(id, description, amount NUMERIC(10,2), category
+  VARCHAR(100), expense_date DATE, created_by, created_at, updated_at)`
+  (migración `026_expenses.sql`). `category` es texto libre — el frontend
+  ofrece autocompletado (`<datalist>`) con las categorías ya usadas, sin
+  restringir a una lista cerrada (decisión explícita de diseño).
+- **Backend**: CRUD completo en `/expenses` (`expense.{types,repository,
+  controller,routes}.ts`, mismo patrón que Inventario), **todas** las rutas
+  protegidas con `authenticate + authorize('ADMIN')` — a diferencia de
+  Sedes/Espacios (sin guard por una decisión de desarrollo previa), datos
+  financieros no llevan excepción. El repositorio selecciona
+  `expense_date` con `TO_CHAR(expense_date, 'YYYY-MM-DD')` en vez de dejar
+  que `pg` lo parsee a `Date` — evita el desfase de un día que produciría
+  `new Date(...)` en zona horaria de Colombia (UTC-5) sobre una columna
+  `DATE` pura.
+- **Cuidado con `amount`**: Postgres `NUMERIC` llega como **string** desde
+  `pg` (no hay type parser registrado para ese OID) — `"50000.00"`, no
+  `50000` — pese a que `ExpensePublic.amount` está tipado como `number`.
+  Tanto `GastosDashboard.tsx` (al cargar, en `loadData`) como
+  `FinanzasDashboard.tsx` (en `fetchMonthlyExpenses`) hacen `Number(...)`
+  explícito antes de sumar — sin eso, `.reduce((sum, e) => sum + e.amount,
+  0)` concatena texto en vez de sumar. Encontrado y corregido en la
+  verificación manual de esta feature (no estaba cubierto por el
+  typecheck, que no detecta el tipo real en tiempo de ejecución).
+- **Frontend**: `GastosDashboard.tsx` + `FormularioGasto.tsx`
+  (`medisdiana-landing/src/components/admin/`), mismo esqueleto que
+  `EspaciosDashboard.tsx`/`FormularioEspacio.tsx` (sin la relación a sede
+  ni el toggle activo/inactivo, que no aplican a un gasto). Filtros:
+  descripción, categoría, mes (`<input type="month">`).
+- **Sidebar** (`AdminSidebar.tsx`): "Finanzas" pasa de `path` fijo a
+  `match: ['/admin/finances']` con expansión propia
+  (`isFinanzasExpanded`/`FINANZAS_SUBITEMS`), generalizando el mecanismo
+  que antes solo servía a "Infraestructura". El resaltado de cada subitem
+  usa comparación **exacta** (`pathname === path`), no `startsWith` —
+  "Pagos" (`/admin/finances`) es prefijo literal de "Gastos"
+  (`/admin/finances/expenses`), así que `startsWith` marcaría ambos
+  activos a la vez (detectado en la autorevisión del plan, antes de
+  escribir el código).
+- **KPIs en Pagos**: "Egresos del mes" y "Balance neto"
+  (`FinanzasDashboard.tsx`) ya no están hardcodeados — suman los gastos
+  cuyo `expenseDate` cae en el mes calendario actual. Verificado extremo a
+  extremo contra el backend y la BD reales: crear un gasto de este mes vía
+  la API y confirmar que el total se calcula correctamente como número.

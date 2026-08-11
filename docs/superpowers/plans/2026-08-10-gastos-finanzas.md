@@ -1,5 +1,21 @@
 # Gastos del consultorio (submenú Finanzas Pagos/Gastos) — Implementation Plan
 
+> **Estado: completado (2026-08-10).** Task 1 ejecutada directamente. Tasks
+> 2-6 despachadas como 3 subagentes en paralelo (Task 2 backend; Tasks 3→4→5
+> encadenadas en un solo agente; Task 6 independiente) — dos de los tres
+> agentes fueron interrumpidos por el límite de sesión de la cuenta
+> (reset 7:30pm America/Bogota) a mitad de Task 2 y a mitad de Task 4; el
+> trabajo parcial ya hecho se verificó correcto contra el plan y se
+> completó directamente (Task 2 Step 7, Task 5 completa) sin relanzar
+> agentes. Verificación manual encontró un bug real no cubierto por
+> `tsc`: `amount` (NUMERIC de Postgres) llega como string vía `pg` pese al
+> tipo `number` declarado — corregido con `Number(...)` en ambos puntos de
+> consumo antes de sumar. Documentado en
+> [arquitectura.md](../../../arquitectura.md#gastos-del-consultorio--submenú-finanzas-pagosgastos-2026-08-10).
+> Commits: `db6f2cb` (migración), `cc27a48` (backend), `aa2638f`
+> (schema+form), `09b21fc` (pantalla Gastos), `caee238` (sidebar),
+> `1d74ddb` (KPIs).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Split the "Finanzas" sidebar item into two submenus (Pagos/Gastos, same pattern as Infraestructura's Sedes/Espacios), add a full CRUD screen for clinic expenses, and make "Egresos del mes"/"Balance neto" in Pagos reflect real expense data instead of a hardcoded `0`.
