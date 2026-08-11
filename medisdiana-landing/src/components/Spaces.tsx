@@ -33,7 +33,7 @@ const SPACES: SpaceItem[] = [
 
 function CameraIcon() {
   return (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
         d="M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"
         stroke="currentColor"
@@ -73,7 +73,7 @@ function SpaceCard({
       {space.image ? (
         <img
           src={space.image}
-          alt={space.title}
+          alt={space.caption}
           style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
         />
       ) : (
@@ -219,6 +219,9 @@ export default function Spaces() {
           }
           .spaces-grid .space-card {
             min-height: 220px;
+          }
+          .spaces-grid .space-card > div {
+            min-height: 220px !important;
           }
         }
       `}</style>
