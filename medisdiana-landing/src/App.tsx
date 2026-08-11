@@ -8,6 +8,7 @@ import About from './components/About'
 import Classes from './components/Classes'
 import Instructors from './components/Instructors'
 import Testimonials from './components/Testimonials'
+import Spaces from './components/Spaces'
 import FinalCTA from './components/FinalCTA'
 import Footer from './components/Footer'
 import ArtistLogin from './components/ArtistLogin'
@@ -78,6 +79,7 @@ function LandingPage() {
         <About />
         <Classes />
         <Instructors />
+        <Spaces />
         <Testimonials />
         <FinalCTA />
       </main>
