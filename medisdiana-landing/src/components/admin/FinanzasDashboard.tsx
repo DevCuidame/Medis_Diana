@@ -173,6 +173,7 @@ export const FinanzasDashboard: React.FC = () => {
   const [pendingServices, setPendingServices] = useState<PendingServicePayment[]>([]);
   const [cotizacionesPendingCount, setCotizacionesPendingCount] = useState(0);
   const [confirmedQuotesTotal, setConfirmedQuotesTotal] = useState(0);
+  const [monthlyExpensesTotal, setMonthlyExpensesTotal] = useState(0);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
   const [rejectingId, setRejectingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -220,6 +221,23 @@ export const FinanzasDashboard: React.FC = () => {
       if (data.success) {
         const total = (data.data.quotes as { totalAmount: number }[]).reduce((sum, q) => sum + (q.totalAmount || 0), 0);
         setConfirmedQuotesTotal(total);
+      }
+    } catch { /* ignore */ }
+  };
+
+  const fetchMonthlyExpenses = async () => {
+    try {
+      const res = await fetch('/api/expenses', { headers: adminHeaders() });
+      const data = await res.json();
+      if (data.success) {
+        const now = new Date();
+        const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        // Postgres NUMERIC llega como string vía pg (sin type parser registrado) —
+        // Number(...) evita que el reduce concatene texto en vez de sumar.
+        const total = (data.data.expenses as { amount: number; expenseDate: string }[])
+          .filter(e => e.expenseDate.startsWith(currentMonth))
+          .reduce((sum, e) => sum + Number(e.amount), 0);
+        setMonthlyExpensesTotal(total);
       }
     } catch { /* ignore */ }
   };
@@ -341,6 +359,7 @@ export const FinanzasDashboard: React.FC = () => {
     fetchPending();
     fetchPendingServices();
     fetchConfirmedQuotesTotal();
+    fetchMonthlyExpenses();
     fetch('/api/external-quotes?status=pending', { headers: adminHeaders() })
       .then(res => res.json())
       .then(data => { if (data.success) setCotizacionesPendingCount(data.data.quotes.length); })
@@ -354,14 +373,15 @@ export const FinanzasDashboard: React.FC = () => {
     // Las cotizaciones pendientes ahora viven dentro de CotizacionesCuidameDocPanel
     // (componente compartido con MembresiasDashboard) — ese total ya no está
     // disponible aquí, solo el de las confirmadas (confirmedQuotesTotal).
+    const ingresos = ingresosPlanes + confirmedQuotesTotal;
 
     setKpis({
-      ingresos: ingresosPlanes + confirmedQuotesTotal,
-      egresos: 0,
-      balance: ingresosPlanes + confirmedQuotesTotal,
+      ingresos,
+      egresos: monthlyExpensesTotal,
+      balance: ingresos - monthlyExpensesTotal,
       pendientes: pendientesPlanes + pendientesServicios,
     });
-  }, [activeMemberships, pendingPayments, pendingServices, confirmedQuotesTotal]);
+  }, [activeMemberships, pendingPayments, pendingServices, confirmedQuotesTotal, monthlyExpensesTotal]);
 
   useEffect(() => {
     document.body.classList.remove('sidebar-collapsed');
