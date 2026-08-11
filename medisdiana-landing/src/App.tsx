@@ -27,6 +27,7 @@ const CreateService         = lazy(() => import('./components/admin/CreateServic
 const SedesDashboard        = lazy(() => import('./components/admin/SedesDashboard').then(m => ({ default: m.SedesDashboard })))
 const EspaciosDashboard     = lazy(() => import('./components/admin/EspaciosDashboard').then(m => ({ default: m.EspaciosDashboard })))
 const FinanzasDashboard     = lazy(() => import('./components/admin/FinanzasDashboard').then(m => ({ default: m.FinanzasDashboard })))
+const GastosDashboard       = lazy(() => import('./components/admin/GastosDashboard').then(m => ({ default: m.GastosDashboard })))
 const MembresiasDashboard   = lazy(() => import('./components/admin/MembresiasDashboard').then(m => ({ default: m.MembresiasDashboard })))
 const BeneficiosDashboard   = lazy(() => import('./components/admin/BeneficiosDashboard').then(m => ({ default: m.BeneficiosDashboard })))
 const InscripcionesDashboard = lazy(() => import('./components/admin/InscripcionesDashboard').then(m => ({ default: m.InscripcionesDashboard })))
@@ -290,6 +291,14 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={['ADMIN']}>
               <FinanzasDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/finances/expenses"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <GastosDashboard />
             </ProtectedRoute>
           }
         />

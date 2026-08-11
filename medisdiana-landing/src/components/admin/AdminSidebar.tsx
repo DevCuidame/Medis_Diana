@@ -36,13 +36,18 @@ const NAV_ITEMS: NavItem[] = [
   { icon: Briefcase,       label: 'Servicios',       path: '/admin/services/create' },
   { icon: Package,         label: 'Inventario',      path: '/admin/inventory' },
   { icon: Percent,         label: 'Descuentos',      path: '/admin/discounts' },
-  { icon: DollarSign,      label: 'Finanzas',        path: '/admin/finances' },
+  { icon: DollarSign,      label: 'Finanzas',        match: ['/admin/finances'] },
   { icon: CreditCard,      label: 'Planes',          path: '/admin/memberships', match: ['/admin/benefits'] },
 ]
 
 const INFRA_SUBITEMS: Array<[string, string]> = [
   ['Sedes', '/admin/services/locations'],
   ['Espacios', '/admin/services/rooms'],
+]
+
+const FINANZAS_SUBITEMS: Array<[string, string]> = [
+  ['Pagos', '/admin/finances'],
+  ['Gastos', '/admin/finances/expenses'],
 ]
 
 interface Props {
@@ -58,6 +63,9 @@ export function AdminSidebar({ isMobileOpen = false, onCloseMobile, onNewUser }:
   const [hoveredNav, setHoveredNav] = useState<number | null>(null)
   const [isInfraExpanded, setIsInfraExpanded] = useState(
     () => INFRA_SUBITEMS.some(([, p]) => pathname.startsWith(p)),
+  )
+  const [isFinanzasExpanded, setIsFinanzasExpanded] = useState(
+    () => FINANZAS_SUBITEMS.some(([, p]) => pathname.startsWith(p)),
   )
 
   const isItemActive = (item: NavItem) =>
@@ -127,10 +135,11 @@ export function AdminSidebar({ isMobileOpen = false, onCloseMobile, onNewUser }:
             const isHov = hoveredNav === i
             const isActive = isItemActive(item)
             const isInfra = item.label === 'Infraestructura'
+            const isFinanzas = item.label === 'Finanzas'
             return (
               <div key={item.label} style={{ marginBottom: 4 }}>
                 <button
-                  onClick={() => (isInfra ? setIsInfraExpanded(v => !v) : item.path && go(item.path))}
+                  onClick={() => (isInfra ? setIsInfraExpanded(v => !v) : isFinanzas ? setIsFinanzasExpanded(v => !v) : item.path && go(item.path))}
                   onMouseEnter={() => setHoveredNav(i)}
                   onMouseLeave={() => setHoveredNav(null)}
                   style={{
@@ -149,25 +158,25 @@ export function AdminSidebar({ isMobileOpen = false, onCloseMobile, onNewUser }:
                   <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: '0.05em', color: isActive ? C.white : isHov ? C.gold : C.textBrown, transition: 'color 0.2s' }}>
                     {item.label}
                   </span>
-                  {isInfra && (
+                  {(isInfra || isFinanzas) && (
                     <span style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
-                      {isInfraExpanded
+                      {(isInfra ? isInfraExpanded : isFinanzasExpanded)
                         ? <ChevronDown size={14} color={isActive ? C.white : C.textMedium} />
                         : <ChevronRight size={14} color={isActive ? C.white : C.textMedium} />}
                     </span>
                   )}
                 </button>
                 <AnimatePresence>
-                  {isInfra && isInfraExpanded && (
+                  {((isInfra && isInfraExpanded) || (isFinanzas && isFinanzasExpanded)) && (
                     <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} style={{ overflow: 'hidden' }}>
                       <div style={{ paddingLeft: 12, borderLeft: `2px solid ${C.goldLight}`, marginLeft: 24, paddingTop: 8, paddingBottom: 8, marginTop: 4, display: 'flex', flexDirection: 'column', gap: 6 }}>
-                        {INFRA_SUBITEMS.map(([lbl, path]) => (
+                        {(isInfra ? INFRA_SUBITEMS : FINANZAS_SUBITEMS).map(([lbl, path]) => (
                           <span
                             key={lbl}
                             onClick={() => go(path)}
-                            style={{ fontSize: 12, fontWeight: 600, color: pathname.startsWith(path) ? C.gold : C.textBrown, cursor: 'pointer', padding: '5px 4px', transition: 'color 0.2s' }}
+                            style={{ fontSize: 12, fontWeight: 600, color: pathname === path ? C.gold : C.textBrown, cursor: 'pointer', padding: '5px 4px', transition: 'color 0.2s' }}
                             onMouseEnter={e => (e.currentTarget.style.color = C.gold)}
-                            onMouseLeave={e => (e.currentTarget.style.color = pathname.startsWith(path) ? C.gold : C.textBrown)}
+                            onMouseLeave={e => (e.currentTarget.style.color = pathname === path ? C.gold : C.textBrown)}
                           >{lbl}</span>
                         ))}
                       </div>
