@@ -1,5 +1,7 @@
 import type { Request, Response } from 'express'
 import { UserRepository } from '@repositories/user.repository.js'
+import { ProfessionalRepository } from '@repositories/professional.repository.js'
+import { deactivateDocProfessional } from '@services/docProfessionalProvision.service.js'
 import { hashPassword } from '@utils/index.js'
 
 export async function listUsers(_req: Request, res: Response): Promise<void> {
@@ -36,12 +38,22 @@ export async function updateUser(req: Request, res: Response): Promise<void> {
 export async function deleteUser(req: Request, res: Response): Promise<void> {
   try {
     const { id } = req.params;
+    // Leer antes de borrar — una vez eliminada la fila el enlace se pierde.
+    const docProfessionalId = await ProfessionalRepository.getDocProfessionalId(id)
+
     const ok = await UserRepository.delete(id)
     if (!ok) {
       res.status(404).json({ success: false, error: 'Usuario no encontrado' })
       return
     }
-    res.status(200).json({ success: true, message: 'Usuario eliminado.' })
+
+    // Si este usuario estaba aprovisionado como médico del equipo en
+    // CuidameDoc, lo desactivamos allá también (no bloqueante).
+    const docSync = docProfessionalId
+      ? await deactivateDocProfessional(docProfessionalId)
+      : undefined
+
+    res.status(200).json({ success: true, message: 'Usuario eliminado.', ...(docSync ? { docSync } : {}) })
   } catch (err: any) {
     if (err.code === '23503_instructor') {
       res.status(409).json({ success: false, error: err.message })

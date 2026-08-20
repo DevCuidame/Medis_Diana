@@ -5,6 +5,16 @@ import { motion, AnimatePresence } from 'framer-motion'
 // En dev pasa por el proxy de Vite (evita CORS de doc-api contra localhost).
 const DOC_API = import.meta.env.DEV ? '/doc-api/api' : 'https://doc-api.cuidame.tech/api'
 const DIANA_PROFESSIONAL_ID = 12
+const DIANA_DISPLAY_NAME = 'Dra. Diana Cristina Medina Camargo'
+
+// El servicio elegido puede pertenecer a Diana o a cualquier médico de su
+// equipo (professionals.head_professional_id = DIANA_PROFESSIONAL_ID) — la
+// cita debe agendarse y mostrarse a nombre de quien realmente atiende ese
+// servicio, no siempre de Diana.
+function doctorLabel(professionalId: number, professionalName: string): string {
+  if (professionalId === DIANA_PROFESSIONAL_ID) return DIANA_DISPLAY_NAME
+  return professionalName || DIANA_DISPLAY_NAME
+}
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 interface Slot {
@@ -20,6 +30,8 @@ interface ProfService {
   description?: string
   duration_minutes: number
   category: string
+  professional_id: number
+  professional_name: string
 }
 
 type BookingStep = 'service' | 'calendar' | 'slots' | 'form' | 'success'
@@ -103,6 +115,8 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
   const [loadingServices, setLoadingServices] = useState(true)
   const [selectedServiceId, setSelectedServiceId] = useState<number | null>(null)
   const [selectedServiceName, setSelectedServiceName] = useState<string>('')
+  const [selectedProfessionalId, setSelectedProfessionalId] = useState<number>(DIANA_PROFESSIONAL_ID)
+  const [selectedProfessionalName, setSelectedProfessionalName] = useState<string>(DIANA_DISPLAY_NAME)
   const [form, setForm] = useState<BookingForm>({
     identification_number: '', notes: '',
     isNewPatient: false,
@@ -141,7 +155,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
       if (availability[dateStr] !== undefined) continue
 
       promises.push(
-        fetch(`${DOC_API}/booking/professionals/${DIANA_PROFESSIONAL_ID}/slots/${dateStr}`)
+        fetch(`${DOC_API}/booking/professionals/${selectedProfessionalId}/slots/${dateStr}`)
           .then(r => r.json())
           .then(data => {
             const s: Slot[] = Array.isArray(data?.data) ? data.data : []
@@ -152,18 +166,24 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
     }
 
     await Promise.all(promises)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedProfessionalId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     preloadMonth(viewYear, viewMonth)
   }, [viewYear, viewMonth, preloadMonth])
+
+  // Distintos médicos tienen distintos horarios — la disponibilidad cacheada
+  // por fecha ya no sirve si cambia el profesional del servicio elegido.
+  useEffect(() => {
+    setAvailability({})
+  }, [selectedProfessionalId])
 
   const loadSlots = async (dateStr: string) => {
     setLoadingSlots(true)
     setSlots([])
     setError(null)
     try {
-      const res = await fetch(`${DOC_API}/booking/professionals/${DIANA_PROFESSIONAL_ID}/slots/${dateStr}`)
+      const res = await fetch(`${DOC_API}/booking/professionals/${selectedProfessionalId}/slots/${dateStr}`)
       const data = await res.json()
       setSlots(Array.isArray(data?.data) ? data.data : [])
     } catch {
@@ -211,7 +231,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
             identification_number: form.identification_number.trim(),
             email: form.email.trim() || undefined,
             phone: form.phone.trim() || undefined,
-            professional_id: DIANA_PROFESSIONAL_ID,
+            professional_id: selectedProfessionalId,
             appointment_date: selectedDate,
             start_time: selectedSlot.start_time,
             end_time: selectedSlot.end_time,
@@ -225,7 +245,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             identification_number: form.identification_number.trim(),
-            professional_id: DIANA_PROFESSIONAL_ID,
+            professional_id: selectedProfessionalId,
             appointment_date: selectedDate,
             start_time: selectedSlot.start_time,
             end_time: selectedSlot.end_time,
@@ -254,6 +274,8 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
       setSelectedSlot(null)
       setSelectedServiceId(null)
       setSelectedServiceName('')
+      setSelectedProfessionalId(DIANA_PROFESSIONAL_ID)
+      setSelectedProfessionalName(DIANA_DISPLAY_NAME)
       setForm({ identification_number: '', notes: '', isNewPatient: false, first_name: '', last_name: '', identification_type: '', email: '', phone: '' })
       setBookedAppointment(null)
     } else if (step === 'form') {
@@ -286,15 +308,15 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
   }
 
   const nowMinutes = today.getHours() * 60 + today.getMinutes()
-  const availableSlots = slots.filter(s => {
-    if (!s.available) return false
-    // If today, hide slots whose start time has already passed
-    if (selectedDate === todayStr) {
-      const [h, m] = s.start_time.split(':').map(Number)
-      return h * 60 + m > nowMinutes
-    }
-    return true
-  })
+  const isSlotPast = (startTime: string) => {
+    if (selectedDate !== todayStr) return false
+    const [h, m] = startTime.split(':').map(Number)
+    return h * 60 + m <= nowMinutes
+  }
+  // Horarios del día que ya pasaron (si es hoy) se ocultan por completo, tanto
+  // libres como ocupados — no tiene sentido dejarlos en la grilla.
+  const visibleSlots = slots.filter(s => !isSlotPast(s.start_time))
+  const availableSlots = visibleSlots.filter(s => s.available)
 
   return (
     <div style={{ minHeight: '100vh', background: C.bg, fontFamily: FONT }}>
@@ -405,6 +427,8 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
                       onClick={() => {
                         setSelectedServiceId(svc.prof_service_id)
                         setSelectedServiceName(svc.name)
+                        setSelectedProfessionalId(svc.professional_id)
+                        setSelectedProfessionalName(doctorLabel(svc.professional_id, svc.professional_name))
                         setStep('calendar')
                       }}
                       style={{
@@ -446,6 +470,16 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
                         </span>
                         <span style={{ fontSize: '0.72rem', color: C.textFaint, fontWeight: 500, textTransform: 'capitalize' }}>
                           {svc.category === 'consultation' ? 'Consulta' : svc.category === 'therapy' ? 'Terapia' : svc.category}
+                        </span>
+                      </div>
+
+                      <div style={{ paddingLeft: 50, display: 'flex', alignItems: 'center', gap: 5 }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                          <path d="M12 12c2.5 0 4.5-2 4.5-4.5S14.5 3 12 3 7.5 5 7.5 7.5 9.5 12 12 12Z" stroke={C.textFaint} strokeWidth="1.8" />
+                          <path d="M4 21c0-3.9 3.6-7 8-7s8 3.1 8 7" stroke={C.textFaint} strokeWidth="1.8" strokeLinecap="round" />
+                        </svg>
+                        <span style={{ fontSize: '0.74rem', color: C.textMuted, fontWeight: 600 }}>
+                          {doctorLabel(svc.professional_id, svc.professional_name)}
                         </span>
                       </div>
                     </button>
@@ -626,7 +660,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
                 </div>
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '0.75rem' }}>
-                  {slots.map((slot, i) => (
+                  {visibleSlots.map((slot, i) => (
                     <button
                       key={i}
                       onClick={() => handleSlotSelect(slot)}
@@ -693,9 +727,11 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
                 <div style={{ flex: 2, minWidth: 180 }}>
                   <p style={{ margin: 0, fontSize: '0.72rem', fontWeight: 700, color: C.primary, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Médico</p>
                   <p style={{ margin: '2px 0 0', fontSize: '0.9rem', fontWeight: 600, color: C.text }}>
-                    Dra. Diana Cristina Medina Camargo
+                    {selectedProfessionalName}
                   </p>
-                  <p style={{ margin: 0, fontSize: '0.78rem', color: C.textMuted }}>Especialista en Medicina Familiar</p>
+                  {selectedProfessionalId === DIANA_PROFESSIONAL_ID && (
+                    <p style={{ margin: 0, fontSize: '0.78rem', color: C.textMuted }}>Especialista en Medicina Familiar</p>
+                  )}
                 </div>
                 {selectedServiceName && (
                   <>
@@ -874,7 +910,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
                 ¡Cita solicitada!
               </h1>
               <p style={{ color: C.textMuted, fontSize: '0.95rem', maxWidth: 420, margin: '0 auto 2rem' }}>
-                Tu solicitud fue enviada a la Dra. Diana Cristina Medina Camargo. Queda pendiente de confirmación.
+                Tu solicitud fue enviada a {selectedProfessionalName}. Queda pendiente de confirmación.
               </p>
 
               {bookedAppointment && selectedDate && selectedSlot && (
@@ -886,7 +922,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
                     <Row label="Fecha" value={formatDateLong(selectedDate)} capitalize />
                     <Row label="Hora" value={`${formatTime(selectedSlot.start_time)} – ${formatTime(selectedSlot.end_time)}`} />
                     {selectedServiceName && <Row label="Servicio" value={selectedServiceName} />}
-                    <Row label="Médico" value="Dra. Diana Cristina Medina Camargo" />
+                    <Row label="Médico" value={selectedProfessionalName} />
                     <Row label="Estado" value="Pendiente de confirmación" badge />
                   </div>
                 </div>

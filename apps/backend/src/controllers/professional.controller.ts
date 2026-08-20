@@ -68,8 +68,12 @@ export async function updateProfessional(req: Request, res: Response): Promise<v
 // ─── DELETE /api/professionals/:id ────────────────────────────────────────────
 export async function deleteProfessional(req: Request, res: Response): Promise<void> {
   try {
-    await ProfessionalService.deactivate(req.params.id)
-    res.status(200).json({ success: true, message: 'Profesional desactivado.' })
+    const { docSync } = await ProfessionalService.deactivate(req.params.id)
+    res.status(200).json({
+      success: true,
+      message: 'Profesional desactivado.',
+      ...(docSync ? { docSync } : {}),
+    })
   } catch (err: any) {
     res.status(err.statusCode ?? 500).json({ success: false, error: err.message })
   }

@@ -2,7 +2,7 @@ import { ProfessionalRepository } from '@repositories/professional.repository.js
 import { UserRepository } from '@repositories/user.repository.js'
 import { hashPassword } from '@utils/index.js'
 import { pool } from '@config/database.js'
-import { provisionDocProfessional } from './docProfessionalProvision.service.js'
+import { provisionDocProfessional, deactivateDocProfessional } from './docProfessionalProvision.service.js'
 import type {
   ProfessionalPublic,
   CreateProfessionalDTO,
@@ -124,9 +124,15 @@ export const ProfessionalService = {
     return updated
   },
 
-  async deactivate(id: string): Promise<void> {
+  async deactivate(id: string): Promise<{ docSync?: { ok: boolean; error?: string } }> {
+    const docProfessionalId = await ProfessionalRepository.getDocProfessionalId(id)
+
     const ok = await ProfessionalRepository.deactivate(id)
     if (!ok) throw Object.assign(new Error('Profesional no encontrado.'), { statusCode: 404 })
+
+    if (!docProfessionalId) return {}
+    const docSync = await deactivateDocProfessional(docProfessionalId)
+    return { docSync }
   },
 
   async updateStatus(id: string, status: ProfessionalStatus): Promise<void> {

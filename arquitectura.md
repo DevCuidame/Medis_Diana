@@ -29,7 +29,7 @@ delega completamente al backend de CuidameDoc (`https://doc-api.cuidame.tech/api
 - medisdiana-landing/src/components/About.tsx
 - medisdiana-landing/src/components/Classes.tsx
 - medisdiana-landing/src/components/Instructors.tsx
-- medisdiana-landing/src/components/Spaces.tsx — sección "Mis Espacios", `id="espacios"`, galería bento (1 tile grande + 3 pequeños) con fotos placeholder de las instalaciones del consultorio; el campo `image` de cada entrada queda vacío hasta contar con fotos reales.
+- medisdiana-landing/src/components/Spaces.tsx — sección "Mis Espacios", `id="espacios"`, galería bento (1 tile grande + 3 pequeños) de las instalaciones del consultorio (Recepción, Sala de espera, Consultorio, Fachada). Fotos reales servidas desde `medisdiana-landing/public/espacios/` (sin optimizar, 3.7–6.6 MB cada una — pendiente comprimir).
 - medisdiana-landing/src/components/Testimonials.tsx
 - medisdiana-landing/src/components/FinalCTA.tsx
 - medisdiana-landing/src/components/Navbar.tsx

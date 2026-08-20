@@ -253,7 +253,11 @@ export const UsuariosDashboard: React.FC = () => {
         showToast(msg, 'error');
         return;
       }
+      const body = await res.json().catch(() => null);
       handleDeleted(pendingDelete.id);
+      if (body?.docSync && !body.docSync.ok) {
+        showToast(`Eliminado localmente, pero no se pudo desactivar en CuidameDoc: ${body.docSync.error ?? 'motivo desconocido'}`, 'error');
+      }
     } catch {
       showToast('Error de red al eliminar el usuario.', 'error');
     } finally {

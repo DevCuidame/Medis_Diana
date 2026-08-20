@@ -34,7 +34,7 @@ function getDisciplineCategory(disciplineName: string | null | undefined): strin
 
 /** Build parameters for ensureDocSync call from offer data */
 function buildDocSyncParams(
-  offer: { catalogId: string | null; durationMinutes: number; price: number | null; title: string; catalog?: { serviceName: string; categoryGroup: string | null; description: string | null; basePrice: number | null; isActive: boolean } | null },
+  offer: { catalogId: string | null; durationMinutes: number; price: number | null; title: string; professional?: { id: string } | null; catalog?: { serviceName: string; categoryGroup: string | null; description: string | null; basePrice: number | null; isActive: boolean } | null },
   active: boolean,
 ) {
   return {
@@ -49,6 +49,10 @@ function buildDocSyncParams(
     // with Number(...) so CuidameDoc gets a real JSON number, consistent with
     // backfill-doc-sync.ts's Number(row.base_price).
     price: Number(offer.catalog?.basePrice ?? offer.price ?? 0),
+    // Doctor local (Medis) asignado a esta oferta — ensureDocSync lo resuelve
+    // a su professional_id real de CuidameDoc (users.doc_professional_id) si
+    // ya fue aprovisionado como miembro del equipo de Diana.
+    professionalUserId: offer.professional?.id ?? null,
   };
 }
 
@@ -278,10 +282,13 @@ export async function updateOffer(req: Request, res: Response): Promise<void> {
     //    un PATCH que reenvía los mismos valores RIPS sin cambios reales
     //    (evita re-sincronizar N veces cuando un grupo de N sesiones comparte
     //    un mismo catalogId y el frontend manda un PATCH por sesión).
-    //    Además, un cambio en durationMinutes (campo de la oferta, no del
-    //    catálogo) también justifica una re-sync a CuidameDoc.
+    //    Además, un cambio en durationMinutes o en el médico asignado (campos
+    //    de la oferta, no del catálogo) también justifica una re-sync a
+    //    CuidameDoc — sin esto, reasignar una oferta a otro médico no se
+    //    reflejaba nunca en CuidameDoc si ningún otro campo cambiaba.
+    const professionalChanged = offer?.professional?.id !== existingOffer.professional?.id;
     let docSync: { ok: boolean; error?: string } | undefined;
-    if (offer?.catalogId && ((catalogTouched && docSyncRelevantFieldsChanged(catalogBefore, offer.catalog)) || offer.durationMinutes !== existingOffer.durationMinutes)) {
+    if (offer?.catalogId && ((catalogTouched && docSyncRelevantFieldsChanged(catalogBefore, offer.catalog)) || offer.durationMinutes !== existingOffer.durationMinutes || professionalChanged)) {
       docSync = await ensureDocSync(buildDocSyncParams(offer, offer.catalog?.isActive !== false));
     }
 
