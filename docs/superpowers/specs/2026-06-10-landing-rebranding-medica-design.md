@@ -261,7 +261,7 @@ Se puede eliminar de Google Fonts las familias sin uso (`Bodoni Moda`, `Hanken G
 - **Columna "Contacto"** (todos placeholder):
   ```
   Dirección:  [Dirección del consultorio]
-  WhatsApp:   [+57 XXX XXX XXXX]
+  WhatsApp:   [+57 3125873244]
   Email:      [correo@consultorio.com]
   Horarios:   [Lun – Vie · Xam – Xpm]
   ```
