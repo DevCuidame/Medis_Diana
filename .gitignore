@@ -116,3 +116,7 @@ temp/
 
 .worktrees/
 .superpowers/
+
+# Salida generada por la skill graphify (grafo de conocimiento, cachés AST)
+graphify-out/
+**/graphify-out/
