@@ -13,21 +13,25 @@ const SPACES: SpaceItem[] = [
     id: 'recepcion',
     title: 'Recepción',
     caption: 'El primer contacto con nuestro equipo, pensado para tu comodidad.',
+    image: '/espacios/recepcion.jpg',
   },
   {
     id: 'sala-espera',
     title: 'Sala de espera',
     caption: 'Un espacio tranquilo mientras te preparamos para tu consulta.',
+    image: '/espacios/sala-espera.jpeg',
   },
   {
     id: 'consultorio',
     title: 'Consultorio',
     caption: 'Equipado para brindarte una atención médica completa y confidencial.',
+    image: '/espacios/consultorio.jpeg',
   },
   {
     id: 'fachada',
     title: 'Fachada',
     caption: 'Fácil de encontrar, en el corazón de la ciudad.',
+    image: '/espacios/fachada.jpg',
   },
 ]
 
@@ -74,10 +78,12 @@ function SpaceCard({
         <img
           src={space.image}
           alt={space.caption}
+          loading="lazy"
           style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
         />
       ) : (
         <div
+          className="space-card__placeholder"
           style={{
             width: '100%',
             height: '100%',
@@ -119,6 +125,7 @@ function SpaceCard({
 
       {space.image && (
         <div
+          className="space-card__caption"
           style={{
             position: 'absolute',
             left: 0,
@@ -218,9 +225,9 @@ export default function Spaces() {
             grid-row: auto;
           }
           .spaces-grid .space-card {
-            min-height: 220px;
+            height: 220px;
           }
-          .spaces-grid .space-card > div {
+          .spaces-grid .space-card__placeholder {
             min-height: 220px !important;
           }
         }
