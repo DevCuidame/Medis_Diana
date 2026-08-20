@@ -8,8 +8,11 @@ export function createServer(): express.Express {
   const app = express();
 
   // Middleware
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+  // limit 8mb: el frontend guarda avatares/imágenes de servicio como data URL
+  // base64 dentro del body JSON (no multipart) — el default de 100kb rechaza
+  // cualquier foto real.
+  app.use(express.json({ limit: '8mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '8mb' }));
 
   // CORS
   app.use((req, res, next) => {

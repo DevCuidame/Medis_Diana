@@ -247,6 +247,15 @@ async function setupDatabase() {
     await pool.query(sql026);
     console.log('✅ Migration 026 successful!');
 
+    // Run migration 027
+    console.log('🔄 Running migration 027 (Widen Image Columns)...');
+    const sql027 = fs.readFileSync(
+      path.resolve('migrations', '027_widen_image_columns.sql'),
+      'utf8'
+    );
+    await pool.query(sql027);
+    console.log('✅ Migration 027 successful!');
+
     console.log('\n🌟 MIGRATIONS COMPLETE! 🌟');
   } catch (err) {
     console.error('❌ Setup database execution failed:', err);

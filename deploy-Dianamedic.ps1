@@ -536,6 +536,11 @@ server {
     root __APP_DIR__/medisdiana-landing/dist;
     index index.html;
 
+    # Avatares/imágenes de servicio viajan como data URL base64 en el body
+    # JSON (no multipart) — el default de nginx (1M) los rechazaba con su
+    # propia página HTML de error antes de llegar a Express.
+    client_max_body_size 8m;
+
     location / {
         try_files $uri $uri/ /index.html;
         expires 1h;
