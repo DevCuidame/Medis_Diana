@@ -63,3 +63,31 @@ export async function provisionDocProfessional(
     return { ok: false, error: (err as Error).message };
   }
 }
+
+export interface DeactivateDocProfessionalResult {
+  ok: boolean;
+  error?: string;
+}
+
+/** Desactiva (soft) en CuidameDoc al profesional del equipo con este professional_id. */
+export async function deactivateDocProfessional(
+  docProfessionalId: number
+): Promise<DeactivateDocProfessionalResult> {
+  try {
+    const res = await withDocAuth((token) =>
+      fetch(`${env.DOC_API_URL}/professionals/team-members/${docProfessionalId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+        signal: AbortSignal.timeout(8000),
+      })
+    );
+
+    const json = await res.json() as { success: boolean; message?: string };
+    if (!res.ok || !json.success) {
+      return { ok: false, error: json.message ?? `CuidameDoc respondió ${res.status}` };
+    }
+    return { ok: true };
+  } catch (err: unknown) {
+    return { ok: false, error: (err as Error).message };
+  }
+}

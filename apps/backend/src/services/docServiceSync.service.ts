@@ -20,6 +20,8 @@ export interface EnsureDocSyncParams {
   categoryGroup: string;
   description?: string | null;
   price: number;
+  /** Medis user id (uuid) del médico asignado a esta oferta, si tiene uno. */
+  professionalUserId?: string | null;
 }
 
 export interface EnsureDocSyncResult {
@@ -52,17 +54,33 @@ async function setDocProfServiceId(catalogId: string, value: number | null): Pro
   );
 }
 
+/** Busca el professional_id real en CuidameDoc para un usuario local de Medis, si ya fue aprovisionado. */
+async function getDocProfessionalIdForUser(userId: string): Promise<number | null> {
+  const { rows } = await pool.query(
+    'SELECT doc_professional_id FROM users WHERE id = $1', [userId]
+  );
+  return rows[0]?.doc_professional_id ?? null;
+}
+
 async function createDocService(params: {
   serviceName: string; durationMinutes: number; categoryGroup: string;
-  description?: string | null; price: number;
+  description?: string | null; price: number; professionalUserId?: string | null;
 }): Promise<{ ok: true; profServiceId: number } | { ok: false; error: string }> {
   try {
+    const targetProfessionalId = params.professionalUserId
+      ? await getDocProfessionalIdForUser(params.professionalUserId)
+      : null;
+
     const body = JSON.stringify({
       service_name: params.serviceName,
       duration_minutes: params.durationMinutes,
       category: mapCategoryGroupToDocCategory(params.categoryGroup),
       description: params.description ?? undefined,
       price: params.price,
+      // Si el doctor asignado a la oferta ya está aprovisionado en
+      // CuidameDoc, el servicio queda a su nombre; si no, CuidameDoc lo
+      // crea bajo la doctora autenticada (comportamiento de siempre).
+      target_professional_id: targetProfessionalId ?? undefined,
     });
     const res = await withDocAuth((token) =>
       fetch(`${env.DOC_API_URL}/booking/my-services`, {
@@ -130,6 +148,7 @@ export async function ensureDocSync(params: EnsureDocSyncParams): Promise<Ensure
       categoryGroup: params.categoryGroup,
       description: params.description,
       price: params.price,
+      professionalUserId: params.professionalUserId,
     });
     if (!created.ok) return { ok: false, error: created.error };
 

@@ -180,6 +180,12 @@ export const ProfessionalRepository = {
     await pool.query(`UPDATE users SET doc_professional_id = $1 WHERE id = $2`, [docProfessionalId, id])
   },
 
+  /** Read the CuidameDoc professional_id this user was provisioned as, if any */
+  async getDocProfessionalId(id: string): Promise<number | null> {
+    const { rows } = await pool.query(`SELECT doc_professional_id FROM users WHERE id = $1`, [id])
+    return rows[0]?.doc_professional_id ?? null
+  },
+
   /** Dashboard stats */
   async getStats(): Promise<ProfessionalStats> {
     const [profResult, bookingsResult, disciplinesResult, ratingResult] = await Promise.all([
