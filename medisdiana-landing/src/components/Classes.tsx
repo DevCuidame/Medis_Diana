@@ -108,9 +108,9 @@ function ClassCard({ title, level, duration, description, accent, tag, gradient,
         style={{
           background: gradient,
           minHeight: '340px',
+          height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'flex-end',
           padding: '2rem',
           position: 'relative',
           overflow: 'hidden',
@@ -130,27 +130,29 @@ function ClassCard({ title, level, duration, description, accent, tag, gradient,
           background: `linear-gradient(90deg, transparent, ${accent})`,
         }} />
 
-        {/* Tag */}
-        {tag && (
-          <div style={{
-            position: 'absolute', top: '1.5rem', left: '1.5rem',
-            padding: '0.3rem 0.8rem',
-            borderRadius: '9999px',
-            background: `rgba(${accent === '#A78BFA' ? '167,139,250' : '56,189,248'},0.20)`,
-            border: `1px solid ${accent}40`,
-            fontFamily: 'Inter, sans-serif',
-            fontSize: '0.62rem',
-            letterSpacing: '0.18em',
-            textTransform: 'uppercase',
-            color: accent === '#A78BFA' ? '#C4B5FD' : '#7DD3FC',
-            backdropFilter: 'blur(6px)',
-          }}>
-            {tag}
-          </div>
-        )}
+        {/* Content — anclado arriba para que título/duración empiecen siempre
+            en la misma posición entre tarjetas; el CTA se ancla abajo con el spacer. */}
+        <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', flex: 1 }}>
+          {/* Tag: en el flujo normal (no absolute) para que nunca se solape con la duración */}
+          {tag && (
+            <div style={{
+              alignSelf: 'flex-start',
+              padding: '0.3rem 0.8rem',
+              marginBottom: '1.5rem',
+              borderRadius: '9999px',
+              background: `rgba(${accent === '#A78BFA' ? '167,139,250' : '56,189,248'},0.20)`,
+              border: `1px solid ${accent}40`,
+              fontFamily: 'Inter, sans-serif',
+              fontSize: '0.62rem',
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: accent === '#A78BFA' ? '#C4B5FD' : '#7DD3FC',
+              backdropFilter: 'blur(6px)',
+            }}>
+              {tag}
+            </div>
+          )}
 
-        {/* Content */}
-        <div style={{ position: 'relative', zIndex: 2 }}>
           <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'center' }}>
             {level && (
               <>
@@ -179,6 +181,9 @@ function ClassCard({ title, level, duration, description, accent, tag, gradient,
               {description}
             </p>
           )}
+
+          {/* Spacer: empuja el CTA al fondo de la tarjeta, sin importar cuánto texto haya arriba */}
+          <div style={{ flex: 1 }} />
 
           {/* Hover CTA */}
           <motion.div

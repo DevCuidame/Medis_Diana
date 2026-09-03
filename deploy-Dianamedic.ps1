@@ -135,9 +135,25 @@ function Invoke-RemoteBash {
         gcloud compute ssh $VM_NAME --zone=$ZONE --project=$PROJECT_ID `
             --command="cat $remoteLog"
 
-        # Verificar exit code
-        $rc = ((gcloud compute ssh $VM_NAME --zone=$ZONE --project=$PROJECT_ID `
-            --command="cat $remoteRc" --quiet 2>$null) -join "").Trim()
+        # Verificar exit code — con reintentos: esta es una conexion SSH aislada
+        # y separada del polling anterior; un blip de red puntual puede devolver
+        # stdout vacio aunque el .rc SI exista y el script remoto haya terminado bien
+        # (el log de arriba, si termina en "=== ... OK ===", ya lo confirma).
+        $rc = $null
+        for ($attempt = 1; $attempt -le 3; $attempt++) {
+            $rcOut = (gcloud compute ssh $VM_NAME --zone=$ZONE --project=$PROJECT_ID `
+                --command="cat $remoteRc" --quiet 2>$null)
+            $sshRc = $LASTEXITCODE
+            $rc = ($rcOut -join "").Trim()
+            if ($rc -match '^\d+$') { break }
+            if ($attempt -lt 3) {
+                Write-Warn "No se pudo leer el exit code remoto de $Label (intento $attempt/3, ssh exit=$sshRc) - reintentando en 5s..."
+                Start-Sleep -Seconds 5
+            }
+        }
+        if ($rc -notmatch '^\d+$') {
+            throw "No se pudo leer el exit code remoto en $Label tras 3 intentos (fallo de conexion SSH, no necesariamente del script). Revisa el log de arriba: si termina en '=== ... OK ===' el paso probablemente si funciono."
+        }
         if ($rc -ne "0") { throw "Script remoto fallo en $Label (rc=$rc)" }
 
     } finally {
