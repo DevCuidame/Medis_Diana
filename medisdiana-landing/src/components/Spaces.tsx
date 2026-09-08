@@ -31,7 +31,25 @@ const SPACES: SpaceItem[] = [
     id: 'fachada',
     title: 'Fachada',
     caption: 'Fácil de encontrar, en el corazón de la ciudad.',
-    image: '/espacios/fachada.jpg',
+    image: '/espacios/entrada.jpg',
+  },
+  {
+    id: 'recepcion-2',
+    title: 'Bienvenida',
+    caption: 'Un espacio cálido y acogedor desde el primer momento.',
+    image: '/espacios/recepcion-2.jpg',
+  },
+  {
+    id: 'camilla',
+    title: 'Sala de Procedimientos',
+    caption: 'Camilla profesional, lista para tu valoración y cuidado.',
+    image: '/espacios/camilla.jpg',
+  },
+  {
+    id: 'tazas',
+    title: 'Nuestra Identidad',
+    caption: 'Cada detalle refleja el cuidado que ponemos en tu atención.',
+    image: '/espacios/tazas.jpg',
   },
 ]
 
@@ -151,7 +169,7 @@ export default function Spaces() {
 
   return (
     <section id="espacios" style={{ background: '#FFFFFF', padding: 'clamp(4rem, 12vw, 9rem) 1.5rem' }}>
-      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '1220px', margin: '0 auto' }}>
         <div ref={ref} style={{ textAlign: 'center', marginBottom: '4rem' }}>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -205,30 +223,41 @@ export default function Spaces() {
       <style>{`
         .spaces-grid {
           display: grid;
-          grid-template-columns: 1.4fr 1fr;
-          grid-template-rows: repeat(3, 1fr);
+          grid-template-columns: 1.1fr 1fr 1fr 1fr;
+          grid-template-rows: repeat(2, 1fr);
           gap: 1.25rem;
           height: 560px;
         }
         .space-card--large {
           grid-column: 1;
-          grid-row: 1 / span 3;
+          grid-row: 1 / span 2;
         }
-        @media (max-width: 768px) {
+        @media (max-width: 1080px) {
           .spaces-grid {
-            grid-template-columns: 1fr;
-            grid-template-rows: none;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto repeat(3, 220px);
             height: auto;
           }
           .space-card--large {
-            grid-column: auto;
+            grid-column: 1 / span 2;
             grid-row: auto;
+            height: 300px;
+          }
+          .spaces-grid .space-card__placeholder {
+            min-height: 220px !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .spaces-grid {
+            grid-template-columns: 1fr;
+            grid-template-rows: none;
           }
           .spaces-grid .space-card {
             height: 220px;
           }
-          .spaces-grid .space-card__placeholder {
-            min-height: 220px !important;
+          .space-card--large {
+            grid-column: 1;
+            height: 260px;
           }
         }
       `}</style>
