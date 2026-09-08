@@ -13,7 +13,7 @@ const SPACES: SpaceItem[] = [
     id: 'recepcion',
     title: 'Recepción',
     caption: 'El primer contacto con nuestro equipo, pensado para tu comodidad.',
-    image: '/espacios/recepcion.jpg',
+    image: '/espacios/recepcion-2.jpg',
   },
   {
     id: 'sala-espera',
@@ -25,19 +25,13 @@ const SPACES: SpaceItem[] = [
     id: 'consultorio',
     title: 'Consultorio',
     caption: 'Equipado para brindarte una atención médica completa y confidencial.',
-    image: '/espacios/consultorio.jpeg',
+    image: '/espacios/consultorio-2.jpg',
   },
   {
     id: 'fachada',
     title: 'Fachada',
-    caption: 'Fácil de encontrar, en el corazón de la ciudad.',
-    image: '/espacios/entrada.jpg',
-  },
-  {
-    id: 'recepcion-2',
-    title: 'Bienvenida',
-    caption: 'Un espacio cálido y acogedor desde el primer momento.',
-    image: '/espacios/recepcion-2.jpg',
+    caption: 'La puerta que te da la bienvenida a nuestro consultorio.',
+    image: '/espacios/fachada.jpg',
   },
   {
     id: 'camilla',
@@ -50,6 +44,12 @@ const SPACES: SpaceItem[] = [
     title: 'Nuestra Imagen',
     caption: 'Cada detalle refleja el cuidado que ponemos en tu atención.',
     image: '/espacios/tazas.jpg',
+  },
+  {
+    id: 'exteriores',
+    title: 'Exteriores',
+    caption: 'Fácil de encontrar, en el corazón de la ciudad.',
+    image: '/espacios/entrada.jpg',
   },
 ]
 
