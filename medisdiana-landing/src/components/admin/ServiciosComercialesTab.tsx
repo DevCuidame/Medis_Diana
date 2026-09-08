@@ -1,0 +1,182 @@
+import React, { useEffect, useState } from 'react';
+import { Plus, Edit2, Trash2, ToggleLeft, ToggleRight, Image as ImageIcon } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { FormularioServicioComercial, type ServicioComercialFormValues } from './FormularioServicioComercial';
+
+const C = {
+  gold: '#8B5CF6', goldLight: '#3B82F6',
+  bg: '#FFFFFF', bgPanel: '#F3F0FB', white: '#FFFFFF',
+  text: '#1B1C1C', textBrown: '#475569', textMuted: '#94A3B8',
+  border: '#DDD6FE', borderLight: '#DDD6FE',
+  success: '#16A34A', danger: '#DC2626',
+};
+const FONT_BODONI = '"Bodoni Moda", Georgia, serif';
+const FONT_INTER  = '"Hanken Grotesk", Inter, system-ui, sans-serif';
+
+interface ComercialItem {
+  id: string;
+  name: string;
+  description: string | null;
+  imageUrl: string | null;
+  operativoId: string;
+  operativoName: string;
+  isActive: boolean;
+}
+
+interface Props {
+  onToast: (msg: string, ok: boolean) => void;
+}
+
+export const ServiciosComercialesTab: React.FC<Props> = ({ onToast }) => {
+  const [items, setItems]           = useState<ComercialItem[]>([]);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editing, setEditing]       = useState<ComercialItem | null>(null);
+  const [busyId, setBusyId]         = useState<string | null>(null);
+
+  function authH(): Record<string, string> {
+    const token = localStorage.getItem('accessToken');
+    return { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) };
+  }
+
+  const load = async () => {
+    try {
+      const res = await fetch('/api/services/commercial', { headers: authH() });
+      const json = await res.json();
+      if (json.success) setItems(json.data);
+    } catch { /* ignore */ }
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const handleSave = async (data: ServicioComercialFormValues) => {
+    const body = JSON.stringify({
+      name: data.name,
+      description: data.description || undefined,
+      imageUrl: data.imageUrl || undefined,
+      operativoId: data.operativoId,
+      isActive: data.isActive,
+    });
+    try {
+      const res = editing
+        ? await fetch(`/api/services/commercial/${editing.id}`, { method: 'PATCH', headers: authH(), body })
+        : await fetch('/api/services/commercial', { method: 'POST', headers: authH(), body });
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        onToast(json.error ?? `Error ${res.status}`, false);
+        return;
+      }
+      onToast(editing ? 'Servicio comercial actualizado ✓' : 'Servicio comercial creado ✓', true);
+      setIsFormOpen(false);
+      setEditing(null);
+      await load();
+    } catch (e: unknown) {
+      onToast((e as Error).message ?? 'Error de red', false);
+    }
+  };
+
+  const handleToggle = async (item: ComercialItem) => {
+    setBusyId(item.id);
+    try {
+      const res = await fetch(`/api/services/commercial/${item.id}`, {
+        method: 'PATCH', headers: authH(), body: JSON.stringify({ isActive: !item.isActive }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) { onToast(json.error ?? 'Error al cambiar el estado', false); return; }
+      onToast(item.isActive ? 'Comercial desactivado' : 'Comercial activado', true);
+      await load();
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const handleDelete = async (item: ComercialItem) => {
+    setBusyId(item.id);
+    try {
+      const res = await fetch(`/api/services/commercial/${item.id}`, { method: 'DELETE', headers: authH() });
+      const json = await res.json();
+      if (!res.ok || !json.success) { onToast(json.error ?? 'Error al eliminar', false); return; }
+      onToast('Servicio comercial eliminado ✓', true);
+      await load();
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  if (isFormOpen) {
+    return (
+      <FormularioServicioComercial
+        key={editing ? editing.id : 'new'}
+        initialData={editing ? {
+          name: editing.name,
+          description: editing.description ?? '',
+          imageUrl: editing.imageUrl ?? '',
+          operativoId: editing.operativoId,
+          isActive: editing.isActive,
+        } : undefined}
+        onCancel={() => { setIsFormOpen(false); setEditing(null); }}
+        onSuccess={handleSave}
+      />
+    );
+  }
+
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
+        <button
+          onClick={() => { setEditing(null); setIsFormOpen(true); }}
+          style={{ background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, padding: '12px 24px', borderRadius: 12, border: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', boxShadow: '0 4px 16px rgba(139,92,246,0.2)', fontFamily: FONT_INTER }}
+        >
+          <Plus size={18} strokeWidth={3} /> Nuevo Comercial
+        </button>
+      </div>
+
+      {items.length === 0 ? (
+        <p style={{ textAlign: 'center', color: C.textMuted, fontFamily: FONT_INTER, padding: '60px 0' }}>
+          Todavía no hay servicios comerciales. Crea uno y asócialo a un operativo existente.
+        </p>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 20 }}>
+          <AnimatePresence>
+            {items.map(item => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                style={{ background: C.white, borderRadius: 16, border: `1px solid ${C.borderLight}`, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.04)' }}
+              >
+                <div style={{ height: 140, background: C.bgPanel, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {item.imageUrl ? (
+                    <img src={item.imageUrl} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <ImageIcon size={28} color={C.textMuted} />
+                  )}
+                </div>
+                <div style={{ padding: 16 }}>
+                  <h4 style={{ fontFamily: FONT_BODONI, fontSize: 18, margin: '0 0 4px', color: C.text }}>{item.name}</h4>
+                  <p style={{ fontSize: 12, color: C.textMuted, margin: '0 0 12px', fontFamily: FONT_INTER }}>
+                    Operativo: {item.operativoName}
+                  </p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: item.isActive ? C.success : C.textMuted, textTransform: 'uppercase' }}>
+                      {item.isActive ? 'Activo' : 'Inactivo'}
+                    </span>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button disabled={busyId === item.id} onClick={() => handleToggle(item)} title={item.isActive ? 'Desactivar' : 'Activar'} style={{ background: 'none', border: 'none', cursor: 'pointer', color: C.textBrown }}>
+                        {item.isActive ? <ToggleRight size={20} color={C.success} /> : <ToggleLeft size={20} />}
+                      </button>
+                      <button onClick={() => { setEditing(item); setIsFormOpen(true); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: C.textBrown }}>
+                        <Edit2 size={16} />
+                      </button>
+                      <button disabled={busyId === item.id} onClick={() => handleDelete(item)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: C.danger }}>
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      )}
+    </div>
+  );
+};
