@@ -25,11 +25,18 @@ interface ComercialItem {
 
 interface Props {
   onToast: (msg: string, ok: boolean) => void;
+  initialFormOpen?: boolean;
+  onConsumeInitialFormOpen?: () => void;
 }
 
-export const ServiciosComercialesTab: React.FC<Props> = ({ onToast }) => {
+export const ServiciosComercialesTab: React.FC<Props> = ({ onToast, initialFormOpen, onConsumeInitialFormOpen }) => {
   const [items, setItems]           = useState<ComercialItem[]>([]);
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(initialFormOpen ?? false);
+
+  useEffect(() => {
+    if (initialFormOpen) onConsumeInitialFormOpen?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [editing, setEditing]       = useState<ComercialItem | null>(null);
   const [busyId, setBusyId]         = useState<string | null>(null);
 

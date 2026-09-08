@@ -234,6 +234,7 @@ export const ServiciosDashboard: React.FC = () => {
   const [filterType, setFilterType]       = useState<string>('all');
   const [activeTab, setActiveTab]         = useState<'operativos' | 'comerciales'>('operativos');
   const [showTypePicker, setShowTypePicker] = useState(false);
+  const [openComercialForm, setOpenComercialForm] = useState(false);
   const filtersRef = useRef<HTMLDivElement>(null);
 
   const showToast = (msg: string, ok: boolean) => {
@@ -549,7 +550,7 @@ export const ServiciosDashboard: React.FC = () => {
                         style={{ position: 'absolute', top: 54, right: 0, width: 260, background: C.white, borderRadius: 16, boxShadow: '0 16px 48px rgba(0,0,0,0.12)', border: `1.5px solid ${C.borderLight}`, zIndex: 50, padding: 10, fontFamily: FONT_INTER }}
                       >
                         <button
-                          onClick={() => { setShowTypePicker(false); setActiveTab('comerciales'); }}
+                          onClick={() => { setShowTypePicker(false); setActiveTab('comerciales'); setOpenComercialForm(true); }}
                           style={{ width: '100%', textAlign: 'left', padding: '12px 14px', borderRadius: 10, border: 'none', background: 'transparent', cursor: 'pointer', display: 'block' }}
                         >
                           <span style={{ fontSize: 14, fontWeight: 700, color: C.text, display: 'block' }}>Comercial</span>
@@ -714,7 +715,11 @@ export const ServiciosDashboard: React.FC = () => {
             </div>
 
             {activeTab === 'comerciales' ? (
-              <ServiciosComercialesTab onToast={showToast} />
+              <ServiciosComercialesTab
+                onToast={showToast}
+                initialFormOpen={openComercialForm}
+                onConsumeInitialFormOpen={() => setOpenComercialForm(false)}
+              />
             ) : (
             <>
             {/* ── SESIONES PROGRAMADAS ── */}
