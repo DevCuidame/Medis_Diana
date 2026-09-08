@@ -193,6 +193,17 @@ export const ServiceCatalogRepository = {
     sets.push(`updated_at = NOW()`);
     values.push(id);
     await pool.query(`UPDATE service_catalog SET ${sets.join(', ')} WHERE id = $${i}`, values);
+  },
+
+  /** Lista ligera de operativos activos — usada por el selector del formulario comercial. */
+  async listActive(): Promise<{ id: string; serviceName: string }[]> {
+    const { rows } = await pool.query(
+      `SELECT id, service_name AS "serviceName"
+       FROM service_catalog
+       WHERE is_active = TRUE
+       ORDER BY service_name`
+    );
+    return rows;
   }
 };
 

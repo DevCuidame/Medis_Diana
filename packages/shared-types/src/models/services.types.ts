@@ -122,6 +122,31 @@ export interface CreateServiceCatalogPayload {
 
 export interface UpdateServiceCatalogPayload extends Partial<CreateServiceCatalogPayload> {}
 
+// ─── SERVICE COMMERCIAL ──────────────────────────────────────
+
+export interface ServiceCommercialPublic {
+  id: string;
+  name: string;
+  description: string | null;
+  imageUrl: string | null;
+  operativoId: string;
+  operativoName: string;
+  isActive: boolean;
+  docProfServiceId: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateServiceCommercialPayload {
+  name: string;
+  description?: string;
+  imageUrl?: string;
+  operativoId: string;
+  isActive?: boolean;
+}
+
+export interface UpdateServiceCommercialPayload extends Partial<CreateServiceCommercialPayload> {}
+
 // ─── SERVICE OFFER ───────────────────────────────────────────
 
 export interface ServiceOfferPublic {
