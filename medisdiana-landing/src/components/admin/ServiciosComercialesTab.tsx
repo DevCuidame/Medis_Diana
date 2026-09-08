@@ -49,10 +49,16 @@ export const ServiciosComercialesTab: React.FC<Props> = ({ onToast }) => {
   useEffect(() => { load(); }, []);
 
   const handleSave = async (data: ServicioComercialFormValues) => {
+    // NOTE: '' → null (not `|| undefined`) so an intentional clear on edit
+    // reaches the backend as an explicit null instead of being dropped from
+    // the JSON body — the repository's dynamic UPDATE skips any key that is
+    // `undefined`, which previously left the old value in place. On create,
+    // the repository's `?? null` fallback treats an explicit null the same
+    // as an absent field, so this doesn't change create behavior.
     const body = JSON.stringify({
       name: data.name,
-      description: data.description || undefined,
-      imageUrl: data.imageUrl || undefined,
+      description: data.description === '' ? null : data.description,
+      imageUrl: data.imageUrl === '' ? null : data.imageUrl,
       operativoId: data.operativoId,
       isActive: data.isActive,
     });
@@ -84,6 +90,8 @@ export const ServiciosComercialesTab: React.FC<Props> = ({ onToast }) => {
       if (!res.ok || !json.success) { onToast(json.error ?? 'Error al cambiar el estado', false); return; }
       onToast(item.isActive ? 'Comercial desactivado' : 'Comercial activado', true);
       await load();
+    } catch {
+      onToast('Error al cambiar el estado', false);
     } finally {
       setBusyId(null);
     }
@@ -97,6 +105,8 @@ export const ServiciosComercialesTab: React.FC<Props> = ({ onToast }) => {
       if (!res.ok || !json.success) { onToast(json.error ?? 'Error al eliminar', false); return; }
       onToast('Servicio comercial eliminado ✓', true);
       await load();
+    } catch {
+      onToast('Error al eliminar', false);
     } finally {
       setBusyId(null);
     }

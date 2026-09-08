@@ -24,6 +24,16 @@ async function createTestOperativo(): Promise<string> {
   return rows[0].id;
 }
 
+async function createInactiveTestOperativo(): Promise<string> {
+  const { rows } = await pool.query(
+    `INSERT INTO service_catalog (service_name, category_group, is_active, base_price)
+     VALUES ($1, '01 Consulta externa', FALSE, 90000)
+     RETURNING id`,
+    [`Operativo inactivo controller test ${Date.now()}`]
+  );
+  return rows[0].id;
+}
+
 test('createCommercial: crea un comercial vinculado a un operativo existente', async (t) => {
   // NOTE: t.after() hooks run in FIFO (registration) order, and
   // service_commercial.operativo_id is ON DELETE RESTRICT — so the
@@ -97,9 +107,13 @@ test('listOperativos: devuelve solo operativos activos', async (t) => {
   const operativoId = await createTestOperativo();
   t.after(() => pool.query('DELETE FROM service_catalog WHERE id = $1', [operativoId]));
 
+  const inactiveOperativoId = await createInactiveTestOperativo();
+  t.after(() => pool.query('DELETE FROM service_catalog WHERE id = $1', [inactiveOperativoId]));
+
   const res = makeRes();
   await listOperativos({} as any, res);
 
   assert.equal(res.statusCode, 200);
   assert.ok(res.body.data.some((o: any) => o.id === operativoId));
+  assert.equal(res.body.data.some((o: any) => o.id === inactiveOperativoId), false);
 });
