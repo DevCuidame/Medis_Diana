@@ -47,7 +47,7 @@ const SPACES: SpaceItem[] = [
   },
   {
     id: 'tazas',
-    title: 'Nuestra Identidad',
+    title: 'Nuestra Imagen',
     caption: 'Cada detalle refleja el cuidado que ponemos en tu atención.',
     image: '/espacios/tazas.jpg',
   },
