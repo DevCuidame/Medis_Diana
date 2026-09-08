@@ -116,3 +116,7 @@ temp/
 
 .worktrees/
 .superpowers/
+
+# Variables de entorno reales para el deploy a Cloud Run (secretos)
+cloud-run.env.yaml
+**/cloud-run.env.yaml

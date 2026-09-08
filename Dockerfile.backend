@@ -1,0 +1,18 @@
+# Contexto de build: raíz del monorepo (necesita todo el workspace pnpm)
+FROM node:20-bookworm-slim
+WORKDIR /app
+
+RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
+
+COPY . .
+RUN pnpm install --frozen-lockfile
+# @medisdiana/shared-types exporta directo el .ts (sin build) — tsx lo resuelve en runtime
+
+WORKDIR /app/apps/backend
+ENV NODE_ENV=production
+
+# Igual que en producción actual (VM/PM2): corre vía tsx, no tsc+node —
+# el build de tsc no reescribe los alias de path (@config/*, @utils/*, etc.)
+# a rutas relativas, así que "node dist/index.js" falla en runtime.
+EXPOSE 8080
+CMD ["node_modules/.bin/tsx", "src/index.ts"]

@@ -1,0 +1,24 @@
+# Contexto de build: raíz del monorepo (necesita todo el workspace pnpm)
+FROM node:20-bookworm-slim AS build
+WORKDIR /app
+
+RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
+
+COPY . .
+RUN pnpm install --frozen-lockfile
+# Solo vite build (no "tsc -b && vite build"): hay errores de TS preexistentes
+# en el código de la app (deriva de tipos, no relacionados con el deploy) que
+# nunca se detectaron porque producción siempre corrió sin chequeo estricto de
+# tipos. vite build igual compila JS funcional (esbuild, sin type-check).
+RUN pnpm --filter medisdiana-landing exec vite build
+
+# --- runtime: nginx sirviendo el build estático + proxy a /api/ ---
+FROM nginx:1.27-alpine
+
+COPY --from=build /app/medisdiana-landing/dist /usr/share/nginx/html
+COPY docker/frontend-nginx.conf.template /etc/nginx/templates/default.conf.template
+COPY docker/frontend-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+EXPOSE 8080
+ENTRYPOINT ["/entrypoint.sh"]

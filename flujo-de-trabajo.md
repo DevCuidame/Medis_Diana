@@ -24,24 +24,43 @@ una pantalla:
 
 ## Despliegue
 
-- Producción: `https://dianamedic.cuidame.tech`, servida desde la VM
-  `instance-esmart1` (zona `us-east1-b`).
-- Script de despliegue: `deploy-Dianamedic.ps1` (raíz del repo), con
-  parámetro `-Target` para elegir qué desplegar:
+Desde 2026-09-03 el deploy es a **Cloud Run** (proyecto GCP `esmart-health`, región
+`europe-west1`) — ya no a la VM (`cuidame-app`) vía PM2/SSH. Dos servicios:
 
-  | Comando | Qué hace |
-  |---------|----------|
-  | `.\deploy-Dianamedic.ps1 -Target front` | Sube el código y recompila solo el frontend (Vite) |
-  | `.\deploy-Dianamedic.ps1 -Target back` | Sube el código, `pnpm install` y reinicia el backend (PM2) |
-  | `.\deploy-Dianamedic.ps1 -Target both` | Frontend + backend, **sin** migraciones ni re-provisión |
-  | `.\deploy-Dianamedic.ps1` (o `-Target full`) | Todo: deps del sistema, BD, migraciones, nginx, SSL, front y back |
+- `medisdiana-backend` — Express vía `tsx` (no `tsc`+`node`, ver más abajo), conectado
+  a **Cloud SQL** (`cuidamedoc1`, base `medisdiana`) vía Cloud SQL Auth Proxy.
+- `medisdiana-frontend` — build estático de `medisdiana-landing` servido con nginx,
+  que además proxea `/api/` al backend. Variable `BACKEND_URL` apunta a la URL de
+  Cloud Run del backend.
 
-  Los targets `front`/`back`/`both` actualizan el código sobre la instalación
-  existente (preservan `.env`, `node_modules` y la base de datos); `full`
-  borra `/var/www/medisdiana`, regenera el `.env` (nuevo `JWT_SECRET` →
-  invalida sesiones) y aplica las migraciones SQL. Requieren un `full`
-  previo: si no hay instalación en la VM, los targets parciales fallan con
-  un mensaje indicándolo.
+```powershell
+# Desde la raíz del repo
+.\deploy-Dianamedic.ps1                  # backend + frontend
+.\deploy-Dianamedic.ps1 -Target backend
+.\deploy-Dianamedic.ps1 -Target frontend
+```
+
+El backend necesita `apps/backend/cloud-run.env.yaml` (gitignored, no está en el
+repo — variables de entorno reales en formato YAML para `--env-vars-file`,
+equivalente al viejo `.env` de producción). Pedirlo aparte si hace falta recrearlo.
+
+**Contexto de build = raíz del monorepo** (pnpm workspace) en ambos casos — el
+script copia `Dockerfile.backend` o `Dockerfile.frontend` a `./Dockerfile`
+temporalmente, porque `gcloud run deploy --source` solo busca ese nombre exacto.
+
+**Por qué el backend corre con `tsx` y no con `tsc` + `node dist/index.js`**: el
+código usa alias de path de TypeScript (`@config/*`, `@utils/*`, etc.) que `tsc` no
+reescribe a rutas relativas — `node dist/index.js` revienta con
+`ERR_MODULE_NOT_FOUND`. `tsx` sí resuelve los alias en runtime, igual que ya hacía
+PM2 en la VM.
+
+**Por qué el frontend compila con `vite build` a secas (no `tsc -b && vite build`
+como dice el script de `package.json`)**: el código tiene errores de TypeScript
+preexistentes (deriva de tipos entre definiciones y uso — p. ej. `ServiceGroup` sin
+`maxEnrolledCount`, `MembershipType` sin `per_consultation`) que nunca se detectaron
+porque producción nunca corrió `tsc -b` en modo estricto. `vite build` compila JS
+funcional igual (esbuild, sin type-check) — arreglar esos tipos es trabajo aparte,
+fuera del alcance de esta migración.
 
 ## Gestión de servicios clínicos (fuera del repo)
 
