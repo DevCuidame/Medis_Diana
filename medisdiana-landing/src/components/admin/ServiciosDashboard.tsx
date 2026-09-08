@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Building2, Plus, Calendar, MapPin, User, Clock, ChevronRight, Edit2, Trash2, Repeat, Search, SlidersHorizontal, X, ToggleLeft, ToggleRight, Hash, Tag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FormularioServicio } from './FormularioServicio';
+import { ServiciosComercialesTab } from './ServiciosComercialesTab';
 import { generateOccurrences, DIA_NOMBRES } from './servicioSchema';
 
 const C = {
@@ -231,6 +232,8 @@ export const ServiciosDashboard: React.FC = () => {
   const [filterStatus, setFilterStatus]   = useState<'all' | 'published' | 'draft'>('all');
   const [togglingKey, setTogglingKey]     = useState<string | null>(null);
   const [filterType, setFilterType]       = useState<string>('all');
+  const [activeTab, setActiveTab]         = useState<'operativos' | 'comerciales'>('operativos');
+  const [showTypePicker, setShowTypePicker] = useState(false);
   const filtersRef = useRef<HTMLDivElement>(null);
 
   const showToast = (msg: string, ok: boolean) => {
@@ -529,14 +532,57 @@ export const ServiciosDashboard: React.FC = () => {
                     Administra el catálogo, horarios y disponibilidad de la academia.
                   </p>
                 </div>
-                <button
-                  onClick={() => { setEditingGroup(null); setIsFormOpen(true); }}
-                  style={{ background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, padding: '12px 24px', borderRadius: 12, border: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', boxShadow: `0 4px 16px rgba(139,92,246,0.2)`, fontFamily: FONT_INTER, flexShrink: 0 }}
-                >
-                  <Plus size={18} strokeWidth={3} /> Nuevo Servicio
-                </button>
+                <div style={{ position: 'relative' }}>
+                  <button
+                    onClick={() => setShowTypePicker(v => !v)}
+                    style={{ background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, padding: '12px 24px', borderRadius: 12, border: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', boxShadow: `0 4px 16px rgba(139,92,246,0.2)`, fontFamily: FONT_INTER, flexShrink: 0 }}
+                  >
+                    <Plus size={18} strokeWidth={3} /> Nuevo Servicio
+                  </button>
+                  <AnimatePresence>
+                    {showTypePicker && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 8, scale: 0.97 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 8, scale: 0.97 }}
+                        transition={{ duration: 0.16 }}
+                        style={{ position: 'absolute', top: 54, right: 0, width: 260, background: C.white, borderRadius: 16, boxShadow: '0 16px 48px rgba(0,0,0,0.12)', border: `1.5px solid ${C.borderLight}`, zIndex: 50, padding: 10, fontFamily: FONT_INTER }}
+                      >
+                        <button
+                          onClick={() => { setShowTypePicker(false); setActiveTab('comerciales'); }}
+                          style={{ width: '100%', textAlign: 'left', padding: '12px 14px', borderRadius: 10, border: 'none', background: 'transparent', cursor: 'pointer', display: 'block' }}
+                        >
+                          <span style={{ fontSize: 14, fontWeight: 700, color: C.text, display: 'block' }}>Comercial</span>
+                          <span style={{ fontSize: 12, color: C.textMuted }}>Ficha pública, se asocia a un operativo existente.</span>
+                        </button>
+                        <button
+                          onClick={() => { setShowTypePicker(false); setActiveTab('operativos'); setEditingGroup(null); setIsFormOpen(true); }}
+                          style={{ width: '100%', textAlign: 'left', padding: '12px 14px', borderRadius: 10, border: 'none', background: 'transparent', cursor: 'pointer', display: 'block' }}
+                        >
+                          <span style={{ fontSize: 14, fontWeight: 700, color: C.text, display: 'block' }}>Operativo</span>
+                          <span style={{ fontSize: 12, color: C.textMuted }}>Ficha clínica/RIPS completa, uso interno.</span>
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
 
+              {/* ── TABS ── */}
+              <div style={{ display: 'flex', gap: 8, marginBottom: 4 }}>
+                {([
+                  { v: 'operativos' as const,  label: 'Operativos' },
+                  { v: 'comerciales' as const, label: 'Comerciales' },
+                ]).map(t => (
+                  <button key={t.v} onClick={() => setActiveTab(t.v)}
+                    style={{ padding: '8px 16px', borderRadius: 10, fontSize: 13, fontWeight: 700, border: `1.5px solid ${activeTab === t.v ? C.gold : C.borderLight}`, background: activeTab === t.v ? 'rgba(139,92,246,0.08)' : 'transparent', color: activeTab === t.v ? C.gold : C.textBrown, cursor: 'pointer', fontFamily: FONT_INTER }}>
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+
+              {activeTab === 'operativos' && (
+              <>
               {/* ── SEARCH + FILTERS ROW ── */}
               <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start', flexWrap: 'wrap' }}>
 
@@ -663,8 +709,14 @@ export const ServiciosDashboard: React.FC = () => {
                   </div>
                 )}
               </div>
+              </>
+              )}
             </div>
 
+            {activeTab === 'comerciales' ? (
+              <ServiciosComercialesTab onToast={showToast} />
+            ) : (
+            <>
             {/* ── SESIONES PROGRAMADAS ── */}
             {groups.length === 0 ? (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.white, borderRadius: 24, border: `1px solid ${C.borderLight}`, padding: '80px 32px' }}>
@@ -870,6 +922,8 @@ export const ServiciosDashboard: React.FC = () => {
                   })}
                 </AnimatePresence>
               </div>
+            )}
+            </>
             )}
           </motion.div>
         ) : (
