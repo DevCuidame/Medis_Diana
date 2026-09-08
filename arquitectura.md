@@ -20,7 +20,7 @@ delega completamente al backend de CuidameDoc (`https://doc-api.cuidame.tech/api
 - Vite + React + TypeScript
 - Tailwind CSS
 - Framer Motion (animaciones de pasos del booking)
-- Deploy: VM `instance-esmart1` (us-east1-b), script `deploy-Dianamedic.ps1`
+- Deploy: VM `cuidame-app` (zona `us-central1-a`, proyecto `esmart-health`), script `deploy-Dianamedic.ps1`
 
 ## Estructura de pantallas / rutas
 
@@ -28,12 +28,12 @@ delega completamente al backend de CuidameDoc (`https://doc-api.cuidame.tech/api
 - medisdiana-landing/src/components/Hero.tsx
 - medisdiana-landing/src/components/About.tsx
 - medisdiana-landing/src/components/Classes.tsx
-- medisdiana-landing/src/components/Instructors.tsx
+- medisdiana-landing/src/components/Instructors.tsx — sección "Sobre la Doctora"; retrato real (`medisdiana-landing/public/doctora/diana-medina.jpg`) en vez del placeholder de iniciales "DM".
 - medisdiana-landing/src/components/Spaces.tsx — sección "Mis Espacios", `id="espacios"`, galería bento (1 tile grande + 3 pequeños) de las instalaciones del consultorio (Recepción, Sala de espera, Consultorio, Fachada). Fotos reales servidas desde `medisdiana-landing/public/espacios/` (sin optimizar, 3.7–6.6 MB cada una — pendiente comprimir).
 - medisdiana-landing/src/components/Testimonials.tsx
 - medisdiana-landing/src/components/FinalCTA.tsx
 - medisdiana-landing/src/components/Navbar.tsx
-- medisdiana-landing/src/components/Footer.tsx
+- medisdiana-landing/src/components/Footer.tsx — WhatsApp real (`+57 312 587 3244`, ícono social + bloque Contacto, ambos enlazan a `wa.me/573125873244`) y email real (`dradianamedfamiliar@gmail.com`) en vez de placeholders; "Horarios" removido (pendiente de definir).
 
 ### Autenticación (`/login`)
 - medisdiana-landing/src/components/ArtistLogin.tsx
@@ -43,7 +43,7 @@ delega completamente al backend de CuidameDoc (`https://doc-api.cuidame.tech/api
 - medisdiana-landing/src/components/admin/UsuariosDashboard.tsx
 - medisdiana-landing/src/components/admin/AdminClasses.tsx
 - medisdiana-landing/src/components/admin/CreateService.tsx
-- medisdiana-landing/src/components/admin/SedesDashboard.tsx
+- medisdiana-landing/src/components/admin/SedesDashboard.tsx — sección "Inspiración de Espacios" con fotos reales del consultorio (recepción, sala de espera, consultorio); antes tenía 3 fotos de stock de Pinterest con alt text "Pole Dance" (última infracción de la regla de oro que quedaba en el código).
 - medisdiana-landing/src/components/admin/EspaciosDashboard.tsx
 - medisdiana-landing/src/components/admin/FinanzasDashboard.tsx
 - medisdiana-landing/src/components/admin/MembresiasDashboard.tsx

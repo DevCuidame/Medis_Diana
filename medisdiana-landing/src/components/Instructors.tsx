@@ -68,40 +68,24 @@ export default function Instructors() {
           {/* Left — portrait */}
           <div
             style={{
-              background: 'linear-gradient(160deg, #8B5CF6 0%, #6366F1 40%, #3B82F6 100%)',
               minHeight: '420px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              alignSelf: 'stretch',
               position: 'relative',
               overflow: 'hidden',
             }}
           >
-            <div style={{
-              position: 'absolute', inset: 0,
-              background: 'radial-gradient(ellipse 70% 60% at 30% 20%, rgba(255,255,255,0.10) 0%, transparent 65%)',
-            }} />
-            {/* Initials — replace with <img src="..."> when real photo is available */}
-            <div style={{
-              width: 120,
-              height: 120,
-              borderRadius: '50%',
-              background: 'rgba(255,255,255,0.15)',
-              border: '1.5px solid rgba(255,255,255,0.30)',
-              backdropFilter: 'blur(12px)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative',
-              zIndex: 2,
-            }}>
-              <span
-                className="font-cormorant"
-                style={{ fontSize: '2.6rem', fontWeight: 500, color: 'rgba(255,255,255,0.90)', letterSpacing: '0.05em' }}
-              >
-                DM
-              </span>
-            </div>
+            <img
+              src="/doctora/diana-medina.jpg"
+              alt="Dra. Diana Cristina Medina Camargo"
+              style={{
+                width: '100%',
+                height: '100%',
+                minHeight: '420px',
+                objectFit: 'cover',
+                objectPosition: 'center 20%',
+                display: 'block',
+              }}
+            />
           </div>
 
           {/* Right — info */}

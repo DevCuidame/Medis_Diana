@@ -16,6 +16,14 @@ export function errorHandler(
     });
   }
 
+  if ((error as any).type === 'entity.too.large') {
+    log.error('[413] Payload too large');
+    return res.status(413).json({
+      success: false,
+      error: 'La imagen es demasiado grande. Máximo 8MB.',
+    });
+  }
+
   log.error('Unexpected error:', error);
   const internalError = new InternalServerError();
   return res.status(internalError.statusCode).json({

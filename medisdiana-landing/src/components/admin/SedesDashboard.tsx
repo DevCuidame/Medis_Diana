@@ -397,19 +397,19 @@ export const SedesDashboard: React.FC = () => {
             )}
           </div>
 
-          {/* GALERÍA DE POLE DANCE */}
+          {/* GALERÍA DE ESPACIOS DEL CONSULTORIO */}
           <div style={{ maxWidth: 1140, margin: '64px auto 32px', paddingTop: 32, borderTop: `1px solid ${C.borderLight}` }}>
             <h3 style={{ fontFamily: FONT_BODONI, fontSize: 20, fontWeight: 700, color: C.textBrown, margin: '0 0 20px 0' }}>Inspiración de Espacios</h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
-              <div style={{ borderRadius: 16, overflow: 'hidden', height: 200, position: 'relative' }}>
-                <img src="https://i.pinimg.com/736x/3b/f0/88/3bf088c2b314bbc40974f7b668944c2f.jpg" alt="Pole Dance Studio" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s', cursor: 'pointer' }} onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'} />
-              </div>
-              <div style={{ borderRadius: 16, overflow: 'hidden', height: 200, position: 'relative' }}>
-                <img src="https://i.pinimg.com/1200x/59/12/e7/5912e774e364738b45aae3f4ad3cb548.jpg" alt="Pole Dance Details" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s', cursor: 'pointer' }} onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'} />
-              </div>
-              <div style={{ borderRadius: 16, overflow: 'hidden', height: 200, position: 'relative' }}>
-                <img src="https://i.pinimg.com/736x/d2/8d/71/d28d714cdad464bae63f5ae459e800c2.jpg" alt="Aerial Inspiration" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s', cursor: 'pointer' }} onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'} />
-              </div>
+              {[
+                { src: '/espacios/recepcion.jpg', alt: 'Recepción del consultorio' },
+                { src: '/espacios/sala-espera.jpeg', alt: 'Sala de espera' },
+                { src: '/espacios/consultorio.jpeg', alt: 'Consultorio médico' },
+              ].map(({ src, alt }) => (
+                <div key={src} style={{ borderRadius: 16, overflow: 'hidden', height: 200, position: 'relative' }}>
+                  <img src={src} alt={alt} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s', cursor: 'pointer' }} onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'} />
+                </div>
+              ))}
             </div>
           </div>
 

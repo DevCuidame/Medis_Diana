@@ -54,6 +54,7 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [imagePreview, setImagePreview] = useState<string | null>(initialData?.imageUrl || null);
+  const [imageError, setImageError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { register, handleSubmit, control, formState: { errors }, setValue, watch } = useForm<ServicioFormValues>({
@@ -201,9 +202,17 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
   const subgrupoOptions = categoryGroup ? (SUBGRUPOS[categoryGroup] ?? []) : [];
   const repsCodeOptions = categoryGroup ? repsServiceCodes.filter(r => r.serviceGroup === categoryGroup) : [];
 
+  const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5MB — deja margen bajo el límite de 8mb del backend tras codificar a base64
+
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > MAX_IMAGE_BYTES) {
+      setImageError('La imagen no debe superar los 5MB');
+      e.currentTarget.value = '';
+      return;
+    }
+    setImageError(null);
     const reader = new FileReader();
     reader.onload = () => {
       const result = reader.result as string;
@@ -215,6 +224,7 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
 
   const removeImage = () => {
     setImagePreview(null);
+    setImageError(null);
     setValue('imageUrl', '');
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
@@ -456,7 +466,7 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
             </div>
 
             <div style={{ gridColumn: '1 / -1' }}>
-              <InputField label="Imagen del servicio" icon={ImageIcon}>
+              <InputField label="Imagen del servicio" icon={ImageIcon} error={imageError ? { message: imageError } : undefined}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                   {imagePreview ? (
                     <div style={{ position: 'relative', width: 80, height: 80, borderRadius: 12, overflow: 'hidden', border: `1px solid ${C.borderLight}` }}>

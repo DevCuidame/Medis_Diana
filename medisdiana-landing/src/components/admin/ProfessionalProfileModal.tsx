@@ -209,10 +209,16 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
   const clearErr = (k: string) =>
     setErrors(e => { const n = { ...e }; delete n[k]; return n })
 
+  const MAX_AVATAR_BYTES = 5 * 1024 * 1024 // 5MB — deja margen bajo el límite de 8mb del backend tras codificar a base64
+
   const handleAvatarFile = (file?: File | null) => {
     if (!file) return
     if (!file.type.startsWith('image/')) {
       setErrors(e => ({ ...e, avatarUrl: 'Selecciona una imagen válida' }))
+      return
+    }
+    if (file.size > MAX_AVATAR_BYTES) {
+      setErrors(e => ({ ...e, avatarUrl: 'La imagen no debe superar los 5MB' }))
       return
     }
 

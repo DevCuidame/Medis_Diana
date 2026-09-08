@@ -120,3 +120,7 @@ temp/
 # Variables de entorno reales para el deploy a Cloud Run (secretos)
 cloud-run.env.yaml
 **/cloud-run.env.yaml
+
+# Salida generada por la skill graphify (grafo de conocimiento, cachés AST)
+graphify-out/
+**/graphify-out/
