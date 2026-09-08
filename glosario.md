@@ -30,3 +30,6 @@ al usuario debe usar la columna derecha.
 | **`head_professional_id`** | Columna en `professionals` (CuidameDoc) que enlaza un trabajador con su cabeza. |
 | **`doc_professional_id`** | Columna en `users` (Medis) que guarda el `professional_id` que CuidameDoc le asignó a ese profesional al aprovisionarlo. `NULL` = no aprovisionado (o el intento falló). |
 | **`docSync`** | Campo en la respuesta de `POST /api/professionals` (`{ ok, error? }`) que informa si el aprovisionamiento automático en CuidameDoc tuvo éxito — no bloquea ni afecta el éxito de la creación local. |
+| **Servicio operativo** | La ficha clínica/RIPS completa (`service_catalog`), uso interno — el formulario de 4 pasos de siempre (Ubicación/Salón, Identificación, Clasificación RIPS/CUPS, Condiciones). |
+| **Servicio comercial** | Ficha pública de venta (`service_commercial`) que ve el paciente — nombre, descripción, imagen; se asocia a un operativo existente (relación 1:N, un operativo puede respaldar varios comerciales). No captura precio ni duración propios. |
+| **`operativo_id`** | Columna en `service_commercial` que enlaza el comercial con su operativo (`service_catalog.id`), `ON DELETE RESTRICT` y **no** única (permite varios comerciales por operativo). |

@@ -44,6 +44,16 @@ El backend necesita `apps/backend/cloud-run.env.yaml` (gitignored, no está en e
 repo — variables de entorno reales en formato YAML para `--env-vars-file`,
 equivalente al viejo `.env` de producción). Pedirlo aparte si hace falta recrearlo.
 
+**Migraciones de BD no corren solas en el deploy** — `deploy-Dianamedic.ps1`
+solo construye y publica las imágenes, no ejecuta `npm run migrate`. Cualquier
+migración pendiente en `apps/backend/migrations/` debe aplicarse a mano contra
+la Cloud SQL de producción (`cuidamedoc1` / `medisdiana`) antes o justo después
+de desplegar el backend. Pendiente ahora mismo: migración `028_service_commercial.sql`
+(tabla `service_commercial`, ver [arquitectura.md](arquitectura.md#servicios-comerciales-vs-operativos-2026-09-08)) —
+correrla (`npm run migrate` desde `apps/backend/` apuntando a producción, o el
+equivalente manual con `psql`) antes de que el panel admin use las pestañas
+Comerciales/Operativos en producción.
+
 **Contexto de build = raíz del monorepo** (pnpm workspace) en ambos casos — el
 script copia `Dockerfile.backend` o `Dockerfile.frontend` a `./Dockerfile`
 temporalmente, porque `gcloud run deploy --source` solo busca ese nombre exacto.

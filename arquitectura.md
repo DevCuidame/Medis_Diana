@@ -223,6 +223,67 @@ clasificación RIPS del formulario. Ver spec/plan completos en
   cuando el servicio tiene `repsServiceCode` (mismo patrón visual, ícono
   `Tag`).
 
+## Servicios Comerciales vs. Operativos (2026-09-08)
+
+**Qué resuelve**: separar la ficha clínica/RIPS completa ("operativo", el
+formulario de 4 pasos de siempre) de la ficha pública de venta ("comercial")
+que ve el paciente — permite vender/mostrar un mismo procedimiento clínico
+bajo varios nombres o enfoques comerciales, cada uno con su propia imagen y
+descripción, sin que crear la ficha clínica interna publique nada por sí
+sola. Ver spec/plan completos en
+`docs/superpowers/specs/2026-09-08-servicios-comerciales-operativos-design.md`
+y `docs/superpowers/plans/2026-09-08-servicios-comerciales-operativos.md`.
+
+- **Esquema**: tabla nueva `service_commercial` (migración
+  `028_service_commercial.sql`) — `id UUID PK, name VARCHAR(255) NOT NULL,
+  description TEXT, image_url TEXT, operativo_id UUID NOT NULL REFERENCES
+  service_catalog(id) ON DELETE RESTRICT, is_active BOOLEAN NOT NULL DEFAULT
+  TRUE, doc_prof_service_id INTEGER (reservado, sin usar en esta fase),
+  created_at/updated_at TIMESTAMPTZ`. `operativo_id` **no** es único — la
+  relación es 1:N, un operativo puede respaldar muchos comerciales (ej.
+  vender el mismo procedimiento bajo dos nombres distintos).
+  `service_catalog` no cambia de esquema — pasa a representar
+  semánticamente solo "operativo".
+- **Backend**: `ServiceCommercialRepository`
+  (`apps/backend/src/repositories/serviceCommercial.repository.ts`) con el
+  mismo patrón CRUD + `update()` dinámico (solo actualiza las columnas cuyo
+  valor llega `!== undefined`) que ya usa `ServiceCatalogRepository`, más
+  `ServiceCatalogRepository.listActive()` (lista ligera `{id, serviceName}`
+  de operativos activos, para el selector del formulario comercial). El
+  controller `serviceCommercial.controller.ts` expone 5 endpoints nuevos,
+  todos ADMIN:
+
+  | Método | URL | Uso |
+  |--------|-----|-----|
+  | `GET` | `/services/operativos` | Selector de operativos activos en el formulario comercial |
+  | `GET` | `/services/commercial` | Lista de comerciales |
+  | `POST` | `/services/commercial` | Crea un comercial (`name`, `description?`, `imageUrl?`, `operativoId`, `isActive?`) |
+  | `PATCH` | `/services/commercial/:id` | Actualiza campos parciales |
+  | `DELETE` | `/services/commercial/:id` | Elimina un comercial |
+
+  Sin sincronización a CuidameDoc en esta fase — crear/editar/activar un
+  comercial **no** llama a `ensureDocSync` ni a ningún endpoint de
+  `doc-api.cuidame.tech` (ver "Fuera de alcance" en el spec para el diseño
+  de la fase futura, que heredaría precio/duración/categoría del operativo
+  vinculado).
+- **Frontend** (`medisdiana-landing/src/components/admin/`):
+  `FormularioServicioComercial.tsx` (formulario de un solo paso — nombre,
+  descripción, imagen con el mismo límite de 5MB que el resto del admin,
+  selector de operativo, toggle activo/inactivo; no llama a la API
+  directamente, delega a `onSuccess` igual que `FormularioServicio.tsx`) y
+  `ServiciosComercialesTab.tsx` (lista + CRUD, mismo patrón de
+  card/toggle/editar/eliminar que el resto del panel admin). Ambos se
+  conectan en `ServiciosDashboard.tsx`: el botón "Nuevo Servicio" abre un
+  selector de tipo (**Comercial** / **Operativo**) en vez de ir directo al
+  formulario de 4 pasos — "Operativo" abre `FormularioServicio.tsx` sin
+  ningún cambio; "Comercial" cambia a la pestaña Comerciales. Pestañas
+  **Operativos | Comerciales** (`activeTab`) conmutan entre el
+  listado/agrupación actual (`groupOffers`, sin cambios) y
+  `ServiciosComercialesTab`.
+- **Datos existentes**: los servicios ya creados con el formulario único
+  quedan como operativos tal cual están — no se genera ningún comercial
+  automáticamente ni se toca su sincronización actual en CuidameDoc.
+
 ---
 
 ## Inventario (con precio) — Panel Admin
