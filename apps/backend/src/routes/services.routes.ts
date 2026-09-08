@@ -21,6 +21,13 @@
 //  PATCH  /services/offers/:id                  → ADMIN
 //  DELETE /services/offers/:id                  → ADMIN
 //
+//  SERVICE COMMERCIAL
+//  GET    /services/operativos                  → ADMIN (lista ligera para el selector)
+//  GET    /services/commercial                   → ADMIN
+//  POST   /services/commercial                   → ADMIN
+//  PATCH  /services/commercial/:id                → ADMIN
+//  DELETE /services/commercial/:id                → ADMIN
+//
 //  BOOKING REQUESTS
 //  GET    /services/requests/all                      → ADMIN (inscripciones gratuitas)
 //  GET    /services/requests/pending-payment          → ADMIN (inscripciones con pago pendiente)
@@ -69,6 +76,9 @@ import {
   lookupCups, listClassificationCategories, listClassificationSubcategories,
   listCupsCatalog, createCupsMapping, listRepsServiceCodes,
 } from '@controllers/cups.controller.js';
+import {
+  listCommercial, createCommercial, updateCommercial, deleteCommercial, listOperativos,
+} from '@controllers/serviceCommercial.controller.js';
 
 const router: Router = Router();
 
@@ -95,6 +105,13 @@ router.get(   '/services/offers/:id', getOffer);
 router.post(  '/services/offers',     authenticate, authorize('ADMIN'), createOffer);
 router.patch( '/services/offers/:id', authenticate, authorize('ADMIN'), updateOffer);
 router.delete('/services/offers/:id', authenticate, authorize('ADMIN'), deleteOffer);
+
+// ─── SERVICE COMMERCIAL ──────────────────────────────────────
+router.get(   '/services/operativos',     authenticate, authorize('ADMIN'), listOperativos);
+router.get(   '/services/commercial',     authenticate, authorize('ADMIN'), listCommercial);
+router.post(  '/services/commercial',     authenticate, authorize('ADMIN'), createCommercial);
+router.patch( '/services/commercial/:id', authenticate, authorize('ADMIN'), updateCommercial);
+router.delete('/services/commercial/:id', authenticate, authorize('ADMIN'), deleteCommercial);
 
 // ─── BOOKING REQUESTS ────────────────────────────────────────
 router.get(  '/services/requests/all',             authenticate, authorize('ADMIN'), listAllBookingRequests);
