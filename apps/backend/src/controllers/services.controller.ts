@@ -17,7 +17,7 @@ import {
 import { UserMembershipRepository } from '@repositories/user-membership.repository.js';
 import { DiscountRepository } from '@repositories/discount.repository.js';
 import { sendServicePaymentConfirmation } from '@utils/email.util.js';
-import { ensureDocSync } from '@services/docServiceSync.service.js';
+import { resyncPublishedCommercialsForOperativo } from '@services/commercialDocSync.service.js';
 import type {
   ServiceOffersFilter,
   ResolveBookingRequestPayload,
@@ -30,30 +30,6 @@ function getDisciplineCategory(disciplineName: string | null | undefined): strin
   if (n.includes('pole')) return 'pole';
   if (n.includes('fuerza') || n.includes('flexibilidad') || n.includes('flex')) return 'complementary';
   return 'general';
-}
-
-/** Build parameters for ensureDocSync call from offer data */
-function buildDocSyncParams(
-  offer: { catalogId: string | null; durationMinutes: number; price: number | null; title: string; professional?: { id: string } | null; catalog?: { serviceName: string; categoryGroup: string | null; description: string | null; basePrice: number | null; isActive: boolean } | null },
-  active: boolean,
-) {
-  return {
-    catalogId: offer.catalogId!,
-    active,
-    serviceName: offer.catalog?.serviceName ?? offer.title,
-    durationMinutes: offer.durationMinutes,
-    categoryGroup: offer.catalog?.categoryGroup ?? '01 Consulta externa',
-    description: offer.catalog?.description ?? null,
-    // basePrice is typed as number | null but pg returns NUMERIC columns as
-    // strings at runtime (no type parser registered for numerics here) — wrap
-    // with Number(...) so CuidameDoc gets a real JSON number, consistent with
-    // backfill-doc-sync.ts's Number(row.base_price).
-    price: Number(offer.catalog?.basePrice ?? offer.price ?? 0),
-    // Doctor local (Medis) asignado a esta oferta — ensureDocSync lo resuelve
-    // a su professional_id real de CuidameDoc (users.doc_professional_id) si
-    // ya fue aprovisionado como miembro del equipo de Diana.
-    professionalUserId: offer.professional?.id ?? null,
-  };
 }
 
 // ─── OPERATING HOURS ─────────────────────────────────────────
@@ -207,10 +183,7 @@ export async function createOffer(req: Request, res: Response): Promise<void> {
     // 2. Create Offer
     const offer = await ServiceOfferRepository.create(payload, adminId);
 
-    // 3. Sync with CuidameDoc
-    const docSync = await ensureDocSync(buildDocSyncParams(offer, offer.catalog?.isActive !== false));
-
-    res.status(201).json({ success: true, data: { offer }, docSync });
+    res.status(201).json({ success: true, data: { offer } });
   } catch (err: unknown) {
     const msg = (err as Error).message;
     const status = msg.includes('supera la del salón') ? 400 : 500;
@@ -275,24 +248,22 @@ export async function updateOffer(req: Request, res: Response): Promise<void> {
     // 2. Update the rest of the offer fields
     const offer = await ServiceOfferRepository.update(offerId, { ...payload, catalogId: catalogId ?? undefined });
 
-    // 3. Sync with CuidameDoc — solo cuando el guardado realmente tocó datos
-    //    de catálogo (nombre/precio/estado/etc) Y ese toque cambió algo que a
-    //    CuidameDoc le importa. Un PATCH de solo {status} (el toggle
-    //    Activo/Inactivo de la tarjeta) no dispara re-sync, y tampoco lo hace
-    //    un PATCH que reenvía los mismos valores RIPS sin cambios reales
-    //    (evita re-sincronizar N veces cuando un grupo de N sesiones comparte
-    //    un mismo catalogId y el frontend manda un PATCH por sesión).
-    //    Además, un cambio en durationMinutes o en el médico asignado (campos
-    //    de la oferta, no del catálogo) también justifica una re-sync a
-    //    CuidameDoc — sin esto, reasignar una oferta a otro médico no se
-    //    reflejaba nunca en CuidameDoc si ningún otro campo cambiaba.
+    // 3. Re-sincronizar en CuidameDoc los comerciales YA PUBLICADOS de este
+    //    operativo — el operativo mismo no publica nada por sí solo (eso lo
+    //    decide el toggle "Estado del servicio" de cada comercial, no este
+    //    endpoint). Mismas condiciones que antes decidían el delete+create
+    //    directo del operativo: un cambio real de campo relevante de
+    //    catálogo, o un cambio de duración/médico asignado (campos de la
+    //    oferta) — así reasignar la oferta a otro médico o cambiarle la
+    //    duración también actualiza lo que ven los comerciales publicados.
     const professionalChanged = offer?.professional?.id !== existingOffer.professional?.id;
-    let docSync: { ok: boolean; error?: string } | undefined;
+    let commercialResyncs: Array<{ id: string; ok: boolean; error?: string }> | undefined;
     if (offer?.catalogId && ((catalogTouched && docSyncRelevantFieldsChanged(catalogBefore, offer.catalog)) || offer.durationMinutes !== existingOffer.durationMinutes || professionalChanged)) {
-      docSync = await ensureDocSync(buildDocSyncParams(offer, offer.catalog?.isActive !== false));
+      const results = await resyncPublishedCommercialsForOperativo(offer.catalogId);
+      if (results.length > 0) commercialResyncs = results;
     }
 
-    res.json({ success: true, data: { offer }, ...(docSync ? { docSync } : {}) });
+    res.json({ success: true, data: { offer }, ...(commercialResyncs ? { commercialResyncs } : {}) });
   } catch (err: unknown) {
     const msg = (err as Error).message;
     const status = msg.includes('supera la del salón') ? 400 : 500;
@@ -307,19 +278,16 @@ export async function deleteOffer(req: Request, res: Response): Promise<void> {
     const existing = await ServiceOfferRepository.findById(id);
     if (!existing) { res.status(404).json({ success: false, error: 'Oferta no encontrada' }); return; }
 
-    // Delete + count remaining offers on the same catalog inside one
-    // transaction with a row lock on the catalog, so concurrent deletes of
-    // sibling offers (e.g. handleDeleteGroup's Promise.all) serialize instead
-    // of racing on the "am I the last one" check.
-    const { deleted, remaining } = await ServiceOfferRepository.deleteAndCountRemaining(id, existing.catalogId);
+    // deleteAndCountRemaining también cuenta las ofertas restantes del mismo
+    // catálogo (con row lock, para que deletes concurrentes de ofertas
+    // hermanas — p.ej. handleDeleteGroup's Promise.all — serialicen en vez de
+    // pisarse) — ya no se usa ese conteo aquí (el operativo dejó de publicar
+    // en CuidameDoc por sí solo), pero el borrado en sí sigue necesitando la
+    // misma transacción/lock.
+    const { deleted } = await ServiceOfferRepository.deleteAndCountRemaining(id, existing.catalogId);
     if (!deleted) { res.status(404).json({ success: false, error: 'Oferta no encontrada' }); return; }
 
-    let docSync: { ok: boolean; error?: string } | undefined;
-    if (existing.catalogId && remaining === 0) {
-      docSync = await ensureDocSync(buildDocSyncParams(existing, false));
-    }
-
-    res.json({ success: true, data: null, ...(docSync ? { docSync } : {}) });
+    res.json({ success: true, data: null });
   } catch (err: unknown) {
     res.status(500).json({ success: false, error: (err as Error).message });
   }
