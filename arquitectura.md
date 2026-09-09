@@ -261,11 +261,29 @@ y `docs/superpowers/plans/2026-09-08-servicios-comerciales-operativos.md`.
   | `PATCH` | `/services/commercial/:id` | Actualiza campos parciales |
   | `DELETE` | `/services/commercial/:id` | Elimina un comercial |
 
-  Sin sincronización a CuidameDoc en esta fase — crear/editar/activar un
-  comercial **no** llama a `ensureDocSync` ni a ningún endpoint de
-  `doc-api.cuidame.tech` (ver "Fuera de alcance" en el spec para el diseño
-  de la fase futura, que heredaría precio/duración/categoría del operativo
-  vinculado).
+  - **Sincronización a CuidameDoc (2026-09-09)**: implementada — ver
+    `apps/backend/src/services/commercialDocSync.service.ts`. El toggle
+    "Estado del servicio" del comercial (no del operativo) decide
+    publicar/despublicar. `syncCommercialToDoc(commercial, active)` arma el
+    payload de `POST /booking/my-services` con `service_name`/`description`
+    del comercial + `duration_minutes` (de la oferta más recientemente creada
+    bajo el operativo vinculado — `service_catalog` no tiene columna de
+    duración propia), `category` (vía `mapCategoryGroupToDocCategory` sobre
+    `service_catalog.category_group`) y `price` (`service_catalog.base_price`).
+    Si el operativo no tiene ninguna oferta configurada, publicar falla con un
+    error explícito (`docSync.error`) sin bloquear el guardado local del
+    comercial. `resyncPublishedCommercialsForOperativo(operativoId)` — llamada
+    desde `updateOffer` en `services.controller.ts` con las mismas condiciones
+    que antes disparaban el delete+create directo del operativo (cambio de
+    nombre/precio/categoría/descripción, o de duración/médico asignado de la
+    oferta) — re-sincroniza cada comercial ya publicado (`doc_prof_service_id
+    IS NOT NULL`) de ese operativo. El operativo (`createOffer`/`updateOffer`/
+    `deleteOffer`) dejó de llamar a CuidameDoc directamente.
+  - **Motor genérico**: `ensureDocSync` (antes solo `service_catalog`) ahora
+    recibe `targetTable: 'service_catalog' | 'service_commercial'` y
+    `targetId`, y lee/escribe `doc_prof_service_id` en la tabla que le
+    indiquen — mismo motor borrar+crear, sin duplicar lógica entre operativo y
+    comercial.
 - **Frontend** (`medisdiana-landing/src/components/admin/`):
   `FormularioServicioComercial.tsx` (formulario de un solo paso — nombre,
   descripción, imagen con el mismo límite de 5MB que el resto del admin,
