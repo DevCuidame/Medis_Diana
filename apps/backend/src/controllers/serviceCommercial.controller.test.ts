@@ -1,4 +1,4 @@
-import { test, after } from 'node:test';
+import { test, after, type TestContext } from 'node:test';
 import assert from 'node:assert/strict';
 import { pool } from '@config/database.js';
 import { listCommercial, createCommercial, updateCommercial, deleteCommercial, listOperativos } from './serviceCommercial.controller.js';
@@ -116,4 +116,127 @@ test('listOperativos: devuelve solo operativos activos', async (t) => {
   assert.equal(res.statusCode, 200);
   assert.ok(res.body.data.some((o: any) => o.id === operativoId));
   assert.equal(res.body.data.some((o: any) => o.id === inactiveOperativoId), false);
+});
+
+function fetchMock(t: TestContext, handler: (url: string, init: any) => Response) {
+  return t.mock.method(globalThis, 'fetch', async (url: any, init: any) => handler(String(url), init));
+}
+
+async function createTestOperativoConOferta(): Promise<string> {
+  const operativoId = await createTestOperativo();
+  const { rows: locRows } = await pool.query(
+    `INSERT INTO locations (name, address) VALUES ($1, 'Dirección de prueba') RETURNING id`,
+    [`Sede serviceCommercial controller test ${Date.now()}`]
+  );
+  const { rows: adminRows } = await pool.query(`SELECT id FROM users WHERE role = 'ADMIN' LIMIT 1`);
+  await pool.query(
+    `INSERT INTO service_offers (catalog_id, location_id, offer_type, title, capacity, duration_minutes, scheduled_at, created_by)
+     VALUES ($1, $2, 'appointment', 'Sesión', 1, 40, NOW() + interval '1 day', $3)`,
+    [operativoId, locRows[0].id, adminRows[0].id]
+  );
+  return operativoId;
+}
+
+test('createCommercial: isActive=true publica en CuidameDoc y guarda docProfServiceId', async (t) => {
+  const operativoId = await createTestOperativoConOferta();
+  t.after(() => pool.query('DELETE FROM service_offers WHERE catalog_id = $1', [operativoId]));
+  t.after(() => pool.query('DELETE FROM locations WHERE name LIKE $1', ['Sede serviceCommercial controller test%']));
+  t.after(() => pool.query('DELETE FROM service_catalog WHERE id = $1', [operativoId]));
+
+  fetchMock(t, (url, init) => {
+    if (url.endsWith('/auth/login')) {
+      return new Response(JSON.stringify({ success: true, data: { access_token: 'tok', refresh_token: 'ref' } }), { status: 200 });
+    }
+    if (url.endsWith('/booking/my-services') && init?.method === 'POST') {
+      return new Response(JSON.stringify({ success: true, data: { prof_service_id: 4242, service_id: 1, name: 'x' } }), { status: 201 });
+    }
+    return new Response(JSON.stringify({ success: false }), { status: 404 });
+  });
+
+  const req: any = { body: { name: 'Botox facial', operativoId } };
+  const res = makeRes();
+  await createCommercial(req, res);
+  t.after(() => pool.query('DELETE FROM service_commercial WHERE id = $1', [res.body.data.id]));
+
+  assert.equal(res.body.docSync.ok, true);
+  assert.equal(res.body.data.docProfServiceId, 4242);
+});
+
+test('updateCommercial: activar un comercial ya creado inactivo lo publica en CuidameDoc', async (t) => {
+  const operativoId = await createTestOperativoConOferta();
+  t.after(() => pool.query('DELETE FROM service_offers WHERE catalog_id = $1', [operativoId]));
+  t.after(() => pool.query('DELETE FROM locations WHERE name LIKE $1', ['Sede serviceCommercial controller test%']));
+  t.after(() => pool.query('DELETE FROM service_catalog WHERE id = $1', [operativoId]));
+
+  fetchMock(t, (url) => { throw new Error(`fetch inesperado: ${url}`); });
+  const createReq: any = { body: { name: 'Inicialmente inactivo', operativoId, isActive: false } };
+  const createRes = makeRes();
+  await createCommercial(createReq, createRes);
+  const id = createRes.body.data.id;
+  t.after(() => pool.query('DELETE FROM service_commercial WHERE id = $1', [id]));
+  assert.equal(createRes.body.docSync.ok, true); // active=false, sin llamadas de red
+
+  fetchMock(t, (url, init) => {
+    if (url.endsWith('/auth/login')) {
+      return new Response(JSON.stringify({ success: true, data: { access_token: 'tok', refresh_token: 'ref' } }), { status: 200 });
+    }
+    if (url.endsWith('/booking/my-services') && init?.method === 'POST') {
+      return new Response(JSON.stringify({ success: true, data: { prof_service_id: 5151, service_id: 1, name: 'x' } }), { status: 201 });
+    }
+    return new Response(JSON.stringify({ success: false }), { status: 404 });
+  });
+
+  const updateReq: any = { params: { id }, body: { isActive: true } };
+  const updateRes = makeRes();
+  await updateCommercial(updateReq, updateRes);
+
+  assert.equal(updateRes.body.docSync.ok, true);
+  assert.equal(updateRes.body.data.docProfServiceId, 5151);
+});
+
+test('deleteCommercial: si estaba publicado, lo despublica en CuidameDoc antes de borrar', async (t) => {
+  const operativoId = await createTestOperativo();
+  t.after(() => pool.query('DELETE FROM service_catalog WHERE id = $1', [operativoId]));
+
+  const createReq: any = { body: { name: 'A borrar publicado', operativoId, isActive: false } };
+  const createRes = makeRes();
+  await createCommercial(createReq, createRes);
+  const id = createRes.body.data.id;
+  await pool.query('UPDATE service_commercial SET doc_prof_service_id = 7171 WHERE id = $1', [id]);
+
+  fetchMock(t, (url, init) => {
+    if (url.endsWith('/auth/login')) {
+      return new Response(JSON.stringify({ success: true, data: { access_token: 'tok', refresh_token: 'ref' } }), { status: 200 });
+    }
+    if (url.endsWith('/booking/my-services/7171') && init?.method === 'DELETE') {
+      return new Response(JSON.stringify({ success: true, message: 'ok' }), { status: 200 });
+    }
+    throw new Error(`fetch inesperado: ${url}`);
+  });
+
+  const deleteReq: any = { params: { id } };
+  const deleteRes = makeRes();
+  await deleteCommercial(deleteReq, deleteRes);
+
+  assert.equal(deleteRes.body.success, true);
+  assert.equal(deleteRes.body.docSync.ok, true);
+});
+
+test('updateCommercial: editar sin tocar campos relevantes no re-sincroniza', async (t) => {
+  const operativoId = await createTestOperativo();
+  t.after(() => pool.query('DELETE FROM service_catalog WHERE id = $1', [operativoId]));
+
+  fetchMock(t, (url) => { throw new Error(`fetch inesperado: ${url}`); });
+
+  const createReq: any = { body: { name: 'Sin cambios relevantes', operativoId, isActive: false } };
+  const createRes = makeRes();
+  await createCommercial(createReq, createRes);
+  const id = createRes.body.data.id;
+  t.after(() => pool.query('DELETE FROM service_commercial WHERE id = $1', [id]));
+
+  // Update que no toca name/description/operativoId/isActive → no debe llamar ensureDocSync
+  const updateReq: any = { params: { id }, body: { imageUrl: 'data:image/png;base64,AAA=' } };
+  const updateRes = makeRes();
+  await updateCommercial(updateReq, updateRes);
+  assert.equal(updateRes.body.docSync, undefined);
 });
