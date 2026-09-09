@@ -31,6 +31,22 @@ async function deleteTestCatalog(catalogId: string) {
   await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalogId]);
 }
 
+async function createTestCommercial(operativoId: string): Promise<string> {
+  const { rows } = await pool.query(
+    `INSERT INTO service_commercial (name, operativo_id, is_active)
+     VALUES ($1, $2, TRUE) RETURNING id`,
+    [`Comercial doc-sync test ${Date.now()}`, operativoId]
+  );
+  return rows[0].id;
+}
+
+async function getCommercialDocProfServiceId(commercialId: string): Promise<number | null> {
+  const { rows } = await pool.query(
+    'SELECT doc_prof_service_id FROM service_commercial WHERE id = $1', [commercialId]
+  );
+  return rows[0]?.doc_prof_service_id ?? null;
+}
+
 // Usa t.mock (no el `mock` global) para que Node restaure fetch automáticamente
 // al terminar cada test, aunque el test falle a mitad de camino.
 function fetchMock(t: TestContext, handler: (url: string, init: any) => Response) {
@@ -64,7 +80,8 @@ test('ensureDocSync: active=true sin doc_prof_service_id previo → crea en Cuid
   });
 
   const result = await ensureDocSync({
-    catalogId, active: true, serviceName: 'Consulta de prueba doc-sync',
+    targetTable: 'service_catalog', targetId: catalogId,
+    active: true, serviceName: 'Consulta de prueba doc-sync',
     durationMinutes: 30, categoryGroup: '01 Consulta externa', description: null, price: 80000,
   });
 
@@ -95,7 +112,8 @@ test('ensureDocSync: active=true con doc_prof_service_id previo → borra el vie
   });
 
   const result = await ensureDocSync({
-    catalogId, active: true, serviceName: 'Consulta de prueba doc-sync',
+    targetTable: 'service_catalog', targetId: catalogId,
+    active: true, serviceName: 'Consulta de prueba doc-sync',
     durationMinutes: 45, categoryGroup: '01 Consulta externa', description: 'nueva descripción', price: 95000,
   });
 
@@ -123,7 +141,8 @@ test('ensureDocSync: active=true con doc_prof_service_id previo, delete OK pero 
   });
 
   const result = await ensureDocSync({
-    catalogId, active: true, serviceName: 'Consulta de prueba doc-sync',
+    targetTable: 'service_catalog', targetId: catalogId,
+    active: true, serviceName: 'Consulta de prueba doc-sync',
     durationMinutes: 30, categoryGroup: '01 Consulta externa', description: null, price: 80000,
   });
 
@@ -149,7 +168,8 @@ test('ensureDocSync: active=false con doc_prof_service_id previo → borra en Cu
   });
 
   const result = await ensureDocSync({
-    catalogId, active: false, serviceName: 'x', durationMinutes: 30,
+    targetTable: 'service_catalog', targetId: catalogId,
+    active: false, serviceName: 'x', durationMinutes: 30,
     categoryGroup: '01 Consulta externa', description: null, price: 0,
   });
 
@@ -164,7 +184,8 @@ test('ensureDocSync: active=false sin doc_prof_service_id previo → no hace nin
   fetchMock(t, (url) => { throw new Error(`fetch inesperado: ${url}`); });
 
   const result = await ensureDocSync({
-    catalogId, active: false, serviceName: 'x', durationMinutes: 30,
+    targetTable: 'service_catalog', targetId: catalogId,
+    active: false, serviceName: 'x', durationMinutes: 30,
     categoryGroup: '01 Consulta externa', description: null, price: 0,
   });
 
@@ -172,14 +193,15 @@ test('ensureDocSync: active=false sin doc_prof_service_id previo → no hace nin
   assert.equal(await getDocProfServiceId(catalogId), null);
 });
 
-test('ensureDocSync: si la consulta a la BD falla (catalogId inválido), retorna ok:false en vez de lanzar', async (t) => {
+test('ensureDocSync: si la consulta a la BD falla (targetId inválido), retorna ok:false en vez de lanzar', async (t) => {
   // No debería haber ninguna llamada de red: la excepción ocurre en el
   // primer SELECT (getCurrentDocProfServiceId) antes de tocar la red.
   fetchMock(t, (url) => { throw new Error(`fetch inesperado: ${url}`); });
 
   await assert.doesNotReject(async () => {
     const result = await ensureDocSync({
-      catalogId: 'not-a-valid-uuid', active: true, serviceName: 'x', durationMinutes: 30,
+      targetTable: 'service_catalog', targetId: 'not-a-valid-uuid',
+      active: true, serviceName: 'x', durationMinutes: 30,
       categoryGroup: '01 Consulta externa', description: null, price: 10000,
     });
     assert.equal(result.ok, false);
@@ -199,11 +221,40 @@ test('ensureDocSync: si CuidameDoc falla, retorna ok:false y no cambia el estado
   });
 
   const result = await ensureDocSync({
-    catalogId, active: true, serviceName: 'x', durationMinutes: 30,
+    targetTable: 'service_catalog', targetId: catalogId,
+    active: true, serviceName: 'x', durationMinutes: 30,
     categoryGroup: '01 Consulta externa', description: null, price: 10000,
   });
 
   assert.equal(result.ok, false);
   assert.ok(result.error);
   assert.equal(await getDocProfServiceId(catalogId), null);
+});
+
+test('ensureDocSync: targetTable "service_commercial" escribe en service_commercial, no en service_catalog', async (t) => {
+  const operativoId = await createTestCatalog();
+  const commercialId = await createTestCommercial(operativoId);
+  t.after(() => pool.query('DELETE FROM service_commercial WHERE id = $1', [commercialId]));
+  t.after(() => deleteTestCatalog(operativoId));
+
+  fetchMock(t, (url, init) => {
+    if (url.endsWith('/auth/login')) {
+      return new Response(JSON.stringify({ success: true, data: { access_token: 'tok1', refresh_token: 'ref1' } }), { status: 200 });
+    }
+    if (url.endsWith('/booking/my-services') && init?.method === 'POST') {
+      return new Response(JSON.stringify({ success: true, data: { prof_service_id: 999, service_id: 9, name: 'x' } }), { status: 201 });
+    }
+    return new Response(JSON.stringify({ success: false }), { status: 404 });
+  });
+
+  const result = await ensureDocSync({
+    targetTable: 'service_commercial', targetId: commercialId,
+    active: true, serviceName: 'Botox facial', durationMinutes: 30,
+    categoryGroup: '01 Consulta externa', description: 'desc', price: 150000,
+  });
+
+  assert.equal(result.ok, true);
+  assert.equal(await getCommercialDocProfServiceId(commercialId), 999);
+  // El operativo vinculado no debe haber sido tocado
+  assert.equal(await getDocProfServiceId(operativoId), null);
 });

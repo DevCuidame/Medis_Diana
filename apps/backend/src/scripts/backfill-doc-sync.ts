@@ -42,7 +42,8 @@ async function run() {
       continue;
     }
     const result = await ensureDocSync({
-      catalogId: row.id,
+      targetTable: 'service_catalog',
+      targetId: row.id,
       active: true,
       serviceName: row.service_name,
       durationMinutes: row.duration_minutes,
