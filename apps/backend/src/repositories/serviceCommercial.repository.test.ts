@@ -100,15 +100,18 @@ test('create(): rechaza un operativoId que no existe (FK)', async () => {
 
 test('findPublishedByOperativoId: solo trae comerciales con doc_prof_service_id no nulo, de ese operativo', async (t) => {
   const operativo = await createTestOperativo();
-  t.after(() => pool.query('DELETE FROM service_catalog WHERE id = $1', [operativo.id]));
-
   const otroOperativo = await createTestOperativo();
-  t.after(() => pool.query('DELETE FROM service_catalog WHERE id = $1', [otroOperativo.id]));
 
   const published = await ServiceCommercialRepository.create({ name: 'Publicado', operativoId: operativo.id });
   const unpublished = await ServiceCommercialRepository.create({ name: 'Sin publicar', operativoId: operativo.id });
   const publishedOther = await ServiceCommercialRepository.create({ name: 'Publicado de otro operativo', operativoId: otroOperativo.id });
-  t.after(() => pool.query('DELETE FROM service_commercial WHERE id = ANY($1)', [[published.id, unpublished.id, publishedOther.id]]));
+  // service_commercial.operativo_id es ON DELETE RESTRICT — un solo hook
+  // con deletes secuenciales (comerciales antes que operativos).
+  t.after(async () => {
+    await pool.query('DELETE FROM service_commercial WHERE id = ANY($1)', [[published.id, unpublished.id, publishedOther.id]]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [operativo.id]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [otroOperativo.id]);
+  });
 
   await pool.query('UPDATE service_commercial SET doc_prof_service_id = 111 WHERE id = $1', [published.id]);
   await pool.query('UPDATE service_commercial SET doc_prof_service_id = 222 WHERE id = $1', [publishedOther.id]);

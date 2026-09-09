@@ -33,20 +33,29 @@ async function createOperativoConOferta(overrides: { durationMinutes?: number; b
   return { catalogId: catalog.id, locationId, offerId: offer.id };
 }
 
-async function cleanup(t: TestContext, ids: { catalogId: string; locationId: string; offerId: string }) {
-  t.after(() => pool.query('DELETE FROM service_offers WHERE id = $1', [ids.offerId]));
-  t.after(() => pool.query('DELETE FROM locations WHERE id = $1', [ids.locationId]));
-  t.after(() => pool.query('DELETE FROM service_catalog WHERE id = $1', [ids.catalogId]));
+// service_offers.catalog_id, service_offers.location_id y
+// service_commercial.operativo_id son todos ON DELETE RESTRICT. Un solo
+// hook con deletes secuenciales (hijos antes que padres) — no depende de
+// en qué orden (o con cuánto solapamiento) Node ejecuta varios t.after()
+// por separado, que contra la BD real resultó no ser fiable.
+async function cleanup(t: TestContext, ids: { catalogId: string; locationId: string; offerId: string; commercialIds?: string[] }) {
+  t.after(async () => {
+    if (ids.commercialIds?.length) {
+      await pool.query('DELETE FROM service_commercial WHERE id = ANY($1)', [ids.commercialIds]);
+    }
+    await pool.query('DELETE FROM service_offers WHERE id = $1', [ids.offerId]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [ids.catalogId]);
+    await pool.query('DELETE FROM locations WHERE id = $1', [ids.locationId]);
+  });
 }
 
 test('syncCommercialToDoc: hereda duración/categoría/precio del operativo, nombre/descripción del comercial', async (t) => {
   const ids = await createOperativoConOferta({ durationMinutes: 40, basePrice: 150000 });
-  await cleanup(t, ids);
 
   const commercial = await ServiceCommercialRepository.create({
     name: 'Botox facial premium', description: 'Ficha comercial', operativoId: ids.catalogId,
   });
-  t.after(() => pool.query('DELETE FROM service_commercial WHERE id = $1', [commercial.id]));
+  await cleanup(t, { ...ids, commercialIds: [commercial.id] });
 
   let sentBody: any;
   fetchMock(t, (url, init) => {
@@ -74,10 +83,12 @@ test('syncCommercialToDoc: operativo sin ninguna oferta configurada y active=tru
   const catalog = await ServiceCatalogRepository.create({
     serviceName: 'Operativo sin sesiones', categoryGroup: '01 Consulta externa', basePrice: 90000, isActive: true,
   });
-  t.after(() => pool.query('DELETE FROM service_catalog WHERE id = $1', [catalog.id]));
 
   const commercial = await ServiceCommercialRepository.create({ name: 'Comercial huérfano de sesión', operativoId: catalog.id });
-  t.after(() => pool.query('DELETE FROM service_commercial WHERE id = $1', [commercial.id]));
+  t.after(async () => {
+    await pool.query('DELETE FROM service_commercial WHERE id = $1', [commercial.id]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalog.id]);
+  });
 
   fetchMock(t, (url) => { throw new Error(`fetch inesperado: ${url}`); });
 
@@ -90,10 +101,12 @@ test('syncCommercialToDoc: active=false no requiere que el operativo tenga ofert
   const catalog = await ServiceCatalogRepository.create({
     serviceName: 'Operativo sin sesiones 2', categoryGroup: '01 Consulta externa', basePrice: 90000, isActive: true,
   });
-  t.after(() => pool.query('DELETE FROM service_catalog WHERE id = $1', [catalog.id]));
 
   const commercial = await ServiceCommercialRepository.create({ name: 'Comercial a despublicar', operativoId: catalog.id, isActive: false });
-  t.after(() => pool.query('DELETE FROM service_commercial WHERE id = $1', [commercial.id]));
+  t.after(async () => {
+    await pool.query('DELETE FROM service_commercial WHERE id = $1', [commercial.id]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalog.id]);
+  });
 
   fetchMock(t, (url) => { throw new Error(`fetch inesperado: ${url}`); });
 
@@ -103,11 +116,10 @@ test('syncCommercialToDoc: active=false no requiere que el operativo tenga ofert
 
 test('resyncPublishedCommercialsForOperativo: re-sincroniza cada comercial publicado, ignora los no publicados', async (t) => {
   const ids = await createOperativoConOferta({ durationMinutes: 50, basePrice: 200000 });
-  await cleanup(t, ids);
 
   const published = await ServiceCommercialRepository.create({ name: 'Publicado', operativoId: ids.catalogId });
   const unpublished = await ServiceCommercialRepository.create({ name: 'Sin publicar', operativoId: ids.catalogId });
-  t.after(() => pool.query('DELETE FROM service_commercial WHERE id = ANY($1)', [[published.id, unpublished.id]]));
+  await cleanup(t, { ...ids, commercialIds: [published.id, unpublished.id] });
   await pool.query('UPDATE service_commercial SET doc_prof_service_id = 999 WHERE id = $1', [published.id]);
 
   const calls: string[] = [];

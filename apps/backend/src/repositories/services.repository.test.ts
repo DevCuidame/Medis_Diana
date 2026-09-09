@@ -37,10 +37,8 @@ test('findWithRepresentativeOffer: con ofertas → trae duración y profesional 
   const catalog = await ServiceCatalogRepository.create({
     serviceName: 'Operativo con ofertas', categoryGroup: '02 Apoyo diagnóstico y complementación terapéutica', basePrice: 120000, isActive: true,
   });
-  t.after(() => pool.query('DELETE FROM service_catalog WHERE id = $1', [catalog.id]));
 
   const locationId = await createTestLocation();
-  t.after(() => pool.query('DELETE FROM locations WHERE id = $1', [locationId]));
   const adminId = await createTestAdmin();
 
   const offer1 = await ServiceOfferRepository.create({
@@ -52,7 +50,17 @@ test('findWithRepresentativeOffer: con ofertas → trae duración y profesional 
     catalogId: catalog.id, locationId, offerType: 'appointment', title: 'Sesión 2',
     capacity: 1, durationMinutes: 45, scheduledAt: new Date(Date.now() + 7200_000).toISOString(),
   } as any, adminId);
-  t.after(() => pool.query('DELETE FROM service_offers WHERE id = ANY($1)', [[offer1.id, offer2.id]]));
+  // Un solo hook con deletes secuenciales (service_offers.catalog_id y
+  // .location_id son ambos ON DELETE RESTRICT — la oferta debe borrarse
+  // antes que el catálogo y la sede). Un solo hook con await interno, en
+  // vez de varios t.after() separados, evita depender de en qué orden (o
+  // con cuánto solapamiento) Node ejecuta múltiples hooks — algo que en la
+  // práctica contra la BD real resultó no ser fiable.
+  t.after(async () => {
+    await pool.query('DELETE FROM service_offers WHERE id = ANY($1)', [[offer1.id, offer2.id]]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [catalog.id]);
+    await pool.query('DELETE FROM locations WHERE id = $1', [locationId]);
+  });
 
   const found = await ServiceCatalogRepository.findWithRepresentativeOffer(catalog.id);
   assert.ok(found!.representativeOffer);

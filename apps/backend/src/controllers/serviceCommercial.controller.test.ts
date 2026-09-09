@@ -139,9 +139,6 @@ async function createTestOperativoConOferta(): Promise<string> {
 
 test('createCommercial: isActive=true publica en CuidameDoc y guarda docProfServiceId', async (t) => {
   const operativoId = await createTestOperativoConOferta();
-  t.after(() => pool.query('DELETE FROM service_offers WHERE catalog_id = $1', [operativoId]));
-  t.after(() => pool.query('DELETE FROM locations WHERE name LIKE $1', ['Sede serviceCommercial controller test%']));
-  t.after(() => pool.query('DELETE FROM service_catalog WHERE id = $1', [operativoId]));
 
   fetchMock(t, (url, init) => {
     if (url.endsWith('/auth/login')) {
@@ -156,7 +153,15 @@ test('createCommercial: isActive=true publica en CuidameDoc y guarda docProfServ
   const req: any = { body: { name: 'Botox facial', operativoId } };
   const res = makeRes();
   await createCommercial(req, res);
-  t.after(() => pool.query('DELETE FROM service_commercial WHERE id = $1', [res.body.data.id]));
+  // service_offers.catalog_id y service_commercial.operativo_id son ON
+  // DELETE RESTRICT — un solo hook con deletes secuenciales (hijos antes
+  // que padres).
+  t.after(async () => {
+    await pool.query('DELETE FROM service_commercial WHERE id = $1', [res.body.data.id]);
+    await pool.query('DELETE FROM service_offers WHERE catalog_id = $1', [operativoId]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [operativoId]);
+    await pool.query('DELETE FROM locations WHERE name LIKE $1', ['Sede serviceCommercial controller test%']);
+  });
 
   assert.equal(res.body.docSync.ok, true);
   assert.equal(res.body.data.docProfServiceId, 4242);
@@ -164,16 +169,18 @@ test('createCommercial: isActive=true publica en CuidameDoc y guarda docProfServ
 
 test('updateCommercial: activar un comercial ya creado inactivo lo publica en CuidameDoc', async (t) => {
   const operativoId = await createTestOperativoConOferta();
-  t.after(() => pool.query('DELETE FROM service_offers WHERE catalog_id = $1', [operativoId]));
-  t.after(() => pool.query('DELETE FROM locations WHERE name LIKE $1', ['Sede serviceCommercial controller test%']));
-  t.after(() => pool.query('DELETE FROM service_catalog WHERE id = $1', [operativoId]));
 
   fetchMock(t, (url) => { throw new Error(`fetch inesperado: ${url}`); });
   const createReq: any = { body: { name: 'Inicialmente inactivo', operativoId, isActive: false } };
   const createRes = makeRes();
   await createCommercial(createReq, createRes);
   const id = createRes.body.data.id;
-  t.after(() => pool.query('DELETE FROM service_commercial WHERE id = $1', [id]));
+  t.after(async () => {
+    await pool.query('DELETE FROM service_commercial WHERE id = $1', [id]);
+    await pool.query('DELETE FROM service_offers WHERE catalog_id = $1', [operativoId]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [operativoId]);
+    await pool.query('DELETE FROM locations WHERE name LIKE $1', ['Sede serviceCommercial controller test%']);
+  });
   assert.equal(createRes.body.docSync.ok, true); // active=false, sin llamadas de red
 
   fetchMock(t, (url, init) => {
@@ -224,7 +231,6 @@ test('deleteCommercial: si estaba publicado, lo despublica en CuidameDoc antes d
 
 test('updateCommercial: editar sin tocar campos relevantes no re-sincroniza', async (t) => {
   const operativoId = await createTestOperativo();
-  t.after(() => pool.query('DELETE FROM service_catalog WHERE id = $1', [operativoId]));
 
   fetchMock(t, (url) => { throw new Error(`fetch inesperado: ${url}`); });
 
@@ -232,7 +238,10 @@ test('updateCommercial: editar sin tocar campos relevantes no re-sincroniza', as
   const createRes = makeRes();
   await createCommercial(createReq, createRes);
   const id = createRes.body.data.id;
-  t.after(() => pool.query('DELETE FROM service_commercial WHERE id = $1', [id]));
+  t.after(async () => {
+    await pool.query('DELETE FROM service_commercial WHERE id = $1', [id]);
+    await pool.query('DELETE FROM service_catalog WHERE id = $1', [operativoId]);
+  });
 
   // Update que no toca name/description/operativoId/isActive → no debe llamar ensureDocSync
   const updateReq: any = { params: { id }, body: { imageUrl: 'data:image/png;base64,AAA=' } };
