@@ -45,6 +45,14 @@ export const ServiceCommercialRepository = {
     return rows[0] ? rowToCommercial(rows[0]) : null;
   },
 
+  async findPublishedByOperativoId(operativoId: string): Promise<ServiceCommercialPublic[]> {
+    const { rows } = await pool.query(
+      `${SELECT} WHERE sc.operativo_id = $1 AND sc.doc_prof_service_id IS NOT NULL`,
+      [operativoId]
+    );
+    return rows.map(rowToCommercial);
+  },
+
   async create(data: CreateServiceCommercialPayload): Promise<ServiceCommercialPublic> {
     const { rows } = await pool.query(
       `INSERT INTO service_commercial (name, description, image_url, operativo_id, is_active)

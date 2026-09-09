@@ -204,7 +204,56 @@ export const ServiceCatalogRepository = {
        ORDER BY service_name`
     );
     return rows;
-  }
+  },
+
+  /**
+   * Datos del operativo + su oferta más reciente (duration_minutes,
+   * professional_id) en una sola consulta. `service_catalog` no tiene
+   * columnas propias de duración/profesional — esos viven en
+   * `service_offers` — así que "la oferta representativa" es la más
+   * recientemente creada bajo este operativo. Usado para heredar
+   * duración/categoría/precio/profesional al publicar un comercial en
+   * CuidameDoc (ver commercialDocSync.service.ts).
+   */
+  async findWithRepresentativeOffer(id: string): Promise<{
+    id: string;
+    serviceName: string;
+    categoryGroup: string | null;
+    basePrice: number;
+    isActive: boolean;
+    representativeOffer: { durationMinutes: number; professionalUserId: string | null } | null;
+  } | null> {
+    const { rows } = await pool.query(
+      `SELECT
+         c.id, c.service_name AS "serviceName", c.category_group AS "categoryGroup",
+         c.base_price AS "basePrice", c.is_active AS "isActive",
+         o.duration_minutes AS "offerDurationMinutes", o.professional_id AS "offerProfessionalId"
+       FROM service_catalog c
+       LEFT JOIN LATERAL (
+         SELECT duration_minutes, professional_id
+         FROM service_offers
+         WHERE catalog_id = c.id
+         ORDER BY created_at DESC
+         LIMIT 1
+       ) o ON true
+       WHERE c.id = $1`,
+      [id]
+    );
+    if (!rows[0]) return null;
+    const row = rows[0];
+    return {
+      id: row.id,
+      serviceName: row.serviceName,
+      categoryGroup: row.categoryGroup,
+      // NUMERIC llega como string de pg (sin type parser registrado) —
+      // mismo guard que ya usa buildDocSyncParams en services.controller.ts.
+      basePrice: Number(row.basePrice ?? 0),
+      isActive: row.isActive,
+      representativeOffer: row.offerDurationMinutes != null
+        ? { durationMinutes: row.offerDurationMinutes, professionalUserId: row.offerProfessionalId ?? null }
+        : null,
+    };
+  },
 };
 
 // ─── SERVICE OFFERS ──────────────────────────────────────────
