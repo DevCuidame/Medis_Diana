@@ -13,28 +13,22 @@ export default function FinalCTA() {
         position: 'relative',
         padding: 'clamp(4rem, 12vw, 9rem) 1.5rem',
         overflow: 'hidden',
-        background: '#1B1C1C',
+        background: 'linear-gradient(160deg, #0F172A 0%, #0D9488 65%, #44CFCB 130%)',
       }}
     >
-      {/* Warm atmospheric background */}
+      {/* Atmospheric glow */}
       <div style={{
         position: 'absolute', inset: 0,
-        background: 'radial-gradient(ellipse 90% 70% at 50% 50%, rgba(139,92,246,0.28) 0%, transparent 70%)',
-        pointerEvents: 'none',
-      }} />
-      <div style={{
-        position: 'absolute', top: '0%', left: '0%',
-        width: '60%', height: '100%',
-        background: 'radial-gradient(ellipse 80% 90% at 0% 50%, rgba(59,130,246,0.12) 0%, transparent 65%)',
+        background: 'radial-gradient(ellipse 90% 70% at 50% 50%, rgba(68,207,203,0.22) 0%, transparent 70%)',
         pointerEvents: 'none',
       }} />
       <div style={{
         position: 'absolute', inset: 0,
-        backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(139,92,246,0.03) 60px, rgba(139,92,246,0.03) 61px)`,
+        backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.035) 60px, rgba(255,255,255,0.035) 61px)`,
         pointerEvents: 'none',
       }} />
 
-      {/* Floating orbs */}
+      {/* Floating glow orbs */}
       {[
         { size: 350, top: '10%', left: '-5%', delay: 0 },
         { size: 250, top: '50%', right: '0%', delay: 2 },
@@ -43,12 +37,12 @@ export default function FinalCTA() {
         <motion.div
           key={i}
           initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 0.4, 0.2, 0.5, 0] }}
+          animate={{ opacity: [0, 0.35, 0.18, 0.4, 0] }}
           transition={{ duration: 12 + delay, repeat: Infinity, delay, ease: 'easeInOut' }}
           style={{
             position: 'absolute', top, left, right, bottom,
             width: size, height: size, borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(139,92,246,0.30) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(255,255,255,0.22) 0%, transparent 70%)',
             filter: 'blur(70px)',
             pointerEvents: 'none',
           }}
@@ -65,14 +59,11 @@ export default function FinalCTA() {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           style={{
-            fontFamily: 'Inter, sans-serif', fontSize: '0.72rem', letterSpacing: '0.35em',
-            textTransform: 'uppercase', color: '#8B5CF6', marginBottom: '1.5rem',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem',
+            fontFamily: 'Inter, sans-serif', fontSize: '0.78rem', letterSpacing: '0.08em',
+            textTransform: 'uppercase', color: '#99F6E4', fontWeight: 600, marginBottom: '1.5rem',
           }}
         >
-          <span style={{ display: 'inline-block', width: 28, height: 1, background: 'linear-gradient(90deg,#8B5CF6,#3B82F6)' }} />
           Agenda tu Consulta
-          <span style={{ display: 'inline-block', width: 28, height: 1, background: 'linear-gradient(90deg,#3B82F6,#8B5CF6)' }} />
         </motion.p>
 
         {/* Main headline */}
@@ -80,11 +71,11 @@ export default function FinalCTA() {
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="font-cormorant"
+          className="font-manrope"
           style={{
-            fontSize: 'clamp(3rem, 7vw, 6.5rem)',
-            fontWeight: 300,
-            lineHeight: 0.95,
+            fontSize: 'clamp(2.6rem, 6vw, 5rem)',
+            fontWeight: 800,
+            lineHeight: 1.02,
             color: '#FFFFFF',
             marginBottom: '2rem',
             letterSpacing: '-0.02em',
@@ -92,9 +83,7 @@ export default function FinalCTA() {
         >
           Tu salud
           <br />
-          <em style={{ fontStyle: 'italic', background: 'linear-gradient(135deg, #8B5CF6, #3B82F6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-            es lo primero
-          </em>
+          es lo primero
         </motion.h2>
 
         {/* Subtext */}
@@ -106,14 +95,14 @@ export default function FinalCTA() {
             fontFamily: 'Inter, sans-serif',
             fontSize: '1rem',
             lineHeight: 1.8,
-            color: 'rgba(251,249,248,0.60)',
+            color: 'rgba(255,255,255,0.78)',
             maxWidth: '550px',
             margin: '0 auto 3rem',
-            fontWeight: 300,
+            fontWeight: 400,
           }}
         >
           Da el primer paso hacia una atención médica cercana y de calidad.
-          La Dra. Diana Medina Camargo está lista para acompañarte.
+          La Dra. OpiMed está lista para acompañarte.
         </motion.p>
 
         {/* Buttons */}
@@ -126,20 +115,20 @@ export default function FinalCTA() {
           <motion.a
             href="/agendar"
             onClick={(e) => { e.preventDefault(); navigate('/agendar'); }}
-            whileHover={{ scale: 1.05, boxShadow: '0 16px 50px rgba(139,92,246,0.60)' }}
+            whileHover={{ scale: 1.05, boxShadow: '0 16px 50px rgba(0,0,0,0.25)' }}
             whileTap={{ scale: 0.97 }}
-            className="brand-gradient"
             style={{
               padding: '1.1rem 2.8rem',
               borderRadius: '9999px',
-              color: '#fff',
+              color: '#0D9488',
+              background: '#FFFFFF',
               textDecoration: 'none',
               fontFamily: 'Inter, sans-serif',
               fontSize: '0.8rem',
               letterSpacing: '0.12em',
               textTransform: 'uppercase',
-              fontWeight: 600,
-              boxShadow: '0 10px 40px rgba(139,92,246,0.40)',
+              fontWeight: 700,
+              boxShadow: '0 10px 40px rgba(0,0,0,0.18)',
               transition: 'box-shadow 0.4s ease',
             }}
           >
@@ -150,8 +139,7 @@ export default function FinalCTA() {
             href="#servicios"
             whileHover={{
               scale: 1.05,
-              backgroundColor: 'rgba(255,255,255,0.12)',
-              boxShadow: '0 8px 32px rgba(139,92,246,0.20)',
+              backgroundColor: 'rgba(255,255,255,0.14)',
             }}
             whileTap={{ scale: 0.97 }}
             style={{
@@ -164,8 +152,8 @@ export default function FinalCTA() {
               letterSpacing: '0.12em',
               textTransform: 'uppercase',
               fontWeight: 500,
-              background: 'rgba(255,255,255,0.07)',
-              border: '1px solid rgba(139,92,246,0.40)',
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.35)',
               backdropFilter: 'blur(10px)',
               transition: 'all 0.4s ease',
             }}
@@ -174,7 +162,7 @@ export default function FinalCTA() {
           </motion.a>
         </motion.div>
 
-        {/* Decorative gold divider */}
+        {/* Decorative divider */}
         <motion.div
           initial={{ scaleX: 0, opacity: 0 }}
           animate={inView ? { scaleX: 1, opacity: 1 } : {}}
@@ -182,7 +170,7 @@ export default function FinalCTA() {
           style={{
             marginTop: '5rem',
             height: 1,
-            background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.40), transparent)',
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)',
             transformOrigin: 'center',
           }}
         />
@@ -206,8 +194,8 @@ export default function FinalCTA() {
             { icon: '❋', label: 'Médica certificada' },
           ].map(({ icon, label }) => (
             <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-              <span style={{ color: '#8B5CF6', fontSize: '0.85rem' }}>{icon}</span>
-              <span style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.72rem', letterSpacing: '0.08em', color: 'rgba(251,249,248,0.45)', textTransform: 'uppercase' }}>
+              <span style={{ color: '#99F6E4', fontSize: '0.85rem' }}>{icon}</span>
+              <span style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.72rem', letterSpacing: '0.06em', color: 'rgba(255,255,255,0.75)', textTransform: 'uppercase' }}>
                 {label}
               </span>
             </div>

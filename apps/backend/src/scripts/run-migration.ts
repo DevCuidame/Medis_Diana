@@ -30,7 +30,7 @@ async function setupDatabase() {
   const port = parsed.port || '5432';
   const databaseName = parsed.pathname.substring(1);
 
-  // 1. Connect to postgres database to ensure medisdiana_db exists
+  // 1. Connect to postgres database to ensure medisopimed_db exists
   console.log(`🔌 Connecting to default 'postgres' database at ${host}:${port}...`);
   const defaultClient = new Client({
     host,
@@ -62,7 +62,7 @@ async function setupDatabase() {
     await defaultClient.end();
   }
 
-  // 2. Establish connection to medisdiana_db
+  // 2. Establish connection to medisopimed_db
   console.log(`🔌 Connecting to target database "${databaseName}"...`);
   const pool = new Pool({ connectionString });
 
@@ -165,6 +165,60 @@ async function setupDatabase() {
     );
     await pool.query(sql011);
     console.log('✅ Migration 011 successful!');
+
+    // Run migration 012
+    console.log('🔄 Running migration 012 (Enrollment Groups)...');
+    const sql012 = fs.readFileSync(
+      path.resolve('migrations', '012_enrollment_groups.sql'),
+      'utf8'
+    );
+    await pool.query(sql012);
+    console.log('✅ Migration 012 successful!');
+
+    // Run migration 013
+    console.log('🔄 Running migration 013 (Booking Payment Fields)...');
+    const sql013 = fs.readFileSync(
+      path.resolve('migrations', '013_booking_payment_fields.sql'),
+      'utf8'
+    );
+    await pool.query(sql013);
+    console.log('✅ Migration 013 successful!');
+
+    // Run migration 014
+    console.log('🔄 Running migration 014 (Service Category)...');
+    const sql014 = fs.readFileSync(
+      path.resolve('migrations', '014_service_category.sql'),
+      'utf8'
+    );
+    await pool.query(sql014);
+    console.log('✅ Migration 014 successful!');
+
+    // Run migration 015
+    console.log('🔄 Running migration 015 (Operating Hours Blocks)...');
+    const sql015 = fs.readFileSync(
+      path.resolve('migrations', '015_operating_hours_blocks.sql'),
+      'utf8'
+    );
+    await pool.query(sql015);
+    console.log('✅ Migration 015 successful!');
+
+    // Run migration 016
+    console.log('🔄 Running migration 016 (Discounts)...');
+    const sql016 = fs.readFileSync(
+      path.resolve('migrations', '016_discounts.sql'),
+      'utf8'
+    );
+    await pool.query(sql016);
+    console.log('✅ Migration 016 successful!');
+
+    // Run migration 017
+    console.log('🔄 Running migration 017 (Registration Identity Fields)...');
+    const sql017 = fs.readFileSync(
+      path.resolve('migrations', '017_registration_identity_fields.sql'),
+      'utf8'
+    );
+    await pool.query(sql017);
+    console.log('✅ Migration 017 successful!');
 
     // Run migration 018
     console.log('🔄 Running migration 018 (RIPS Service Catalog)...');

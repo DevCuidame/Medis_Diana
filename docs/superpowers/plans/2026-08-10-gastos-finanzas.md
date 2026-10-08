@@ -27,7 +27,7 @@
 ## Global Constraints
 
 - No ORM — raw SQL via `pool` from `@config/database.js` (CLAUDE.md regla crítica #3).
-- Migrations are idempotent and re-run in full on every `pnpm -F @medisdiana/backend migrate` — use `CREATE TABLE IF NOT EXISTS`.
+- Migrations are idempotent and re-run in full on every `pnpm -F @medisopimed/backend migrate` — use `CREATE TABLE IF NOT EXISTS`.
 - New migration file: `apps/backend/migrations/026_expenses.sql`, registered in `apps/backend/src/scripts/run-migration.ts` (migrations are manually listed, not auto-discovered).
 - `expense_date` is a plain SQL `DATE` — always select it as `TO_CHAR(expense_date, 'YYYY-MM-DD') AS "expenseDate"` (never let `pg`'s default `Date`-object parsing leak through) so the value is a plain `"YYYY-MM-DD"` string end to end: no timezone-shift bugs, and it matches exactly what `<input type="date">` and simple `string.startsWith(...)` month-filtering expect.
 - All `/expenses` endpoints require `authenticate, authorize('ADMIN')` — unlike Sedes/Espacios (left unprotected by an earlier, unrelated decision), financial data gets no exception.
@@ -86,7 +86,7 @@ In `apps/backend/src/scripts/run-migration.ts`, add right after the migration 02
 
 - [ ] **Step 3: Run the migration**
 
-Run: `pnpm -F @medisdiana/backend migrate`
+Run: `pnpm -F @medisopimed/backend migrate`
 Expected: ends with `✅ Migration 026 successful!` then `🌟 MIGRATIONS COMPLETE! 🌟`. If `DATABASE_URL` is unreachable, re-establish the SSH tunnel the same way it was done earlier in this project — don't touch `.env`.
 
 - [ ] **Step 4: Verify**
@@ -309,7 +309,7 @@ router.use('/expenses', expenseRoutes);
 
 - [ ] **Step 6: Verify build**
 
-Run: `pnpm -F @medisdiana/backend build`
+Run: `pnpm -F @medisopimed/backend build`
 Expected: no new TypeScript errors (pre-existing unrelated errors in `docAppointments.*`/`docServices.routes.ts`/`run-migration.ts`'s unused import are fine — confirmed pre-dating this work).
 
 - [ ] **Step 7: Manual smoke test against the real API**
@@ -336,9 +336,9 @@ git commit -m "feat(expenses): add CRUD API for clinic expenses"
 **Depends on:** none to write/typecheck (contract fixed above); Task 2 deployed for real manual testing.
 
 **Files:**
-- Create: `medisdiana-landing/src/lib/schemas/gastoSchema.ts`
-- Create: `medisdiana-landing/src/components/admin/GastoTypes.ts`
-- Create: `medisdiana-landing/src/components/admin/FormularioGasto.tsx`
+- Create: `medisopimed-landing/src/lib/schemas/gastoSchema.ts`
+- Create: `medisopimed-landing/src/components/admin/GastoTypes.ts`
+- Create: `medisopimed-landing/src/components/admin/FormularioGasto.tsx`
 
 **Interfaces:**
 - Produces: `GastoFormValues = { description: string; amount: number; category: string; expenseDate: string }` (Task 4 imports this). `Gasto = GastoFormValues & { id: string }`, `ModalGastoState` (Task 4 imports these).
@@ -346,7 +346,7 @@ git commit -m "feat(expenses): add CRUD API for clinic expenses"
 
 - [ ] **Step 1: Zod schema**
 
-Create `medisdiana-landing/src/lib/schemas/gastoSchema.ts`:
+Create `medisopimed-landing/src/lib/schemas/gastoSchema.ts`:
 
 ```ts
 import { z } from 'zod';
@@ -363,7 +363,7 @@ export type GastoFormValues = z.infer<typeof gastoSchema>;
 
 - [ ] **Step 2: Types**
 
-Create `medisdiana-landing/src/components/admin/GastoTypes.ts`:
+Create `medisopimed-landing/src/components/admin/GastoTypes.ts`:
 
 ```ts
 import type { GastoFormValues } from '../../lib/schemas/gastoSchema';
@@ -379,7 +379,7 @@ export type ModalGastoState =
 
 - [ ] **Step 3: Form component**
 
-Create `medisdiana-landing/src/components/admin/FormularioGasto.tsx`:
+Create `medisopimed-landing/src/components/admin/FormularioGasto.tsx`:
 
 ```tsx
 import React from 'react';
@@ -529,13 +529,13 @@ export const FormularioGasto: React.FC<FormularioGastoProps> = ({ initialData, o
 
 - [ ] **Step 4: Typecheck**
 
-Run: `pnpm -F medisdiana-landing exec tsc --noEmit`
+Run: `pnpm -F medisopimed-landing exec tsc --noEmit`
 Expected: no new errors (existing `GastoTypes.ts`/`FormularioGasto.tsx` are new, self-contained files — nothing else imports them yet at this point in the plan).
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add medisdiana-landing/src/lib/schemas/gastoSchema.ts medisdiana-landing/src/components/admin/GastoTypes.ts medisdiana-landing/src/components/admin/FormularioGasto.tsx
+git add medisopimed-landing/src/lib/schemas/gastoSchema.ts medisopimed-landing/src/components/admin/GastoTypes.ts medisopimed-landing/src/components/admin/FormularioGasto.tsx
 git commit -m "feat(admin): add gasto schema and form component"
 ```
 
@@ -546,7 +546,7 @@ git commit -m "feat(admin): add gasto schema and form component"
 **Depends on:** Task 3 (imports `GastoFormValues`, `Gasto`, `ModalGastoState`, `FormularioGasto`). Task 2 deployed for real manual testing.
 
 **Files:**
-- Create: `medisdiana-landing/src/components/admin/GastosDashboard.tsx`
+- Create: `medisopimed-landing/src/components/admin/GastosDashboard.tsx`
 
 **Interfaces:**
 - Consumes: `GET /expenses`, `POST /expenses`, `PATCH /expenses/:id`, `DELETE /expenses/:id` (Task 2's exact contract — `ExpensePublic` shape maps 1:1 onto `Gasto`).
@@ -554,7 +554,7 @@ git commit -m "feat(admin): add gasto schema and form component"
 
 - [ ] **Step 1: Write the component**
 
-Create `medisdiana-landing/src/components/admin/GastosDashboard.tsx`:
+Create `medisopimed-landing/src/components/admin/GastosDashboard.tsx`:
 
 ```tsx
 import React, { useState, useEffect, useMemo } from 'react';
@@ -835,13 +835,13 @@ export const GastosDashboard: React.FC = () => {
 
 - [ ] **Step 2: Typecheck**
 
-Run: `pnpm -F medisdiana-landing exec tsc --noEmit`
+Run: `pnpm -F medisopimed-landing exec tsc --noEmit`
 Expected: no new errors.
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add medisdiana-landing/src/components/admin/GastosDashboard.tsx
+git add medisopimed-landing/src/components/admin/GastosDashboard.tsx
 git commit -m "feat(admin): add GastosDashboard CRUD screen"
 ```
 
@@ -852,15 +852,15 @@ git commit -m "feat(admin): add GastosDashboard CRUD screen"
 **Depends on:** Task 4 (`GastosDashboard` must exist to be imported/routed).
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/admin/AdminSidebar.tsx`
-- Modify: `medisdiana-landing/src/App.tsx`
+- Modify: `medisopimed-landing/src/components/admin/AdminSidebar.tsx`
+- Modify: `medisopimed-landing/src/App.tsx`
 
 **Interfaces:**
 - Produces: route `/admin/finances/expenses` rendering `GastosDashboard`; sidebar "Finanzas" expands into "Pagos" (`/admin/finances`) and "Gastos" (`/admin/finances/expenses`), exactly like "Infraestructura" today.
 
 - [ ] **Step 1: Convert "Finanzas" into an expandable item**
 
-In `medisdiana-landing/src/components/admin/AdminSidebar.tsx`, change the `NAV_ITEMS` entry (line 39):
+In `medisopimed-landing/src/components/admin/AdminSidebar.tsx`, change the `NAV_ITEMS` entry (line 39):
 
 ```ts
   { icon: DollarSign,      label: 'Finanzas',        match: ['/admin/finances'] },
@@ -939,7 +939,7 @@ Update the submenu `AnimatePresence` block (line 160-176) — currently hardcode
 
 - [ ] **Step 3: Add the route**
 
-In `medisdiana-landing/src/App.tsx`, add the lazy import (after `FinanzasDashboard`, line 29):
+In `medisopimed-landing/src/App.tsx`, add the lazy import (after `FinanzasDashboard`, line 29):
 
 ```ts
 const GastosDashboard       = lazy(() => import('./components/admin/GastosDashboard').then(m => ({ default: m.GastosDashboard })))
@@ -960,7 +960,7 @@ Add the route (after the `/admin/finances` route block):
 
 - [ ] **Step 4: Typecheck**
 
-Run: `pnpm -F medisdiana-landing exec tsc --noEmit`
+Run: `pnpm -F medisopimed-landing exec tsc --noEmit`
 Expected: no new errors.
 
 - [ ] **Step 5: Manual verification**
@@ -970,7 +970,7 @@ With both dev servers running: open the admin panel, click "Finanzas" in the sid
 - [ ] **Step 6: Commit**
 
 ```bash
-git add medisdiana-landing/src/components/admin/AdminSidebar.tsx medisdiana-landing/src/App.tsx
+git add medisopimed-landing/src/components/admin/AdminSidebar.tsx medisopimed-landing/src/App.tsx
 git commit -m "feat(admin): add Pagos/Gastos submenu under Finanzas"
 ```
 
@@ -981,7 +981,7 @@ git commit -m "feat(admin): add Pagos/Gastos submenu under Finanzas"
 **Depends on:** Task 2 (endpoint contract). Independent of Tasks 3-5's files (different component).
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/admin/FinanzasDashboard.tsx`
+- Modify: `medisopimed-landing/src/components/admin/FinanzasDashboard.tsx`
 
 **Interfaces:**
 - Consumes: `GET /expenses` → `{success:true, data:{expenses: {id,description,amount,category,expenseDate}[]}}` (Task 2).
@@ -1053,7 +1053,7 @@ In the `useEffect` at line 350-364, replace the hardcoded `egresos: 0` and recom
 
 - [ ] **Step 4: Typecheck**
 
-Run: `pnpm -F medisdiana-landing exec tsc --noEmit`
+Run: `pnpm -F medisopimed-landing exec tsc --noEmit`
 Expected: no new errors.
 
 - [ ] **Step 5: Manual verification**
@@ -1063,7 +1063,7 @@ With a real expense dated in the current month (create one via the Gastos screen
 - [ ] **Step 6: Commit**
 
 ```bash
-git add medisdiana-landing/src/components/admin/FinanzasDashboard.tsx
+git add medisopimed-landing/src/components/admin/FinanzasDashboard.tsx
 git commit -m "feat(finanzas): connect Egresos/Balance KPIs to real expense data"
 ```
 
@@ -1071,6 +1071,6 @@ git commit -m "feat(finanzas): connect Egresos/Balance KPIs to real expense data
 
 ## Final Integration Check (after all tasks land)
 
-- [ ] `pnpm -F @medisdiana/backend build` and `pnpm -F medisdiana-landing exec tsc --noEmit` — no new TypeScript errors anywhere.
+- [ ] `pnpm -F @medisopimed/backend build` and `pnpm -F medisopimed-landing exec tsc --noEmit` — no new TypeScript errors anywhere.
 - [ ] Full manual walkthrough: create a expense → appears in Gastos, counts in Pagos' Egresos/Balance if dated this month → edit it (change amount/date) → both screens update → delete it → both screens reflect the removal, and the delete-confirmation modal shows no error since expenses have no dependents to block deletion.
 - [ ] Update `arquitectura.md` with a short new section documenting `expenses` / the Pagos-Gastos submenu split, mirroring the style of the existing "Sincronización de Servicios Medis → CuidameDoc" section (CLAUDE.md regla crítica #1).

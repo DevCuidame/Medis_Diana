@@ -1,7 +1,7 @@
 -- ============================================================
 -- Migration 001: Users & Auth
 -- ============================================================
--- Run: psql -d medisdiana_db -f migrations/001_create_users.sql
+-- Run: psql -d medisopimed_db -f migrations/001_create_users.sql
 -- ============================================================
 
 -- 1. Enum de roles

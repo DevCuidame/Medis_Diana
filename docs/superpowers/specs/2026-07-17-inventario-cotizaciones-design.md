@@ -2,14 +2,14 @@
 
 ## Contexto
 
-CuidameDoc (otra app, en `C:\Users\julia\Downloads\Opieka\CuidameDoc`) va a permitir que la Dra. Diana arme una cotización dentro del modal "Cerrar historia clínica" (Plan de tratamiento), usando precios reales de medicamentos/insumos/procedimientos y de los Planes de consulta que existen en Medis. Esa cotización debe:
+CuidameDoc (otra app, en `C:\Users\julia\Downloads\Opieka\CuidameDoc`) va a permitir que la Dra. OpiMed arme una cotización dentro del modal "Cerrar historia clínica" (Plan de tratamiento), usando precios reales de medicamentos/insumos/procedimientos y de los Planes de consulta que existen en Medis. Esa cotización debe:
 
 1. Buscar ítems de Inventario y Planes en tiempo real desde CuidameDoc (lectura).
 2. Quedar registrada en la pantalla Finanzas de Medis como un ingreso pendiente por confirmar (escritura).
 
 Este documento (Proyecto A) cubre **solo el lado de Medis**: los cambios necesarios para que ambas cosas sean posibles. El lado de CuidameDoc (el modal, el buscador, el envío del correo) es un proyecto separado (Proyecto B) que depende de que esto exista primero.
 
-Hallazgo clave que motiva este proyecto: hoy el módulo de Inventario (`medisdiana-landing/src/components/admin/InventarioDashboard.tsx`) es 100% frontend — persiste en `localStorage` (`MEDIS_inventory`), no tiene backend, y no tiene campo de precio. Está vacío en producción (0 ítems), así que no hay datos que migrar. Tampoco existe ninguna tabla de finanzas genérica: la pantalla Finanzas (`FinanzasDashboard.tsx`) solo agrega datos de `user_memberships` y `booking_requests`, ninguna de las cuales acepta un monto/descripción libres desde un sistema externo.
+Hallazgo clave que motiva este proyecto: hoy el módulo de Inventario (`medisopimed-landing/src/components/admin/InventarioDashboard.tsx`) es 100% frontend — persiste en `localStorage` (`MEDIS_inventory`), no tiene backend, y no tiene campo de precio. Está vacío en producción (0 ítems), así que no hay datos que migrar. Tampoco existe ninguna tabla de finanzas genérica: la pantalla Finanzas (`FinanzasDashboard.tsx`) solo agrega datos de `user_memberships` y `booking_requests`, ninguna de las cuales acepta un monto/descripción libres desde un sistema externo.
 
 ## Alcance
 
@@ -101,13 +101,13 @@ Sigue el mismo patrón ya usado por `location.controller.ts`/`professional.contr
 | PATCH | `/api/external-quotes/:id/confirm` | admin | Marca `status='confirmed'`, guarda `resolved_by`/`resolved_at`. |
 | PATCH | `/api/external-quotes/:id/reject` | admin | Marca `status='rejected'`, guarda `resolved_by`/`resolved_at`. |
 
-El middleware de API key es nuevo (no existe hoy en Medis) — compara el header contra `process.env.DIANA_INTERNAL_API_KEY` y responde 401 si no coincide o falta. Se aplica solo a la ruta POST; las rutas GET/PATCH de administración siguen usando el guard de admin ya existente (el mismo que protege `/memberships` en modo escritura).
+El middleware de API key es nuevo (no existe hoy en Medis) — compara el header contra `process.env.OPI_MED_INTERNAL_API_KEY` y responde 401 si no coincide o falta. Se aplica solo a la ruta POST; las rutas GET/PATCH de administración siguen usando el guard de admin ya existente (el mismo que protege `/memberships` en modo escritura).
 
 ### Planes
 
 No hay endpoint nuevo — el selector "Plan asociado" del lado de CuidameDoc (Proyecto B) reutiliza el ya existente `GET /api/memberships/active` (público).
 
-## Frontend (Medis / `medisdiana-landing`)
+## Frontend (Medis / `medisopimed-landing`)
 
 **`InventarioDashboard.tsx`**: deja de leer/escribir `localStorage` (`MEDIS_inventory`) y pasa a consumir los 4 endpoints CRUD de `/api/inventory`. Se agrega un campo **Precio** (COP) al formulario de creación/edición de ítem, que hoy no existe. El resto de la UI (cards de KPIs, filtro por categoría, buscador) se mantiene igual, solo cambia la fuente de datos.
 
@@ -115,8 +115,8 @@ No hay endpoint nuevo — el selector "Plan asociado" del lado de CuidameDoc (Pr
 
 ## Configuración
 
-- `apps/backend/.env` (Medis): nueva variable `DIANA_INTERNAL_API_KEY=<secreto generado>`.
-- `cuidame_doc_backend/.env` (CuidameDoc, Proyecto B): reutiliza `DIANA_API_URL` (ya existe) y agrega `DIANA_INTERNAL_API_KEY` con el mismo valor, para poder llamar el POST protegido.
+- `apps/backend/.env` (Medis): nueva variable `OPI_MED_INTERNAL_API_KEY=<secreto generado>`.
+- `cuidame_doc_backend/.env` (CuidameDoc, Proyecto B): reutiliza `OPI_MED_API_URL` (ya existe) y agrega `OPI_MED_INTERNAL_API_KEY` con el mismo valor, para poder llamar el POST protegido.
 
 ## Errores y validación
 

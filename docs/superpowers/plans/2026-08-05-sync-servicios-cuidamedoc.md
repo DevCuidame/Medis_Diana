@@ -4,7 +4,7 @@
 
 **Goal:** Cada servicio creado, editado, desactivado o eliminado desde el formulario "Nuevo Servicio" de Medis (`FormularioServicio.tsx`) se refleja automáticamente en CuidameDoc, incluyendo el precio, sin resucitar la vieja pestaña "Catálogo Médico" ni tocar `cuidame_doc_backend`.
 
-**Architecture:** Un módulo nuevo y autocontenido (`docServiceSync.service.ts`) encapsula toda la comunicación con CuidameDoc (login como Diana, crear/borrar servicio, mapeo de categoría). Se invoca desde los tres puntos existentes del ciclo de vida de una oferta (`createOffer`, `updateOffer`, `deleteOffer` en `services.controller.ts`), nunca lanza excepciones hacia el llamador, y persiste el `prof_service_id` de CuidameDoc en una columna nueva (`service_catalog.doc_prof_service_id`) para poder borrar/recrear en updates futuros (CuidameDoc no tiene endpoint de edición).
+**Architecture:** Un módulo nuevo y autocontenido (`docServiceSync.service.ts`) encapsula toda la comunicación con CuidameDoc (login como OpiMed, crear/borrar servicio, mapeo de categoría). Se invoca desde los tres puntos existentes del ciclo de vida de una oferta (`createOffer`, `updateOffer`, `deleteOffer` en `services.controller.ts`), nunca lanza excepciones hacia el llamador, y persiste el `prof_service_id` de CuidameDoc en una columna nueva (`service_catalog.doc_prof_service_id`) para poder borrar/recrear en updates futuros (CuidameDoc no tiene endpoint de edición).
 
 **Tech Stack:** TypeScript (ESM, `tsx`), Express, `pg` (Postgres crudo, sin ORM), `node:test` + `node:assert/strict` para pruebas (patrón ya usado en el repo — pruebas de integración contra la base de datos real, sin mocks de DB; `node:test`'s `mock.method` para simular `fetch`).
 
@@ -27,7 +27,7 @@
 - **Create** `apps/backend/src/services/docServiceSync.service.test.ts` — pruebas del motor.
 - **Modify** `apps/backend/src/controllers/services.controller.ts` — invoca el motor desde `createOffer`, `updateOffer`, `deleteOffer`.
 - **Create** `apps/backend/src/controllers/services.controller.docsync.test.ts` — pruebas de la integración a nivel controller (req/res falsos, sin supertest).
-- **Modify** `medisdiana-landing/src/components/admin/ServiciosDashboard.tsx` — toast de aviso si `docSync.ok === false`.
+- **Modify** `medisopimed-landing/src/components/admin/ServiciosDashboard.tsx` — toast de aviso si `docSync.ok === false`.
 - **Create** `apps/backend/src/scripts/backfill-doc-sync.ts` — publica hacia CuidameDoc los servicios locales que quedaron huérfanos.
 
 ---
@@ -286,7 +286,7 @@ Crear `apps/backend/src/services/docServiceSync.service.ts`:
 // ============================================================
 // apps/backend/src/services/docServiceSync.service.ts
 // Sincroniza un servicio del catálogo local (service_catalog) con el
-// catálogo real de CuidameDoc (professional_id=12, Diana). CuidameDoc no
+// catálogo real de CuidameDoc (professional_id=12, OpiMed). CuidameDoc no
 // tiene endpoint de edición: "actualizar" siempre es borrar + crear.
 // Nunca lanza — toda llamada de red vuelve como { ok, error? } para que
 // el llamador pueda decidir qué hacer sin que un fallo de CuidameDoc
@@ -782,16 +782,16 @@ git commit -m "feat(backend): sync services with CuidameDoc on create/update/del
 ### Task 4: Aviso en el frontend cuando la sincronización falla
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/admin/ServiciosDashboard.tsx` (función `handleFormSuccess`)
+- Modify: `medisopimed-landing/src/components/admin/ServiciosDashboard.tsx` (función `handleFormSuccess`)
 
 **Interfaces:**
 - Consumes: el campo `docSync?: { ok: boolean; error?: string }` que ahora devuelven `POST/PATCH /api/services/offers[/:id]` (Task 3).
 
-No hay test automatizado para este paso — el repo `medisdiana-landing` no tiene ningún framework de pruebas de frontend configurado (no hay `vitest` ni `@testing-library` en `package.json`); se verifica manualmente en el Step 3.
+No hay test automatizado para este paso — el repo `medisopimed-landing` no tiene ningún framework de pruebas de frontend configurado (no hay `vitest` ni `@testing-library` en `package.json`); se verifica manualmente en el Step 3.
 
 - [ ] **Step 1: Modificar `handleFormSuccess` para detectar fallos de `docSync`**
 
-En `medisdiana-landing/src/components/admin/ServiciosDashboard.tsx`, dentro de `handleFormSuccess`, el bloque que procesa cada respuesta ya hace `const json = await res.json();`. Agregar, justo después de declarar `let errCount = 0; let lastError = ''; let totalAttempts = 0;`, una variable nueva:
+En `medisopimed-landing/src/components/admin/ServiciosDashboard.tsx`, dentro de `handleFormSuccess`, el bloque que procesa cada respuesta ya hace `const json = await res.json();`. Agregar, justo después de declarar `let errCount = 0; let lastError = ''; let totalAttempts = 0;`, una variable nueva:
 
 ```ts
     let docSyncWarning = '';
@@ -843,12 +843,12 @@ por:
 
 - [ ] **Step 2: Revisar con TypeScript**
 
-Run: `cd medisdiana-landing && npx tsc --noEmit`
+Run: `cd medisopimed-landing && npx tsc --noEmit`
 Expected: sin errores nuevos relacionados a `ServiciosDashboard.tsx`.
 
 - [ ] **Step 3: Verificación manual**
 
-Levantar backend (`cd apps/backend && npm run dev`) y frontend (`cd medisdiana-landing && npm run dev`) en local. Con el backend corriendo pero apuntando a un `DOC_API_URL` inválido (para forzar el fallo), crear un servicio desde "Nuevo Servicio" y confirmar que:
+Levantar backend (`cd apps/backend && npm run dev`) y frontend (`cd medisopimed-landing && npm run dev`) en local. Con el backend corriendo pero apuntando a un `DOC_API_URL` inválido (para forzar el fallo), crear un servicio desde "Nuevo Servicio" y confirmar que:
 1. El servicio se crea igual en la lista local (no se pierde el guardado).
 2. Aparece el toast rojo "Guardado, pero no se pudo publicar en CuidameDoc: …".
 
@@ -857,7 +857,7 @@ Luego, con `DOC_API_URL` apuntando al valor real de CuidameDoc, repetir la creac
 - [ ] **Step 4: Commit**
 
 ```bash
-git add medisdiana-landing/src/components/admin/ServiciosDashboard.tsx
+git add medisopimed-landing/src/components/admin/ServiciosDashboard.tsx
 git commit -m "feat(frontend): warn when a service fails to sync to CuidameDoc"
 ```
 
@@ -958,7 +958,7 @@ git commit -m "feat(backend): add one-off backfill script to publish orphaned se
 
 - [ ] **Step 4: Nota para el humano — correr en producción**
 
-Este script se corre a mano, una sola vez, contra la base de datos real, **después** de desplegar las Tasks 1-3 a producción (`deploy-Dianamedic.ps1 -Target back`, o `both`). No se ejecuta automáticamente en ningún arranque. Requiere `DATABASE_URL`, `DOC_API_URL`, `DOC_DIANA_EMAIL`, `DOC_DIANA_PASSWORD` apuntando a producción — pedir confirmación explícita antes de correrlo ahí, igual que con cualquier script que escribe en la base de datos real o en CuidameDoc real.
+Este script se corre a mano, una sola vez, contra la base de datos real, **después** de desplegar las Tasks 1-3 a producción (`deploy-OpiMedmedic.ps1 -Target back`, o `both`). No se ejecuta automáticamente en ningún arranque. Requiere `DATABASE_URL`, `DOC_API_URL`, `DOC_OPI_MED_EMAIL`, `DOC_OPI_MED_PASSWORD` apuntando a producción — pedir confirmación explícita antes de correrlo ahí, igual que con cualquier script que escribe en la base de datos real o en CuidameDoc real.
 
 ---
 

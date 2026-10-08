@@ -21,7 +21,7 @@ import { resyncPublishedCommercialsForOperativo } from '@services/commercialDocS
 import type {
   ServiceOffersFilter,
   ResolveBookingRequestPayload,
-} from '@medisdiana/shared-types';
+} from '@medisopimed/shared-types';
 
 /** Map a discipline name to a session category (must match resolveBenefits logic) */
 function getDisciplineCategory(disciplineName: string | null | undefined): string {

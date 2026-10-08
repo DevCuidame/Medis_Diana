@@ -22,7 +22,7 @@ router.use('/auth', authRoutes);
 router.use('/users', usersRoutes);
 router.use('/professionals', professionalRoutes);
 router.use('/services/catalog', docServicesRoutes);
-router.use('/appointments/diana', docAppointmentsRoutes);
+router.use('/appointments/opimed', docAppointmentsRoutes);
 router.use('/', servicesRoutes);
 router.use('/memberships', membershipsRoutes);
 router.use('/user-memberships', userMembershipsRoutes);

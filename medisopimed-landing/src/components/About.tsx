@@ -35,44 +35,42 @@ function PillarCard({ icon, title, desc, delay }: { icon: string; title: string;
       initial={{ opacity: 0, y: 50 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -8, boxShadow: '0 28px 60px rgba(139,92,246,0.18)' }}
+      whileHover={{ y: -6, boxShadow: '0 20px 44px rgba(13,148,136,0.12)' }}
       style={{
-        background: 'rgba(255,255,255,0.80)',
-        backdropFilter: 'blur(18px)',
-        WebkitBackdropFilter: 'blur(18px)',
-        border: '1px solid rgba(139,92,246,0.12)',
-        borderRadius: '1.5rem',
+        background: '#FFFFFF',
+        border: '1px solid #E2E8F0',
+        borderRadius: '1.25rem',
         padding: '2.5rem 2rem',
         cursor: 'default',
         transition: 'box-shadow 0.4s ease',
-        boxShadow: '0 8px 32px rgba(139,92,246,0.07)',
+        boxShadow: '0 4px 20px rgba(15,23,42,0.04)',
       }}
     >
       <div
         style={{
           width: 52,
           height: 52,
-          borderRadius: '50%',
-          background: 'linear-gradient(135deg, rgba(139,92,246,0.12), rgba(59,130,246,0.18))',
-          border: '1px solid rgba(139,92,246,0.20)',
+          borderRadius: '0.9rem',
+          background: 'linear-gradient(135deg, #E6FFFA, #CCFBF1)',
+          border: '1px solid #99F6E4',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           marginBottom: '1.5rem',
           fontSize: '1.4rem',
-          color: '#8B5CF6',
+          color: '#0D9488',
         }}
       >
         {icon}
       </div>
       <h3
-        className="font-cormorant"
-        style={{ fontSize: '1.5rem', fontWeight: 600, color: '#1B1C1C', marginBottom: '0.75rem', lineHeight: 1.2 }}
+        className="font-manrope"
+        style={{ fontSize: '1.3rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.75rem', lineHeight: 1.25 }}
       >
         {title}
       </h3>
       <p
-        style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.88rem', lineHeight: 1.8, color: '#5E5E5E', fontWeight: 300 }}
+        style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.9rem', lineHeight: 1.75, color: '#475569', fontWeight: 400 }}
       >
         {desc}
       </p>
@@ -111,17 +109,14 @@ export default function About() {
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
               style={{
                 fontFamily: 'Inter, sans-serif',
-                fontSize: '0.72rem',
-                letterSpacing: '0.35em',
+                fontSize: '0.78rem',
+                letterSpacing: '0.08em',
                 textTransform: 'uppercase',
-                color: '#8B5CF6',
-                marginBottom: '1.25rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem',
+                color: '#0D9488',
+                fontWeight: 600,
+                marginBottom: '1rem',
               }}
             >
-              <span style={{ display: 'inline-block', width: 28, height: 1, background: 'linear-gradient(90deg,#8B5CF6,#3B82F6)' }} />
               Nuestro Enfoque
             </motion.p>
 
@@ -129,19 +124,19 @@ export default function About() {
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="font-cormorant"
-              style={{ fontSize: 'clamp(2.8rem, 5vw, 4.5rem)', fontWeight: 300, lineHeight: 1.05, color: '#1B1C1C', marginBottom: '1.5rem' }}
+              className="font-manrope"
+              style={{ fontSize: 'clamp(2.4rem, 4.5vw, 3.6rem)', fontWeight: 800, lineHeight: 1.08, letterSpacing: '-0.02em', color: '#0F172A', marginBottom: '1.5rem' }}
             >
               Medicina con
               <br />
-              <em style={{ fontStyle: 'italic', color: '#8B5CF6' }}>Calidez Humana</em>
+              Calidez Humana
             </motion.h2>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              style={{ fontFamily: 'Inter, sans-serif', fontSize: '1rem', lineHeight: 1.85, color: '#5E5E5E', fontWeight: 300 }}
+              style={{ fontFamily: 'Inter, sans-serif', fontSize: '1rem', lineHeight: 1.8, color: '#475569', fontWeight: 400 }}
             >
               Nuestro consultorio es un espacio de atención médica centrada en el paciente y su familia.
               Cada consulta es una oportunidad para escuchar, orientar y acompañar — con calidez
@@ -157,14 +152,14 @@ export default function About() {
             style={{ flex: '1 1 300px', display: 'flex', justifyContent: 'center', minWidth: 0 }}
           >
             <img
-              src="/Logo_Medis.png"
-              alt="Logo Dra. Diana Cristina Medina Camargo"
+              src="/logo-opimed.svg"
+              alt="Logo Dra. OpiMed"
               style={{
                 width: '100%',
                 maxWidth: '480px',
                 height: 'auto',
                 display: 'block',
-                filter: 'drop-shadow(0 12px 40px rgba(139,92,246,0.15))',
+                filter: 'drop-shadow(0 12px 40px rgba(13,148,136,0.14))',
               }}
             />
           </motion.div>
@@ -183,7 +178,7 @@ export default function About() {
           ))}
         </div>
 
-        {/* Decorative horizontal rule with gold accent */}
+        {/* Decorative horizontal rule */}
         <motion.div
           initial={{ scaleX: 0 }}
           animate={inView ? { scaleX: 1 } : {}}
@@ -191,7 +186,7 @@ export default function About() {
           style={{
             marginTop: '5rem',
             height: 1,
-            background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.25), transparent)',
+            background: 'linear-gradient(90deg, transparent, rgba(13,148,136,0.22), transparent)',
             transformOrigin: 'left',
           }}
         />
@@ -219,12 +214,12 @@ export default function About() {
               transition={{ duration: 0.7, delay: 0.7 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
             >
               <div
-                className="font-cormorant brand-text-gradient"
-                style={{ fontSize: '3rem', fontWeight: 600, lineHeight: 1, marginBottom: '0.5rem' }}
+                className="font-manrope brand-text-gradient"
+                style={{ fontSize: '2.75rem', fontWeight: 800, lineHeight: 1, marginBottom: '0.5rem' }}
               >
                 {number}
               </div>
-              <div style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#94A3B8' }}>
+              <div style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.75rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#94A3B8' }}>
                 {label}
               </div>
             </motion.div>

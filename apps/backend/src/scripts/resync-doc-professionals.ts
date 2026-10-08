@@ -3,7 +3,7 @@
 // Corrida única y manual: fuerza un re-sync (delete+create) en CuidameDoc
 // de todo servicio local activo que YA tenía doc_prof_service_id (creado
 // antes de que ensureDocSync empezara a mandar target_professional_id).
-// Sin esto, esos servicios quedan atados a Diana para siempre en
+// Sin esto, esos servicios quedan atados a OpiMed para siempre en
 // CuidameDoc aunque localmente estén asignados a otro médico, porque
 // updateOffer solo re-sincroniza cuando algún campo relevante cambia de
 // verdad — y "ya estaba asignado a Kamala" no es un cambio.

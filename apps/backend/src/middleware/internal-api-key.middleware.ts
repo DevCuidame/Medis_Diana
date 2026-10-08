@@ -13,7 +13,7 @@ export function requireInternalApiKey(req: Request, res: Response, next: NextFun
   const header = req.headers['x-internal-api-key'];
   const provided = typeof header === 'string' ? header : '';
 
-  if (!env.DIANA_INTERNAL_API_KEY || !safeEqual(provided, env.DIANA_INTERNAL_API_KEY)) {
+  if (!env.OPI_MED_INTERNAL_API_KEY || !safeEqual(provided, env.OPI_MED_INTERNAL_API_KEY)) {
     res.status(401).json({ success: false, error: 'API key interna inválida o ausente.' });
     return;
   }

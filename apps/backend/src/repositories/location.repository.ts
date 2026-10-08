@@ -1,5 +1,5 @@
 import { pool } from '@config/database.js';
-import type { DayOfWeek } from '@medisdiana/shared-types';
+import type { DayOfWeek } from '@medisopimed/shared-types';
 
 export interface ScheduleBlock {
   openTime: string;

@@ -93,7 +93,7 @@ propio, igual que "Infraestructura" hoy), con expansión propia
 (lazy-loaded, `ProtectedRoute allowedRoles={['ADMIN']}`, mismo patrón que
 `/admin/services/rooms`).
 
-**`medisdiana-landing/src/components/admin/GastosDashboard.tsx`**: mismo
+**`medisopimed-landing/src/components/admin/GastosDashboard.tsx`**: mismo
 esqueleto que `EspaciosDashboard.tsx` — `AdminSidebar` + animación de
 bienvenida (ilustración propia, tema "gastos/consultorio") + barra de
 filtros (buscar por descripción, categoría, mes) + grid de tarjetas +
@@ -103,7 +103,7 @@ visible (mismo patrón ya corregido hoy en Sedes/Espacios — revisar
 Cada tarjeta muestra: descripción, categoría (badge), monto (COP),
 fecha, botones editar/eliminar.
 
-**`medisdiana-landing/src/components/admin/FormularioGasto.tsx`**: modal
+**`medisopimed-landing/src/components/admin/FormularioGasto.tsx`**: modal
 tipo slide-over (mismo patrón que `FormularioEspacio.tsx`) con:
 - Descripción* (texto)
 - Monto (COP)* (número, min 0)
@@ -125,7 +125,7 @@ tipo slide-over (mismo patrón que `FormularioEspacio.tsx`) con:
 
 ## Testing / verificación
 
-- `pnpm -F medisdiana-landing exec tsc --noEmit` y `pnpm -F @medisdiana/backend build` sin errores nuevos.
+- `pnpm -F medisopimed-landing exec tsc --noEmit` y `pnpm -F @medisopimed/backend build` sin errores nuevos.
 - Migración aplicada contra la BD real → verificar tabla `expenses` creada.
 - Prueba manual: crear un gasto → aparece en "Gastos"; "Egresos del mes"
   en "Pagos" refleja el monto si la fecha cae en el mes actual; "Balance

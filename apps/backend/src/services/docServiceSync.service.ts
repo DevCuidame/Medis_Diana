@@ -1,7 +1,7 @@
 // ============================================================
 // apps/backend/src/services/docServiceSync.service.ts
 // Motor genérico de sincronización con CuidameDoc (professional_id=12,
-// Diana). Publica/despublica un servicio a partir de una fila local cuya
+// OpiMed). Publica/despublica un servicio a partir de una fila local cuya
 // columna `doc_prof_service_id` trackea el `prof_service_id` de
 // CuidameDoc — hoy esa fila es un comercial (`service_commercial`), antes
 // (fase anterior, ya no se llama así) era el operativo (`service_catalog`);

@@ -12,7 +12,7 @@ export function buildMedicalClinicSchema(): Record<string, unknown> {
     name: SEO_CONFIG.siteName,
     url: baseUrl,
     image: new URL(defaultImage, baseUrl).toString(),
-    logo: `${baseUrl}/Logo_Medis.png`,
+    logo: `${baseUrl}/logo-opimed.svg`,
     priceRange: '$$',
     medicalSpecialty: 'FamilyPractice',
     availableService: {
@@ -21,7 +21,7 @@ export function buildMedicalClinicSchema(): Record<string, unknown> {
     },
     physician: {
       '@type': 'Physician',
-      name: 'Dra. Diana Cristina Medina Camargo',
+      name: 'Dra. OpiMed',
       medicalSpecialty: 'FamilyPractice',
     },
     address: {

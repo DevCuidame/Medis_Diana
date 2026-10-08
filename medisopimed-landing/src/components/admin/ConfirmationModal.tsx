@@ -17,7 +17,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'rgba(27,28,28,0.45)',
+        background: 'rgba(15,23,42,0.45)',
         backdropFilter: 'blur(4px)',
         display: 'flex',
         alignItems: 'center',
@@ -37,16 +37,16 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           boxShadow: '0 12px 36px rgba(0,0,0,0.15)',
         }}
       >
-        <p style={{ marginBottom: '1.5rem', fontSize: '1rem', color: '#1B1C1C' }}>{message}</p>
+        <p style={{ marginBottom: '1.5rem', fontSize: '1rem', color: '#0F172A' }}>{message}</p>
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
           <button
             onClick={onCancel}
             style={{
               padding: '8px 16px',
               background: '#F0EDE8',
-              border: '1px solid #DDD6FE',
-              borderRadius: '8px',
-              color: '#1B1C1C',
+              border: '1px solid #CCFBF1',
+              borderRadius: '9999px',
+              color: '#0F172A',
               cursor: 'pointer',
             }}
           >
@@ -59,7 +59,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               padding: '8px 16px',
               background: '#E11D48',
               border: 'none',
-              borderRadius: '8px',
+              borderRadius: '9999px',
               color: '#FFFFFF',
               cursor: 'pointer',
             }}

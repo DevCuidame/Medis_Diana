@@ -5,19 +5,19 @@
 $VM   = "cuidame-app"
 $ZONE = "us-central1-a"
 $PROJ = "esmart-health"
-$DIR  = "/var/www/medisdiana"
+$DIR  = "/var/www/medisopimed"
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  FIX DEFINITIVO - medisdiana VM" -ForegroundColor Cyan
+Write-Host "  FIX DEFINITIVO - medisopimed VM" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 
 # ── Paso 1: Python fix (admin + routes) ─────────────────────────────────────
 $pyScript = @'
 import subprocess, hashlib, secrets, os, re
 
-DB = dict(host="127.0.0.1", user="medisdiana_user", db="medisdiana_prod", pw="medisdiana2024Secure!")
-APP = "/var/www/medisdiana"
+DB = dict(host="127.0.0.1", user="medisopimed_user", db="medisopimed_prod", pw="medisopimed2024Secure!")
+APP = "/var/www/medisopimed"
 
 def psql(sql):
     env = {**os.environ, "PGPASSWORD": DB["pw"]}
@@ -29,7 +29,7 @@ def psql(sql):
 salt  = secrets.token_hex(16)
 key   = hashlib.pbkdf2_hmac("sha256", b"HFT2AJ543", salt.encode(), 310000, 32).hex()
 h     = f"{salt}:{key}"
-sql   = f"INSERT INTO users(email,password_hash,first_name,last_name,role,is_active,is_verified) VALUES('"'"'admin@medisdiana.com'"'"','"'"'{h}'"'"','"'"'medisdiana'"'"','"'"'Admin'"'"','"'"'ADMIN'"'"',TRUE,TRUE) ON CONFLICT(email) DO UPDATE SET password_hash=EXCLUDED.password_hash,role='"'"'ADMIN'"'"',is_active=TRUE,is_verified=TRUE;"
+sql   = f"INSERT INTO users(email,password_hash,first_name,last_name,role,is_active,is_verified) VALUES('"'"'admin@medisopimed.com'"'"','"'"'{h}'"'"','"'"'medisopimed'"'"','"'"'Admin'"'"','"'"'ADMIN'"'"',TRUE,TRUE) ON CONFLICT(email) DO UPDATE SET password_hash=EXCLUDED.password_hash,role='"'"'ADMIN'"'"',is_active=TRUE,is_verified=TRUE;"
 print("[1] Admin:", psql(sql))
 
 # 2. Patch routes
@@ -77,7 +77,7 @@ except Exception as e:
     print(f"[3] Error: {e}")
 
 # 4. Verify admin exists
-row = psql("SELECT id, role FROM users WHERE email='admin@medisdiana.com';")
+row = psql("SELECT id, role FROM users WHERE email='admin@medisopimed.com';")
 print("[4] Admin en DB:", row)
 '@
 
@@ -99,10 +99,10 @@ if ($LASTEXITCODE -ne 0) { Write-Warn "Algo fallo en el script Python" }
 $buildScript = @'
 #!/bin/bash
 set -e
-APP_DIR="/var/www/medisdiana"
+APP_DIR="/var/www/medisopimed"
 echo ""
 echo "[3/4] Compilando frontend (Vite)..."
-cd "$APP_DIR/medisdiana-landing"
+cd "$APP_DIR/medisopimed-landing"
 export NODE_OPTIONS="--max-old-space-size=2048"
 pnpm exec vite build 2>&1 | tail -20
 echo "[OK] Frontend compilado: $(find dist -type f | wc -l) archivos"
@@ -126,7 +126,7 @@ Remove-Item $pyTmp, $bTmp -ErrorAction SilentlyContinue
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Green
 Write-Host "  TODO LISTO" -ForegroundColor Green
-Write-Host "  Admin: admin@medisdiana.com / HFT2AJ543" -ForegroundColor Green
+Write-Host "  Admin: admin@medisopimed.com / HFT2AJ543" -ForegroundColor Green
 Write-Host "  URL:   http://35.239.162.75" -ForegroundColor Green
 Write-Host "========================================" -ForegroundColor Green
 Write-Host ""

@@ -3,10 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CreditCard, CheckCircle2 } from 'lucide-react';
 
 const C = {
-  text: '#1B1C1C',
+  text: '#0F172A',
   textBrown: '#475569',
   textMuted: '#94A3B8',
-  borderLight: '#DDD6FE',
+  borderLight: '#CCFBF1',
   white: '#FFFFFF',
 };
 
@@ -111,32 +111,32 @@ export function CotizacionesCuidameDocPanel({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.42 }}
       className="glass-card"
-      style={{ padding: '1.5rem 1.75rem', marginBottom: '2rem', border: `1.5px solid rgba(124,58,237,0.2)` }}
+      style={{ padding: '1.5rem 1.75rem', marginBottom: '2rem', border: `1.5px solid rgba(14,165,233,0.2)` }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(124,58,237,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <CreditCard size={20} color="#7C3AED" />
+          <div style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(14,165,233,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <CreditCard size={20} color="#0EA5E9" />
           </div>
           <div>
-            <h2 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: '1.3rem', color: C.text, margin: 0 }}>Cotizaciones CuidameDoc</h2>
+            <h2 style={{ fontFamily: 'Manrope, Inter, sans-serif', fontSize: '1.3rem', color: C.text, margin: 0 }}>Cotizaciones CuidameDoc</h2>
             <p style={{ fontSize: 12, color: C.textMuted, margin: 0 }}>
               Planes de tratamiento cerrados en CuidameDoc con medicamentos/procedimientos/seguimiento cotizados
             </p>
           </div>
         </div>
         {externalQuotes.length > 0 && (
-          <span style={{ background: 'rgba(124,58,237,0.1)', color: '#7C3AED', fontSize: 12, fontWeight: 700, padding: '4px 12px', borderRadius: 99 }}>
+          <span style={{ background: 'rgba(14,165,233,0.1)', color: '#0EA5E9', fontSize: 12, fontWeight: 700, padding: '4px 12px', borderRadius: 99 }}>
             {externalQuotes.length} pendiente{externalQuotes.length !== 1 ? 's' : ''}
           </span>
         )}
       </div>
 
       {externalQuotes.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '2rem 1rem', background: 'rgba(124,58,237,0.03)', borderRadius: 12, border: `1px dashed ${C.borderLight}` }}>
+        <div style={{ textAlign: 'center', padding: '2rem 1rem', background: 'rgba(14,165,233,0.03)', borderRadius: 12, border: `1px dashed ${C.borderLight}` }}>
           <CheckCircle2 size={32} color="#16A34A" style={{ margin: '0 auto 10px' }} />
           <p style={{ fontSize: 14, fontWeight: 600, color: C.textMuted, margin: 0 }}>Sin cotizaciones pendientes</p>
-          <p style={{ fontSize: 12, color: C.textMuted, margin: '4px 0 0' }}>Cuando la Dra. Diana cierre una historia clínica con plan de tratamiento en CuidameDoc, la cotización aparecerá aquí.</p>
+          <p style={{ fontSize: 12, color: C.textMuted, margin: '4px 0 0' }}>Cuando la Dra. OpiMed cierre una historia clínica con plan de tratamiento en CuidameDoc, la cotización aparecerá aquí.</p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -148,7 +148,7 @@ export function CotizacionesCuidameDocPanel({
                 initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 12, height: 0, marginBottom: 0, padding: 0, overflow: 'hidden' }}
-                style={{ background: C.white, borderRadius: 12, padding: '1rem 1.25rem', display: 'flex', flexDirection: 'column', gap: 10, border: `1px solid rgba(124,58,237,0.2)` }}
+                style={{ background: C.white, borderRadius: 12, padding: '1rem 1.25rem', display: 'flex', flexDirection: 'column', gap: 10, border: `1px solid rgba(14,165,233,0.2)` }}
               >
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap' }}>
                   <div style={{ flex: 1, minWidth: 180 }}>
@@ -160,7 +160,7 @@ export function CotizacionesCuidameDocPanel({
                     </p>
                   </div>
                   <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                    <p style={{ fontSize: 16, fontWeight: 800, color: '#7C3AED', margin: 0 }}>{fmt(q.totalAmount)}</p>
+                    <p style={{ fontSize: 16, fontWeight: 800, color: '#0EA5E9', margin: 0 }}>{fmt(q.totalAmount)}</p>
                     <p style={{ fontSize: 11, color: C.textMuted, margin: 0 }}>
                       {new Date(q.createdAt).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}
                     </p>

@@ -8,7 +8,7 @@ import type {
   DiscountPublic,
   CreateDiscountPayload,
   UpdateDiscountPayload,
-} from '@medisdiana/shared-types';
+} from '@medisopimed/shared-types';
 
 // ─── DISCOUNTS ───────────────────────────────────────────────
 

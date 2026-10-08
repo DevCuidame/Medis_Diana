@@ -7,22 +7,22 @@ import type { EspacioFormValues } from '../../lib/schemas/espacioSchema';
 import { espacioSchema } from '../../lib/schemas/espacioSchema';
 
 const C = {
-  gold: '#8B5CF6',
-  goldLight: '#3B82F6',
+  gold: '#0D9488',
+  goldLight: '#44CFCB',
   bg: '#FFFFFF',
-  bgPanel: '#F3F0FB',
-  bgSecondary: '#F3F0FB',
+  bgPanel: '#F0FDFA',
+  bgSecondary: '#F0FDFA',
   white: '#FFFFFF',
-  text: '#1B1C1C',
+  text: '#0F172A',
   textBrown: '#475569',
   textMedium: '#5E5E5E',
   textMuted: '#94A3B8',
-  border: '#DDD6FE',
-  borderLight: '#DDD6FE',
+  border: '#CCFBF1',
+  borderLight: '#CCFBF1',
 };
 
-const FONT_BODONI = '"Bodoni Moda", Georgia, serif';
-const FONT_INTER = '"Hanken Grotesk", Inter, system-ui, sans-serif';
+const FONT_DISPLAY = 'Manrope, Inter, sans-serif';
+const FONT_INTER = '"Inter", Inter, system-ui, sans-serif';
 
 interface FormularioEspacioProps {
   initialData?: EspacioFormValues;
@@ -59,7 +59,7 @@ export const FormularioEspacio: React.FC<FormularioEspacioProps> = ({ initialDat
     <div style={{ fontFamily: FONT_INTER }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, paddingBottom: 16, borderBottom: `1px solid ${C.borderLight}` }}>
         <div>
-          <h2 style={{ fontFamily: FONT_BODONI, fontSize: 24, fontWeight: 700, color: C.text, margin: 0 }}>{initialData ? 'Editar Espacio' : 'Nuevo Espacio'}</h2>
+          <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 24, fontWeight: 700, color: C.text, margin: 0 }}>{initialData ? 'Editar Espacio' : 'Nuevo Espacio'}</h2>
           <p style={{ fontSize: 13, color: C.textMuted, margin: '4px 0 0 0' }}>Configura los detalles y el equipamiento del salón</p>
         </div>
         <button 
@@ -189,7 +189,7 @@ export const FormularioEspacio: React.FC<FormularioEspacioProps> = ({ initialDat
           <button 
             type="submit" 
             disabled={isSubmitting}
-            style={{ background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, border: 'none', padding: '12px 32px', borderRadius: 12, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: isSubmitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 8, boxShadow: `0 4px 16px rgba(139,92,246,0.28)`, opacity: isSubmitting ? 0.7 : 1 }}
+            style={{ background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, border: 'none', padding: '12px 32px', borderRadius: 9999, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: isSubmitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 8, boxShadow: `0 4px 16px rgba(13,148,136,0.28)`, opacity: isSubmitting ? 0.7 : 1 }}
           >
             {isSubmitting ? (
               <span>Guardando...</span>

@@ -25,13 +25,13 @@
 ## Global Constraints
 
 - No ORM — all DB access is raw SQL via the `pool` from `@config/database.js` (CLAUDE.md regla crítica #3).
-- Migrations are idempotent and re-run in full on every `pnpm -F @medisdiana/backend migrate` (there is no migrations-applied tracking table) — every `CREATE TABLE`/`ALTER TABLE` must use `IF NOT EXISTS`, and the seed `INSERT` must use `ON CONFLICT ... DO UPDATE` so re-running the migration never errors or duplicates rows.
+- Migrations are idempotent and re-run in full on every `pnpm -F @medisopimed/backend migrate` (there is no migrations-applied tracking table) — every `CREATE TABLE`/`ALTER TABLE` must use `IF NOT EXISTS`, and the seed `INSERT` must use `ON CONFLICT ... DO UPDATE` so re-running the migration never errors or duplicates rows.
 - New migration file: `apps/backend/migrations/025_reps_service_codes.sql`, and it must be added to `apps/backend/src/scripts/run-migration.ts` (migrations are not auto-discovered — each one is manually listed and run in that script).
 - Naming: the new table/column are `reps_service_catalog` / `reps_service_code` — deliberately distinct from `service_catalog.service_code`, which already stores the **CUPS** code. Never call the new concept `service_code` or `serviceCode` alone (ambiguous with the existing CUPS field).
 - No sync to CuidameDoc — its service model has no REPS-habilitación equivalent (only a generic `category` string), so `repsServiceCode` must NOT be added to `DOC_SYNC_RELEVANT_FIELDS` or `buildDocSyncParams`.
 - Backend path aliases: `@config/*`, `@repositories/*`, `@controllers/*`, `@middleware/*` resolve via the existing `tsconfig`/`tsx` setup — follow the `.js`-suffixed ESM import style already used in every file this plan touches.
-- Backend tests (`node:test`, run via `pnpm -F @medisdiana/backend test`) hit the real configured `DATABASE_URL` — no mocking of the DB layer, matching every existing test in `apps/backend/src/**/*.test.ts`.
-- There is no frontend test runner configured anywhere in this repo (`medisdiana-landing` has no `test` script, no vitest config) — frontend tasks are verified manually via the dev server, not via new test infrastructure invented for this feature.
+- Backend tests (`node:test`, run via `pnpm -F @medisopimed/backend test`) hit the real configured `DATABASE_URL` — no mocking of the DB layer, matching every existing test in `apps/backend/src/**/*.test.ts`.
+- There is no frontend test runner configured anywhere in this repo (`medisopimed-landing` has no `test` script, no vitest config) — frontend tasks are verified manually via the dev server, not via new test infrastructure invented for this feature.
 
 ---
 
@@ -252,7 +252,7 @@ In `apps/backend/src/scripts/run-migration.ts`, add a new block right after the 
 
 - [ ] **Step 3: Run the migration**
 
-Run: `pnpm -F @medisdiana/backend migrate`
+Run: `pnpm -F @medisopimed/backend migrate`
 Expected: output ends with `✅ Migration 025 successful!` followed by `🌟 MIGRATIONS COMPLETE! 🌟`. If `DATABASE_URL` is unreachable, re-establish connectivity the same way it was done earlier in this project (SSH tunnel to the VM's Postgres) before retrying — do not change `.env`.
 
 - [ ] **Step 4: Verify the seeded data**
@@ -340,7 +340,7 @@ test('listRepsServiceCodes() returns only active REPS codes, ordered by group th
 
 - [ ] **Step 3: Run the test to verify it fails**
 
-Run: `pnpm -F @medisdiana/backend test -- --test-name-pattern="listRepsServiceCodes"`
+Run: `pnpm -F @medisopimed/backend test -- --test-name-pattern="listRepsServiceCodes"`
 Expected: FAIL — `CupsRepository.listRepsServiceCodes is not a function`.
 
 - [ ] **Step 4: Implement the repository method**
@@ -368,7 +368,7 @@ Then add this method inside the `CupsRepository` object, after `createMapping`:
 
 - [ ] **Step 5: Run the test to verify it passes**
 
-Run: `pnpm -F @medisdiana/backend test -- --test-name-pattern="listRepsServiceCodes"`
+Run: `pnpm -F @medisopimed/backend test -- --test-name-pattern="listRepsServiceCodes"`
 Expected: PASS.
 
 - [ ] **Step 6: Add the controller handler**
@@ -402,7 +402,7 @@ router.get('/services/reps-service-codes', authenticate, authorize('ADMIN'), lis
 
 - [ ] **Step 8: Verify the whole backend still typechecks**
 
-Run: `pnpm -F @medisdiana/backend build`
+Run: `pnpm -F @medisopimed/backend build`
 Expected: no TypeScript errors.
 
 - [ ] **Step 9: Commit**
@@ -592,7 +592,7 @@ test('updateOffer: PATCH con solo {repsServiceCode} lo actualiza', async (t) => 
 
 - [ ] **Step 3: Run the tests to verify they fail**
 
-Run: `pnpm -F @medisdiana/backend test -- --test-name-pattern="reps_service_code"`
+Run: `pnpm -F @medisopimed/backend test -- --test-name-pattern="reps_service_code"`
 Expected: FAIL — `repsServiceCode` is silently dropped (not in `CATALOG_PAYLOAD_KEYS`, not inserted), so `rows[0].reps_service_code` is `undefined`/column mismatch and `catalog.repsServiceCode` is `undefined` instead of `'328'`/`null`.
 
 - [ ] **Step 4: Wire the field into `CATALOG_PAYLOAD_KEYS`**
@@ -671,17 +671,17 @@ Then in `rowToOffer` (the `catalog:` object, after `serviceCode: (row['c_service
 
 - [ ] **Step 8: Run the tests to verify they pass**
 
-Run: `pnpm -F @medisdiana/backend test -- --test-name-pattern="reps_service_code"`
+Run: `pnpm -F @medisopimed/backend test -- --test-name-pattern="reps_service_code"`
 Expected: PASS (all 3 tests).
 
 - [ ] **Step 9: Verify the whole backend still typechecks**
 
-Run: `pnpm -F @medisdiana/backend build`
+Run: `pnpm -F @medisopimed/backend build`
 Expected: no TypeScript errors.
 
 - [ ] **Step 10: Confirm no CuidameDoc sync regression**
 
-Run: `pnpm -F @medisdiana/backend test -- --test-name-pattern="docsync|control-price"`
+Run: `pnpm -F @medisopimed/backend test -- --test-name-pattern="docsync|control-price"`
 Expected: PASS — existing docSync and control-price tests are unaffected (`repsServiceCode` is not in `DOC_SYNC_RELEVANT_FIELDS`).
 
 - [ ] **Step 11: Commit**
@@ -699,9 +699,9 @@ git commit -m "feat(services): persist reps_service_code on the service catalog"
 **Can run in parallel with:** Tasks 2 and 3.
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/admin/servicioSchema.ts`
-- Modify: `medisdiana-landing/src/components/admin/FormularioServicio.tsx`
-- Modify: `medisdiana-landing/src/components/admin/ServiciosDashboard.tsx`
+- Modify: `medisopimed-landing/src/components/admin/servicioSchema.ts`
+- Modify: `medisopimed-landing/src/components/admin/FormularioServicio.tsx`
+- Modify: `medisopimed-landing/src/components/admin/ServiciosDashboard.tsx`
 
 **Interfaces:**
 - Consumes: `GET /services/reps-service-codes` → `{ success: true, data: { code: string; name: string; serviceGroup: string }[] }` (Task 2). Reads/writes `repsServiceCode` on `ServicioFormValues` and on the offer payload/catalog (Task 3's exact field name).
@@ -709,7 +709,7 @@ git commit -m "feat(services): persist reps_service_code on the service catalog"
 
 - [ ] **Step 1: Add `repsServiceCode` to the zod schema**
 
-In `medisdiana-landing/src/components/admin/servicioSchema.ts`, add to `baseSchema` (after `cups: z.string().optional(), // CUPS`, line 38):
+In `medisopimed-landing/src/components/admin/servicioSchema.ts`, add to `baseSchema` (after `cups: z.string().optional(), // CUPS`, line 38):
 
 ```ts
   repsServiceCode: z.string().optional(), // Código de servicio REPS (habilitación)
@@ -771,12 +771,12 @@ In the JSX, inside the `{!isEscapeGroup && (...)}` fragment (section 3), right a
 
 - [ ] **Step 5: Typecheck the frontend**
 
-Run: `pnpm -F medisdiana-landing exec tsc --noEmit`
+Run: `pnpm -F medisopimed-landing exec tsc --noEmit`
 Expected: no new TypeScript errors.
 
 - [ ] **Step 6: Wire the field into `ServiciosDashboard.tsx` load path**
 
-In `medisdiana-landing/src/components/admin/ServiciosDashboard.tsx`, add to the object built for `initialData` (after `cups: cat.serviceCode || '',`, line 379):
+In `medisopimed-landing/src/components/admin/ServiciosDashboard.tsx`, add to the object built for `initialData` (after `cups: cat.serviceCode || '',`, line 379):
 
 ```ts
       repsServiceCode: cat.repsServiceCode || '',
@@ -805,7 +805,7 @@ Run: `pnpm dev` (or the project's usual dev command per `flujo-de-trabajo.md`), 
 - [ ] **Step 9: Commit**
 
 ```bash
-git add medisdiana-landing/src/components/admin/servicioSchema.ts medisdiana-landing/src/components/admin/FormularioServicio.tsx medisdiana-landing/src/components/admin/ServiciosDashboard.tsx
+git add medisopimed-landing/src/components/admin/servicioSchema.ts medisopimed-landing/src/components/admin/FormularioServicio.tsx medisopimed-landing/src/components/admin/ServiciosDashboard.tsx
 git commit -m "feat(admin): add REPS service-code field to the service form"
 ```
 
@@ -813,7 +813,7 @@ git commit -m "feat(admin): add REPS service-code field to the service form"
 
 ## Final Integration Check (after all tasks land)
 
-- [ ] Run `pnpm -F @medisdiana/backend test` (full backend suite) — all tests pass, including the new ones from Tasks 2 and 3.
-- [ ] Run `pnpm -F @medisdiana/backend build` and `pnpm -F medisdiana-landing exec tsc --noEmit` — no TypeScript errors anywhere in the monorepo.
+- [ ] Run `pnpm -F @medisopimed/backend test` (full backend suite) — all tests pass, including the new ones from Tasks 2 and 3.
+- [ ] Run `pnpm -F @medisopimed/backend build` and `pnpm -F medisopimed-landing exec tsc --noEmit` — no TypeScript errors anywhere in the monorepo.
 - [ ] Repeat Task 4 Step 8's manual E2E walkthrough once more against the fully merged code.
 - [ ] Update `arquitectura.md` with a short new section documenting `reps_service_catalog` / `service_catalog.reps_service_code`, mirroring the style of the existing "Sincronización de Servicios Medis → CuidameDoc" section (CLAUDE.md regla crítica #1: nothing is "done" until documented).

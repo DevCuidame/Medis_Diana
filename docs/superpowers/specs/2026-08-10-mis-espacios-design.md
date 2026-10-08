@@ -4,7 +4,7 @@
 
 ## Contexto
 
-La landing pública (`medisdiana-landing/src/App.tsx`, ruta `/`) renderiza las
+La landing pública (`medisopimed-landing/src/App.tsx`, ruta `/`) renderiza las
 secciones `Hero → About → Classes → Instructors → Testimonials → FinalCTA`.
 Se pide agregar una nueva sección, **"Mis Espacios"**, que muestre fotos de
 las instalaciones del consultorio, ubicada **antes** de `Testimonials`.
@@ -24,7 +24,7 @@ lanzarse con placeholders fáciles de reemplazar después.
 
 ## Componente nuevo
 
-`medisdiana-landing/src/components/Spaces.tsx`
+`medisopimed-landing/src/components/Spaces.tsx`
 
 - Nombre en inglés, siguiendo la convención de los componentes hermanos
   (`Hero`, `About`, `Classes`, `Instructors`, `Testimonials`, `FinalCTA`).
@@ -124,7 +124,7 @@ antes de esta tarea y no se resuelve aquí.
 
 ## Integración en App.tsx
 
-En [App.tsx](../../../medisdiana-landing/src/App.tsx):
+En [App.tsx](../../../medisopimed-landing/src/App.tsx):
 - Importar `Spaces` junto a los demás componentes de sección.
 - Insertar `<Spaces />` entre `<Instructors />` y `<Testimonials />` dentro
   de `LandingPage()`.

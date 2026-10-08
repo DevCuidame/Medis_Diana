@@ -6,14 +6,14 @@
 ## Contexto y causa raíz
 
 El formulario "Nuevo Servicio" del panel admin de Medis (`FormularioServicio.tsx` /
-`ServiciosDashboard.tsx`, en `medisdiana-landing`) — el que tiene los campos Sede,
+`ServiciosDashboard.tsx`, en `medisopimed-landing`) — el que tiene los campos Sede,
 CUPS, Modalidad y **Precio por sesión (COP)** — guarda **solo** en la base de datos
 propia de Medis, vía `POST/PATCH /api/services/offers`. Nunca ha escrito nada en
 CuidameDoc, desde que existe (9 de julio).
 
 Sí existe un proxy real y funcional hacia CuidameDoc, construido el 16 de julio:
 `apps/backend/src/controllers/docServices.controller.ts`, montado en
-`/api/services/catalog`. Hace login como Diana (`apps/backend/src/utils/docAuth.ts`,
+`/api/services/catalog`. Hace login como OpiMed (`apps/backend/src/utils/docAuth.ts`,
 credenciales de servicio) y llama a CuidameDoc de verdad
 (`GET/POST /booking/my-services`, `DELETE /booking/my-services/:profServiceId`).
 La única UI que lo llamaba era una pestaña separada "Catálogo Médico" en
@@ -111,7 +111,7 @@ Comportamiento:
 - Toda llamada de red va en try/catch. Si algo falla, **no lanza** — devuelve
   `{ ok: false, error: mensaje }` y deja el estado local (`doc_prof_service_id`)
   como estaba antes de intentar, para que el próximo guardado reintente solo.
-- Reutiliza `getDocToken`/`refreshDocToken` de `docAuth.ts` (login como Diana,
+- Reutiliza `getDocToken`/`refreshDocToken` de `docAuth.ts` (login como OpiMed,
   igual que el proxy existente — se mantiene el comportamiento actual de que
   todo se asocia a `professional_id=12` sin importar el "Profesional a cargo"
   elegido en el formulario de Medis).
@@ -168,7 +168,7 @@ Script de una sola corrida manual (mismo patrón que `alter-catalog.ts` /
 - No se toca `cuidame_doc_backend` (ya soporta `price` de punta a punta).
 - No se resucita la pestaña "Catálogo Médico".
 - No hay mapeo de "Profesional a cargo" de Medis → profesional real en
-  CuidameDoc; todo sigue asociado a Diana (`professional_id=12`), como ya
+  CuidameDoc; todo sigue asociado a OpiMed (`professional_id=12`), como ya
   funcionaba el proxy antes de este fix.
 - No hay reintento automático en segundo plano para syncs fallidos — el
   próximo guardado del mismo servicio reintenta de forma natural.

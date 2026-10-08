@@ -2,20 +2,20 @@
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Plus, X, CheckCircle2, XCircle,
-  Edit2, Trash2, ToggleLeft, ToggleRight, Gift,
+  Edit2, Trash2, ToggleLeft, ToggleRight, Gift, Menu,
   Loader2, Percent, CreditCard, Infinity, Info, } from 'lucide-react';
 import { AdminSidebar } from './AdminSidebar';
 import './MainDashboard.css';
 
 const C = {
-  gold: '#8B5CF6', goldLight: '#3B82F6',
-  bgPanel: '#F3F0FB', white: '#FFFFFF',
-  text: '#1B1C1C', textBrown: '#475569',
+  gold: '#0D9488', goldLight: '#44CFCB',
+  bgPanel: '#F0FDFA', white: '#FFFFFF',
+  text: '#0F172A', textBrown: '#475569',
   textMedium: '#5E5E5E', textMuted: '#94A3B8',
-  borderLight: '#DDD6FE',
+  borderLight: '#CCFBF1',
 };
-const FONT_BODONI = '"Bodoni Moda", Georgia, serif';
-const FONT_INTER  = '"Hanken Grotesk", Inter, sans-serif';
+const FONT_BODONI = '"Manrope", Georgia, serif';
+const FONT_INTER  = '"Inter", Inter, sans-serif';
 
 type BenefitType = 'informational' | 'free_classes' | 'discount_percent' | 'unlimited_classes';
 
@@ -36,14 +36,14 @@ const CATEGORY_META: Record<ServiceCategory, { label: string; desc: string; colo
   pole: {
     label: 'Medicina',
     desc: 'Consultas médicas',
-    color: '#8B5CF6',
-    bg: 'rgba(139,92,246,0.08)',
+    color: '#0D9488',
+    bg: 'rgba(13,148,136,0.08)',
   },
   complementary: {
-    label: 'Fuerza / Flex',
-    desc: 'Fuerza o flexibilidad',
-    color: '#7C3AED',
-    bg: 'rgba(124,58,237,0.08)',
+    label: 'Terapias',
+    desc: 'Terapias complementarias',
+    color: '#0D9488',
+    bg: 'rgba(13,148,136,0.08)',
   },
   general: {
     label: 'General',
@@ -73,8 +73,8 @@ const TYPE_META: Record<BenefitType, { label: string; icon: React.ReactNode; col
   discount_percent: {
     label: 'Descuento %',
     icon: <Percent size={16} />,
-    color: '#3B82F6',
-    bg: 'rgba(59,130,246,0.1)',
+    color: '#44CFCB',
+    bg: 'rgba(68,207,203,0.1)',
     hint: 'Descuento sobre cualquier servicio adicional una vez agotadas las sesiones incluidas en el plan.',
     valueLabel: 'Porcentaje (%)',
     valuePlaceholder: 'Ej: 10',
@@ -82,8 +82,8 @@ const TYPE_META: Record<BenefitType, { label: string; icon: React.ReactNode; col
   unlimited_classes: {
     label: 'Acceso ilimitado',
     icon: <Infinity size={16} />,
-    color: '#7C3AED',
-    bg: 'rgba(124,58,237,0.08)',
+    color: '#0D9488',
+    bg: 'rgba(13,148,136,0.08)',
     hint: 'Acceso ilimitado a todos los servicios del consultorio durante la vigencia del plan.',
   },
 };
@@ -265,24 +265,25 @@ export const BeneficiosDashboard: React.FC = () => {
       <div className="main-content">
 
       {/* ── TOP BAR ── */}
-      <header style={{ height: 72, background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.borderLight}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 32px', position: 'sticky', top: 0, zIndex: 30 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+      <header style={{ minHeight: 72, background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.borderLight}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', rowGap: 10, padding: '12px 32px', position: 'sticky', top: 0, zIndex: 30 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', rowGap: 8 }}>
+          <button className="menu-toggle" onClick={() => setIsMobileMenuOpen(v => !v)}><Menu size={20} /></button>
           <button
             onClick={() => navigate('/admin/memberships')}
-            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 10, border: `1.5px solid ${C.borderLight}`, background: C.white, color: C.textBrown, fontSize: 13, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}
+            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 9999, border: `1.5px solid ${C.borderLight}`, background: C.white, color: C.textBrown, fontSize: 13, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = C.gold; e.currentTarget.style.color = C.gold; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = C.borderLight; e.currentTarget.style.color = C.textBrown; }}
           >
             <ArrowLeft size={15} /> Planes
           </button>
           <div style={{ width: 1, height: 24, background: C.borderLight }} />
-          <h1 style={{ fontFamily: FONT_BODONI, fontSize: 22, color: C.gold, margin: 0, fontWeight: 600, fontStyle: 'italic' }}>
+          <h1 style={{ fontFamily: FONT_BODONI, fontSize: 22, color: C.gold, margin: 0, fontWeight: 700 }}>
             Catálogo de Beneficios
           </h1>
         </div>
         <button
           onClick={openAdd}
-          style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 10, border: 'none', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, fontSize: 13, fontWeight: 700, cursor: 'pointer', letterSpacing: '0.06em' }}
+          style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 9999, border: 'none', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, fontSize: 13, fontWeight: 700, cursor: 'pointer', letterSpacing: '0.06em' }}
         >
           <Plus size={15} strokeWidth={3} /> Nuevo Beneficio
         </button>
@@ -294,7 +295,7 @@ export const BeneficiosDashboard: React.FC = () => {
         {/* Stats */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} style={{ marginBottom: 32 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 16 }}>
-            <div style={{ width: 48, height: 48, borderRadius: 14, background: `rgba(139,92,246,0.1)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 48, height: 48, borderRadius: 14, background: `rgba(13,148,136,0.1)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Gift size={22} color={C.gold} />
             </div>
             <div>
@@ -308,7 +309,7 @@ export const BeneficiosDashboard: React.FC = () => {
           {/* type breakdown */}
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             {[
-              { label: 'Total', value: benefits.length, color: C.gold, bg: 'rgba(139,92,246,0.08)' },
+              { label: 'Total', value: benefits.length, color: C.gold, bg: 'rgba(13,148,136,0.08)' },
               { label: 'Activos', value: benefits.filter(b => b.isActive).length, color: '#16A34A', bg: 'rgba(34,197,94,0.08)' },
               { label: 'Inactivos', value: benefits.filter(b => !b.isActive).length, color: '#DC2626', bg: 'rgba(239,68,68,0.08)' },
             ].map(s => (
@@ -331,7 +332,7 @@ export const BeneficiosDashboard: React.FC = () => {
             <Gift size={44} color={C.borderLight} style={{ marginBottom: 16 }} />
             <p style={{ fontFamily: FONT_BODONI, fontSize: '1.2rem', color: C.textMuted, margin: '0 0 6px' }}>Sin beneficios aún</p>
             <p style={{ fontSize: 13, color: C.textMuted, margin: '0 0 20px' }}>Agrega el primer beneficio para empezar a asignarlos a los planes.</p>
-            <button onClick={openAdd} style={{ padding: '10px 24px', borderRadius: 10, border: 'none', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+            <button onClick={openAdd} style={{ padding: '10px 24px', borderRadius: 9999, border: 'none', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
               + Agregar beneficio
             </button>
           </motion.div>
@@ -397,7 +398,7 @@ export const BeneficiosDashboard: React.FC = () => {
                     </button>
 
                     {/* Edit */}
-                    <button onClick={() => openEdit(b)} style={{ width: 34, height: 34, borderRadius: 8, background: 'rgba(139,92,246,0.07)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.gold, flexShrink: 0 }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(139,92,246,0.14)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(139,92,246,0.07)'}>
+                    <button onClick={() => openEdit(b)} style={{ width: 34, height: 34, borderRadius: 8, background: 'rgba(13,148,136,0.07)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.gold, flexShrink: 0 }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(13,148,136,0.14)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(13,148,136,0.07)'}>
                       <Edit2 size={14} />
                     </button>
 
@@ -417,7 +418,7 @@ export const BeneficiosDashboard: React.FC = () => {
       <AnimatePresence>
         {showForm && (
           <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowForm(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(27,28,28,0.45)', backdropFilter: 'blur(6px)', zIndex: 100 }} />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowForm(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.45)', backdropFilter: 'blur(6px)', zIndex: 100 }} />
             <motion.div initial={{ opacity: 0, scale: 0.96, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96, y: 20 }} transition={{ type: 'spring', stiffness: 340, damping: 28 }} style={{ position: 'fixed', inset: 0, zIndex: 101, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', pointerEvents: 'none' }}>
               <div style={{ background: C.white, borderRadius: 20, width: '100%', maxWidth: 480, padding: '1.75rem', boxShadow: '0 24px 80px rgba(0,0,0,0.16)', pointerEvents: 'all' }}>
 
@@ -550,7 +551,7 @@ export const BeneficiosDashboard: React.FC = () => {
                   <button onClick={() => setShowForm(false)} style={{ flex: 1, padding: '12px', borderRadius: 10, border: `1.5px solid ${C.borderLight}`, background: 'transparent', color: C.textBrown, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
                     Cancelar
                   </button>
-                  <button onClick={handleSave} disabled={saving} style={{ flex: 2, padding: '12px', borderRadius: 10, border: 'none', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, fontSize: 13, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1, letterSpacing: '0.06em' }}>
+                  <button onClick={handleSave} disabled={saving} style={{ flex: 2, padding: '12px', borderRadius: 9999, border: 'none', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, fontSize: 13, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1, letterSpacing: '0.06em' }}>
                     {saving ? 'Guardando…' : editTarget ? '✓ Guardar cambios' : '✓ Crear Beneficio'}
                   </button>
                 </div>
@@ -564,7 +565,7 @@ export const BeneficiosDashboard: React.FC = () => {
       <AnimatePresence>
         {deleteId && (
           <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setDeleteId(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(27,28,28,0.45)', backdropFilter: 'blur(6px)', zIndex: 110 }} />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setDeleteId(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.45)', backdropFilter: 'blur(6px)', zIndex: 110 }} />
             <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }} style={{ position: 'fixed', inset: 0, zIndex: 111, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', pointerEvents: 'none' }}>
               <div style={{ background: C.white, borderRadius: 18, padding: '2rem', maxWidth: 360, width: '100%', boxShadow: '0 20px 60px rgba(0,0,0,0.14)', pointerEvents: 'all', textAlign: 'center' }}>
                 <div style={{ width: 50, height: 50, borderRadius: '50%', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem' }}>

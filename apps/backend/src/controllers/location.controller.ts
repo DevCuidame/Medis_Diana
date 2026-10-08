@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { LocationRepository } from '@repositories/location.repository.js';
 import { OperatingHoursRepository } from '@repositories/services.repository.js';
-import type { DayOfWeek, UpsertOperatingHourPayload } from '@medisdiana/shared-types';
+import type { DayOfWeek, UpsertOperatingHourPayload } from '@medisopimed/shared-types';
 
 interface IncomingDaySchedule {
   isOpen: boolean;

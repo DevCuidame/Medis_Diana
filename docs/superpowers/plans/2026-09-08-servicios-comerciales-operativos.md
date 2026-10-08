@@ -17,7 +17,7 @@
 - **Ningún cambio a la sincronización CuidameDoc en esta fase** — crear/editar un comercial NO debe hacer ninguna llamada de red hacia `doc-api.cuidame.tech`, y crear/editar un operativo sigue exactamente igual que hoy (incluyendo su `ensureDocSync` existente, sin tocar).
 - Servicios existentes en `service_catalog` no se tocan ni se migran — quedan como operativos tal cual están.
 - Todo el SQL es directo vía el pool `pg` — sin Prisma ni otro ORM (regla del proyecto).
-- No existe runner de tests en el frontend (`medisdiana-landing`) — no crear uno como parte de esta feature; verificar manualmente.
+- No existe runner de tests en el frontend (`medisopimed-landing`) — no crear uno como parte de esta feature; verificar manualmente.
 
 ## Parallelization
 
@@ -152,7 +152,7 @@ git commit -m "feat(db): add service_commercial table for comercial/operativo sp
 **Interfaces:**
 - Consumes: `pool` from `@config/database.js` (existing).
 - Produces:
-  - `ServiceCommercialPublic`, `CreateServiceCommercialPayload`, `UpdateServiceCommercialPayload` types (exported from `@medisdiana/shared-types`).
+  - `ServiceCommercialPublic`, `CreateServiceCommercialPayload`, `UpdateServiceCommercialPayload` types (exported from `@medisopimed/shared-types`).
   - `ServiceCommercialRepository.{findAll, findById, create, update, delete}` — used by Task 3's controller.
   - `ServiceCatalogRepository.listActive(): Promise<{id: string; serviceName: string}[]>` — used by Task 3's `listOperativos` controller.
 
@@ -295,7 +295,7 @@ import type {
   ServiceCommercialPublic,
   CreateServiceCommercialPayload,
   UpdateServiceCommercialPayload,
-} from '@medisdiana/shared-types';
+} from '@medisopimed/shared-types';
 
 const SELECT = `
   SELECT
@@ -800,7 +800,7 @@ git commit -m "feat(backend): add serviceCommercial CRUD endpoints and operativo
 ### Task 4: Frontend — `FormularioServicioComercial.tsx`
 
 **Files:**
-- Create: `medisdiana-landing/src/components/admin/FormularioServicioComercial.tsx`
+- Create: `medisopimed-landing/src/components/admin/FormularioServicioComercial.tsx`
 
 **Interfaces:**
 - Consumes: `GET /api/services/operativos` (Task 3's contract) to populate the selector.
@@ -1027,13 +1027,13 @@ export const FormularioServicioComercial: React.FC<Props> = ({ initialData, onSu
 
 - [ ] **Step 2: Sanity-check it compiles**
 
-Run (from `medisdiana-landing/`): `npx tsc --noEmit`
+Run (from `medisopimed-landing/`): `npx tsc --noEmit`
 Expected: no new type errors attributable to `FormularioServicioComercial.tsx` (this repo has pre-existing unrelated `tsc -b` errors — see `flujo-de-trabajo.md` — so don't chase errors outside this file).
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add medisdiana-landing/src/components/admin/FormularioServicioComercial.tsx
+git add medisopimed-landing/src/components/admin/FormularioServicioComercial.tsx
 git commit -m "feat(admin): add FormularioServicioComercial form component"
 ```
 
@@ -1042,7 +1042,7 @@ git commit -m "feat(admin): add FormularioServicioComercial form component"
 ### Task 5: Frontend — `ServiciosComercialesTab.tsx`
 
 **Files:**
-- Create: `medisdiana-landing/src/components/admin/ServiciosComercialesTab.tsx`
+- Create: `medisopimed-landing/src/components/admin/ServiciosComercialesTab.tsx`
 
 **Interfaces:**
 - Consumes: `FormularioServicioComercial` + `ServicioComercialFormValues` (Task 4); `GET/POST/PATCH/DELETE /api/services/commercial` (Task 3's contract).
@@ -1239,13 +1239,13 @@ export const ServiciosComercialesTab: React.FC<Props> = ({ onToast }) => {
 
 - [ ] **Step 2: Sanity-check it compiles**
 
-Run (from `medisdiana-landing/`): `npx tsc --noEmit`
+Run (from `medisopimed-landing/`): `npx tsc --noEmit`
 Expected: no new type errors attributable to `ServiciosComercialesTab.tsx`.
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add medisdiana-landing/src/components/admin/ServiciosComercialesTab.tsx
+git add medisopimed-landing/src/components/admin/ServiciosComercialesTab.tsx
 git commit -m "feat(admin): add ServiciosComercialesTab list/CRUD component"
 ```
 
@@ -1254,7 +1254,7 @@ git commit -m "feat(admin): add ServiciosComercialesTab list/CRUD component"
 ### Task 6: Wire into `ServiciosDashboard.tsx`
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/admin/ServiciosDashboard.tsx`
+- Modify: `medisopimed-landing/src/components/admin/ServiciosDashboard.tsx`
 
 **Interfaces:**
 - Consumes: `ServiciosComercialesTab` (Task 5), existing `showToast`, `setEditingGroup`, `setIsFormOpen`.
@@ -1451,13 +1451,13 @@ Replace with:
 
 - [ ] **Step 6: Sanity-check it compiles**
 
-Run (from `medisdiana-landing/`): `npx tsc --noEmit`
+Run (from `medisopimed-landing/`): `npx tsc --noEmit`
 Expected: no new type/JSX errors attributable to `ServiciosDashboard.tsx` (in particular, no "unclosed JSX" / unbalanced-parens errors — if you see one, re-check Steps 3-5 landed in the right order with matching `<>`/`)}` pairs).
 
 - [ ] **Step 7: Commit**
 
 ```bash
-git add medisdiana-landing/src/components/admin/ServiciosDashboard.tsx
+git add medisopimed-landing/src/components/admin/ServiciosDashboard.tsx
 git commit -m "feat(admin): wire type picker and Comerciales/Operativos tabs into ServiciosDashboard"
 ```
 
@@ -1476,7 +1476,7 @@ cd apps/backend && npm run dev
 ```
 (in a second terminal)
 ```bash
-cd medisdiana-landing && npm run dev
+cd medisopimed-landing && npm run dev
 ```
 
 - [ ] **Step 2: Log in as ADMIN and open Gestión de Servicios**

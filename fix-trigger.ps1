@@ -7,7 +7,7 @@ $PROJ = "esmart-health"
 
 $script = @'
 #!/bin/bash
-PGPASSWORD="medisdiana2024Secure!" psql -h 127.0.0.1 -U medisdiana_user -d medisdiana_prod <<'SQL'
+PGPASSWORD="medisopimed2024Secure!" psql -h 127.0.0.1 -U medisopimed_user -d medisopimed_prod <<'SQL'
 DROP TRIGGER IF EXISTS trg_check_offer_capacity ON service_offers;
 SELECT 'Trigger eliminado OK' AS resultado;
 SQL

@@ -17,7 +17,7 @@ test('create() inserts a pending quote, listByStatus("pending") finds it, resolv
     externalReference: 'HC-TEST-0001',
     patientName: 'Paciente de Prueba',
     patientEmail: 'paciente-test@example.com',
-    professionalName: 'Dra. Diana (test)',
+    professionalName: 'Dra. OpiMed (test)',
     items: SAMPLE_ITEMS,
     totalAmount: 130000,
   });

@@ -15,7 +15,7 @@
 - All new backend files follow the existing import alias style (`@repositories/...js`, `@controllers/...js`) — check `apps/backend/tsconfig.json` paths if unsure, but just copy the pattern from a neighboring file (e.g. `services.repository.ts`).
 - All new routes require `authenticate` + `authorize('ADMIN')`, matching every other `/services/*` admin route in `services.routes.ts`.
 - No new abstractions beyond what's specified below (no CRUD dashboard, no audit log — explicitly out of scope for this plan).
-- Run `npx tsc --noEmit` in `apps/backend` and in `medisdiana-landing` after each task that touches that side — zero new errors is the bar.
+- Run `npx tsc --noEmit` in `apps/backend` and in `medisopimed-landing` after each task that touches that side — zero new errors is the bar.
 
 ---
 
@@ -39,12 +39,12 @@
 - `apps/backend/src/routes/services.routes.ts` — wire 5 new routes
 
 **Frontend (new):**
-- `medisdiana-landing/src/components/admin/serviciosCatalogo.ts` — `GRUPOS`, `SUBGRUPOS`, `GRUPOS_DINAMICOS`
-- `medisdiana-landing/src/components/admin/CupsMappingModal.tsx`
+- `medisopimed-landing/src/components/admin/serviciosCatalogo.ts` — `GRUPOS`, `SUBGRUPOS`, `GRUPOS_DINAMICOS`
+- `medisopimed-landing/src/components/admin/CupsMappingModal.tsx`
 
 **Frontend (modified):**
-- `medisdiana-landing/src/components/admin/servicioSchema.ts`
-- `medisdiana-landing/src/components/admin/FormularioServicio.tsx`
+- `medisopimed-landing/src/components/admin/servicioSchema.ts`
+- `medisopimed-landing/src/components/admin/FormularioServicio.tsx`
 
 ---
 
@@ -1083,7 +1083,7 @@ git commit -m "feat(cups): generate Grupo 05 (Atención inmediata) classificatio
 ### Task 9: Frontend catalog constants — parallelizable with Tasks 2-8
 
 **Files:**
-- Create: `medisdiana-landing/src/components/admin/serviciosCatalogo.ts`
+- Create: `medisopimed-landing/src/components/admin/serviciosCatalogo.ts`
 
 **Interfaces:**
 - Produces: `GRUPOS`, `SUBGRUPOS`, `GRUPOS_DINAMICOS` — consumed by Task 10 (`servicioSchema.ts`) and Task 11 (`FormularioServicio.tsx`).
@@ -1091,7 +1091,7 @@ git commit -m "feat(cups): generate Grupo 05 (Atención inmediata) classificatio
 - [ ] **Step 1: Write the file**
 
 ```typescript
-// medisdiana-landing/src/components/admin/serviciosCatalogo.ts
+// medisopimed-landing/src/components/admin/serviciosCatalogo.ts
 
 export interface Grupo {
   code: string;
@@ -1159,13 +1159,13 @@ export const GRUPOS_DINAMICOS = ['01', '02', '03', '04', '05'];
 
 - [ ] **Step 2: Type-check**
 
-Run: `cd medisdiana-landing && npx tsc --noEmit`
+Run: `cd medisopimed-landing && npx tsc --noEmit`
 Expected: no new errors (this file has no consumers yet, so it can only fail on its own syntax).
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add medisdiana-landing/src/components/admin/serviciosCatalogo.ts
+git add medisopimed-landing/src/components/admin/serviciosCatalogo.ts
 git commit -m "feat(cups): add frontend Grupo/Subgrupo catalog constants"
 ```
 
@@ -1174,7 +1174,7 @@ git commit -m "feat(cups): add frontend Grupo/Subgrupo catalog constants"
 ### Task 10: Update `servicioSchema.ts` — parallelizable with Tasks 2-9
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/admin/servicioSchema.ts`
+- Modify: `medisopimed-landing/src/components/admin/servicioSchema.ts`
 
 **Interfaces:**
 - Consumes: nothing new (uses its own literal group codes, matching Task 9's `GRUPOS`).
@@ -1182,7 +1182,7 @@ git commit -m "feat(cups): add frontend Grupo/Subgrupo catalog constants"
 
 - [ ] **Step 1: Replace `RIPS_GRUPO_SERVICIO` and the `superRefine` block**
 
-In `medisdiana-landing/src/components/admin/servicioSchema.ts`, replace:
+In `medisopimed-landing/src/components/admin/servicioSchema.ts`, replace:
 
 ```typescript
 export const RIPS_GRUPO_SERVICIO = [
@@ -1250,13 +1250,13 @@ And update the `categoryGroup` field declaration in `baseSchema` from `z.enum(RI
 
 - [ ] **Step 2: Type-check**
 
-Run: `cd medisdiana-landing && npx tsc --noEmit`
+Run: `cd medisopimed-landing && npx tsc --noEmit`
 Expected: errors will appear in `FormularioServicio.tsx` (still referencing old field/constant names) — that's expected and gets fixed in Task 11. No errors should appear in `servicioSchema.ts` itself.
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add medisdiana-landing/src/components/admin/servicioSchema.ts
+git add medisopimed-landing/src/components/admin/servicioSchema.ts
 git commit -m "feat(cups): switch categoryGroup to short codes, add cups validation"
 ```
 
@@ -1265,14 +1265,14 @@ git commit -m "feat(cups): switch categoryGroup to short codes, add cups validat
 ### Task 11: Rewrite `FormularioServicio.tsx` cascading + CUPS lookup — depends on Tasks 3, 9, 10, 12 (Task 11 imports `CupsMappingModal` from Task 12 — do Task 12 first, they are NOT parallel with each other despite both depending on Task 3)
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/admin/FormularioServicio.tsx`
-- Modify: `medisdiana-landing/src/components/admin/ServiciosDashboard.tsx:355,359,407` (parent component — reads/writes the `serviceCode`/`categoryGroup` fields being renamed; must be fixed in the same task or the form silently breaks end-to-end)
+- Modify: `medisopimed-landing/src/components/admin/FormularioServicio.tsx`
+- Modify: `medisopimed-landing/src/components/admin/ServiciosDashboard.tsx:355,359,407` (parent component — reads/writes the `serviceCode`/`categoryGroup` fields being renamed; must be fixed in the same task or the form silently breaks end-to-end)
 
 **Interfaces:**
 - Consumes: `GRUPOS`, `SUBGRUPOS`, `GRUPOS_DINAMICOS` (Task 9); `servicioSchema`, `RIPS_GRUPO_SERVICIO` (Task 10); `GET /api/services/cups-lookup`, `GET /api/services/classification-categories`, `GET /api/services/classification-subcategories` (Task 3).
 - Produces: renders `<CupsMappingModal>` (Task 12) when lookup is not-found — Task 12 must expose `{ serviceGroup, serviceSubgroup, serviceCategory, serviceSubcategory, onClose, onCreated }` props.
 
-**Important — parent wiring fix (do this first, it's easy to miss):** `ServiciosDashboard.tsx` reads and writes the exact form field being renamed (`serviceCode` → `cups`) and has a stale default value for the old long-string `categoryGroup`. In `medisdiana-landing/src/components/admin/ServiciosDashboard.tsx`:
+**Important — parent wiring fix (do this first, it's easy to miss):** `ServiciosDashboard.tsx` reads and writes the exact form field being renamed (`serviceCode` → `cups`) and has a stale default value for the old long-string `categoryGroup`. In `medisopimed-landing/src/components/admin/ServiciosDashboard.tsx`:
 
 - Line 355: change
   ```typescript
@@ -1516,13 +1516,13 @@ Search the file for any other remaining uses of `serviceCode` (the old field nam
 
 - [ ] **Step 6: Type-check**
 
-Run: `cd medisdiana-landing && npx tsc --noEmit`
+Run: `cd medisopimed-landing && npx tsc --noEmit`
 Expected: no errors (Task 12's `CupsMappingModal.tsx` must already exist — this task imports it).
 
 - [ ] **Step 7: Commit**
 
 ```bash
-git add medisdiana-landing/src/components/admin/FormularioServicio.tsx medisdiana-landing/src/components/admin/ServiciosDashboard.tsx
+git add medisopimed-landing/src/components/admin/FormularioServicio.tsx medisopimed-landing/src/components/admin/ServiciosDashboard.tsx
 git commit -m "feat(cups): rewrite classification cascade to use real CUPS lookup"
 ```
 
@@ -1531,7 +1531,7 @@ git commit -m "feat(cups): rewrite classification cascade to use real CUPS looku
 ### Task 12: `CupsMappingModal.tsx` — depends on Task 3 only (do this before Task 11)
 
 **Files:**
-- Create: `medisdiana-landing/src/components/admin/CupsMappingModal.tsx`
+- Create: `medisopimed-landing/src/components/admin/CupsMappingModal.tsx`
 
 **Interfaces:**
 - Consumes: `GET /api/services/cups-catalog`, `POST /api/services/cups-mappings` (Task 3).
@@ -1540,7 +1540,7 @@ git commit -m "feat(cups): rewrite classification cascade to use real CUPS looku
 - [ ] **Step 1: Write the component**
 
 ```tsx
-// medisdiana-landing/src/components/admin/CupsMappingModal.tsx
+// medisopimed-landing/src/components/admin/CupsMappingModal.tsx
 import React, { useEffect, useState } from 'react';
 import { X, Search, Loader2 } from 'lucide-react';
 
@@ -1656,13 +1656,13 @@ export const CupsMappingModal: React.FC<Props> = ({ serviceGroup, serviceSubgrou
 
 - [ ] **Step 2: Type-check**
 
-Run: `cd medisdiana-landing && npx tsc --noEmit`
+Run: `cd medisopimed-landing && npx tsc --noEmit`
 Expected: no new errors from this file.
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add medisdiana-landing/src/components/admin/CupsMappingModal.tsx
+git add medisopimed-landing/src/components/admin/CupsMappingModal.tsx
 git commit -m "feat(cups): add CupsMappingModal for on-the-fly mapping creation"
 ```
 
@@ -1676,7 +1676,7 @@ git commit -m "feat(cups): add CupsMappingModal for on-the-fly mapping creation"
 
 ```bash
 cd apps/backend && npx tsc --noEmit
-cd ../../medisdiana-landing && npx tsc --noEmit
+cd ../../medisopimed-landing && npx tsc --noEmit
 ```
 
 Expected: zero errors in both.

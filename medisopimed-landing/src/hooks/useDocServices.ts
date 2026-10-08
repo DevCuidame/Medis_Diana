@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-// ─── Config (misma fuente que DianaBookingCalendar) ───────────────────────────
+// ─── Config (misma fuente que OpiMedBookingCalendar) ───────────────────────────
 const DOC_API = import.meta.env.DEV ? '/doc-api/api' : 'https://doc-api.cuidame.tech/api'
-const DIANA_PROFESSIONAL_ID = 12
+const OPI_MED_PROFESSIONAL_ID = 12
 
 export interface DocService {
   prof_service_id: number
@@ -34,7 +34,7 @@ function fetchDocServices(): Promise<DocService[]> {
   if (cachedServices) return Promise.resolve(cachedServices)
   if (inflight) return inflight
 
-  inflight = fetch(`${DOC_API}/booking/professionals/${DIANA_PROFESSIONAL_ID}/services`)
+  inflight = fetch(`${DOC_API}/booking/professionals/${OPI_MED_PROFESSIONAL_ID}/services`)
     .then(r => r.json())
     .then((json: { success?: boolean; data?: unknown }) => {
       const list = Array.isArray(json?.data) ? (json.data as DocService[]) : []
@@ -53,7 +53,7 @@ interface UseDocServicesResult {
 }
 
 /**
- * Catálogo público de servicios de la Dra. Diana en CuidameDoc.
+ * Catálogo público de servicios de la Dra. OpiMed en CuidameDoc.
  * Lo alimentan tanto el panel admin (/api/services/catalog) como la app
  * de la doctora — cualquier servicio creado en cualquiera de los dos
  * aparece aquí sin redesplegar.

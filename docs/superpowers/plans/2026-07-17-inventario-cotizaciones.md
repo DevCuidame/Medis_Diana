@@ -520,7 +520,7 @@ test('create() inserts a pending quote, listByStatus("pending") finds it, resolv
     externalReference: 'HC-TEST-0001',
     patientName: 'Paciente de Prueba',
     patientEmail: 'paciente-test@example.com',
-    professionalName: 'Dra. Diana (test)',
+    professionalName: 'Dra. OpiMed (test)',
     items: SAMPLE_ITEMS,
     totalAmount: 130000,
   });
@@ -650,24 +650,24 @@ git commit -m "feat(backend): add ExternalQuoteRepository with tests"
 
 **Files:**
 - Create: `apps/backend/src/middleware/internal-api-key.middleware.ts`
-- Modify: `apps/backend/src/config/env.ts` (add `DIANA_INTERNAL_API_KEY`)
+- Modify: `apps/backend/src/config/env.ts` (add `OPI_MED_INTERNAL_API_KEY`)
 - Modify: `apps/backend/.env.example` (document the new var)
 
 **Interfaces:**
-- Produces: `requireInternalApiKey(req, res, next)` Express middleware, and `env.DIANA_INTERNAL_API_KEY: string`. Consumed by Task 7's routes.
+- Produces: `requireInternalApiKey(req, res, next)` Express middleware, and `env.OPI_MED_INTERNAL_API_KEY: string`. Consumed by Task 7's routes.
 
 - [ ] **Step 1: Add the env var**
 
-In `apps/backend/src/config/env.ts`, add to the `Env` interface (after `DOC_DIANA_PASSWORD: string;`):
+In `apps/backend/src/config/env.ts`, add to the `Env` interface (after `DOC_OPI_MED_PASSWORD: string;`):
 
 ```ts
-  DIANA_INTERNAL_API_KEY: string;
+  OPI_MED_INTERNAL_API_KEY: string;
 ```
 
-And add to the exported `env` object (after `DOC_DIANA_PASSWORD: process.env.DOC_DIANA_PASSWORD || '',`):
+And add to the exported `env` object (after `DOC_OPI_MED_PASSWORD: process.env.DOC_OPI_MED_PASSWORD || '',`):
 
 ```ts
-  DIANA_INTERNAL_API_KEY: process.env.DIANA_INTERNAL_API_KEY || '',
+  OPI_MED_INTERNAL_API_KEY: process.env.OPI_MED_INTERNAL_API_KEY || '',
 ```
 
 - [ ] **Step 2: Document it in `.env.example`**
@@ -677,7 +677,7 @@ Find `apps/backend/.env.example` and add at the end:
 ```
 # Clave compartida para endpoints internos llamados server-to-server por otros
 # sistemas (ej. CuidameDoc registrando una cotización). No confundir con JWT_SECRET.
-DIANA_INTERNAL_API_KEY=
+OPI_MED_INTERNAL_API_KEY=
 ```
 
 - [ ] **Step 3: Write the middleware**
@@ -690,7 +690,7 @@ import { env } from '@config/env';
 export function requireInternalApiKey(req: Request, res: Response, next: NextFunction): void {
   const provided = req.headers['x-internal-api-key'];
 
-  if (!env.DIANA_INTERNAL_API_KEY || provided !== env.DIANA_INTERNAL_API_KEY) {
+  if (!env.OPI_MED_INTERNAL_API_KEY || provided !== env.OPI_MED_INTERNAL_API_KEY) {
     res.status(401).json({ success: false, error: 'API key interna inválida o ausente.' });
     return;
   }
@@ -701,8 +701,8 @@ export function requireInternalApiKey(req: Request, res: Response, next: NextFun
 
 - [ ] **Step 4: Set a real key locally and verify env loads**
 
-Run: `cd apps/backend && node -e "require('dotenv').config(); console.log(process.env.DIANA_INTERNAL_API_KEY ? 'set' : 'MISSING — add DIANA_INTERNAL_API_KEY to .env')"`
-Expected: prints `set` if you already added a value to your local `.env`, otherwise add a random string (e.g. `DIANA_INTERNAL_API_KEY=<paste output of: openssl rand -hex 24>`) to `apps/backend/.env` and re-run.
+Run: `cd apps/backend && node -e "require('dotenv').config(); console.log(process.env.OPI_MED_INTERNAL_API_KEY ? 'set' : 'MISSING — add OPI_MED_INTERNAL_API_KEY to .env')"`
+Expected: prints `set` if you already added a value to your local `.env`, otherwise add a random string (e.g. `OPI_MED_INTERNAL_API_KEY=<paste output of: openssl rand -hex 24>`) to `apps/backend/.env` and re-run.
 
 - [ ] **Step 5: Commit**
 
@@ -995,17 +995,17 @@ router.use('/external-quotes', externalQuotesRoutes);
 
 - [ ] **Step 4: Manual verification against the running dev server**
 
-With `pnpm run dev` still running and `DIANA_INTERNAL_API_KEY` set in `apps/backend/.env` (from Task 5):
+With `pnpm run dev` still running and `OPI_MED_INTERNAL_API_KEY` set in `apps/backend/.env` (from Task 5):
 
 ```bash
 curl -s -X POST http://localhost:3008/api/external-quotes \
   -H "Content-Type: application/json" \
-  -H "x-internal-api-key: <same value as DIANA_INTERNAL_API_KEY in .env>" \
+  -H "x-internal-api-key: <same value as OPI_MED_INTERNAL_API_KEY in .env>" \
   -d '{
     "externalReference": "HC-1783823379251",
     "patientName": "Juana Pérez",
     "patientEmail": "juana@example.com",
-    "professionalName": "Dra. Diana",
+    "professionalName": "Dra. OpiMed",
     "items": [
       { "type": "inventory", "refId": "fake-id", "name": "Acetaminofén 500mg", "unitPrice": 5000, "quantity": 2, "subtotal": 10000 }
     ],
@@ -1042,7 +1042,7 @@ git commit -m "feat(backend): expose external-quotes endpoints (create via API k
 > Invoke `frontend-design` and `emil-design-eng` skills before touching JSX/styling here — match the existing Bodoni Moda / Hanken Grotesk / purple-blue-gradient visual language already in this file, don't introduce a new one.
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/admin/InventarioDashboard.tsx` (currently 424 lines, full localStorage-backed version read in full above)
+- Modify: `medisopimed-landing/src/components/admin/InventarioDashboard.tsx` (currently 424 lines, full localStorage-backed version read in full above)
 
 **Interfaces:**
 - Consumes: `GET /api/inventory` (admin, all items), `POST /api/inventory`, `PATCH /api/inventory/:id`, `DELETE /api/inventory/:id` (all from Task 6). Auth header pattern: mirror `adminHeaders()` from `FinanzasDashboard.tsx` (`Authorization: Bearer ${localStorage.getItem('accessToken')}`).
@@ -1262,14 +1262,14 @@ Right before `{filtered.length === 0 ? (` (was line 237), wrap with a loading/er
 
 (Already covered in Step 3's `saveForm` — the `body` object includes `price` for both create and edit.)
 
-Run: `cd medisdiana-landing && npx tsc --noEmit -p . 2>&1 | grep -i inventario` (or run the full `npx tsc --noEmit` if the project has no per-file filtering) to confirm no new type errors were introduced in this file. Since this repo's deploy scripts run `vite build` directly (not `tsc -b`), a clean `vite build` is the real gate:
+Run: `cd medisopimed-landing && npx tsc --noEmit -p . 2>&1 | grep -i inventario` (or run the full `npx tsc --noEmit` if the project has no per-file filtering) to confirm no new type errors were introduced in this file. Since this repo's deploy scripts run `vite build` directly (not `tsc -b`), a clean `vite build` is the real gate:
 
-Run: `cd medisdiana-landing && npx vite build`
+Run: `cd medisopimed-landing && npx vite build`
 Expected: build succeeds (pre-existing unrelated warnings/errors in other files, if any, are not new — only check that no error references `InventarioDashboard.tsx`).
 
 - [ ] **Step 8: Manual verification in the browser**
 
-Run: `cd apps/backend && pnpm run dev` (if not already running) and `cd medisdiana-landing && npm run dev`, log in as admin, open `/admin/inventario`:
+Run: `cd apps/backend && pnpm run dev` (if not already running) and `cd medisopimed-landing && npm run dev`, log in as admin, open `/admin/inventario`:
 - Create a new item with a price → appears in the table with the price formatted as COP currency.
 - Edit it, change the price → table updates.
 - Use the +/- buttons → quantity updates and persists after a page refresh (confirms it's hitting the API, not localStorage).
@@ -1278,7 +1278,7 @@ Run: `cd apps/backend && pnpm run dev` (if not already running) and `cd medisdia
 - [ ] **Step 9: Commit**
 
 ```bash
-git add medisdiana-landing/src/components/admin/InventarioDashboard.tsx
+git add medisopimed-landing/src/components/admin/InventarioDashboard.tsx
 git commit -m "feat(frontend): back Inventario dashboard with real API + add Precio field"
 ```
 
@@ -1289,7 +1289,7 @@ git commit -m "feat(frontend): back Inventario dashboard with real API + add Pre
 > Invoke `frontend-design` and `emil-design-eng` skills before touching JSX/styling here — this tab must visually match the existing "Gestión de Planes" / "Servicios Adicionales" tabs in the same file (glass cards, pending/confirm/reject pill buttons, purple-blue gradients), not introduce a new style.
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/admin/FinanzasDashboard.tsx` (875 lines, full contents read above)
+- Modify: `medisopimed-landing/src/components/admin/FinanzasDashboard.tsx` (875 lines, full contents read above)
 
 **Interfaces:**
 - Consumes: `GET /api/external-quotes?status=pending` (admin), `PATCH /api/external-quotes/:id/confirm`, `PATCH /api/external-quotes/:id/reject` (all from Task 7).
@@ -1506,7 +1506,7 @@ Right after the "GESTIÓN DE SERVICIOS ADICIONALES" panel's closing `</motion.di
                 <div style={{ textAlign: 'center', padding: '2rem 1rem', background: 'rgba(124,58,237,0.03)', borderRadius: 12, border: `1px dashed ${C.borderLight}` }}>
                   <CheckCircle2 size={32} color="#16A34A" style={{ margin: '0 auto 10px' }} />
                   <p style={{ fontSize: 14, fontWeight: 600, color: C.textMuted, margin: 0 }}>Sin cotizaciones pendientes</p>
-                  <p style={{ fontSize: 12, color: C.textMuted, margin: '4px 0 0' }}>Cuando la Dra. Diana cierre una historia clínica con plan de tratamiento en CuidameDoc, la cotización aparecerá aquí.</p>
+                  <p style={{ fontSize: 12, color: C.textMuted, margin: '4px 0 0' }}>Cuando la Dra. OpiMed cierre una historia clínica con plan de tratamiento en CuidameDoc, la cotización aparecerá aquí.</p>
                 </div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -1567,7 +1567,7 @@ Right after the "GESTIÓN DE SERVICIOS ADICIONALES" panel's closing `</motion.di
 
 - [ ] **Step 6: Verify build**
 
-Run: `cd medisdiana-landing && npx vite build`
+Run: `cd medisopimed-landing && npx vite build`
 Expected: build succeeds; no errors referencing `FinanzasDashboard.tsx`.
 
 - [ ] **Step 7: Manual verification in the browser**
@@ -1581,7 +1581,7 @@ With both `pnpm run dev` (backend) and `npm run dev` (frontend) running, use the
 - [ ] **Step 8: Commit**
 
 ```bash
-git add medisdiana-landing/src/components/admin/FinanzasDashboard.tsx
+git add medisopimed-landing/src/components/admin/FinanzasDashboard.tsx
 git commit -m "feat(frontend): add Cotizaciones CuidameDoc tab to Finanzas dashboard"
 ```
 

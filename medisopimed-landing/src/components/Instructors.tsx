@@ -3,15 +3,15 @@ import { motion, useInView } from 'framer-motion'
 
 const CREDENTIALS = [
   'Médica Cirujana',
-  'Esp. en Medicina Familiar y Comunitaria',
-  'Esp. en Gerencia de Instituciones de SS en Salud',
-  '+10 años de experiencia',
+  'Atención Integral',
+  'Prevención',
+  'Bienestar y Salud',
 ]
 
 const BIO_PARAGRAPHS = [
-  'Médico especialista en Medicina Familiar y Comunitaria, especialista en Gerencia de Instituciones de Seguridad Social en Salud. Poseo una pasión innata por generar proyectos sociales y positivos que impacten de manera significativa en la comunidad, con experiencia demostrada en la coordinación de proyectos, mi enfoque se centra en abordar y solucionar problemas de salud en prevención, tratamiento y rehabilitación, trabajando de manera colaborativa con equipos multidisciplinarios para asegurar la adecuada prestación de servicios de salud.',
-  'Además, cuento con una certificación en violencia basada en género y sólidas habilidades en la gestión de conflictos. Mi capacidad para identificar poblaciones vulnerables, basadas en los determinantes de salud, me permite diseñar e implementar estrategias efectivas para mejorar su bienestar. Como profesional holística, tengo un firme compromiso ético y una clara vocación de servicio, consciente de mi rol en la sociedad y dispuesta a ejercer un liderazgo tanto en el personal asistencial como en la comunidad.',
-  'Mi sensibilidad social y capacidad de adaptación me permiten trabajar eficazmente en entornos rurales y urbanos, comprendiendo las particularidades de cada contexto. Estoy capacitada para trabajar eficientemente en el nivel primario de atención de salud, cumpliendo con las normativas vigentes y manteniendo un espíritu constructivamente crítico que me permite evaluar constantemente los resultados obtenidos y ajustar la orientación de los proyectos según sea necesario.',
+  'Soy médica comprometida con brindar una atención cercana, humana y personalizada, enfocada en comprender las necesidades de cada paciente y acompañarlo en el cuidado de su salud.',
+  'Mi enfoque combina prevención, valoración, orientación y seguimiento, buscando ofrecer una experiencia de atención clara, profesional y centrada en el bienestar de cada persona.',
+  'Me caracterizo por escuchar activamente a mis pacientes, explicar cada proceso de manera sencilla y trabajar en conjunto para encontrar las mejores alternativas para su cuidado.',
 ]
 
 export default function Instructors() {
@@ -29,20 +29,14 @@ export default function Instructors() {
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             style={{
               fontFamily: 'Inter, sans-serif',
-              fontSize: '0.72rem',
-              letterSpacing: '0.35em',
+              fontSize: '0.78rem',
+              letterSpacing: '0.08em',
               textTransform: 'uppercase',
-              color: '#8B5CF6',
-              marginBottom: '1rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.75rem',
+              color: '#0D9488',
+              fontWeight: 600,
             }}
           >
-            <span style={{ display: 'inline-block', width: 28, height: 1, background: 'linear-gradient(90deg,#8B5CF6,#3B82F6)' }} />
             Tu Médica de Confianza
-            <span style={{ display: 'inline-block', width: 28, height: 1, background: 'linear-gradient(90deg,#3B82F6,#8B5CF6)' }} />
           </motion.p>
         </div>
 
@@ -56,13 +50,11 @@ export default function Instructors() {
             display: 'grid',
             gridTemplateColumns: 'minmax(260px, 360px) 1fr',
             alignItems: 'center',
-            background: 'rgba(255,255,255,0.80)',
-            backdropFilter: 'blur(18px)',
-            WebkitBackdropFilter: 'blur(18px)',
-            border: '1px solid rgba(139,92,246,0.12)',
+            background: '#FFFFFF',
+            border: '1px solid #E2E8F0',
             borderRadius: '1.5rem',
             overflow: 'hidden',
-            boxShadow: '0 8px 32px rgba(139,92,246,0.07)',
+            boxShadow: '0 10px 40px rgba(15,23,42,0.06)',
           }}
         >
           {/* Left — portrait */}
@@ -75,8 +67,8 @@ export default function Instructors() {
             }}
           >
             <img
-              src="/doctora/diana-medina.jpg"
-              alt="Dra. Diana Cristina Medina Camargo"
+              src="/doctora/opimed-doctora.jpg"
+              alt="Dra. OpiMed"
               style={{
                 width: '100%',
                 height: '100%',
@@ -91,29 +83,28 @@ export default function Instructors() {
           {/* Right — info */}
           <div className="doctor-info" style={{ padding: '3rem 3rem 3rem 2.5rem' }}>
             <h2
-              className="font-cormorant"
+              className="font-manrope"
               style={{
-                fontSize: 'clamp(1.8rem, 3vw, 2.6rem)',
-                fontWeight: 600,
-                color: '#1E293B',
+                fontSize: 'clamp(1.8rem, 3vw, 2.4rem)',
+                fontWeight: 800,
+                color: '#0F172A',
                 marginBottom: '0.5rem',
-                lineHeight: 1.1,
+                lineHeight: 1.15,
               }}
             >
-              Dra. Diana Cristina Medina Camargo
+              Dra. OpiMed
             </h2>
             <p
               style={{
                 fontFamily: 'Inter, sans-serif',
-                fontSize: '0.72rem',
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
-                color: '#8B5CF6',
+                fontSize: '0.78rem',
+                letterSpacing: '0.04em',
+                color: '#0D9488',
                 marginBottom: '1.5rem',
-                fontWeight: 500,
+                fontWeight: 600,
               }}
             >
-              Especialista en Medicina Familiar y Comunitaria
+              Médica especialista en atención integral
             </p>
             <div style={{ marginBottom: '2rem' }}>
               {BIO_PARAGRAPHS.map((para, i) => (
@@ -121,10 +112,10 @@ export default function Instructors() {
                   key={i}
                   style={{
                     fontFamily: 'Inter, sans-serif',
-                    fontSize: '0.88rem',
-                    lineHeight: 1.85,
+                    fontSize: '0.9rem',
+                    lineHeight: 1.8,
                     color: '#475569',
-                    fontWeight: 300,
+                    fontWeight: 400,
                     marginBottom: i < BIO_PARAGRAPHS.length - 1 ? '1rem' : 0,
                   }}
                 >
@@ -140,11 +131,12 @@ export default function Instructors() {
                   key={c}
                   style={{
                     fontFamily: 'Inter, sans-serif',
-                    fontSize: '0.68rem',
-                    letterSpacing: '0.08em',
-                    color: '#475569',
-                    padding: '0.35rem 0.9rem',
-                    border: '1px solid rgba(139,92,246,0.25)',
+                    fontSize: '0.72rem',
+                    color: '#0D9488',
+                    fontWeight: 500,
+                    padding: '0.4rem 0.9rem',
+                    background: '#E6FFFA',
+                    border: '1px solid #99F6E4',
                     borderRadius: '9999px',
                   }}
                 >

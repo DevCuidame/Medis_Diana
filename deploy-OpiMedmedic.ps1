@@ -1,13 +1,13 @@
 #!/usr/bin/env pwsh
 # ============================================================
-#  deploy-Dianamedic.ps1 — MedisDiana deployment (Cloud Run)
+#  deploy-OpiMedmedic.ps1 — MedisOpiMed deployment (Cloud Run)
 #  Ya no se despliega a la VM (cuidame-app) — todo vive ahora en
-#  Cloud Run, con Cloud SQL (cuidamedoc1 / medisdiana) como base.
+#  Cloud Run, con Cloud SQL (cuidamedoc1 / medisopimed) como base.
 #
 #  USO:
-#    .\deploy-Dianamedic.ps1                  (backend + frontend)
-#    .\deploy-Dianamedic.ps1 -Target backend
-#    .\deploy-Dianamedic.ps1 -Target frontend
+#    .\deploy-OpiMedmedic.ps1                  (backend + frontend)
+#    .\deploy-OpiMedmedic.ps1 -Target backend
+#    .\deploy-OpiMedmedic.ps1 -Target frontend
 #
 #  El contexto de build es la RAIZ del monorepo (pnpm workspace) en
 #  ambos casos — el Dockerfile correcto (Dockerfile.backend /
@@ -27,9 +27,9 @@ $REGION       = "europe-west1"
 $ROOT_DIR     = $PSScriptRoot
 $DOCKERFILE   = Join-Path $ROOT_DIR "Dockerfile"
 
-$BACKEND_SERVICE  = "medisdiana-backend"
-$FRONTEND_SERVICE = "medisdiana-frontend"
-$BACKEND_URL      = "https://medisdiana-backend-606913227953.europe-west1.run.app"
+$BACKEND_SERVICE  = "medisopimed-backend"
+$FRONTEND_SERVICE = "medisopimed-frontend"
+$BACKEND_URL      = "https://medisopimed-backend-606913227953.europe-west1.run.app"
 
 function Write-Step([string]$msg) {
     Write-Host ""
@@ -86,4 +86,4 @@ Remove-Item $DOCKERFILE -Force -ErrorAction SilentlyContinue
 
 Write-Host ""
 Write-Host "Deploy completado." -ForegroundColor Green
-Write-Host "  Sitio: https://dianamedic.cuidame.tech" -ForegroundColor Green
+Write-Host "  Sitio: https://opimedmedic.cuidame.tech" -ForegroundColor Green

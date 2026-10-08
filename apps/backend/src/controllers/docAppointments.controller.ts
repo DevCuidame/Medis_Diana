@@ -18,7 +18,7 @@ async function docFetch(path: string, init?: RequestInit): Promise<Response> {
   return res;
 }
 
-export async function getDianaAppointments(req: Request, res: Response): Promise<void> {
+export async function getOpiMedAppointments(req: Request, res: Response): Promise<void> {
   const { start_date, end_date } = req.query as { start_date?: string; end_date?: string };
   const params = new URLSearchParams();
   if (start_date) params.set('start_date', start_date);
@@ -33,7 +33,7 @@ export async function getDianaAppointments(req: Request, res: Response): Promise
   }
 }
 
-export async function createDianaAppointment(req: Request, res: Response): Promise<void> {
+export async function createOpiMedAppointment(req: Request, res: Response): Promise<void> {
   try {
     const upstream = await docFetch('/clinical-appointments', {
       method: 'POST',
@@ -46,7 +46,7 @@ export async function createDianaAppointment(req: Request, res: Response): Promi
   }
 }
 
-export async function getDianaPatients(req: Request, res: Response): Promise<void> {
+export async function getOpiMedPatients(req: Request, res: Response): Promise<void> {
   const { q } = req.query as { q?: string };
   const path = q ? `/patients/search?q=${encodeURIComponent(q)}` : '/patients/my-patients';
   try {

@@ -10,7 +10,7 @@
 import { ServiceCatalogRepository } from '@repositories/services.repository.js';
 import { ServiceCommercialRepository } from '@repositories/serviceCommercial.repository.js';
 import { ensureDocSync, type EnsureDocSyncResult } from './docServiceSync.service.js';
-import type { ServiceCommercialPublic } from '@medisdiana/shared-types';
+import type { ServiceCommercialPublic } from '@medisopimed/shared-types';
 
 /**
  * Publica (active=true) o despublica (active=false) un comercial en

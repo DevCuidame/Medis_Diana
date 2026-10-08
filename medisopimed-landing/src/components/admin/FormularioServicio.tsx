@@ -12,19 +12,19 @@ import { GRUPOS, SUBGRUPOS, GRUPOS_DINAMICOS } from './serviciosCatalogo';
 import { CupsMappingModal } from './CupsMappingModal';
 
 const C = {
-  gold: '#8B5CF6', goldLight: '#3B82F6',
-  bg: '#FFFFFF', bgPanel: '#F3F0FB', bgSecondary: '#F3F0FB',
-  white: '#FFFFFF', text: '#1B1C1C', textBrown: '#475569',
+  gold: '#0D9488', goldLight: '#44CFCB',
+  bg: '#FFFFFF', bgPanel: '#F0FDFA', bgSecondary: '#F0FDFA',
+  white: '#FFFFFF', text: '#0F172A', textBrown: '#475569',
   textMedium: '#5E5E5E', textMuted: '#94A3B8',
-  border: '#DDD6FE', borderLight: '#DDD6FE',
+  border: '#CCFBF1', borderLight: '#CCFBF1',
   red: '#EF4444', redLight: '#FEE2E2', green: '#10B981',
   success: '#16A34A',
 };
 
-const FONT_SERIF = '"Bodoni Moda", Georgia, serif';
-const FONT_SANS  = '"Hanken Grotesk", Inter, system-ui, sans-serif';
+const FONT_SERIF = '"Manrope", Georgia, serif';
+const FONT_SANS  = '"Inter", Inter, system-ui, sans-serif';
 
-const FOCUS_RING = 'focus:outline-none focus:ring-2 focus:ring-[#8B5CF6] focus:border-transparent';
+const FOCUS_RING = 'focus:outline-none focus:ring-2 focus:ring-[#0D9488] focus:border-transparent';
 
 const InputField = ({ label, icon: Icon, error, children, required }: any) => (
   <div style={{ marginBottom: 20 }}>
@@ -417,7 +417,7 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
                     const active = modality?.includes(mod as any);
                     return (
                       <button type="button" key={mod} onClick={() => toggleModality(mod)}
-                        style={{ padding: '8px 16px', borderRadius: 20, border: `1px solid ${active ? C.gold : C.borderLight}`, background: active ? 'rgba(139,92,246,0.1)' : C.bgPanel, color: active ? C.gold : C.textBrown, fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: 6 }}>
+                        style={{ padding: '8px 16px', borderRadius: 20, border: `1px solid ${active ? C.gold : C.borderLight}`, background: active ? 'rgba(13,148,136,0.1)' : C.bgPanel, color: active ? C.gold : C.textBrown, fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: 6 }}>
                         {mod} {active && <X size={14} />}
                       </button>
                     )
@@ -510,7 +510,7 @@ export const FormularioServicio: React.FC<Props> = ({ initialData, onSuccess, on
           <button type="button" onClick={onCancel} style={{ padding: '14px 24px', borderRadius: 12, border: `1px solid ${C.borderLight}`, background: C.white, color: C.textBrown, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
             Cancelar
           </button>
-          <button type="submit" disabled={isSubmitting} style={{ padding: '14px 32px', borderRadius: 12, border: 'none', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, fontSize: 15, fontWeight: 700, cursor: isSubmitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 8px 16px rgba(139,92,246,0.2)' }}>
+          <button type="submit" disabled={isSubmitting} style={{ padding: '14px 32px', borderRadius: 12, border: 'none', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, fontSize: 15, fontWeight: 700, cursor: isSubmitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 8px 16px rgba(13,148,136,0.2)' }}>
             {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <CheckCircle size={18} />}
             {initialData ? 'Actualizar Servicio' : 'Guardar Servicio'}
           </button>

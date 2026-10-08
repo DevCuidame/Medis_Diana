@@ -10,18 +10,18 @@ import { CotizacionesCuidameDocPanel } from './shared/CotizacionesCuidameDocPane
 import './MainDashboard.css';
 
 const C = {
-  gold: '#8B5CF6',
-  goldLight: '#3B82F6',
-  bgPanel: '#F3F0FB',
+  gold: '#0D9488',
+  goldLight: '#44CFCB',
+  bgPanel: '#F0FDFA',
   white: '#FFFFFF',
-  text: '#1B1C1C',
+  text: '#0F172A',
   textBrown: '#475569',
   textMedium: '#5E5E5E',
   textMuted: '#94A3B8',
-  borderLight: '#DDD6FE',
+  borderLight: '#CCFBF1',
 };
 
-const FONT_BODONI = '"Bodoni Moda", Georgia, serif';
+const FONT_BODONI = '"Manrope", Georgia, serif';
 
 const STEPS = [
   { label: 'Básico', desc: 'Nombre y descripción' },
@@ -64,10 +64,10 @@ const TYPE_LABELS: Record<MembershipType, string> = {
 };
 
 const TYPE_COLORS: Record<MembershipType, { bg: string; color: string }> = {
-  per_consultation: { bg: 'rgba(139,92,246,0.1)',  color: '#8B5CF6' },
+  per_consultation: { bg: 'rgba(13,148,136,0.1)',  color: '#0D9488' },
   monthly:          { bg: 'rgba(34,197,94,0.1)',   color: '#16A34A' },
-  annual:           { bg: 'rgba(59,130,246,0.1)',  color: '#2563EB' },
-  program:          { bg: 'rgba(168,85,247,0.1)',  color: '#7C3AED' },
+  annual:           { bg: 'rgba(68,207,203,0.1)',  color: '#0F766E' },
+  program:          { bg: 'rgba(13,148,136,0.1)',  color: '#0D9488' },
   pack:             { bg: 'rgba(234,179,8,0.1)',   color: '#B45309' },
   assessment:       { bg: 'rgba(236,72,153,0.1)',  color: '#EC4899' },
 };
@@ -107,31 +107,31 @@ const PlanesStickmanAnimation = () => (
       </div>
     </div>
     <div style={{ flexShrink: 0 }}>
-      <svg width="150" height="120" viewBox="0 0 150 120" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(139,92,246,0.12))' }}>
+      <svg width="150" height="120" viewBox="0 0 150 120" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(13,148,136,0.12))' }}>
         <defs>
           <linearGradient id="planSkin" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="100%" stopColor="#f3f0fb" />
+            <stop offset="100%" stopColor="#F0FDFA" />
           </linearGradient>
           <linearGradient id="planCoat" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="rgba(255,255,255,0.8)" />
-            <stop offset="100%" stopColor="rgba(139,92,246,0.15)" />
+            <stop offset="100%" stopColor="rgba(13,148,136,0.15)" />
           </linearGradient>
         </defs>
 
         {/* Tarjeta de plan */}
-        <rect x="68" y="14" width="58" height="92" rx="8" fill="rgba(139,92,246,0.05)" stroke={C.gold} strokeWidth="3" />
+        <rect x="68" y="14" width="58" height="92" rx="8" fill="rgba(13,148,136,0.05)" stroke={C.gold} strokeWidth="3" />
 
         {/* Encabezado de la tarjeta (nombre del plan) */}
-        <rect x="78" y="24" width="38" height="8" rx="3" fill="rgba(139,92,246,0.25)" />
+        <rect x="78" y="24" width="38" height="8" rx="3" fill="rgba(13,148,136,0.25)" />
 
         {/* Beneficios incluidos */}
-        <rect x="78" y="44" width="38" height="6" rx="3" fill="rgba(139,92,246,0.15)" />
-        <rect x="78" y="58" width="30" height="6" rx="3" fill="rgba(139,92,246,0.1)" />
-        <rect x="78" y="72" width="38" height="6" rx="3" fill="rgba(139,92,246,0.15)" />
+        <rect x="78" y="44" width="38" height="6" rx="3" fill="rgba(13,148,136,0.15)" />
+        <rect x="78" y="58" width="30" height="6" rx="3" fill="rgba(13,148,136,0.1)" />
+        <rect x="78" y="72" width="38" height="6" rx="3" fill="rgba(13,148,136,0.15)" />
 
         {/* Precio del plan */}
-        <rect x="78" y="88" width="26" height="10" rx="5" fill="rgba(139,92,246,0.2)" />
+        <rect x="78" y="88" width="26" height="10" rx="5" fill="rgba(13,148,136,0.2)" />
         <text x="91" y="96" textAnchor="middle" fontSize="8" fill={C.gold} fontWeight="800">$</text>
 
         {/* Badge "✓" animado: plan activo */}
@@ -172,16 +172,16 @@ const PlanesStickmanAnimation = () => (
           <path d="M 1 -17 Q 3.5 -14.5 6 -17" fill="none" stroke={C.goldLight} strokeWidth="1.2" strokeLinecap="round" />
 
           {/* Estetoscopio */}
-          <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#1B1C1C" strokeWidth="1.2" />
-          <circle cx="5" cy="-10" r="1.8" fill="#1B1C1C" />
+          <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#0F172A" strokeWidth="1.2" />
+          <circle cx="5" cy="-10" r="1.8" fill="#0F172A" />
           <circle cx="5" cy="-10" r="0.8" fill="#fff" />
 
           {/* Brazo izquierdo (maletín) */}
           <g>
             <path d="M 0 -5 Q -6 0 -8 7" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
-            <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#1B1C1C" strokeWidth="1.5" />
-            <line x1="-10" y1="7" x2="-6" y2="7" stroke="#1B1C1C" strokeWidth="1.5" strokeLinecap="round" />
-            <circle cx="-8" cy="10.5" r="1" fill="#1B1C1C" />
+            <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#0F172A" strokeWidth="1.5" />
+            <line x1="-10" y1="7" x2="-6" y2="7" stroke="#0F172A" strokeWidth="1.5" strokeLinecap="round" />
+            <circle cx="-8" cy="10.5" r="1" fill="#0F172A" />
           </g>
 
           {/* Brazo derecho: señala el plan (animado) */}
@@ -412,7 +412,7 @@ export const MembresiasDashboard: React.FC = () => {
               <Menu size={20} />
             </button>
             <h2 style={{ fontFamily: FONT_BODONI, fontSize: 24, fontWeight: 600, color: C.gold, margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
-              MEDIS <span className="overview-label" style={{ fontSize: 12, fontFamily: '"Hanken Grotesk", sans-serif', color: C.textMuted, fontWeight: 500, letterSpacing: '0.1em', marginTop: 4, textTransform: 'uppercase' }}>/ Planes</span>
+              OPIEKA <span className="overview-label" style={{ fontSize: 12, fontFamily: '"Inter", sans-serif', color: C.textMuted, fontWeight: 500, letterSpacing: '0.1em', marginTop: 4, textTransform: 'uppercase' }}>/ Planes</span>
             </h2>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -422,14 +422,14 @@ export const MembresiasDashboard: React.FC = () => {
             <button style={{ width: 40, height: 40, borderRadius: 12, background: C.bgPanel, border: `1px solid ${C.borderLight}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: C.gold }} onMouseEnter={e => e.currentTarget.style.background = C.white} onMouseLeave={e => e.currentTarget.style.background = C.bgPanel}>
               <Bell size={18} />
             </button>
-            <div style={{ width: 40, height: 40, borderRadius: 12, border: `2px solid ${C.gold}`, overflow: 'hidden', cursor: 'pointer', flexShrink: 0, boxShadow: '0 4px 10px rgba(139,92,246,0.2)' }}>
+            <div style={{ width: 40, height: 40, borderRadius: '50%', border: `2px solid ${C.gold}`, overflow: 'hidden', cursor: 'pointer', flexShrink: 0, boxShadow: '0 4px 10px rgba(13,148,136,0.2)' }}>
               <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100&h=100" alt="Admin" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
           </div>
         </header>
 
         {/* PAGE CONTENT */}
-        <main style={{ flex: 1, overflowY: 'auto', padding: '2rem 1.5rem', background: 'radial-gradient(circle at top right, rgba(139,92,246,0.03), transparent 400px)' }}>
+        <main style={{ flex: 1, overflowY: 'auto', padding: '2rem 1.5rem', background: 'radial-gradient(circle at top right, rgba(13,148,136,0.03), transparent 400px)' }}>
           <div style={{ maxWidth: 1100, margin: '0 auto' }}>
 
             {/* ── ANIMACIÓN DE BIENVENIDA ── */}
@@ -438,18 +438,18 @@ export const MembresiasDashboard: React.FC = () => {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: 16 }}>
               <div>
                 <h1 style={{ fontFamily: FONT_BODONI, fontSize: '2.5rem', color: C.text, marginBottom: '0.5rem', lineHeight: 1.2 }}>Gestión de Planes</h1>
-                <p style={{ color: C.textMuted, fontSize: '1.05rem' }}>Administra los planes y tarifas disponibles en Medis.</p>
+                <p style={{ color: C.textMuted, fontSize: '1.05rem' }}>Administra los planes y tarifas disponibles en OpiMed.</p>
               </div>
               <div style={{ display: 'flex', gap: 10 }}>
                 <button
                   onClick={() => navigate('/admin/benefits')}
-                  style={{ padding: '12px 20px', border: `1.5px solid ${C.borderLight}`, borderRadius: 12, fontSize: 13, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, background: C.white, color: C.textBrown, transition: 'all 0.2s' }}
+                  style={{ padding: '12px 20px', border: `1.5px solid ${C.borderLight}`, borderRadius: 9999, fontSize: 13, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, background: C.white, color: C.textBrown, transition: 'all 0.2s' }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = C.gold; e.currentTarget.style.color = C.gold; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = C.borderLight; e.currentTarget.style.color = C.textBrown; }}
                 >
                   <Gift size={15} /> Gestionar Beneficios
                 </button>
-                <button onClick={openCreate} className="gold-button" style={{ padding: '12px 24px', border: 'none', borderRadius: 12, fontSize: 13, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <button onClick={openCreate} className="gold-button" style={{ padding: '12px 24px', border: 'none', borderRadius: 9999, fontSize: 13, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
                   <Plus size={16} strokeWidth={3} /> Nuevo Plan
                 </button>
               </div>
@@ -464,10 +464,10 @@ export const MembresiasDashboard: React.FC = () => {
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
               {[
-                { label: 'Total planes', value: memberships.length, icon: Tag, color: C.gold, bg: 'rgba(139,92,246,0.08)' },
+                { label: 'Total planes', value: memberships.length, icon: Tag, color: C.gold, bg: 'rgba(13,148,136,0.08)' },
                 { label: 'Planes activos', value: memberships.filter(m => m.isActive).length, icon: CheckCircle2, color: '#16A34A', bg: 'rgba(34,197,94,0.08)' },
                 { label: 'Planes inactivos', value: memberships.filter(m => !m.isActive).length, icon: XCircle, color: '#DC2626', bg: 'rgba(239,68,68,0.08)' },
-                { label: 'Precio promedio', value: memberships.length ? fmt(Math.round(memberships.reduce((a, m) => a + m.price, 0) / memberships.length)) : '—', icon: CreditCard, color: '#2563EB', bg: 'rgba(59,130,246,0.08)', isText: true },
+                { label: 'Precio promedio', value: memberships.length ? fmt(Math.round(memberships.reduce((a, m) => a + m.price, 0) / memberships.length)) : '—', icon: CreditCard, color: '#0F766E', bg: 'rgba(68,207,203,0.08)', isText: true },
               ].map((s, i) => {
                 const Icon = s.icon;
                 return (
@@ -488,7 +488,7 @@ export const MembresiasDashboard: React.FC = () => {
             </div>
 
             <div style={{ marginBottom: '0.75rem' }}>
-              <h2 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: '1.1rem', color: C.text, margin: '0 0 4px' }}>Cotizaciones de pacientes</h2>
+              <h2 style={{ fontFamily: '"Manrope", serif', fontSize: '1.1rem', color: C.text, margin: '0 0 4px' }}>Cotizaciones de pacientes</h2>
               <p style={{ fontSize: 12, color: C.textMuted, margin: 0 }}>
                 Cotizaciones de un solo uso creadas al cerrar una historia clínica en CuidameDoc — no forman parte del catálogo de planes reutilizables de abajo.
               </p>
@@ -500,7 +500,7 @@ export const MembresiasDashboard: React.FC = () => {
                 {[1, 2, 3].map(n => (
                   <div key={n} className="glass-card" style={{ padding: '1.5rem', minHeight: 220 }}>
                     {[80, 120, 60, 100].map((w, i) => (
-                      <div key={i} style={{ height: 14, width: `${w}%`, background: 'linear-gradient(90deg, #DDD6FE 25%, #F3F0FB 50%, #DDD6FE 75%)', backgroundSize: '400% 100%', borderRadius: 6, marginBottom: 12, animation: 'shimmer 1.4s ease infinite' }} />
+                      <div key={i} style={{ height: 14, width: `${w}%`, background: 'linear-gradient(90deg, #CCFBF1 25%, #F0FDFA 50%, #CCFBF1 75%)', backgroundSize: '400% 100%', borderRadius: 6, marginBottom: 12, animation: 'shimmer 1.4s ease infinite' }} />
                     ))}
                   </div>
                 ))}
@@ -522,7 +522,7 @@ export const MembresiasDashboard: React.FC = () => {
                             <h3 style={{ fontFamily: FONT_BODONI, fontSize: '1.25rem', color: C.text, margin: 0, lineHeight: 1.2 }}>{m.name}</h3>
                           </div>
                           <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                            <button onClick={() => openEdit(m)} style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(139,92,246,0.07)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.gold, transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(139,92,246,0.14)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(139,92,246,0.07)'}>
+                            <button onClick={() => openEdit(m)} style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(13,148,136,0.07)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.gold, transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(13,148,136,0.14)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(13,148,136,0.07)'}>
                               <Edit2 size={14} />
                             </button>
                             <button onClick={() => setDeleteConfirm(m.id)} style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(239,68,68,0.07)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#DC2626', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(239,68,68,0.14)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(239,68,68,0.07)'}>
@@ -568,7 +568,7 @@ export const MembresiasDashboard: React.FC = () => {
                                     </span>
                                   ))}
                                   {fcBenefits.length > 1 && (
-                                    <span style={{ fontSize: 11, fontWeight: 700, color: '#7C3AED', background: 'rgba(124,58,237,0.1)', padding: '2px 8px', borderRadius: 20 }}>
+                                    <span style={{ fontSize: 11, fontWeight: 700, color: '#0D9488', background: 'rgba(13,148,136,0.1)', padding: '2px 8px', borderRadius: 20 }}>
                                       Total: {total} ses.
                                     </span>
                                   )}
@@ -604,7 +604,7 @@ export const MembresiasDashboard: React.FC = () => {
                   {inscriptions.length > 0 && (
                     <div style={{ marginBottom: '2rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1rem' }}>
-                        <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#8B5CF6' }} />
+                        <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#0D9488' }} />
                         <h2 style={{ fontFamily: FONT_BODONI, fontSize: '1.1rem', color: C.text, margin: 0 }}>Inscripción</h2>
                         <span style={{ fontSize: 11, color: C.textMuted, fontWeight: 600 }}>— Pago único · habilita el acceso a planes y descuentos</span>
                       </div>
@@ -639,7 +639,7 @@ export const MembresiasDashboard: React.FC = () => {
                     <div style={{ textAlign: 'center', padding: '4rem 2rem', color: C.textMuted }}>
                       <CreditCard size={48} style={{ margin: '0 auto 1rem', opacity: 0.3 }} />
                       <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>No hay planes creados aún.</p>
-                      <button onClick={openCreate} className="gold-button" style={{ marginTop: '1rem', padding: '10px 24px', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                      <button onClick={openCreate} className="gold-button" style={{ marginTop: '1rem', padding: '10px 24px', border: 'none', borderRadius: 9999, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
                         <Plus size={15} /> Crear primer plan
                       </button>
                     </div>
@@ -658,7 +658,7 @@ export const MembresiasDashboard: React.FC = () => {
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setShowModal(false)}
-              style={{ position: 'fixed', inset: 0, background: 'rgba(27,28,28,0.5)', backdropFilter: 'blur(8px)', zIndex: 100 }}
+              style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.5)', backdropFilter: 'blur(8px)', zIndex: 100 }}
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 24 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 24 }}
@@ -825,7 +825,7 @@ export const MembresiasDashboard: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => { setShowModal(false); navigate('/admin/benefits'); }}
-                            style={{ fontSize: 11, fontWeight: 700, color: C.gold, background: 'rgba(139,92,246,0.07)', border: 'none', borderRadius: 8, padding: '5px 10px', cursor: 'pointer', whiteSpace: 'nowrap', letterSpacing: '0.04em' }}
+                            style={{ fontSize: 11, fontWeight: 700, color: C.gold, background: 'rgba(13,148,136,0.07)', border: 'none', borderRadius: 8, padding: '5px 10px', cursor: 'pointer', whiteSpace: 'nowrap', letterSpacing: '0.04em' }}
                           >
                             + Gestionar catálogo
                           </button>
@@ -837,7 +837,7 @@ export const MembresiasDashboard: React.FC = () => {
                             <Gift size={32} color={C.borderLight} style={{ margin: '0 auto 10px', display: 'block' }} />
                             <p style={{ fontSize: 13, color: C.textMuted, margin: '0 0 12px', fontWeight: 600 }}>El catálogo de beneficios está vacío.</p>
                             <button type="button" onClick={() => { setShowModal(false); navigate('/admin/benefits'); }}
-                              style={{ fontSize: 12, fontWeight: 700, color: C.gold, background: 'rgba(139,92,246,0.1)', border: 'none', borderRadius: 8, padding: '8px 16px', cursor: 'pointer' }}>
+                              style={{ fontSize: 12, fontWeight: 700, color: C.gold, background: 'rgba(13,148,136,0.1)', border: 'none', borderRadius: 8, padding: '8px 16px', cursor: 'pointer' }}>
                               Ir a agregar beneficios →
                             </button>
                           </div>
@@ -847,7 +847,7 @@ export const MembresiasDashboard: React.FC = () => {
                               const selected = form.benefits.includes(b.name);
                               const typeConfig: Record<string, { icon: React.ReactNode; color: string; bg: string; label: string }> = {
                                 free_classes:     { icon: <CreditCard size={14} />, color: '#16A34A', bg: 'rgba(34,197,94,0.1)',    label: b.benefitValue ? `${b.benefitValue} sesiones` : 'Sesiones' },
-                                unlimited_classes:{ icon: <Infinity   size={14} />, color: '#7C3AED', bg: 'rgba(124,58,237,0.08)', label: 'Ilimitado' },
+                                unlimited_classes:{ icon: <Infinity   size={14} />, color: '#0D9488', bg: 'rgba(13,148,136,0.08)', label: 'Ilimitado' },
                                 discount_percent: { icon: <Percent    size={14} />, color: '#B45309', bg: 'rgba(234,179,8,0.1)',   label: b.benefitValue ? `${b.benefitValue}% dto.` : 'Descuento' },
                                 informational:    { icon: <Info       size={14} />, color: '#5E5E5E', bg: 'rgba(94,94,94,0.08)',   label: 'Info' },
                               };
@@ -904,7 +904,7 @@ export const MembresiasDashboard: React.FC = () => {
                         </p>
 
                         {/* Preview card */}
-                        <div style={{ background: `linear-gradient(135deg, rgba(139,92,246,0.03), rgba(59,130,246,0.05))`, borderRadius: 16, padding: '1rem', border: `1.5px solid ${C.borderLight}`, overflow: 'hidden' }}>
+                        <div style={{ background: `linear-gradient(135deg, rgba(13,148,136,0.03), rgba(68,207,203,0.05))`, borderRadius: 16, padding: '1rem', border: `1.5px solid ${C.borderLight}`, overflow: 'hidden' }}>
                           <span style={{ padding: '3px 10px', borderRadius: 99, background: tPreview.bg, color: tPreview.color, fontSize: 11, fontWeight: 700, letterSpacing: '0.05em', display: 'inline-block' }}>
                             {TYPE_LABELS[form.type]}
                           </span>
@@ -1001,11 +1001,11 @@ export const MembresiasDashboard: React.FC = () => {
                     </button>
                   )}
                   {currentStep < STEPS.length - 1 ? (
-                    <button onClick={handleNext} className="gold-button" style={{ flex: 2, padding: '12px', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, letterSpacing: '0.06em' }}>
+                    <button onClick={handleNext} className="gold-button" style={{ flex: 2, padding: '12px', border: 'none', borderRadius: 9999, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, letterSpacing: '0.06em' }}>
                       Siguiente <span style={{ fontSize: 15 }}>→</span>
                     </button>
                   ) : (
-                    <button onClick={handleSubmit} disabled={saving} className="gold-button" style={{ flex: 2, padding: '12px', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', letterSpacing: '0.06em', opacity: saving ? 0.7 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                    <button onClick={handleSubmit} disabled={saving} className="gold-button" style={{ flex: 2, padding: '12px', border: 'none', borderRadius: 9999, fontSize: 13, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', letterSpacing: '0.06em', opacity: saving ? 0.7 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                       {saving ? 'Guardando…' : editTarget ? '✓ Guardar Cambios' : '✓ Crear Plan'}
                     </button>
                   )}
@@ -1021,7 +1021,7 @@ export const MembresiasDashboard: React.FC = () => {
       <AnimatePresence>
         {deleteConfirm && (
           <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setDeleteConfirm(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(27,28,28,0.45)', backdropFilter: 'blur(6px)', zIndex: 110 }} />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setDeleteConfirm(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.45)', backdropFilter: 'blur(6px)', zIndex: 110 }} />
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} style={{ position: 'fixed', inset: 0, zIndex: 111, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', pointerEvents: 'none' }}>
               <div style={{ background: C.white, borderRadius: 16, padding: '2rem', maxWidth: 380, width: '100%', boxShadow: '0 20px 60px rgba(0,0,0,0.15)', pointerEvents: 'all', textAlign: 'center' }}>
                 <div style={{ width: 52, height: 52, borderRadius: '50%', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem' }}>
@@ -1069,13 +1069,13 @@ const inputStyle = (hasError: boolean): React.CSSProperties => ({
   width: '100%',
   padding: '11px 14px',
   borderRadius: 10,
-  border: `1.5px solid ${hasError ? '#DC2626' : '#DDD6FE'}`,
+  border: `1.5px solid ${hasError ? '#DC2626' : '#CCFBF1'}`,
   background: '#FAFAF9',
   fontSize: 13,
-  color: '#1B1C1C',
+  color: '#0F172A',
   outline: 'none',
   boxSizing: 'border-box',
-  fontFamily: '"Hanken Grotesk", Inter, sans-serif',
+  fontFamily: '"Inter", Inter, sans-serif',
   transition: 'border-color 0.18s',
 });
 

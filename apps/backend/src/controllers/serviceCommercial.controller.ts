@@ -9,7 +9,7 @@ import type { Request, Response } from 'express';
 import { ServiceCommercialRepository } from '@repositories/serviceCommercial.repository.js';
 import { ServiceCatalogRepository } from '@repositories/services.repository.js';
 import { syncCommercialToDoc } from '@services/commercialDocSync.service.js';
-import type { ServiceCommercialPublic } from '@medisdiana/shared-types';
+import type { ServiceCommercialPublic } from '@medisopimed/shared-types';
 
 function isForeignKeyViolation(err: unknown): boolean {
   return (err as { code?: string })?.code === '23503';

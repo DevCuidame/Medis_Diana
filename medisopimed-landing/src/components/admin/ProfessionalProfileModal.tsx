@@ -5,14 +5,14 @@ import { Building2, X, Edit2, Check, Phone, Mail, AtSign, Star,
 import { AnimatePresence, motion } from 'framer-motion'
 
 const C = {
-  gold: '#8B5CF6', goldLight: '#3B82F6', goldPale: '#38BDF8',
-  bg: '#FFFFFF', bgPanel: '#F3F0FB', bgSecondary: '#F3F0FB',
-  white: '#FFFFFF', text: '#1B1C1C', textBrown: '#475569',
+  gold: '#0D9488', goldLight: '#44CFCB', goldPale: '#14B8A6',
+  bg: '#FFFFFF', bgPanel: '#F0FDFA', bgSecondary: '#F0FDFA',
+  white: '#FFFFFF', text: '#0F172A', textBrown: '#475569',
   textMedium: '#5E5E5E', textMuted: '#94A3B8',
-  border: '#DDD6FE', borderLight: '#DDD6FE',
+  border: '#CCFBF1', borderLight: '#CCFBF1',
 }
-const FONT_BODONI = '"Bodoni Moda", Georgia, serif'
-const FONT_INTER  = '"Hanken Grotesk", Inter, system-ui, sans-serif'
+const FONT_BODONI = '"Manrope", Georgia, serif'
+const FONT_INTER  = '"Inter", Inter, system-ui, sans-serif'
 
 const DISCIPLINES = [
   'Medicina General', 'Pediatría', 'Medicina Familiar',
@@ -137,7 +137,7 @@ function ToggleBtn({ on, onChange, labelOn, labelOff }: { on: boolean, onChange:
       onClick={() => onChange(!on)}
       style={{
         width: '100%', padding: '11px 14px',
-        background: on ? 'rgba(139,92,246,0.09)' : C.bgPanel,
+        background: on ? 'rgba(13,148,136,0.09)' : C.bgPanel,
         border: `1.5px solid ${on ? C.gold : C.border}`,
         borderRadius: 10, cursor: 'pointer',
         fontFamily: FONT_INTER, fontSize: 13, fontWeight: 600,
@@ -485,7 +485,7 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
                 {isProfessional && specialties.length > 0 && (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, marginBottom: 18 }}>
                     {specialties.map(tag => (
-                      <span key={tag} style={{ fontFamily: FONT_INTER, fontSize: 10, fontWeight: 600, color: C.gold, background: 'rgba(139,92,246,0.09)', border: `1px solid rgba(139,92,246,0.22)`, padding: '5px 14px', borderRadius: 9999, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                      <span key={tag} style={{ fontFamily: FONT_INTER, fontSize: 10, fontWeight: 600, color: C.gold, background: 'rgba(13,148,136,0.09)', border: `1px solid rgba(13,148,136,0.22)`, padding: '5px 14px', borderRadius: 9999, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
                         {tag}
                       </span>
                     ))}
@@ -509,7 +509,7 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
 
                 {/* Account badges */}
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 9999, background: pro.isVerified ? 'rgba(139,92,246,0.08)' : C.bgSecondary, border: `1px solid ${pro.isVerified ? 'rgba(139,92,246,0.25)' : C.border}` }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 9999, background: pro.isVerified ? 'rgba(13,148,136,0.08)' : C.bgSecondary, border: `1px solid ${pro.isVerified ? 'rgba(13,148,136,0.25)' : C.border}` }}>
                     <ShieldCheck size={13} color={pro.isVerified ? C.gold : C.textMuted} />
                     <span style={{ fontFamily: FONT_INTER, fontSize: 11, fontWeight: 600, color: pro.isVerified ? C.gold : C.textMuted }}>{pro.isVerified ? 'Certificada' : 'Sin certificar'}</span>
                   </div>
@@ -549,7 +549,7 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
                 )}
                 <button
                   onClick={() => setMode('edit')}
-                  style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '11px 22px', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, border: 'none', borderRadius: 9, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer', boxShadow: `0 4px 14px rgba(139,92,246,0.30)` }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '11px 22px', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, border: 'none', borderRadius: 9, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer', boxShadow: `0 4px 14px rgba(13,148,136,0.30)` }}
                 >
                   <Edit2 size={14} strokeWidth={2.5} /> Editar Perfil
                 </button>
@@ -767,14 +767,14 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
                             <div
                               key={d}
                               onClick={() => setForm(f => ({ ...f, specialties: on ? f.specialties.filter(x => x !== d) : [...f.specialties, d] }))}
-                              style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '7px 7px 7px 14px', borderRadius: 9999, border: `1.5px solid ${on ? C.gold : C.border}`, background: on ? 'rgba(139,92,246,0.09)' : 'transparent', fontFamily: FONT_INTER, fontSize: 12, fontWeight: 600, color: on ? C.gold : C.textBrown, cursor: 'pointer', letterSpacing: '0.04em', transition: 'all 0.15s ease' }}
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '7px 7px 7px 14px', borderRadius: 9999, border: `1.5px solid ${on ? C.gold : C.border}`, background: on ? 'rgba(13,148,136,0.09)' : 'transparent', fontFamily: FONT_INTER, fontSize: 12, fontWeight: 600, color: on ? C.gold : C.textBrown, cursor: 'pointer', letterSpacing: '0.04em', transition: 'all 0.15s ease' }}
                             >
                               {on && <Check size={11} strokeWidth={3} />}
                               {d}
                               <button type="button"
                                 onClick={e => { e.stopPropagation(); handleDeleteSpecialty(d) }}
                                 title="Eliminar especialidad"
-                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 18, height: 18, borderRadius: '50%', border: 'none', background: on ? 'rgba(139,92,246,0.15)' : 'rgba(0,0,0,0.06)', color: on ? C.gold : C.textMuted, cursor: 'pointer', padding: 0, flexShrink: 0 }}>
+                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 18, height: 18, borderRadius: '50%', border: 'none', background: on ? 'rgba(13,148,136,0.15)' : 'rgba(0,0,0,0.06)', color: on ? C.gold : C.textMuted, cursor: 'pointer', padding: 0, flexShrink: 0 }}>
                                 <X size={10} />
                               </button>
                             </div>
@@ -782,7 +782,7 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
                         })}
                         {!showAddSpecialty && (
                           <button type="button" onClick={() => setShowAddSpecialty(true)}
-                            style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '7px 14px', borderRadius: 9999, border: `1.5px dashed ${C.gold}`, background: 'rgba(139,92,246,0.04)', color: C.gold, cursor: 'pointer', fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700 }}>
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '7px 14px', borderRadius: 9999, border: `1.5px dashed ${C.gold}`, background: 'rgba(13,148,136,0.04)', color: C.gold, cursor: 'pointer', fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700 }}>
                             <Plus size={13} /> Nueva especialidad
                           </button>
                         )}
@@ -822,7 +822,7 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
                             <button
                               key={t} type="button"
                               onClick={() => set('professionalType', t)}
-                              style={{ flex: 1, padding: '10px 14px', borderRadius: 10, border: `2px solid ${form.professionalType === t ? C.gold : C.border}`, background: form.professionalType === t ? 'rgba(139,92,246,0.07)' : 'transparent', color: form.professionalType === t ? C.gold : C.textBrown, fontWeight: 700, fontSize: 12, cursor: 'pointer', transition: 'all 0.18s', fontFamily: FONT_INTER }}
+                              style={{ flex: 1, padding: '10px 14px', borderRadius: 10, border: `2px solid ${form.professionalType === t ? C.gold : C.border}`, background: form.professionalType === t ? 'rgba(13,148,136,0.07)' : 'transparent', color: form.professionalType === t ? C.gold : C.textBrown, fontWeight: 700, fontSize: 12, cursor: 'pointer', transition: 'all 0.18s', fontFamily: FONT_INTER }}
                             >
                               {t === 'dependiente' ? 'Dependiente' : 'Independiente'}
                             </button>
@@ -972,7 +972,7 @@ export function ProfessionalProfileModal({ pro, onClose, onUpdated, onDeleted, i
                 </button>
                 <button
                   onClick={save} disabled={loading}
-                  style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '11px 22px', background: loading ? C.border : `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, border: 'none', borderRadius: 9, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: loading ? 'not-allowed' : 'pointer', boxShadow: loading ? 'none' : `0 4px 14px rgba(139,92,246,0.30)`, transition: 'all 0.2s ease', minWidth: 170 }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '11px 22px', background: loading ? C.border : `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, border: 'none', borderRadius: 9, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: loading ? 'not-allowed' : 'pointer', boxShadow: loading ? 'none' : `0 4px 14px rgba(13,148,136,0.30)`, transition: 'all 0.2s ease', minWidth: 170 }}
                 >
                   {loading
                     ? <><span style={{ width: 14, height: 14, border: `2px solid rgba(255,255,255,0.4)`, borderTopColor: C.white, borderRadius: '50%', display: 'inline-block', animation: 'spin 0.7s linear infinite' }} /> Guardando...</>

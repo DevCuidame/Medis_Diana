@@ -6,21 +6,21 @@ import { AdminSidebar } from './AdminSidebar'
 import './MainDashboard.css'
 
 const C = {
-  gold: '#8B5CF6', goldLight: '#3B82F6', goldPale: '#38BDF8',
-  bg: '#FFFFFF', bgPanel: '#F3F0FB', bgSecondary: '#F3F0FB',
-  white: '#FFFFFF', text: '#1B1C1C', textBrown: '#475569',
+  gold: '#0D9488', goldLight: '#44CFCB', goldPale: '#14B8A6',
+  bg: '#FFFFFF', bgPanel: '#F0FDFA', bgSecondary: '#F0FDFA',
+  white: '#FFFFFF', text: '#0F172A', textBrown: '#475569',
   textMedium: '#5E5E5E', textMuted: '#94A3B8',
-  border: '#DDD6FE', borderLight: '#DDD6FE',
+  border: '#CCFBF1', borderLight: '#CCFBF1',
 }
-const FONT_BODONI = '"Bodoni Moda", Georgia, serif'
-const FONT_INTER  = '"Hanken Grotesk", Inter, system-ui, sans-serif'
+const FONT_DISPLAY = 'Manrope, Inter, sans-serif'
+const FONT_INTER  = '"Inter", Inter, system-ui, sans-serif'
 
 const OFFER_TYPE_LABEL: Record<string, string> = {
   appointment: 'Cita Individual', open_consultation: 'Consulta Abierta', workshop: 'Sesión Grupal', event: 'Evento',
 }
-const OFFER_COLORS = ['#8B5CF6', '#4A6FA5', '#7C6B8A', '#2563EB', '#059669', '#3B82F6']
+const OFFER_COLORS = ['#0D9488', '#4A6FA5', '#7C6B8A', '#0F766E', '#059669', '#44CFCB']
 const TYPE_COLORS: Record<string, string> = {
-  appointment: '#2563EB', open_consultation: '#0EA5E9', workshop: '#8B5CF6', event: '#3B82F6',
+  appointment: '#0F766E', open_consultation: '#0EA5E9', workshop: '#0D9488', event: '#44CFCB',
 }
 const STATUS_APPT_LABEL: Record<string, string> = {
   scheduled:  'Programada',
@@ -97,7 +97,7 @@ function offersForDay(offers: any[], day: Date) {
 const CalendarStickmanAnimation = () => (
   <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', padding: '1.5rem 2rem', background: C.white, borderRadius: '1.25rem', border: `1px solid ${C.borderLight}`, marginBottom: '2rem', boxShadow: '0 4px 16px rgba(0,0,0,0.03)' }}>
     <div style={{ flex: 1 }}>
-      <div style={{ fontFamily: FONT_BODONI, fontSize: '1.6rem', color: C.gold, fontWeight: 700, marginBottom: '0.25rem' }}>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: '1.6rem', color: C.gold, fontWeight: 700, marginBottom: '0.25rem' }}>
         Programación 📅
       </div>
       <div style={{ fontSize: '1rem', color: C.textBrown }}>
@@ -105,33 +105,33 @@ const CalendarStickmanAnimation = () => (
       </div>
     </div>
     <div style={{ flexShrink: 0 }}>
-      <svg width="150" height="120" viewBox="0 0 150 120" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(139,92,246,0.12))' }}>
+      <svg width="150" height="120" viewBox="0 0 150 120" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(13,148,136,0.12))' }}>
         <defs>
           <linearGradient id="skin" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="100%" stopColor="#f3f0fb" />
+            <stop offset="100%" stopColor="#F0FDFA" />
           </linearGradient>
           <linearGradient id="coat" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="rgba(255,255,255,0.8)" />
-            <stop offset="100%" stopColor="rgba(139,92,246,0.15)" />
+            <stop offset="100%" stopColor="rgba(13,148,136,0.15)" />
           </linearGradient>
         </defs>
 
         {/* Calendario Fondo */}
-        <rect x="65" y="30" width="60" height="70" rx="8" fill="rgba(139,92,246,0.05)" stroke={C.gold} strokeWidth="3" />
+        <rect x="65" y="30" width="60" height="70" rx="8" fill="rgba(13,148,136,0.05)" stroke={C.gold} strokeWidth="3" />
         <path d="M 65 55 L 125 55" stroke={C.gold} strokeWidth="3" />
         <path d="M 80 20 L 80 40" stroke={C.gold} strokeWidth="4" strokeLinecap="round" />
         <path d="M 110 20 L 110 40" stroke={C.gold} strokeWidth="4" strokeLinecap="round" />
         
         {/* Celdas del calendario */}
-        <rect x="75" y="65" width="10" height="10" rx="2" fill="rgba(139,92,246,0.1)" />
-        <rect x="90" y="65" width="10" height="10" rx="2" fill="rgba(139,92,246,0.1)" />
-        <rect x="105" y="65" width="10" height="10" rx="2" fill="rgba(139,92,246,0.1)" />
-        <rect x="75" y="80" width="10" height="10" rx="2" fill="rgba(139,92,246,0.1)" />
-        <rect x="105" y="80" width="10" height="10" rx="2" fill="rgba(139,92,246,0.1)" />
+        <rect x="75" y="65" width="10" height="10" rx="2" fill="rgba(13,148,136,0.1)" />
+        <rect x="90" y="65" width="10" height="10" rx="2" fill="rgba(13,148,136,0.1)" />
+        <rect x="105" y="65" width="10" height="10" rx="2" fill="rgba(13,148,136,0.1)" />
+        <rect x="75" y="80" width="10" height="10" rx="2" fill="rgba(13,148,136,0.1)" />
+        <rect x="105" y="80" width="10" height="10" rx="2" fill="rgba(13,148,136,0.1)" />
         
         {/* Celda objetivo (donde señala) */}
-        <rect x="90" y="80" width="10" height="10" rx="2" fill="rgba(139,92,246,0.2)" />
+        <rect x="90" y="80" width="10" height="10" rx="2" fill="rgba(13,148,136,0.2)" />
         
         {/* Checkmark animado */}
         <g>
@@ -170,16 +170,16 @@ const CalendarStickmanAnimation = () => (
           <path d="M 1 -17 Q 3.5 -14.5 6 -17" fill="none" stroke={C.goldLight} strokeWidth="1.2" strokeLinecap="round" />
 
           {/* Estetoscopio */}
-          <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#1B1C1C" strokeWidth="1.2" />
-          <circle cx="5" cy="-10" r="1.8" fill="#1B1C1C" />
+          <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#0F172A" strokeWidth="1.2" />
+          <circle cx="5" cy="-10" r="1.8" fill="#0F172A" />
           <circle cx="5" cy="-10" r="0.8" fill="#fff" />
 
           {/* Brazo Izquierdo (descansa con maletín) */}
           <g>
             <path d="M 0 -5 Q -6 0 -8 7" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
-            <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#1B1C1C" strokeWidth="1.5" />
-            <line x1="-10" y1="7" x2="-6" y2="7" stroke="#1B1C1C" strokeWidth="1.5" strokeLinecap="round" />
-            <circle cx="-8" cy="10.5" r="1" fill="#1B1C1C" />
+            <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#0F172A" strokeWidth="1.5" />
+            <line x1="-10" y1="7" x2="-6" y2="7" stroke="#0F172A" strokeWidth="1.5" strokeLinecap="round" />
+            <circle cx="-8" cy="10.5" r="1" fill="#0F172A" />
           </g>
 
           {/* Brazo Derecho (señala animado) */}
@@ -236,7 +236,7 @@ export const AdminClasses: React.FC = () => {
       const from = new Date(); from.setMonth(from.getMonth() - 2); from.setDate(1);
       const to   = new Date(); to.setMonth(to.getMonth() + 3);   to.setDate(0);
       const fmt  = (d: Date) => d.toISOString().slice(0, 10);
-      const url  = `/api/appointments/diana?start_date=${fmt(from)}&end_date=${fmt(to)}`;
+      const url  = `/api/appointments/opimed?start_date=${fmt(from)}&end_date=${fmt(to)}`;
       const res  = await fetch(url, { headers: authH() });
       const json = await res.json();
       if (json.success) {
@@ -257,7 +257,7 @@ export const AdminClasses: React.FC = () => {
                              ? `${appt.patient.first_name} ${appt.patient.last_name}`
                              : (appt.appointment_type ?? 'Cita'),
           durationMinutes: appt.duration_minutes ?? 30,
-          professional:    { id: '12', firstName: 'Diana', lastName: 'Medina' },
+          professional:    { id: '12', firstName: 'OpiMed', lastName: '' },
           status:          appt.status === 'cancelled' ? 'draft' : 'published',
           offerType:       'appointment',
           capacity:        1,
@@ -287,7 +287,7 @@ export const AdminClasses: React.FC = () => {
     patientDebounce.current = setTimeout(async () => {
       setPatientsLoading(true)
       try {
-        const res = await fetch(`/api/appointments/diana/patients?q=${encodeURIComponent(q)}`, { headers: authH() })
+        const res = await fetch(`/api/appointments/opimed/patients?q=${encodeURIComponent(q)}`, { headers: authH() })
         const json = await res.json()
         setPatients(json.data ?? json ?? [])
       } catch { setPatients([]) } finally { setPatientsLoading(false) }
@@ -298,7 +298,7 @@ export const AdminClasses: React.FC = () => {
     if (!newAppt.patient_id || !newAppt.appointment_date || !newAppt.appointment_time) return
     setSavingAppt(true)
     try {
-      const res = await fetch('/api/appointments/diana', {
+      const res = await fetch('/api/appointments/opimed', {
         method: 'POST',
         headers: authH(),
         body: JSON.stringify({
@@ -366,7 +366,7 @@ export const AdminClasses: React.FC = () => {
       <style>{`
         .cls-search::placeholder { color: ${C.textMuted}; }
         .cls-card { transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; cursor: pointer; }
-        .cls-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(139,92,246,0.08); border-color: ${C.goldLight} !important; }
+        .cls-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(13,148,136,0.08); border-color: ${C.goldLight} !important; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .spin { animation: spin 1s linear infinite; }
       `}</style>
@@ -383,7 +383,7 @@ export const AdminClasses: React.FC = () => {
             <button className="menu-toggle" onClick={() => setIsMobileMenuOpen(v => !v)}>
               <Menu size={20} />
             </button>
-            <h2 style={{ fontFamily: FONT_BODONI, fontSize: 22, fontWeight: 600, color: C.gold, margin: 0, whiteSpace: 'nowrap' }}>MEDIS</h2>
+            <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, fontWeight: 600, color: C.gold, margin: 0, whiteSpace: 'nowrap' }}>OPIEKA</h2>
             <div className="topbar-search" style={{ position: 'relative' }}>
               <Search size={15} color={C.textMuted} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
               <input className="cls-search" type="text" placeholder="Buscar servicio o médico..." value={search} onChange={e => setSearch(e.target.value)}
@@ -399,7 +399,7 @@ export const AdminClasses: React.FC = () => {
             <button style={{ width: 36, height: 36, borderRadius: 10, background: C.bgPanel, border: `1px solid ${C.borderLight}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: C.gold }}>
               <Bell size={16} />
             </button>
-            <div style={{ width: 36, height: 36, borderRadius: 10, border: `2px solid ${C.gold}`, overflow: 'hidden', cursor: 'pointer' }}>
+            <div style={{ width: 36, height: 36, borderRadius: '50%', border: `2px solid ${C.gold}`, overflow: 'hidden', cursor: 'pointer' }}>
               <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100&h=100" alt="Admin" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
           </div>
@@ -428,7 +428,7 @@ export const AdminClasses: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 28, flexWrap: 'wrap', gap: 16 }}>
               <div>
                 <p style={{ fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: 6 }}>Portal de Gestión</p>
-                <h1 className="page-title-lg" style={{ fontFamily: FONT_BODONI, fontSize: 38, fontWeight: 700, color: C.text, margin: 0, lineHeight: 1 }}>Calendario de Servicios</h1>
+                <h1 className="page-title-lg" style={{ fontFamily: FONT_DISPLAY, fontSize: 38, fontWeight: 700, color: C.text, margin: 0, lineHeight: 1 }}>Calendario de Servicios</h1>
                 <p style={{ fontSize: 13, color: C.textMuted, margin: '8px 0 0', fontWeight: 500 }}>
                   {loading ? 'Cargando…' : `${offers.length} sesión${offers.length !== 1 ? 'es' : ''} programada${offers.length !== 1 ? 's' : ''}`}
                 </p>
@@ -437,11 +437,11 @@ export const AdminClasses: React.FC = () => {
               <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
                 {/* Nueva Cita */}
                 <button onClick={() => setShowNewAppt(true)}
-                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, border: 'none', borderRadius: 10, cursor: 'pointer', fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: '0.06em', fontFamily: FONT_INTER }}>
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, border: 'none', borderRadius: 9999, cursor: 'pointer', fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: '0.06em', fontFamily: FONT_INTER, boxShadow: '0 4px 14px rgba(13,148,136,0.25)' }}>
                   <Plus size={14} /> Nueva Cita
                 </button>
                 {/* Semana / Mes */}
-                <div style={{ display: 'flex', background: C.bgPanel, border: `1px solid ${C.border}`, borderRadius: 10, overflow: 'hidden' }}>
+                <div style={{ display: 'flex', background: C.bgPanel, border: `1px solid ${C.border}`, borderRadius: 9999, overflow: 'hidden' }}>
                   {(['semana','mes'] as const).map(v => (
                     <button key={v} onClick={() => setCalView(v === 'semana' ? 'week' : 'month')}
                       style={{ padding: '8px 18px', background: (calView === 'week' && v === 'semana') || (calView === 'month' && v === 'mes') ? `linear-gradient(135deg, ${C.gold}, ${C.goldLight})` : 'transparent', border: 'none', cursor: 'pointer', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: (calView === 'week' && v === 'semana') || (calView === 'month' && v === 'mes') ? C.white : C.textBrown, transition: 'all 0.2s', fontFamily: FONT_INTER }}>
@@ -451,7 +451,7 @@ export const AdminClasses: React.FC = () => {
                 </div>
 
                 {/* Navigation */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: C.white, border: `1px solid ${C.borderLight}`, borderRadius: 10, padding: '4px 6px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: C.white, border: `1px solid ${C.borderLight}`, borderRadius: 9999, padding: '4px 10px' }}>
                   <button
                     onClick={() => calView === 'week'
                       ? setWeekStart(d => addDays(d, -7))
@@ -478,7 +478,7 @@ export const AdminClasses: React.FC = () => {
                   <button
                     onClick={() => { setWeekStart(getMondayOf(new Date())); setMonthDate(new Date()) }}
                     style={{ padding: '4px 10px', borderRadius: 7, border: `1px solid ${C.borderLight}`, background: 'transparent', cursor: 'pointer', fontSize: 11, fontWeight: 700, color: C.gold, fontFamily: FONT_INTER, transition: 'background 0.15s' }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(139,92,246,0.06)'}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(13,148,136,0.06)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
                     Hoy
@@ -509,7 +509,7 @@ export const AdminClasses: React.FC = () => {
                           <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: isToday ? C.gold : C.textMuted, marginBottom: 4 }}>
                             {DAY_SHORT[di]}
                           </div>
-                          <div style={{ fontFamily: FONT_BODONI, fontSize: 26, fontWeight: 700, color: isToday ? C.gold : C.text, lineHeight: 1 }}>
+                          <div style={{ fontFamily: FONT_DISPLAY, fontSize: 26, fontWeight: 700, color: isToday ? C.gold : C.text, lineHeight: 1 }}>
                             {day.getDate()}
                           </div>
                           <div style={{ height: 2, background: isToday ? C.gold : C.borderLight, marginTop: 8, borderRadius: 1 }} />
@@ -537,7 +537,7 @@ export const AdminClasses: React.FC = () => {
                                   <Clock size={10} /> {timeStr}
                                 </div>
                                 {/* Title */}
-                                <div style={{ fontFamily: FONT_BODONI, fontSize: 14, fontWeight: 600, color: C.text, lineHeight: 1.2, marginBottom: 4 }}>
+                                <div style={{ fontFamily: FONT_DISPLAY, fontSize: 14, fontWeight: 600, color: C.text, lineHeight: 1.2, marginBottom: 4 }}>
                                   {displayName}
                                 </div>
                                 {/* Type badge */}
@@ -555,7 +555,7 @@ export const AdminClasses: React.FC = () => {
                                 )}
                                 {/* Capacity + Price */}
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 4, flexWrap: 'wrap' }}>
-                                  <span style={{ fontSize: 9.5, fontWeight: 700, color: isFull ? '#ef4444' : C.gold, background: isFull ? 'rgba(239,68,68,0.08)' : 'rgba(139,92,246,0.06)', padding: '3px 7px', borderRadius: 5 }}>
+                                  <span style={{ fontSize: 9.5, fontWeight: 700, color: isFull ? '#ef4444' : C.gold, background: isFull ? 'rgba(239,68,68,0.08)' : 'rgba(13,148,136,0.06)', padding: '3px 7px', borderRadius: 5 }}>
                                     {offer.enrolledCount ?? 0}/{offer.capacity} {isFull ? '• Lleno' : ''}
                                   </span>
                                   {offer.price > 0 && (
@@ -636,7 +636,7 @@ export const AdminClasses: React.FC = () => {
 
                 {/* Instructor Load */}
                 <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 16, padding: 24 }}>
-                  <h3 style={{ fontFamily: FONT_BODONI, fontSize: 20, fontWeight: 600, color: C.text, margin: '0 0 20px' }}>Carga de Médicos</h3>
+                  <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 600, color: C.text, margin: '0 0 20px' }}>Carga de Médicos</h3>
                   {instructorLoad.length === 0 ? (
                     <p style={{ fontSize: 13, color: C.textMuted, fontStyle: 'italic' }}>Sin datos aún.</p>
                   ) : (
@@ -658,7 +658,7 @@ export const AdminClasses: React.FC = () => {
 
                 {/* Upcoming this week */}
                 <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 16, padding: 24 }}>
-                  <h3 style={{ fontFamily: FONT_BODONI, fontSize: 20, fontWeight: 600, color: C.text, margin: '0 0 16px' }}>Esta Semana</h3>
+                  <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 600, color: C.text, margin: '0 0 16px' }}>Esta Semana</h3>
                   {(() => {
                     const thisWeek = weekDays.flatMap(d => offersForDay(offers, d))
                       .sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime())
@@ -693,11 +693,11 @@ export const AdminClasses: React.FC = () => {
 
                 {/* Summary card */}
                 <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', minHeight: 260 }}>
-                  <img src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&q=80&w=600" alt="MEDIS" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&q=80&w=600" alt="OpiMed" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.2))' }} />
                   <div style={{ position: 'absolute', inset: 0, padding: 24, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
                     <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.18em', color: C.goldLight, marginBottom: 6, textTransform: 'uppercase' }}>Resumen</div>
-                    <h3 style={{ fontFamily: FONT_BODONI, fontSize: 22, fontWeight: 700, color: C.white, margin: '0 0 10px', lineHeight: 1.2 }}>
+                    <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, fontWeight: 700, color: C.white, margin: '0 0 10px', lineHeight: 1.2 }}>
                       {offers.length} sesión{offers.length !== 1 ? 'es' : ''} en total
                     </h3>
                     <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 16 }}>
@@ -709,7 +709,7 @@ export const AdminClasses: React.FC = () => {
                         </div>
                       ))}
                     </div>
-                    <button onClick={() => navigate('/admin/services/create')} style={{ alignSelf: 'flex-start', padding: '8px 18px', background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: 8, fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: C.white, cursor: 'pointer', backdropFilter: 'blur(4px)', fontFamily: FONT_INTER }}>
+                    <button onClick={() => navigate('/admin/services/create')} style={{ alignSelf: 'flex-start', padding: '8px 18px', background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: 9999, fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: C.white, cursor: 'pointer', backdropFilter: 'blur(4px)', fontFamily: FONT_INTER }}>
                       Agregar Servicio
                     </button>
                   </div>
@@ -721,7 +721,7 @@ export const AdminClasses: React.FC = () => {
             {/* Footer */}
             <div style={{ borderTop: `1px solid ${C.borderLight}`, paddingTop: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
               <p style={{ fontSize: 10, fontWeight: 600, color: C.textMuted, letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0 }}>
-                © 2026 Medis · Todos los derechos reservados
+                © 2026 OpiMed · Todos los derechos reservados
               </p>
             </div>
 
@@ -735,8 +735,8 @@ export const AdminClasses: React.FC = () => {
                     <X size={18} />
                   </button>
 
-                  <h2 style={{ fontFamily: FONT_BODONI, fontSize: 22, fontWeight: 700, color: C.text, margin: '0 0 4px' }}>Nueva Cita</h2>
-                  <p style={{ fontSize: 12, color: C.textMuted, margin: '0 0 24px' }}>Dra. Diana Medina</p>
+                  <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, fontWeight: 700, color: C.text, margin: '0 0 4px' }}>Nueva Cita</h2>
+                  <p style={{ fontSize: 12, color: C.textMuted, margin: '0 0 24px' }}>Dra. OpiMed</p>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
@@ -749,7 +749,7 @@ export const AdminClasses: React.FC = () => {
                         value={patientQuery}
                         onChange={e => searchPatients(e.target.value)}
                         onFocus={() => setShowPatientDrop(true)}
-                        style={{ width: '100%', padding: '10px 14px', border: `1px solid ${C.border}`, borderRadius: 10, fontSize: 13, color: C.text, outline: 'none', boxSizing: 'border-box', fontFamily: FONT_INTER, background: newAppt.patient_id ? 'rgba(139,92,246,0.04)' : C.white }}
+                        style={{ width: '100%', padding: '10px 14px', border: `1px solid ${C.border}`, borderRadius: 10, fontSize: 13, color: C.text, outline: 'none', boxSizing: 'border-box', fontFamily: FONT_INTER, background: newAppt.patient_id ? 'rgba(13,148,136,0.04)' : C.white }}
                       />
                       {newAppt.patient_id > 0 && (
                         <span style={{ position: 'absolute', right: 10, top: 34, fontSize: 10, color: C.gold, fontWeight: 700 }}>✓ {newAppt.patientName}</span>
@@ -822,11 +822,11 @@ export const AdminClasses: React.FC = () => {
                     {/* Botones */}
                     <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 4 }}>
                       <button onClick={() => setShowNewAppt(false)}
-                        style={{ padding: '10px 20px', background: C.bgPanel, border: `1px solid ${C.border}`, borderRadius: 10, fontSize: 12, fontWeight: 700, color: C.textBrown, cursor: 'pointer', fontFamily: FONT_INTER }}>
+                        style={{ padding: '10px 20px', background: C.bgPanel, border: `1px solid ${C.border}`, borderRadius: 9999, fontSize: 12, fontWeight: 700, color: C.textBrown, cursor: 'pointer', fontFamily: FONT_INTER }}>
                         Cancelar
                       </button>
                       <button onClick={handleCreateAppt} disabled={savingAppt || !newAppt.patient_id || !newAppt.appointment_date || !newAppt.appointment_time}
-                        style={{ padding: '10px 24px', background: newAppt.patient_id ? `linear-gradient(135deg, ${C.gold}, ${C.goldLight})` : C.bgPanel, border: 'none', borderRadius: 10, fontSize: 12, fontWeight: 700, color: newAppt.patient_id ? C.white : C.textMuted, cursor: newAppt.patient_id ? 'pointer' : 'not-allowed', fontFamily: FONT_INTER, display: 'flex', alignItems: 'center', gap: 6 }}>
+                        style={{ padding: '10px 24px', background: newAppt.patient_id ? `linear-gradient(135deg, ${C.gold}, ${C.goldLight})` : C.bgPanel, border: 'none', borderRadius: 9999, fontSize: 12, fontWeight: 700, color: newAppt.patient_id ? C.white : C.textMuted, cursor: newAppt.patient_id ? 'pointer' : 'not-allowed', fontFamily: FONT_INTER, display: 'flex', alignItems: 'center', gap: 6 }}>
                         {savingAppt ? <><Loader2 size={13} className="spin" /> Guardando...</> : 'Guardar Cita'}
                       </button>
                     </div>

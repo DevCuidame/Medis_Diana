@@ -1,14 +1,14 @@
-# Diseño: Rebranding Landing Pública — Consultorio Dra. Diana Cristina Medina Camargo
+# Diseño: Rebranding Landing Pública — Consultorio Dra. OpiMed
 
 **Fecha:** 2026-06-10
-**Sub-proyecto:** 1 de N — Landing pública (`medisdiana-landing/src/components/`)
+**Sub-proyecto:** 1 de N — Landing pública (`medisopimed-landing/src/components/`)
 **Estado:** Aprobado — pendiente plan de implementación
 
 ---
 
 ## Contexto
 
-El proyecto `medis` parte de una copia de la plataforma medisdiana (estudio de pole dance) y se migra al sistema de gestión del **consultorio de la Dra. Diana Cristina Medina Camargo, Especialista en Medicina Familiar y Comunitaria**. Este spec cubre únicamente los 8 componentes de la landing pública. La autenticación, los portales de paciente, profesional y panel admin son sub-proyectos independientes que vendrán después.
+El proyecto `medis` parte de una copia de la plataforma medisopimed (estudio de pole dance) y se migra al sistema de gestión del **consultorio de la Dra. OpiMed, Especialista en Medicina Familiar y Comunitaria**. Este spec cubre únicamente los 8 componentes de la landing pública. La autenticación, los portales de paciente, profesional y panel admin son sub-proyectos independientes que vendrán después.
 
 ---
 
@@ -72,7 +72,7 @@ Se puede eliminar de Google Fonts las familias sin uso (`Bodoni Moda`, `Hanken G
 
 ## B. Navbar.tsx
 
-- **Marca**: `medisdiana` → `Dra. Diana Medina` (versión corta para el pill; nombre completo en Footer y sección de perfil).
+- **Marca**: `medisopimed` → `Dra. OpiMed` (versión corta para el pill; nombre completo en Footer y sección de perfil).
 - **Links de navegación**:
   ```
   Inicio (#inicio) · Sobre la Doctora (#sobre-la-doctora) · Servicios (#servicios) · Testimonios (#testimonios) · Contacto (#contacto)
@@ -113,7 +113,7 @@ Se puede eliminar de Google Fonts las familias sin uso (`Bodoni Moda`, `Hanken G
   *CON CERCANÍA*
   ```
 
-- **Subtexto**: "La Dra. Diana Cristina Medina Camargo te ofrece atención médica familiar personalizada, cercana y profesional, para ti y los tuyos."
+- **Subtexto**: "La Dra. OpiMed te ofrece atención médica familiar personalizada, cercana y profesional, para ti y los tuyos."
 
 - **CTAs**:
   - Primario (`.brand-gradient`): "Acceso artistas" → `Agendar Cita`, `href="#contacto"`
@@ -190,7 +190,7 @@ Se puede eliminar de Google Fonts las familias sin uso (`Bodoni Moda`, `Hanken G
 - > **Open item:** Reemplazar con foto real de la doctora.
 
 ### Columna derecha (info)
-- **Nombre**: `Dra. Diana Cristina Medina Camargo`
+- **Nombre**: `Dra. OpiMed`
 - **Subtítulo** (eyebrow dorado → morado): `Especialista en Medicina Familiar y Comunitaria`
 - **Bio** (placeholder): "Médica con sólida formación en medicina familiar y comunitaria, con amplia experiencia en atención primaria, prevención y seguimiento de enfermedades crónicas. Su enfoque centrado en el paciente garantiza una atención cercana, humana y de calidad para toda la familia."
 - **Insignias/credenciales** (chips estilo `.brand-border`):
@@ -212,7 +212,7 @@ Se puede eliminar de Google Fonts las familias sin uso (`Bodoni Moda`, `Hanken G
 ### 5 testimonios de pacientes (placeholder)
 
 ```
-1. "La Dra. Medina escucha con atención y explica todo con claridad. Me sentí en muy buenas manos desde la primera consulta."
+1. "La Dra. OpiMed escucha con atención y explica todo con claridad. Me sentí en muy buenas manos desde la primera consulta."
    — María L. · Paciente, Medicina General ★★★★★
 
 2. "Llevo el control de mi diabetes con la doctora hace más de dos años. Su seguimiento constante ha marcado una diferencia real en mi salud."
@@ -234,7 +234,7 @@ Se puede eliminar de Google Fonts las familias sin uso (`Bodoni Moda`, `Hanken G
 
 - **Eyebrow**: "Comienza Tu Viaje" → `Agenda tu Consulta`
 - **Título**: "Tu esencia *merece brillar*" → `Tu salud *es lo primero*`
-- **Subtexto**: "Da el primer paso hacia una atención médica cercana y de calidad. La Dra. Diana Medina Camargo está lista para acompañarte."
+- **Subtexto**: "Da el primer paso hacia una atención médica cercana y de calidad. La Dra. OpiMed está lista para acompañarte."
 - **CTAs**:
   - Primario (`.brand-gradient`): "Reserva Ahora" → `Agendar Cita` (href `#contacto`)
   - Secundario: "Conoce las Clases" → `Conoce los Servicios` (href `#servicios`)
@@ -249,7 +249,7 @@ Se puede eliminar de Google Fonts las familias sin uso (`Bodoni Moda`, `Hanken G
 ## I. Footer.tsx
 
 - **Columna marca**:
-  - Texto logo: `Dra. Diana Cristina Medina Camargo` (`.brand-text-gradient`)
+  - Texto logo: `Dra. OpiMed` (`.brand-text-gradient`)
   - Tagline: "Especialista en Medicina Familiar y Comunitaria. Atención cercana, profesional y de confianza."
   - Sociales: Instagram · **Facebook** (reemplaza TikTok) · WhatsApp — hrefs como placeholders.
 
@@ -268,7 +268,7 @@ Se puede eliminar de Google Fonts las familias sin uso (`Bodoni Moda`, `Hanken G
   CTA: "Acceso artistas" → `Agendar Cita`
 
 - **Barra inferior**:
-  - `© {año} Dra. Diana Cristina Medina Camargo · Todos los derechos reservados`
+  - `© {año} Dra. OpiMed · Todos los derechos reservados`
   - Frase final: "Especialista en Medicina Familiar y Comunitaria"
 
 - Todos los hover/border/shadow en gold → brand purple.
@@ -292,13 +292,13 @@ Los open items NO bloquean la implementación — todos quedan como placeholder 
 
 ## K. Plan de pruebas
 
-1. Levantar dev server: `cd medisdiana-landing && pnpm dev`
+1. Levantar dev server: `cd medisopimed-landing && pnpm dev`
 2. Revisar en browser: scroll completo, verificar que cada sección se ve correctamente (colores, copy, animaciones).
 3. Probar anchors: `#inicio`, `#servicios`, `#sobre-la-doctora`, `#testimonios`, `#contacto`.
 4. Probar menú mobile (< 900px): hamburger, dropdown, links y CTA.
 5. Grep de limpieza post-implementación:
    ```bash
-   grep -r "medisdiana\|pole\|instructora\|#775A00\|#B08D32\|119,90,0\|176,141,50" src/components/
+   grep -r "medisopimed\|pole\|instructora\|#775A00\|#B08D32\|119,90,0\|176,141,50" src/components/
    ```
    → No debe retornar resultados en los 8 archivos de landing.
 

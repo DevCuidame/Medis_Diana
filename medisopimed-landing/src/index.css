@@ -1,21 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
 @import "tailwindcss";
 @source ".";
 
 @theme {
-  --color-brand-primary: #8B5CF6;
-  --color-brand-secondary: #3B82F6;
-  --color-brand-accent: #38BDF8;
+  --color-brand-primary: #0D9488;
+  --color-brand-secondary: #0F766E;
+  --color-brand-accent: #44CFCB;
   --color-bg-main: #FFFFFF;
-  --color-bg-secondary: #F3F0FB;
-  --color-bg-footer: #EEF2FF;
-  --color-text-primary: #1E293B;
+  --color-bg-secondary: #F0FDFA;
+  --color-bg-footer: #E6FFFA;
+  --color-text-primary: #0F172A;
   --color-text-secondary: #475569;
   --color-text-medium: #475569;
   --color-text-muted: #94A3B8;
   --color-border: #E2E8F0;
   --font-cormorant: 'Cormorant Garamond', Georgia, serif;
   --font-inter: 'Inter', system-ui, sans-serif;
+  --font-manrope: 'Manrope', 'Inter', system-ui, sans-serif;
 }
 
 *,
@@ -33,7 +34,7 @@ html {
 body {
   font-family: var(--font-inter);
   background-color: #FFFFFF;
-  color: #1E293B;
+  color: #0F172A;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -43,37 +44,38 @@ body {
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #FFFFFF; }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #8B5CF6, #3B82F6);
+  background: linear-gradient(180deg, #0D9488, #44CFCB);
   border-radius: 3px;
 }
 
 /* TYPOGRAPHY */
 .font-cormorant { font-family: var(--font-cormorant); }
 .font-inter     { font-family: var(--font-inter); }
+.font-manrope   { font-family: var(--font-manrope); }
 
-/* GLASS */
+/* GLASS — reservado para navbar y la tarjeta flotante del hero, no para cards de contenido */
 .glass {
   background: rgba(255, 255, 255, 0.80);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(139, 92, 246, 0.10);
-  box-shadow: 0 10px 40px rgba(139, 92, 246, 0.10);
+  border: 1px solid rgba(13, 148, 136, 0.10);
+  box-shadow: 0 10px 40px rgba(13, 148, 136, 0.10);
 }
 
 .glass-dark {
-  background: rgba(27, 28, 28, 0.40);
+  background: rgba(15, 23, 42, 0.40);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-/* BRAND GRADIENT (ex gold-gradient) */
+/* BRAND GRADIENT */
 .brand-gradient {
-  background: linear-gradient(135deg, #8B5CF6, #3B82F6);
+  background: linear-gradient(135deg, #0D9488, #44CFCB);
 }
 
 .brand-text-gradient {
-  background: linear-gradient(135deg, #8B5CF6, #3B82F6);
+  background: linear-gradient(135deg, #0D9488, #44CFCB);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -105,13 +107,13 @@ body {
   left: 0;
   width: 0;
   height: 1px;
-  background: linear-gradient(90deg, #8B5CF6, #3B82F6);
+  background: linear-gradient(90deg, #0D9488, #44CFCB);
   transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .luxury-link:hover::after { width: 100%; }
 
-/* BRAND BORDER (ex gold-border) */
-.brand-border { border: 1px solid rgba(139, 92, 246, 0.25); }
+/* BRAND BORDER */
+.brand-border { border: 1px solid rgba(13, 148, 136, 0.25); }
 
 /* ANIMATIONS */
 @keyframes floatY {

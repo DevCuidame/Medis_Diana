@@ -12,7 +12,7 @@ import Spaces from './components/Spaces'
 import FinalCTA from './components/FinalCTA'
 import Footer from './components/Footer'
 import ArtistLogin from './components/ArtistLogin'
-import DianaBookingCalendar from './components/DianaBookingCalendar'
+import OpiMedBookingCalendar from './components/OpiMedBookingCalendar'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { Seo } from './seo/Seo'
 import { MedicalClinicJsonLd } from './seo/JsonLd'
@@ -142,10 +142,10 @@ function BookingPage() {
       <Seo
         path="/agendar"
         title="Agendar cita médica en línea"
-        description="Reserva tu consulta de medicina familiar con la Dra. Diana Medina. Disponibilidad en tiempo real."
+        description="Reserva tu consulta de medicina familiar con la Dra. OpiMed. Disponibilidad en tiempo real."
       />
       <MedicalClinicJsonLd />
-      <DianaBookingCalendar
+      <OpiMedBookingCalendar
         onBackToHome={() => navigate('/')}
       />
     </>

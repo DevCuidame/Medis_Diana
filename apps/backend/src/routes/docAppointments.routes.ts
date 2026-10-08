@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { authenticate, authorize } from '@middleware/auth.middleware.js';
-import { getDianaAppointments, createDianaAppointment, getDianaPatients } from '@controllers/docAppointments.controller.js';
+import { getOpiMedAppointments, createOpiMedAppointment, getOpiMedPatients } from '@controllers/docAppointments.controller.js';
 
 const router = Router();
 
-router.get('/patients', authenticate, authorize('ADMIN'), getDianaPatients);
-router.get('/', authenticate, authorize('ADMIN'), getDianaAppointments);
-router.post('/', authenticate, authorize('ADMIN'), createDianaAppointment);
+router.get('/patients', authenticate, authorize('ADMIN'), getOpiMedPatients);
+router.get('/', authenticate, authorize('ADMIN'), getOpiMedAppointments);
+router.post('/', authenticate, authorize('ADMIN'), createOpiMedAppointment);
 
 export default router;

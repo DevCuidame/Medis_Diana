@@ -9,15 +9,15 @@ import { CotizacionesCuidameDocPanel } from './shared/CotizacionesCuidameDocPane
 import './MainDashboard.css';
 
 const C = {
-  gold: '#8B5CF6',
-  goldLight: '#3B82F6',
-  bgPanel: '#F3F0FB',
+  gold: '#0D9488',
+  goldLight: '#44CFCB',
+  bgPanel: '#F0FDFA',
   white: '#FFFFFF',
-  text: '#1B1C1C',
+  text: '#0F172A',
   textBrown: '#475569',
   textMedium: '#5E5E5E',
   textMuted: '#94A3B8',
-  borderLight: '#DDD6FE',
+  borderLight: '#CCFBF1',
 };
 
 
@@ -72,15 +72,15 @@ interface PendingServicePayment {
 // ── Animación: Stickman médica señalando el crecimiento financiero ─────────────
 const FinanzasStickmanAnimation = () => (
   <div style={{ flexShrink: 0 }}>
-    <svg width="150" height="120" viewBox="0 0 150 120" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(139,92,246,0.12))' }}>
+    <svg width="150" height="120" viewBox="0 0 150 120" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(13,148,136,0.12))' }}>
       <defs>
         <linearGradient id="finSkin" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="100%" stopColor="#f3f0fb" />
+          <stop offset="100%" stopColor="#F0FDFA" />
         </linearGradient>
         <linearGradient id="finCoat" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stopColor="rgba(255,255,255,0.8)" />
-          <stop offset="100%" stopColor="rgba(139,92,246,0.15)" />
+          <stop offset="100%" stopColor="rgba(13,148,136,0.15)" />
         </linearGradient>
       </defs>
 
@@ -139,16 +139,16 @@ const FinanzasStickmanAnimation = () => (
         <path d="M 1 -17 Q 3.5 -14.5 6 -17" fill="none" stroke={C.goldLight} strokeWidth="1.2" strokeLinecap="round" />
 
         {/* Estetoscopio */}
-        <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#1B1C1C" strokeWidth="1.2" />
-        <circle cx="5" cy="-10" r="1.8" fill="#1B1C1C" />
+        <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#0F172A" strokeWidth="1.2" />
+        <circle cx="5" cy="-10" r="1.8" fill="#0F172A" />
         <circle cx="5" cy="-10" r="0.8" fill="#fff" />
 
         {/* Brazo izquierdo (maletín) */}
         <g>
           <path d="M 0 -5 Q -6 0 -8 7" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
-          <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#1B1C1C" strokeWidth="1.5" />
-          <line x1="-10" y1="7" x2="-6" y2="7" stroke="#1B1C1C" strokeWidth="1.5" strokeLinecap="round" />
-          <circle cx="-8" cy="10.5" r="1" fill="#1B1C1C" />
+          <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#0F172A" strokeWidth="1.5" />
+          <line x1="-10" y1="7" x2="-6" y2="7" stroke="#0F172A" strokeWidth="1.5" strokeLinecap="round" />
+          <circle cx="-8" cy="10.5" r="1" fill="#0F172A" />
         </g>
 
         {/* Brazo derecho: señala el gráfico financiero (animado) */}
@@ -423,8 +423,8 @@ export const FinanzasDashboard: React.FC = () => {
             }}>
               <Menu size={20} />
             </button>
-            <h2 style={{ fontFamily: '"Bodoni Moda", Georgia, serif', fontSize: 24, fontWeight: 600, color: C.gold, margin: 0, letterSpacing: '-0.01em', display: 'flex', alignItems: 'center', gap: 8 }}>
-              MEDIS <span className="overview-label" style={{ fontSize: 12, fontFamily: '"Hanken Grotesk", sans-serif', color: C.textMuted, fontWeight: 500, letterSpacing: '0.1em', marginTop: 4, textTransform: 'uppercase' }}>/ Finanzas</span>
+            <h2 style={{ fontFamily: '"Manrope", Georgia, serif', fontSize: 24, fontWeight: 600, color: C.gold, margin: 0, letterSpacing: '-0.01em', display: 'flex', alignItems: 'center', gap: 8 }}>
+              OPIEKA <span className="overview-label" style={{ fontSize: 12, fontFamily: '"Inter", sans-serif', color: C.textMuted, fontWeight: 500, letterSpacing: '0.1em', marginTop: 4, textTransform: 'uppercase' }}>/ Finanzas</span>
             </h2>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -436,7 +436,7 @@ export const FinanzasDashboard: React.FC = () => {
               >
                 <Bell size={18} />
                 {pendingPayments.length > 0 && (
-                  <span style={{ position: 'absolute', top: -5, right: -5, width: 18, height: 18, borderRadius: '50%', background: '#DC2626', color: '#fff', fontSize: 10, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fff', fontFamily: '"Hanken Grotesk", sans-serif', lineHeight: 1 }}>
+                  <span style={{ position: 'absolute', top: -5, right: -5, width: 18, height: 18, borderRadius: '50%', background: '#DC2626', color: '#fff', fontSize: 10, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fff', fontFamily: '"Inter", sans-serif', lineHeight: 1 }}>
                     {pendingPayments.length > 9 ? '9+' : pendingPayments.length}
                   </span>
                 )}
@@ -456,7 +456,7 @@ export const FinanzasDashboard: React.FC = () => {
                     <div style={{ padding: '1rem 1.1rem 0.75rem', borderBottom: `1px solid ${C.borderLight}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <Bell size={15} color={C.gold} />
-                        <span style={{ fontFamily: '"Bodoni Moda", serif', fontSize: '1rem', fontWeight: 600, color: C.text }}>Pagos pendientes</span>
+                        <span style={{ fontFamily: '"Manrope", serif', fontSize: '1rem', fontWeight: 600, color: C.text }}>Pagos pendientes</span>
                       </div>
                       {pendingPayments.length > 0 && (
                         <span style={{ background: '#FEE2E2', color: '#DC2626', fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 99 }}>
@@ -477,8 +477,8 @@ export const FinanzasDashboard: React.FC = () => {
                         pendingPayments.map((pm, i) => (
                           <div key={pm.id} style={{ padding: '0.85rem 1.1rem', borderBottom: i < pendingPayments.length - 1 ? `1px solid ${C.borderLight}` : 'none', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
                             {/* Icon */}
-                            <div style={{ width: 34, height: 34, borderRadius: 9, background: pm.paymentMethod === 'cash' ? 'rgba(139,92,246,0.08)' : 'rgba(124,58,237,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
-                              {pm.paymentMethod === 'cash' ? <Banknote size={15} color={C.gold} /> : <Wallet size={15} color="#7C3AED" />}
+                            <div style={{ width: 34, height: 34, borderRadius: 9, background: pm.paymentMethod === 'cash' ? 'rgba(13,148,136,0.08)' : 'rgba(13,148,136,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
+                              {pm.paymentMethod === 'cash' ? <Banknote size={15} color={C.gold} /> : <Wallet size={15} color="#0D9488" />}
                             </div>
 
                             {/* Info */}
@@ -522,23 +522,23 @@ export const FinanzasDashboard: React.FC = () => {
                 )}
               </AnimatePresence>
             </div>
-            <div style={{ width: 40, height: 40, borderRadius: 12, border: `2px solid ${C.gold}`, overflow: 'hidden', cursor: 'pointer', flexShrink: 0, boxShadow: '0 4px 10px rgba(139,92,246,0.2)' }}>
+            <div style={{ width: 40, height: 40, borderRadius: '50%', border: `2px solid ${C.gold}`, overflow: 'hidden', cursor: 'pointer', flexShrink: 0, boxShadow: '0 4px 10px rgba(13,148,136,0.2)' }}>
               <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100&h=100" alt="Admin" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
           </div>
         </header>
 
         {/* PAGE CONTENT */}
-        <main style={{ flex: 1, overflowY: 'auto', padding: '2rem 1.5rem', background: 'radial-gradient(circle at top right, rgba(139,92,246,0.03), transparent 400px)' }}>
+        <main style={{ flex: 1, overflowY: 'auto', padding: '2rem 1.5rem', background: 'radial-gradient(circle at top right, rgba(13,148,136,0.03), transparent 400px)' }}>
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
 
             {/* Page heading */}
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20, borderRadius: 20, background: 'linear-gradient(135deg, rgba(139,92,246,0.06) 0%, rgba(59,130,246,0.04) 100%)', border: '1px solid rgba(139,92,246,0.12)', padding: '20px 28px' }}>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20, borderRadius: 20, background: 'linear-gradient(135deg, rgba(13,148,136,0.06) 0%, rgba(68,207,203,0.04) 100%)', border: '1px solid rgba(13,148,136,0.12)', padding: '20px 28px' }}>
               <div>
-                <p style={{ fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.18em', textTransform: 'uppercase', margin: '0 0 6px', fontFamily: '"Hanken Grotesk", sans-serif' }}>Gestión Financiera</p>
-                <h1 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: '2.5rem', color: C.text, marginBottom: '0.4rem', lineHeight: 1.1 }}>Finanzas</h1>
+                <p style={{ fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.18em', textTransform: 'uppercase', margin: '0 0 6px', fontFamily: '"Inter", sans-serif' }}>Gestión Financiera</p>
+                <h1 style={{ fontFamily: '"Manrope", serif', fontSize: '2.5rem', color: C.text, marginBottom: '0.4rem', lineHeight: 1.1 }}>Finanzas</h1>
                 <p style={{ color: C.textMuted, fontSize: '1rem', margin: 0 }}>
-                  Resumen financiero de Medis — {new Date().toLocaleDateString('es-CO', { month: 'long', year: 'numeric' }).replace(/^\w/, c => c.toUpperCase())}.
+                  Resumen financiero de OpiMed — {new Date().toLocaleDateString('es-CO', { month: 'long', year: 'numeric' }).replace(/^\w/, c => c.toUpperCase())}.
                 </p>
               </div>
 
@@ -550,7 +550,7 @@ export const FinanzasDashboard: React.FC = () => {
               {[
                 { label: 'Ingresos del mes', value: kpis.ingresos, icon: TrendingUp, color: '#16A34A', bg: 'rgba(34,197,94,0.06)' },
                 { label: 'Egresos del mes', value: kpis.egresos, icon: TrendingDown, color: '#DC2626', bg: 'rgba(239,68,68,0.06)' },
-                { label: 'Balance neto', value: kpis.balance, icon: DollarSign, color: C.gold, bg: 'rgba(139,92,246,0.06)' },
+                { label: 'Balance neto', value: kpis.balance, icon: DollarSign, color: C.gold, bg: 'rgba(13,148,136,0.06)' },
                 { label: 'Cobros pendientes', value: kpis.pendientes, icon: Clock, color: '#B45309', bg: 'rgba(234,179,8,0.06)' },
               ].map((kpi, i) => {
                 const Icon = kpi.icon;
@@ -589,7 +589,7 @@ export const FinanzasDashboard: React.FC = () => {
               {([
                 { key: 'planes',        label: 'Gestión de Planes',       count: activeMemberships.length + pendingPayments.length,  color: C.gold },
                 { key: 'servicios',     label: 'Servicios Adicionales',   count: pendingServices.length,  color: '#B45309' },
-                { key: 'cotizaciones',  label: 'Cotizaciones CuidameDoc', count: cotizacionesPendingCount,   color: '#7C3AED' },
+                { key: 'cotizaciones',  label: 'Cotizaciones CuidameDoc', count: cotizacionesPendingCount,   color: '#0D9488' },
               ] as const).map(tab => {
                 const isActive = activeTab === tab.key;
                 return (
@@ -601,12 +601,12 @@ export const FinanzasDashboard: React.FC = () => {
                       padding: '10px 20px', borderRadius: 99,
                       border: isActive ? 'none' : `1.5px solid ${C.borderLight}`,
                       background: isActive
-                        ? `linear-gradient(90deg, ${tab.key === 'planes' ? `${C.gold}, ${C.goldLight}` : tab.key === 'servicios' ? `${C.goldLight}, #38BDF8` : '#7C3AED, #A78BFA'})`
+                        ? `linear-gradient(90deg, ${tab.key === 'planes' ? `${C.gold}, ${C.goldLight}` : tab.key === 'servicios' ? `${C.goldLight}, #14B8A6` : '#0D9488, #0EA5E9'})`
                         : C.white,
                       color: isActive ? C.white : C.textBrown,
                       fontSize: 13, fontWeight: 700, cursor: 'pointer',
                       transition: 'all 0.2s',
-                      boxShadow: isActive ? '0 4px 14px rgba(139,92,246,0.2)' : 'none',
+                      boxShadow: isActive ? '0 4px 14px rgba(13,148,136,0.2)' : 'none',
                     }}
                   >
                     {tab.label}
@@ -631,16 +631,16 @@ export const FinanzasDashboard: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.35 }}
               className="glass-card"
-              style={{ padding: '1.5rem 1.75rem', marginBottom: '2rem', border: `1.5px solid rgba(139,92,246,0.2)` }}
+              style={{ padding: '1.5rem 1.75rem', marginBottom: '2rem', border: `1.5px solid rgba(13,148,136,0.2)` }}
             >
               {/* Header */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(139,92,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(13,148,136,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <CreditCard size={20} color={C.gold} />
                   </div>
                   <div>
-                    <h2 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: '1.3rem', color: C.text, margin: 0 }}>Gestión de Planes</h2>
+                    <h2 style={{ fontFamily: '"Manrope", serif', fontSize: '1.3rem', color: C.text, margin: 0 }}>Gestión de Planes</h2>
                     <p style={{ fontSize: 12, color: C.textMuted, margin: 0 }}>
                       {activeMemberships.length} activo{activeMemberships.length !== 1 ? 's' : ''}
                       {pendingPayments.length > 0 && ` · ${pendingPayments.length} pendiente${pendingPayments.length !== 1 ? 's' : ''} de aprobación`}
@@ -660,7 +660,7 @@ export const FinanzasDashboard: React.FC = () => {
                   Planes Activos
                 </p>
                 {activeMemberships.length === 0 ? (
-                  <div style={{ textAlign: 'center', padding: '1.25rem 1rem', background: 'rgba(139,92,246,0.03)', borderRadius: 10, border: `1px dashed ${C.borderLight}` }}>
+                  <div style={{ textAlign: 'center', padding: '1.25rem 1rem', background: 'rgba(13,148,136,0.03)', borderRadius: 10, border: `1px dashed ${C.borderLight}` }}>
                     <p style={{ fontSize: 13, color: C.textMuted, margin: 0 }}>Ningún paciente tiene un plan activo aún.</p>
                   </div>
                 ) : (
@@ -700,7 +700,7 @@ export const FinanzasDashboard: React.FC = () => {
                               </div>
                             )}
                             {am.classesRemaining === null && (
-                              <span style={{ fontSize: 10, fontWeight: 700, color: C.gold, background: 'rgba(139,92,246,0.08)', padding: '3px 8px', borderRadius: 99 }}>∞ Ilimitado</span>
+                              <span style={{ fontSize: 10, fontWeight: 700, color: C.gold, background: 'rgba(13,148,136,0.08)', padding: '3px 8px', borderRadius: 99 }}>∞ Ilimitado</span>
                             )}
                           </div>
                           <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 6, borderTop: `1px solid ${C.borderLight}` }}>
@@ -740,8 +740,8 @@ export const FinanzasDashboard: React.FC = () => {
                           exit={{ opacity: 0, x: 12, height: 0, marginBottom: 0, padding: 0, overflow: 'hidden' }}
                           style={{ background: C.white, borderRadius: 12, padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: 14, border: `1px solid rgba(220,38,38,0.2)`, flexWrap: 'wrap' }}
                         >
-                          <div style={{ width: 38, height: 38, borderRadius: 10, background: pm.paymentMethod === 'cash' ? 'rgba(139,92,246,0.08)' : 'rgba(124,58,237,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                            {pm.paymentMethod === 'cash' ? <Banknote size={18} color={C.gold} /> : <Wallet size={18} color="#7C3AED" />}
+                          <div style={{ width: 38, height: 38, borderRadius: 10, background: pm.paymentMethod === 'cash' ? 'rgba(13,148,136,0.08)' : 'rgba(13,148,136,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                            {pm.paymentMethod === 'cash' ? <Banknote size={18} color={C.gold} /> : <Wallet size={18} color="#0D9488" />}
                           </div>
                           <div style={{ flex: 1, minWidth: 160 }}>
                             <p style={{ fontSize: 14, fontWeight: 700, color: C.text, margin: '0 0 2px' }}>{pm.userName ?? 'Usuario'}</p>
@@ -751,7 +751,7 @@ export const FinanzasDashboard: React.FC = () => {
                             <p style={{ fontSize: 13, fontWeight: 600, color: C.text, margin: '0 0 2px' }}>{pm.membership.name}</p>
                             <p style={{ fontSize: 12, color: C.textMuted, margin: 0 }}>
                               {fmt(pm.membership.price)} ·{' '}
-                              <span style={{ fontWeight: 600, color: pm.paymentMethod === 'cash' ? C.gold : '#7C3AED' }}>
+                              <span style={{ fontWeight: 600, color: pm.paymentMethod === 'cash' ? C.gold : '#0D9488' }}>
                                 {pm.paymentMethod === 'cash' ? 'Efectivo' : 'Wompi'}
                               </span>
                             </p>
@@ -783,7 +783,7 @@ export const FinanzasDashboard: React.FC = () => {
               )}
 
               {activeMemberships.length === 0 && pendingPayments.length === 0 && (
-                <div style={{ textAlign: 'center', padding: '2rem 1rem', background: 'rgba(139,92,246,0.03)', borderRadius: 12, border: `1px dashed ${C.borderLight}` }}>
+                <div style={{ textAlign: 'center', padding: '2rem 1rem', background: 'rgba(13,148,136,0.03)', borderRadius: 12, border: `1px dashed ${C.borderLight}` }}>
                   <CheckCircle2 size={32} color="#16A34A" style={{ margin: '0 auto 10px' }} />
                   <p style={{ fontSize: 14, fontWeight: 600, color: C.textMuted, margin: 0 }}>Sin planes registrados</p>
                   <p style={{ fontSize: 12, color: C.textMuted, margin: '4px 0 0' }}>Cuando un alumno adquiera un plan aparecerá aquí.</p>
@@ -797,29 +797,29 @@ export const FinanzasDashboard: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.42 }}
               className="glass-card"
-              style={{ padding: '1.5rem 1.75rem', marginBottom: '2rem', border: `1.5px solid rgba(59,130,246,0.2)` }}
+              style={{ padding: '1.5rem 1.75rem', marginBottom: '2rem', border: `1.5px solid rgba(68,207,203,0.2)` }}
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(68,207,203,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Briefcase size={20} color={C.goldLight} />
                   </div>
                   <div>
-                    <h2 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: '1.3rem', color: C.text, margin: 0 }}>Servicios Adicionales</h2>
+                    <h2 style={{ fontFamily: '"Manrope", serif', fontSize: '1.3rem', color: C.text, margin: 0 }}>Servicios Adicionales</h2>
                     <p style={{ fontSize: 12, color: C.textMuted, margin: 0 }}>
                       Consultas o procedimientos fuera del plan — pendientes de confirmación de pago
                     </p>
                   </div>
                 </div>
                 {pendingServices.length > 0 && (
-                  <span style={{ background: 'rgba(59,130,246,0.1)', color: C.goldLight, fontSize: 12, fontWeight: 700, padding: '4px 12px', borderRadius: 99 }}>
+                  <span style={{ background: 'rgba(68,207,203,0.1)', color: C.goldLight, fontSize: 12, fontWeight: 700, padding: '4px 12px', borderRadius: 99 }}>
                     {pendingServices.length} pendiente{pendingServices.length !== 1 ? 's' : ''}
                   </span>
                 )}
               </div>
 
               {pendingServices.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '2rem 1rem', background: 'rgba(59,130,246,0.03)', borderRadius: 12, border: `1px dashed ${C.borderLight}` }}>
+                <div style={{ textAlign: 'center', padding: '2rem 1rem', background: 'rgba(68,207,203,0.03)', borderRadius: 12, border: `1px dashed ${C.borderLight}` }}>
                   <CheckCircle2 size={32} color="#16A34A" style={{ margin: '0 auto 10px' }} />
                   <p style={{ fontSize: 14, fontWeight: 600, color: C.textMuted, margin: 0 }}>Sin servicios adicionales pendientes</p>
                   <p style={{ fontSize: 12, color: C.textMuted, margin: '4px 0 0' }}>Cuando un paciente solicite consultas o servicios adicionales con pago en efectivo, aparecerán aquí.</p>
@@ -839,8 +839,8 @@ export const FinanzasDashboard: React.FC = () => {
                           exit={{ opacity: 0, x: 12, height: 0, marginBottom: 0, padding: 0, overflow: 'hidden' }}
                           style={{ background: C.white, borderRadius: 12, padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: 14, border: `1px solid ${C.borderLight}`, flexWrap: 'wrap' }}
                         >
-                          <div style={{ width: 38, height: 38, borderRadius: 10, background: sv.paymentMethod === 'cash' ? 'rgba(139,92,246,0.08)' : 'rgba(124,58,237,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                            {sv.paymentMethod === 'cash' ? <Banknote size={18} color={C.gold} /> : <Wallet size={18} color="#7C3AED" />}
+                          <div style={{ width: 38, height: 38, borderRadius: 10, background: sv.paymentMethod === 'cash' ? 'rgba(13,148,136,0.08)' : 'rgba(13,148,136,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                            {sv.paymentMethod === 'cash' ? <Banknote size={18} color={C.gold} /> : <Wallet size={18} color="#0D9488" />}
                           </div>
                           <div style={{ flex: 1, minWidth: 160 }}>
                             <p style={{ fontSize: 14, fontWeight: 700, color: C.text, margin: '0 0 2px' }}>{name}</p>
@@ -853,7 +853,7 @@ export const FinanzasDashboard: React.FC = () => {
                               {fmt(sv.expectedAmount)}
                               {sv.discountPct ? <span style={{ color: '#16A34A', fontWeight: 600 }}> (-{sv.discountPct}%)</span> : null}
                               {' · '}
-                              <span style={{ fontWeight: 600, color: sv.paymentMethod === 'cash' ? C.gold : '#7C3AED' }}>
+                              <span style={{ fontWeight: 600, color: sv.paymentMethod === 'cash' ? C.gold : '#0D9488' }}>
                                 {sv.paymentMethod === 'cash' ? 'Efectivo' : 'Wompi'}
                               </span>
                             </p>

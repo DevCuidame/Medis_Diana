@@ -1,4 +1,4 @@
-# Convenciones — Medis Diana
+# Convenciones — Medis OpiMed
 
 > Volver al índice: [CLAUDE.md](CLAUDE.md)
 
@@ -23,7 +23,7 @@
 
 ## Paleta de referencia en código
 
-Paleta usada por `DianaBookingCalendar.tsx` (patrón a seguir en componentes nuevos):
+Paleta usada por `OpiMedBookingCalendar.tsx` (patrón a seguir en componentes nuevos):
 
 ```ts
 const C = {

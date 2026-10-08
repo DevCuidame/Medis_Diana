@@ -45,35 +45,22 @@ export default function Navbar({ onLoginClick, onAgendarClick }: NavbarProps) {
           maxWidth: '1200px',
           transition: 'box-shadow 0.4s ease',
           boxShadow: scrolled
-            ? '0 20px 60px rgba(139,92,246,0.18)'
-            : '0 10px 40px rgba(139,92,246,0.10)',
+            ? '0 20px 60px rgba(13,148,136,0.18)'
+            : '0 10px 40px rgba(13,148,136,0.10)',
         }}
       >
         {/* Logo — solo texto. minWidth:0 permite que el flex item se achique
             en vez de forzar overflow del pill nav en pantallas angostas. */}
         <a href="#inicio" style={{ textDecoration: 'none', flexShrink: 1, minWidth: 0, display: 'flex', alignItems: 'center' }}>
-          <div style={{ lineHeight: 1.3, minWidth: 0 }}>
-            <div
-              className="navbar-logo-name"
-              style={{
-                fontSize: '0.9rem', fontWeight: 600, color: '#1e293b',
-                fontFamily: 'Cormorant Garamond, Georgia, serif',
-                whiteSpace: 'nowrap', letterSpacing: '0.02em',
-                overflow: 'hidden', textOverflow: 'ellipsis',
-              }}>
-              Dra. Diana Cristina Medina Camargo
-            </div>
-            <div
-              className="navbar-logo-sub"
-              style={{
-                fontSize: '0.58rem', color: '#8B5CF6',
-                fontFamily: 'Inter, sans-serif', whiteSpace: 'nowrap',
-                letterSpacing: '0.09em', textTransform: 'uppercase',
-                marginTop: '2px', opacity: 0.85,
-                overflow: 'hidden', textOverflow: 'ellipsis',
-              }}>
-              Especialista en Medicina Familiar y Comunitaria
-            </div>
+          <div
+            className="navbar-logo-name"
+            style={{
+              fontSize: '0.9rem', fontWeight: 600, color: '#0F172A',
+              fontFamily: 'Cormorant Garamond, Georgia, serif',
+              whiteSpace: 'nowrap', letterSpacing: '0.02em',
+              overflow: 'hidden', textOverflow: 'ellipsis',
+            }}>
+            Dra. OpiMed
           </div>
         </a>
 
@@ -86,15 +73,15 @@ export default function Navbar({ onLoginClick, onAgendarClick }: NavbarProps) {
                   href={l.href}
                   className="luxury-link font-inter"
                   style={{
-                    fontSize: '0.72rem',
-                    letterSpacing: '0.1em',
+                    fontSize: '0.74rem',
+                    letterSpacing: '0.06em',
                     textTransform: 'uppercase',
                     color: '#475569',
                     textDecoration: 'none',
                     fontWeight: 500,
                     transition: 'color 0.3s ease',
                   }}
-                  onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#8B5CF6')}
+                  onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#0D9488')}
                   onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#475569')}
                 >
                   {l.label}
@@ -111,11 +98,9 @@ export default function Navbar({ onLoginClick, onAgendarClick }: NavbarProps) {
                 border: 'none',
                 cursor: 'pointer',
                 padding: 0,
-                fontSize: '0.72rem',
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
+                fontSize: '0.8rem',
                 fontWeight: 700,
-                color: '#8B5CF6',
+                color: '#0D9488',
                 fontFamily: 'Inter, sans-serif',
                 whiteSpace: 'nowrap',
                 transition: 'opacity 0.2s',
@@ -132,17 +117,15 @@ export default function Navbar({ onLoginClick, onAgendarClick }: NavbarProps) {
         <motion.a
           href="/agendar"
           onClick={(e: React.MouseEvent) => { e.preventDefault(); if (onAgendarClick) onAgendarClick(); }}
-          whileHover={{ scale: 1.04, boxShadow: '0 8px 30px rgba(139,92,246,0.35)' }}
+          whileHover={{ scale: 1.04, boxShadow: '0 8px 30px rgba(13,148,136,0.35)' }}
           whileTap={{ scale: 0.97 }}
           className="brand-gradient desktop-cta"
           style={{
-            padding: '0.55rem 1.4rem',
+            padding: '0.65rem 1.5rem',
             borderRadius: '9999px',
             color: '#fff',
             textDecoration: 'none',
-            fontSize: '0.72rem',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
+            fontSize: '0.8rem',
             fontWeight: 600,
             fontFamily: 'Inter, sans-serif',
             flexShrink: 0,
@@ -165,7 +148,7 @@ export default function Navbar({ onLoginClick, onAgendarClick }: NavbarProps) {
               <motion.span
                 key={i}
                 animate={menuOpen ? (i === 1 ? { opacity: 0 } : i === 0 ? { rotate: 45, y: 8 } : { rotate: -45, y: -8 }) : { opacity: 1, rotate: 0, y: 0 }}
-                style={{ display: 'block', width: '22px', height: '1.5px', background: '#8B5CF6', transformOrigin: 'center' }}
+                style={{ display: 'block', width: '22px', height: '1.5px', background: '#0D9488', transformOrigin: 'center' }}
               />
             ))}
           </div>
@@ -203,14 +186,12 @@ export default function Navbar({ onLoginClick, onAgendarClick }: NavbarProps) {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
                 style={{
-                  fontSize: '0.85rem',
-                  letterSpacing: '0.12em',
-                  textTransform: 'uppercase',
+                  fontSize: '0.95rem',
                   color: '#475569',
                   textDecoration: 'none',
                   fontWeight: 500,
                   fontFamily: 'Inter, sans-serif',
-                  borderBottom: '1px solid rgba(139,92,246,0.10)',
+                  borderBottom: '1px solid rgba(13,148,136,0.10)',
                   paddingBottom: '1rem',
                 }}
               >
@@ -221,17 +202,15 @@ export default function Navbar({ onLoginClick, onAgendarClick }: NavbarProps) {
               <button
                 onClick={() => { setMenuOpen(false); onLoginClick() }}
                 style={{
-                  fontSize: '0.85rem',
-                  letterSpacing: '0.12em',
-                  textTransform: 'uppercase',
-                  color: '#8B5CF6',
+                  fontSize: '0.95rem',
+                  color: '#0D9488',
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',
                   fontWeight: 700,
                   fontFamily: 'Inter, sans-serif',
                   textAlign: 'left',
-                  borderBottom: '1px solid rgba(139,92,246,0.10)',
+                  borderBottom: '1px solid rgba(13,148,136,0.10)',
                   paddingBottom: '1rem',
                 }}
               >
@@ -247,9 +226,7 @@ export default function Navbar({ onLoginClick, onAgendarClick }: NavbarProps) {
                 borderRadius: '9999px',
                 color: '#fff',
                 textDecoration: 'none',
-                fontSize: '0.78rem',
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
+                fontSize: '0.85rem',
                 fontWeight: 600,
                 fontFamily: 'Inter, sans-serif',
                 textAlign: 'center',
@@ -271,7 +248,6 @@ export default function Navbar({ onLoginClick, onAgendarClick }: NavbarProps) {
           .navbar-header { padding: 0.75rem 0.9rem !important; }
           .navbar-header nav { padding: 0.5rem 1rem !important; gap: 0.75rem !important; }
           .navbar-logo-name { font-size: 0.72rem !important; }
-          .navbar-logo-sub { display: none !important; }
         }
       `}</style>
     </motion.header>

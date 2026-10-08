@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Migrar la landing pública de medisdiana (pole dance) al consultorio de la Dra. Diana Cristina Medina Camargo — Especialista en Medicina Familiar y Comunitaria — aplicando la nueva paleta morado→azul sobre blanco y reemplazando todo el contenido con temática médica.
+**Goal:** Migrar la landing pública de medisopimed (pole dance) al consultorio de la Dra. OpiMed — Especialista en Medicina Familiar y Comunitaria — aplicando la nueva paleta morado→azul sobre blanco y reemplazando todo el contenido con temática médica.
 
 **Architecture:** Se actualizan en orden: (1) `index.css` establece el nuevo sistema de tokens y clases utilitarias como fundamento visual; (2) `App.tsx` corrige los dos gradientes dorados que afectan toda la app; (3) los 8 componentes de landing se migran uno a uno — contenido primero, luego colores inline.
 
@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-06-10-landing-rebranding-medica-design.md`
 
-**Dev server:** `cd medisdiana-landing && pnpm dev` → abre `http://localhost:5173`
+**Dev server:** `cd medisopimed-landing && pnpm dev` → abre `http://localhost:5173`
 
 ---
 
@@ -18,23 +18,23 @@
 
 | Archivo | Tipo de cambio |
 |---|---|
-| `medisdiana-landing/src/index.css` | Reescritura completa — nuevo `@theme` + clases utilitarias |
-| `medisdiana-landing/src/App.tsx` | 2 cambios inline — barra progreso + banner sesión expirada |
-| `medisdiana-landing/src/components/Navbar.tsx` | Copy + links + colores + classNames |
-| `medisdiana-landing/src/components/Hero.tsx` | Copy + video source + colores inline |
-| `medisdiana-landing/src/components/About.tsx` | Array PILLARS + stats + copy + colores inline |
-| `medisdiana-landing/src/components/Classes.tsx` | Array CLASSES→SERVICES + id sección + gradientes tarjetas |
-| `medisdiana-landing/src/components/Instructors.tsx` | Reescritura completa — layout 2 columnas, perfil doctora |
-| `medisdiana-landing/src/components/Testimonials.tsx` | Array TESTIMONIALS + id sección + colores |
-| `medisdiana-landing/src/components/FinalCTA.tsx` | Copy + colores inline |
-| `medisdiana-landing/src/components/Footer.tsx` | Contenido + colores inline |
+| `medisopimed-landing/src/index.css` | Reescritura completa — nuevo `@theme` + clases utilitarias |
+| `medisopimed-landing/src/App.tsx` | 2 cambios inline — barra progreso + banner sesión expirada |
+| `medisopimed-landing/src/components/Navbar.tsx` | Copy + links + colores + classNames |
+| `medisopimed-landing/src/components/Hero.tsx` | Copy + video source + colores inline |
+| `medisopimed-landing/src/components/About.tsx` | Array PILLARS + stats + copy + colores inline |
+| `medisopimed-landing/src/components/Classes.tsx` | Array CLASSES→SERVICES + id sección + gradientes tarjetas |
+| `medisopimed-landing/src/components/Instructors.tsx` | Reescritura completa — layout 2 columnas, perfil doctora |
+| `medisopimed-landing/src/components/Testimonials.tsx` | Array TESTIMONIALS + id sección + colores |
+| `medisopimed-landing/src/components/FinalCTA.tsx` | Copy + colores inline |
+| `medisopimed-landing/src/components/Footer.tsx` | Contenido + colores inline |
 
 ---
 
 ## Task 1: Sistema de diseño — `index.css`
 
 **Files:**
-- Modify: `medisdiana-landing/src/index.css` (reescritura completa)
+- Modify: `medisopimed-landing/src/index.css` (reescritura completa)
 
 - [ ] **Step 1: Reemplazar `index.css` con el nuevo sistema de tokens**
 
@@ -191,7 +191,7 @@ body {
 - [ ] **Step 2: Verificar en dev server**
 
 ```bash
-cd medisdiana-landing && pnpm dev
+cd medisopimed-landing && pnpm dev
 ```
 
 Abrir `http://localhost:5173`. La barra de scroll (si visible) debe verse morada/azul. El fondo del body es blanco. No hay errores de consola por clases CSS faltantes todavía (las clases `gold-gradient`/`gold-text-gradient` seguirán en el HTML de los componentes hasta que se actualicen en las tareas siguientes — es normal que los botones queden sin estilo de gradiente por ahora).
@@ -201,7 +201,7 @@ Abrir `http://localhost:5173`. La barra de scroll (si visible) debe verse morada
 ## Task 2: `App.tsx` — barra de progreso y banner de sesión
 
 **Files:**
-- Modify: `medisdiana-landing/src/App.tsx`
+- Modify: `medisopimed-landing/src/App.tsx`
 
 - [ ] **Step 1: Actualizar `ScrollProgressBar`**
 
@@ -234,7 +234,7 @@ Con el dev server activo, recarga `http://localhost:5173`. La barra de progreso 
 ## Task 3: `Navbar.tsx`
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/Navbar.tsx`
+- Modify: `medisopimed-landing/src/components/Navbar.tsx`
 
 - [ ] **Step 1: Actualizar array `links`**
 
@@ -263,11 +263,11 @@ const links = [
 
 Reemplaza:
 ```tsx
-            medisdiana
+            medisopimed
 ```
 Con:
 ```tsx
-            Dra. Diana Medina
+            Dra. OpiMed
 ```
 
 - [ ] **Step 3: Actualizar className del logo (gold→brand)**
@@ -392,14 +392,14 @@ Texto: `Acceso artistas` → `Agendar Cita`
 
 - [ ] **Step 9: Verificar**
 
-Recargar `http://localhost:5173`. El navbar debe mostrar "Dra. Diana Medina" en gradiente morado/azul, los links actualizados, CTA pill "Agendar Cita" en degradado morado→azul, y "Iniciar Sesión" en morado. Probar mobile (< 900px) con DevTools.
+Recargar `http://localhost:5173`. El navbar debe mostrar "Dra. OpiMed" en gradiente morado/azul, los links actualizados, CTA pill "Agendar Cita" en degradado morado→azul, y "Iniciar Sesión" en morado. Probar mobile (< 900px) con DevTools.
 
 ---
 
 ## Task 4: `Hero.tsx`
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/Hero.tsx`
+- Modify: `medisopimed-landing/src/components/Hero.tsx`
 
 - [ ] **Step 1: Cambiar fuente del video**
 
@@ -513,12 +513,12 @@ Reemplaza:
 
 Reemplaza:
 ```tsx
-            En medisdiana transformamos fuerza, sensualidad y confianza en una experiencia artística
+            En medisopimed transformamos fuerza, sensualidad y confianza en una experiencia artística
             diseñada para conectar contigo misma.
 ```
 →
 ```tsx
-            La Dra. Diana Cristina Medina Camargo te ofrece atención médica familiar
+            La Dra. OpiMed te ofrece atención médica familiar
             personalizada, cercana y profesional, para ti y los tuyos.
 ```
 
@@ -599,7 +599,7 @@ Scroll al hero en `http://localhost:5173`. Los orbs deben ser morado/azul, el te
 ## Task 5: `About.tsx`
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/About.tsx`
+- Modify: `medisopimed-landing/src/components/About.tsx`
 
 - [ ] **Step 1: Reemplazar array `PILLARS`**
 
@@ -647,7 +647,7 @@ Título (dos líneas):
 
 Subtexto:
 ```tsx
-            medisdiana es un espacio donde el movimiento se convierte en ritual. Cada sesión es un
+            medisopimed es un espacio donde el movimiento se convierte en ritual. Cada sesión es un
             encuentro contigo misma — un espacio de exploración, confianza y poder que va más allá
             de la técnica. Aquí, el arte del pole dance se fusiona con la expresión femenina más pura.
 ```
@@ -784,7 +784,7 @@ Scroll a la sección "About" en la landing. Las tarjetas deben mostrar íconos m
 ## Task 6: `Classes.tsx` → Servicios Médicos
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/Classes.tsx`
+- Modify: `medisopimed-landing/src/components/Classes.tsx`
 
 - [ ] **Step 1: Reemplazar array `CLASSES`**
 
@@ -946,7 +946,7 @@ Scroll a la sección en la landing. Las 6 tarjetas deben mostrar servicios médi
 ## Task 7: `Instructors.tsx` — Perfil de la Doctora (reescritura completa)
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/Instructors.tsx` (reescritura completa del archivo)
+- Modify: `medisopimed-landing/src/components/Instructors.tsx` (reescritura completa del archivo)
 
 - [ ] **Step 1: Reemplazar el archivo completo**
 
@@ -1063,7 +1063,7 @@ export default function Instructors() {
                 lineHeight: 1.1,
               }}
             >
-              Dra. Diana Cristina Medina Camargo
+              Dra. OpiMed
             </h2>
             <p
               style={{
@@ -1137,14 +1137,14 @@ Scroll a la sección "Sobre la Doctora". Debe mostrarse el perfil de 2 columnas:
 ## Task 8: `Testimonials.tsx`
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/Testimonials.tsx`
+- Modify: `medisopimed-landing/src/components/Testimonials.tsx`
 
 - [ ] **Step 1: Reemplazar array `TESTIMONIALS`**
 
 ```tsx
 const TESTIMONIALS = [
   {
-    quote: 'La Dra. Medina escucha con atención y explica todo con claridad. Me sentí en muy buenas manos desde la primera consulta. La recomiendo ampliamente.',
+    quote: 'La Dra. OpiMed escucha con atención y explica todo con claridad. Me sentí en muy buenas manos desde la primera consulta. La recomiendo ampliamente.',
     author: 'María L.',
     role: 'Paciente · Consulta Médica General',
     stars: 5,
@@ -1331,7 +1331,7 @@ Scroll a "Testimonios". Deben verse los 5 testimonios de pacientes, estrellas mo
 ## Task 9: `FinalCTA.tsx`
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/FinalCTA.tsx`
+- Modify: `medisopimed-landing/src/components/FinalCTA.tsx`
 
 - [ ] **Step 1: Actualizar eyebrow, título y subtexto**
 
@@ -1362,7 +1362,7 @@ Subtexto:
 →
 ```tsx
           Da el primer paso hacia una atención médica cercana y de calidad.
-          La Dra. Diana Medina Camargo está lista para acompañarte.
+          La Dra. OpiMed está lista para acompañarte.
 ```
 
 - [ ] **Step 2: Actualizar CTAs**
@@ -1508,17 +1508,17 @@ Scroll al FinalCTA. Fondo oscuro con resplandores morado/azul, título "Tu salud
 ## Task 10: `Footer.tsx`
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/Footer.tsx`
+- Modify: `medisopimed-landing/src/components/Footer.tsx`
 
 - [ ] **Step 1: Actualizar nombre de marca y tagline**
 
 Reemplaza texto del logo:
 ```tsx
-              medisdiana
+              medisopimed
 ```
 →
 ```tsx
-              Dra. Diana Cristina Medina Camargo
+              Dra. OpiMed
 ```
 (ajustar `fontSize` de `2rem` a `1.3rem` para que quepa en la columna)
 
@@ -1567,7 +1567,7 @@ Reemplaza el objeto TikTok en el array `SOCIAL`:
   },
 ```
 
-Actualiza la URL de Instagram de `href: 'https://www.instagram.com/medisdiana/?hl=es-la'` a `href: '#'` (placeholder — el usuario debe poner su URL real).
+Actualiza la URL de Instagram de `href: 'https://www.instagram.com/medisopimed/?hl=es-la'` a `href: '#'` (placeholder — el usuario debe poner su URL real).
 
 - [ ] **Step 3: Actualizar columna "Estudio" → "Consultorio"**
 
@@ -1608,9 +1608,9 @@ Los hrefs de esos links: `href="#clases"` → `href="#servicios"`
 
 Reemplaza el array de datos de contacto:
 ```tsx
-                { label: 'Instagram', value: '@medisdiana' },
+                { label: 'Instagram', value: '@medisopimed' },
                 { label: 'WhatsApp', value: '+57 322 380 80 20 ' },
-                { label: 'Email', value: 'medisdianaagenda@gmail.com' },
+                { label: 'Email', value: 'medisopimedagenda@gmail.com' },
                 { label: 'Horarios', value: 'Lun – Vier · 8am – 11am y 3pm-8pm sab 8am-8pm' },
 ```
 →
@@ -1635,11 +1635,11 @@ Texto: `Acceso artistas` → `Agendar Cita`
 
 Copyright:
 ```tsx
-            © {year} medisdiana · Todos los derechos reservados
+            © {year} medisopimed · Todos los derechos reservados
 ```
 →
 ```tsx
-            © {year} Dra. Diana Cristina Medina Camargo · Todos los derechos reservados
+            © {year} Dra. OpiMed · Todos los derechos reservados
 ```
 
 Frase final:
@@ -1689,10 +1689,10 @@ Scroll al footer. Debe mostrar: nombre completo de la doctora en degradado morad
 
 - [ ] **Step 1: Grep de referencias residuales**
 
-Ejecuta desde `medisdiana-landing/`:
+Ejecuta desde `medisopimed-landing/`:
 
 ```bash
-grep -rn "medisdiana\|medisdiana\|pole dance\|pole\|instructora\|instructoras\|disciplinas" src/components/Navbar.tsx src/components/Hero.tsx src/components/About.tsx src/components/Classes.tsx src/components/Instructors.tsx src/components/Testimonials.tsx src/components/FinalCTA.tsx src/components/Footer.tsx
+grep -rn "medisopimed\|medisopimed\|pole dance\|pole\|instructora\|instructoras\|disciplinas" src/components/Navbar.tsx src/components/Hero.tsx src/components/About.tsx src/components/Classes.tsx src/components/Instructors.tsx src/components/Testimonials.tsx src/components/FinalCTA.tsx src/components/Footer.tsx
 ```
 
 No debe haber resultados. Si los hay, corregir en el archivo correspondiente.
@@ -1717,7 +1717,7 @@ No debe haber resultados.
 
 Con dev server activo (`pnpm dev`), revisar:
 
-1. Navbar fijo: "Dra. Diana Medina" visible, links médicos, CTA "Agendar Cita" morado→azul.
+1. Navbar fijo: "Dra. OpiMed" visible, links médicos, CTA "Agendar Cita" morado→azul.
 2. Hero: título "CUIDAMOS DE TI Y DE TU FAMILIA", orbs morado/azul, CTAs "Agendar Cita" y "Conoce Nuestros Servicios".
 3. About: 4 pilares médicos, stats médicos, colores morado/azul.
 4. Servicios (`#servicios`): 6 tarjetas de servicios médicos con fondos índigo oscuro.
@@ -1733,7 +1733,7 @@ Abrir DevTools → dispositivo mobile (< 900px). Probar hamburger, dropdown, tod
 - [ ] **Step 6: Verificar `build` sin errores de TypeScript**
 
 ```bash
-cd medisdiana-landing && pnpm build
+cd medisopimed-landing && pnpm build
 ```
 
 Salida esperada: `✓ built in X.XXs` sin errores.

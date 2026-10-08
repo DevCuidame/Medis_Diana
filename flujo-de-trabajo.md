@@ -1,10 +1,10 @@
-# Flujo de trabajo — Medis Diana
+# Flujo de trabajo — Medis OpiMed
 
 > Volver al índice: [CLAUDE.md](CLAUDE.md)
 
 ## Desarrollo local
 
-- El frontend vive en `medisdiana-landing/` (Vite + React + TypeScript).
+- El frontend vive en `medisopimed-landing/` (Vite + React + TypeScript).
 - El backend propio del monorepo vive en `apps/backend/`.
 - Antes de tocar cualquier pantalla, revisar las reglas de
   [convenciones.md](convenciones.md) y el mapeo de términos de
@@ -27,27 +27,27 @@ una pantalla:
 Desde 2026-09-03 el deploy es a **Cloud Run** (proyecto GCP `esmart-health`, región
 `europe-west1`) — ya no a la VM (`cuidame-app`) vía PM2/SSH. Dos servicios:
 
-- `medisdiana-backend` — Express vía `tsx` (no `tsc`+`node`, ver más abajo), conectado
-  a **Cloud SQL** (`cuidamedoc1`, base `medisdiana`) vía Cloud SQL Auth Proxy.
-- `medisdiana-frontend` — build estático de `medisdiana-landing` servido con nginx,
+- `medisopimed-backend` — Express vía `tsx` (no `tsc`+`node`, ver más abajo), conectado
+  a **Cloud SQL** (`cuidamedoc1`, base `medisopimed`) vía Cloud SQL Auth Proxy.
+- `medisopimed-frontend` — build estático de `medisopimed-landing` servido con nginx,
   que además proxea `/api/` al backend. Variable `BACKEND_URL` apunta a la URL de
   Cloud Run del backend.
 
 ```powershell
 # Desde la raíz del repo
-.\deploy-Dianamedic.ps1                  # backend + frontend
-.\deploy-Dianamedic.ps1 -Target backend
-.\deploy-Dianamedic.ps1 -Target frontend
+.\deploy-OpiMedmedic.ps1                  # backend + frontend
+.\deploy-OpiMedmedic.ps1 -Target backend
+.\deploy-OpiMedmedic.ps1 -Target frontend
 ```
 
 El backend necesita `apps/backend/cloud-run.env.yaml` (gitignored, no está en el
 repo — variables de entorno reales en formato YAML para `--env-vars-file`,
 equivalente al viejo `.env` de producción). Pedirlo aparte si hace falta recrearlo.
 
-**Migraciones de BD no corren solas en el deploy** — `deploy-Dianamedic.ps1`
+**Migraciones de BD no corren solas en el deploy** — `deploy-OpiMedmedic.ps1`
 solo construye y publica las imágenes, no ejecuta `npm run migrate`. Cualquier
 migración pendiente en `apps/backend/migrations/` debe aplicarse a mano contra
-la Cloud SQL de producción (`cuidamedoc1` / `medisdiana`) antes o justo después
+la Cloud SQL de producción (`cuidamedoc1` / `medisopimed`) antes o justo después
 de desplegar el backend. Pendiente ahora mismo: migración `028_service_commercial.sql`
 (tabla `service_commercial`, ver [arquitectura.md](arquitectura.md#servicios-comerciales-vs-operativos-2026-09-08)) —
 correrla (`npm run migrate` desde `apps/backend/` apuntando a producción, o el
@@ -76,4 +76,4 @@ fuera del alcance de esta migración.
 
 Los servicios que aparecen en el paso 0 del booking se administran en
 `doc.cuidame.tech` → **Mis Servicios** (sidebar profesional), con la cuenta de
-la Dra. Diana (`professional_id = 12`). No se crean desde este código.
+la Dra. OpiMed (`professional_id = 12`). No se crean desde este código.

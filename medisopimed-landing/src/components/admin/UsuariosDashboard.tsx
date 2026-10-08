@@ -14,21 +14,21 @@ import { UsuarioCard } from './UsuarioCard'
 
 // ── Design Tokens ───────────────────────────────────────────────────────────
 const C = {
-  gold: '#8B5CF6',
-  goldLight: '#3B82F6',
+  gold: '#0D9488',
+  goldLight: '#44CFCB',
   bg: '#FAFAFA',
-  bgPanel: '#F3F0FB',
+  bgPanel: '#F0FDFA',
   white: '#FFFFFF',
-  text: '#1B1C1C',
+  text: '#0F172A',
   textBrown: '#475569',
   textMedium: '#5E5E5E',
   textMuted: '#94A3B8',
-  border: '#DDD6FE',
-  borderLight: '#DDD6FE',
+  border: '#CCFBF1',
+  borderLight: '#CCFBF1',
 }
 
-const FONT_BODONI = '"Bodoni Moda", Georgia, serif'
-const FONT_INTER = '"Hanken Grotesk", Inter, system-ui, sans-serif'
+const FONT_DISPLAY = 'Manrope, Inter, sans-serif'
+const FONT_INTER = '"Inter", Inter, system-ui, sans-serif'
 
 function authHeaders(): HeadersInit {
   const token = localStorage.getItem('accessToken')
@@ -50,10 +50,10 @@ const SkeletonCard = () => (
     alignItems: 'center',
     gap: '0.75rem',
   }}>
-    <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#F3F0FB', animation: 'pulse 1.5s ease-in-out infinite' }} />
-    <div style={{ width: '60%', height: 16, borderRadius: 8, background: '#F3F0FB', animation: 'pulse 1.5s ease-in-out infinite' }} />
-    <div style={{ width: '80%', height: 12, borderRadius: 8, background: '#F3F0FB', animation: 'pulse 1.5s ease-in-out infinite' }} />
-    <div style={{ width: '40%', height: 24, borderRadius: 99, background: '#F3F0FB', animation: 'pulse 1.5s ease-in-out infinite' }} />
+    <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#F0FDFA', animation: 'pulse 1.5s ease-in-out infinite' }} />
+    <div style={{ width: '60%', height: 16, borderRadius: 8, background: '#F0FDFA', animation: 'pulse 1.5s ease-in-out infinite' }} />
+    <div style={{ width: '80%', height: 12, borderRadius: 8, background: '#F0FDFA', animation: 'pulse 1.5s ease-in-out infinite' }} />
+    <div style={{ width: '40%', height: 24, borderRadius: 99, background: '#F0FDFA', animation: 'pulse 1.5s ease-in-out infinite' }} />
   </div>
 )
 
@@ -61,7 +61,7 @@ const SkeletonCard = () => (
 const BigDoctorStickman = () => (
   <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', padding: '1rem 2rem', background: C.white, borderRadius: '1.25rem', border: `1px solid ${C.borderLight}`, marginBottom: '2rem', boxShadow: '0 4px 16px rgba(0,0,0,0.03)' }}>
     <div style={{ flex: 1 }}>
-      <div style={{ fontFamily: FONT_BODONI, fontSize: '1.6rem', color: C.gold, fontWeight: 700, marginBottom: '0.25rem' }}>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: '1.6rem', color: C.gold, fontWeight: 700, marginBottom: '0.25rem' }}>
         ¡Hola de nuevo! 👋
       </div>
       <div style={{ fontSize: '1rem', color: C.textBrown }}>
@@ -70,11 +70,11 @@ const BigDoctorStickman = () => (
     </div>
     <div style={{ flexShrink: 0 }}>
       {/* Big Waving Doctor SVG Premium */}
-      <svg viewBox="0 0 110 190" width="80" height="135" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 8px 16px rgba(139,92,246,0.15))' }}>
+      <svg viewBox="0 0 110 190" width="80" height="135" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 8px 16px rgba(13,148,136,0.15))' }}>
         <defs>
           <linearGradient id="coatGrad" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="100%" stopColor="#f3f0fb" />
+            <stop offset="100%" stopColor="#F0FDFA" />
           </linearGradient>
           <linearGradient id="skinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#ffffff" />
@@ -83,31 +83,31 @@ const BigDoctorStickman = () => (
         </defs>
 
         {/* Head */}
-        <circle cx="55" cy="22" r="16" fill="url(#skinGrad)" stroke="#8B5CF6" strokeWidth="2.5"/>
+        <circle cx="55" cy="22" r="16" fill="url(#skinGrad)" stroke="#0D9488" strokeWidth="2.5"/>
         {/* Hair */}
-        <path d="M 42,20 Q 55,5 68,20" fill="none" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round"/>
-        <path d="M 42,20 Q 30,12 36,25" fill="none" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round"/>
+        <path d="M 42,20 Q 55,5 68,20" fill="none" stroke="#0D9488" strokeWidth="3" strokeLinecap="round"/>
+        <path d="M 42,20 Q 30,12 36,25" fill="none" stroke="#0D9488" strokeWidth="3" strokeLinecap="round"/>
         {/* Blush */}
         <circle cx="47" cy="23.5" r="2.5" fill="#f43f5e" opacity="0.3"/>
         <circle cx="63" cy="23.5" r="2.5" fill="#f43f5e" opacity="0.3"/>
         {/* Eyes */}
-        <circle cx="49" cy="19" r="2" fill="#8B5CF6"/>
-        <circle cx="61" cy="19" r="2" fill="#8B5CF6"/>
+        <circle cx="49" cy="19" r="2" fill="#0D9488"/>
+        <circle cx="61" cy="19" r="2" fill="#0D9488"/>
         {/* Smile */}
-        <path d="M51,26 Q55,30 59,26" stroke="#8B5CF6" strokeWidth="2" fill="none" strokeLinecap="round"/>
+        <path d="M51,26 Q55,30 59,26" stroke="#0D9488" strokeWidth="2" fill="none" strokeLinecap="round"/>
 
         {/* Doctor coat */}
-        <path d="M 33 40 L 77 40 L 75 98 C 75 102 35 102 35 98 Z" fill="url(#coatGrad)" stroke="#8B5CF6" strokeWidth="2"/>
+        <path d="M 33 40 L 77 40 L 75 98 C 75 102 35 102 35 98 Z" fill="url(#coatGrad)" stroke="#0D9488" strokeWidth="2"/>
         {/* Lapels */}
-        <path d="M 55 40 L 45 55 L 55 65" fill="#EEF2FF" stroke="#8B5CF6" strokeWidth="1.5" strokeLinejoin="round"/>
-        <path d="M 55 40 L 65 55 L 55 65" fill="#EEF2FF" stroke="#8B5CF6" strokeWidth="1.5" strokeLinejoin="round"/>
+        <path d="M 55 40 L 45 55 L 55 65" fill="#EEF2FF" stroke="#0D9488" strokeWidth="1.5" strokeLinejoin="round"/>
+        <path d="M 55 40 L 65 55 L 55 65" fill="#EEF2FF" stroke="#0D9488" strokeWidth="1.5" strokeLinejoin="round"/>
         {/* Cross */}
-        <rect x="52" y="72" width="6" height="16" rx="1.5" fill="#8B5CF6"/>
-        <rect x="47" y="77" width="16" height="6" rx="1.5" fill="#8B5CF6"/>
+        <rect x="52" y="72" width="6" height="16" rx="1.5" fill="#0D9488"/>
+        <rect x="47" y="77" width="16" height="6" rx="1.5" fill="#0D9488"/>
 
         {/* Left arm (static) */}
-        <path d="M 35 52 Q 25 65 14 78" fill="none" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round"/>
-        <circle cx="12" cy="80" r="4" fill="white" stroke="#8B5CF6" strokeWidth="2"/>
+        <path d="M 35 52 Q 25 65 14 78" fill="none" stroke="#0D9488" strokeWidth="3" strokeLinecap="round"/>
+        <circle cx="12" cy="80" r="4" fill="white" stroke="#0D9488" strokeWidth="2"/>
 
         {/* Right arm (WAVING) */}
         <motion.g
@@ -115,21 +115,21 @@ const BigDoctorStickman = () => (
           animate={{ rotate: [-25, 20, -25] }}
           transition={{ duration: 0.9, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <path d="M 75 52 Q 85 40 96 28" fill="none" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round"/>
-          <circle cx="98" cy="26" r="4" fill="white" stroke="#8B5CF6" strokeWidth="2"/>
+          <path d="M 75 52 Q 85 40 96 28" fill="none" stroke="#0D9488" strokeWidth="3" strokeLinecap="round"/>
+          <circle cx="98" cy="26" r="4" fill="white" stroke="#0D9488" strokeWidth="2"/>
         </motion.g>
 
         {/* Stethoscope */}
-        <path d="M 44 52 Q 34 72 46 86 Q 58 100 68 82" stroke="#3B82F6" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
-        <circle cx="68" cy="80" r="4.5" fill="#3B82F6"/>
+        <path d="M 44 52 Q 34 72 46 86 Q 58 100 68 82" stroke="#44CFCB" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+        <circle cx="68" cy="80" r="4.5" fill="#44CFCB"/>
         <circle cx="68" cy="80" r="2" fill="#fff"/>
 
         {/* Legs */}
-        <path d="M 46 98 Q 42 120 38 148" fill="none" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round"/>
-        <path d="M 64 98 Q 68 120 72 148" fill="none" stroke="#8B5CF6" strokeWidth="3" strokeLinecap="round"/>
+        <path d="M 46 98 Q 42 120 38 148" fill="none" stroke="#0D9488" strokeWidth="3" strokeLinecap="round"/>
+        <path d="M 64 98 Q 68 120 72 148" fill="none" stroke="#0D9488" strokeWidth="3" strokeLinecap="round"/>
         {/* Shoes */}
-        <path d="M 38 148 C 30 148 26 153 38 153 Z" fill="#8B5CF6"/>
-        <path d="M 72 148 C 80 148 84 153 72 153 Z" fill="#8B5CF6"/>
+        <path d="M 38 148 C 30 148 26 153 38 153 Z" fill="#0D9488"/>
+        <path d="M 72 148 C 80 148 84 153 72 153 Z" fill="#0D9488"/>
       </svg>
     </div>
   </div>
@@ -174,7 +174,7 @@ const StatCard: React.FC<StatCardProps> = ({ icon: Icon, label, value, iconBg, i
       </div>
       <div>
         <p style={{ fontSize: '0.78rem', fontWeight: 600, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.09em', marginBottom: '0.3rem' }}>{label}</p>
-        <p style={{ fontFamily: FONT_BODONI, fontSize: '2.2rem', fontWeight: 700, color: C.text, lineHeight: 1 }}>{value}</p>
+        <p style={{ fontFamily: FONT_DISPLAY, fontSize: '2.2rem', fontWeight: 700, color: C.text, lineHeight: 1 }}>{value}</p>
       </div>
     </div>
   )
@@ -200,7 +200,7 @@ const FilterPill: React.FC<FilterPillProps> = ({ label, active, onClick }) => (
       cursor: 'pointer',
       whiteSpace: 'nowrap',
       transition: 'all 0.2s ease',
-      boxShadow: active ? `0 4px 12px rgba(139,92,246,0.25)` : '0 1px 4px rgba(0,0,0,0.04)',
+      boxShadow: active ? `0 4px 12px rgba(13,148,136,0.25)` : '0 1px 4px rgba(0,0,0,0.04)',
       letterSpacing: '0.03em',
     }}
   >
@@ -378,8 +378,8 @@ export const UsuariosDashboard: React.FC = () => {
         @keyframes toastOut { to{opacity:0;transform:translateY(16px)} }
         ::-webkit-scrollbar{width:6px;height:6px}
         ::-webkit-scrollbar-track{background:transparent}
-        ::-webkit-scrollbar-thumb{background:rgba(139,92,246,0.2);border-radius:99px}
-        ::-webkit-scrollbar-thumb:hover{background:rgba(139,92,246,0.35)}
+        ::-webkit-scrollbar-thumb{background:rgba(13,148,136,0.2);border-radius:99px}
+        ::-webkit-scrollbar-thumb:hover{background:rgba(13,148,136,0.35)}
       `}</style>
 
       {/* Modals */}
@@ -410,7 +410,7 @@ export const UsuariosDashboard: React.FC = () => {
             transition={{ type: 'spring', stiffness: 350, damping: 28 }}
             style={{
               position: 'fixed', bottom: 28, right: 28, zIndex: 999,
-              background: toast.type === 'error' ? '#2A1B1B' : '#1B1C1C',
+              background: toast.type === 'error' ? '#2A1B1B' : '#0F172A',
               color: C.white,
               padding: '14px 22px', borderRadius: 14,
               fontFamily: FONT_INTER, fontSize: 13, fontWeight: 500,
@@ -459,7 +459,7 @@ export const UsuariosDashboard: React.FC = () => {
                 {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
               <div>
-                <h2 style={{ fontFamily: FONT_BODONI, fontSize: 22, fontWeight: 700, color: C.text, margin: 0, lineHeight: 1 }}>Gestión de Usuarios</h2>
+                <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, fontWeight: 700, color: C.text, margin: 0, lineHeight: 1 }}>Gestión de Usuarios</h2>
                 <p style={{ fontSize: 12, color: C.textMuted, margin: 0, marginTop: 3, fontWeight: 500 }}>Administra roles, accesos y perfiles</p>
               </div>
             </div>
@@ -477,14 +477,14 @@ export const UsuariosDashboard: React.FC = () => {
               >
                 <Bell size={17} />
               </button>
-              <div style={{ width: 40, height: 40, borderRadius: 12, border: `2.5px solid ${C.gold}`, overflow: 'hidden', cursor: 'pointer', flexShrink: 0, boxShadow: '0 4px 10px rgba(139,92,246,0.2)' }}>
+              <div style={{ width: 40, height: 40, borderRadius: '50%', border: `2.5px solid ${C.gold}`, overflow: 'hidden', cursor: 'pointer', flexShrink: 0, boxShadow: '0 4px 10px rgba(13,148,136,0.2)' }}>
                 <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100&h=100" alt="Admin" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
             </div>
           </header>
 
           {/* SCROLL CONTENT */}
-          <main style={{ flex: 1, overflowY: 'auto', padding: '2rem 1.75rem', background: 'radial-gradient(circle at top right, rgba(139,92,246,0.03), transparent 500px)' }}>
+          <main style={{ flex: 1, overflowY: 'auto', padding: '2rem 1.75rem', background: 'radial-gradient(circle at top right, rgba(13,148,136,0.03), transparent 500px)' }}>
             <div style={{ maxWidth: '100%', margin: '0 auto' }}>
 
               {/* ── Big Banner ── */}
@@ -497,7 +497,7 @@ export const UsuariosDashboard: React.FC = () => {
                 transition={{ duration: 0.4 }}
                 style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}
               >
-                <StatCard icon={Users} label="Total de Usuarios" value={stats.total} iconBg="rgba(139,92,246,0.1)" iconColor={C.gold} accentColor="rgba(139,92,246,0.2)" />
+                <StatCard icon={Users} label="Total de Usuarios" value={stats.total} iconBg="rgba(13,148,136,0.1)" iconColor={C.gold} accentColor="rgba(13,148,136,0.2)" />
                 <StatCard icon={UserCheck} label="Usuarios Activos" value={stats.activos} iconBg="rgba(34,197,94,0.1)" iconColor="#16A34A" accentColor="rgba(34,197,94,0.2)" />
                 <StatCard icon={UserMinus} label="Usuarios Inactivos" value={stats.inactivos} iconBg="rgba(244,63,94,0.08)" iconColor="#E11D48" accentColor="rgba(244,63,94,0.15)" />
               </motion.div>
@@ -547,7 +547,7 @@ export const UsuariosDashboard: React.FC = () => {
                         fontSize: 14, color: C.text, outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s',
                         fontFamily: FONT_INTER, boxSizing: 'border-box',
                       }}
-                      onFocus={e => { e.target.style.borderColor = C.goldLight; e.target.style.boxShadow = `0 0 0 3px rgba(59,130,246,0.12)` }}
+                      onFocus={e => { e.target.style.borderColor = C.goldLight; e.target.style.boxShadow = `0 0 0 3px rgba(68,207,203,0.12)` }}
                       onBlur={e => { e.target.style.borderColor = C.borderLight; e.target.style.boxShadow = 'none' }}
                     />
                   </div>
@@ -558,7 +558,7 @@ export const UsuariosDashboard: React.FC = () => {
                     style={{
                       display: 'flex', alignItems: 'center', gap: 8,
                       padding: '10px 18px', borderRadius: 12, border: `1px solid ${showFilterPanel ? C.goldLight : C.borderLight}`,
-                      background: showFilterPanel ? 'rgba(59,130,246,0.08)' : C.bgPanel,
+                      background: showFilterPanel ? 'rgba(68,207,203,0.08)' : C.bgPanel,
                       color: showFilterPanel ? C.gold : C.textBrown,
                       fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap',
                     }}
@@ -573,7 +573,7 @@ export const UsuariosDashboard: React.FC = () => {
                   {/* CTA */}
                   <button
                     onClick={() => setShowModal(true)}
-                    style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, border: 'none', borderRadius: 12, fontSize: 13, fontWeight: 700, letterSpacing: '0.06em', cursor: 'pointer', boxShadow: `0 4px 14px rgba(139,92,246,0.28)`, whiteSpace: 'nowrap', transition: 'all 0.2s' }}
+                    style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 22px', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, border: 'none', borderRadius: 9999, fontSize: 13, fontWeight: 700, letterSpacing: '0.06em', cursor: 'pointer', boxShadow: `0 4px 14px rgba(13,148,136,0.28)`, whiteSpace: 'nowrap', transition: 'all 0.2s' }}
                     onMouseEnter={e => e.currentTarget.style.filter = 'brightness(1.1)'}
                     onMouseLeave={e => e.currentTarget.style.filter = 'none'}
                   >
@@ -642,7 +642,7 @@ export const UsuariosDashboard: React.FC = () => {
                     onClick={() => setShowModal(true)}
                     style={{
                       minHeight: 260,
-                      background: 'linear-gradient(135deg, rgba(139,92,246,0.02), rgba(59,130,246,0.03))',
+                      background: 'linear-gradient(135deg, rgba(13,148,136,0.02), rgba(68,207,203,0.03))',
                       borderRadius: '1.25rem',
                       border: `2px dashed ${C.borderLight}`,
                       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -653,22 +653,22 @@ export const UsuariosDashboard: React.FC = () => {
                     }}
                     onMouseEnter={e => {
                       e.currentTarget.style.borderColor = C.goldLight
-                      e.currentTarget.style.background = 'rgba(139,92,246,0.04)'
+                      e.currentTarget.style.background = 'rgba(13,148,136,0.04)'
                       e.currentTarget.style.transform = 'translateY(-4px)'
-                      e.currentTarget.style.boxShadow = '0 12px 36px rgba(139,92,246,0.1)'
+                      e.currentTarget.style.boxShadow = '0 12px 36px rgba(13,148,136,0.1)'
                     }}
                     onMouseLeave={e => {
                       e.currentTarget.style.borderColor = C.borderLight
-                      e.currentTarget.style.background = 'linear-gradient(135deg, rgba(139,92,246,0.02), rgba(59,130,246,0.03))'
+                      e.currentTarget.style.background = 'linear-gradient(135deg, rgba(13,148,136,0.02), rgba(68,207,203,0.03))'
                       e.currentTarget.style.transform = 'translateY(0)'
                       e.currentTarget.style.boxShadow = 'none'
                     }}
                   >
-                    <div style={{ width: 52, height: 52, borderRadius: '50%', background: '#F0EDE8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: 52, height: 52, borderRadius: '1rem', background: '#F0EDE8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <Plus size={24} color={C.textMuted} />
                     </div>
-                    <span style={{ fontFamily: FONT_BODONI, fontSize: '1.1rem', color: C.textBrown }}>Incorporar</span>
-                    <span style={{ fontFamily: FONT_BODONI, fontSize: '1.1rem', color: C.textBrown, marginTop: -8 }}>Usuario</span>
+                    <span style={{ fontFamily: FONT_DISPLAY, fontSize: '1.1rem', color: C.textBrown }}>Incorporar</span>
+                    <span style={{ fontFamily: FONT_DISPLAY, fontSize: '1.1rem', color: C.textBrown, marginTop: -8 }}>Usuario</span>
                   </button>
                 )}
 
@@ -697,14 +697,14 @@ export const UsuariosDashboard: React.FC = () => {
               {/* Empty state */}
               {!loading && !error && filteredUsers.length === 0 && users.length > 0 && (
                 <div style={{ padding: '4rem 0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: C.textMuted, gap: '1rem' }}>
-                  <div style={{ width: 72, height: 72, borderRadius: '50%', background: '#F0EDE8', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.5rem' }}>
+                  <div style={{ width: 72, height: 72, borderRadius: '1.2rem', background: '#F0EDE8', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.5rem' }}>
                     <Search size={32} color={C.textMuted} />
                   </div>
-                  <p style={{ fontFamily: FONT_BODONI, fontSize: '1.4rem', color: C.textBrown }}>Sin resultados</p>
+                  <p style={{ fontFamily: FONT_DISPLAY, fontSize: '1.4rem', color: C.textBrown }}>Sin resultados</p>
                   <p style={{ fontSize: '0.95rem', color: C.textMuted }}>No hay usuarios que coincidan con tus filtros.</p>
                   <button
                     onClick={() => { setSearch(''); setRoleFilter('Todos'); setStatusFilter('Todos') }}
-                    style={{ marginTop: '0.5rem', padding: '10px 24px', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', boxShadow: `0 4px 14px rgba(139,92,246,0.28)` }}
+                    style={{ marginTop: '0.5rem', padding: '10px 24px', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, border: 'none', borderRadius: 9999, fontSize: 13, fontWeight: 700, cursor: 'pointer', boxShadow: `0 4px 14px rgba(13,148,136,0.28)` }}
                   >
                     Limpiar filtros
                   </button>
@@ -714,7 +714,7 @@ export const UsuariosDashboard: React.FC = () => {
               {/* Footer */}
               <div style={{ borderTop: `1px solid ${C.borderLight}`, paddingTop: 20, paddingBottom: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
                 <p style={{ fontSize: 11, fontWeight: 600, color: C.textMuted, letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0 }}>
-                  © 2026 Medis · Todos los derechos reservados
+                  © 2026 OpiMed · Todos los derechos reservados
                 </p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <div style={{ width: 8, height: 8, borderRadius: '50%', background: error ? '#F43F5E' : loading ? '#F59E0B' : '#22C55E', boxShadow: `0 0 0 3px ${error ? 'rgba(244,63,94,0.15)' : loading ? 'rgba(245,158,11,0.15)' : 'rgba(34,197,94,0.15)'}` }} />

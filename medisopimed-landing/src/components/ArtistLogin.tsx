@@ -40,18 +40,18 @@ async function redirectToCuidameDocSSO(email: string, password: string): Promise
 
 // ─── Design Tokens ────────────────────────────────────────────────
 const C = {
-  brand: '#8B5CF6',
-  brandSecondary: '#3B82F6',
-  brandAccent: '#38BDF8',
+  brand: '#0D9488',
+  brandSecondary: '#44CFCB',
+  brandAccent: '#44CFCB',
   bgMain: '#FFFFFF',
-  bgPanel: '#F3F0FB',
+  bgPanel: '#F0FDFA',
   white: '#FFFFFF',
-  textPrimary: '#1E293B',
+  textPrimary: '#0F172A',
   textMedium: '#475569',
-  textBrand: '#6D28D9',
+  textBrand: '#0D9488',
   textMuted: '#94A3B8',
-  border: '#DDD6FE',
-  footer: '#EEF2FF',
+  border: '#CCFBF1',
+  footer: '#E6FFFA',
 }
 
 // ─── Types ────────────────────────────────────────────────────────
@@ -86,7 +86,7 @@ export default function ArtistLogin({
     setIsSubmitting(true)
 
     try {
-      // ── 1. Intento contra el backend propio de Diana ────────────
+      // ── 1. Intento contra el backend propio de OpiMed ────────────
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -104,9 +104,9 @@ export default function ArtistLogin({
       const jwtPayload = JSON.parse(atob(data.data.tokens.accessToken.split('.')[1]))
 
       // El agendamiento y el portal profesional real viven en CuidameDoc (ver
-      // decisiones.md "Agendamiento delegado a CuidameDoc"). Diana también tiene
+      // decisiones.md "Agendamiento delegado a CuidameDoc"). OpiMed también tiene
       // cuenta con rol PROFESSIONAL en el backend propio (legado de la migración
-      // desde medisdiana), así que este login SIEMPRE tiene éxito aquí y nunca
+      // desde medisopimed), así que este login SIEMPRE tiene éxito aquí y nunca
       // caía al fallback de abajo — por eso terminaba en el panel interno vacío
       // en vez de en CuidameDoc. Se fuerza el mismo handoff SSO también en el
       // camino feliz para cualquier PROFESSIONAL.
@@ -122,7 +122,7 @@ export default function ArtistLogin({
       if (onLoginSuccess) onLoginSuccess(jwtPayload.role)
       else alert('¡Bienvenido/a de vuelta!')
 
-    } catch (_dianaErr) {
+    } catch (_opimedErr) {
       // ── 2. Fallback: intentar contra CuidameDoc ─────────────────
       const redirected = await redirectToCuidameDocSSO(email, password)
       if (!redirected) alert('Credenciales inválidas. Verifica tu correo y contraseña.')
@@ -166,7 +166,7 @@ export default function ArtistLogin({
   }
 
   return (
-    <div style={{ minHeight: '100vh', width: '100%', background: C.bgMain, display: 'flex', flexDirection: 'column', fontFamily: '"Hanken Grotesk", Inter, sans-serif' }}>
+    <div style={{ minHeight: '100vh', width: '100%', background: C.bgMain, display: 'flex', flexDirection: 'column', fontFamily: 'Inter, sans-serif' }}>
 
       {/* ─── Sticky Header ───────────────────────────────────────── */}
       <motion.header
@@ -175,15 +175,16 @@ export default function ArtistLogin({
         transition={{ duration: 0.5, ease: EASE }}
         style={{ width: '100%', background: 'rgba(255,255,255,0.92)', borderBottom: `1px solid ${C.border}`, backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', position: 'sticky', top: 0, zIndex: 100 }}
       >
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', height: 100, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div className="login-header-inner" style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', height: 100, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
           {/* Left: back + logo */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 20, minWidth: 0 }}>
             <motion.button
               onClick={onBackToHome}
               whileHover={{ x: -3 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2, ease: EASE }}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, color: C.brand, fontSize: 12, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', padding: 0 }}
+              className="login-back-btn"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, color: C.brand, fontSize: 12, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', padding: 0, flexShrink: 0 }}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.brand} strokeWidth="2">
                 <path d="M19 12H5M12 19l-7-7 7-7" />
@@ -191,18 +192,19 @@ export default function ArtistLogin({
               Volver
             </motion.button>
 
-            <span style={{ width: 1, height: 24, background: C.border }} />
+            <span className="login-back-divider" style={{ width: 1, height: 24, background: C.border, flexShrink: 0 }} />
 
             <img
-              src="/Logo_Medis.jpeg"
-              alt="Dra. Diana Cristina Medina Camargo"
+              src="/logo-opimed.svg"
+              alt="Dra. OpiMed"
               onClick={onBackToHome}
-              style={{ height: 90, width: 'auto', objectFit: 'contain', cursor: 'pointer', display: 'block' }}
+              className="login-logo"
+              style={{ height: 90, width: 'auto', maxWidth: '100%', objectFit: 'contain', cursor: 'pointer', display: 'block' }}
             />
           </div>
 
           {/* Right: nav links */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+          <div className="login-nav-links" style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
             {[
               { label: 'Inicio', hash: '#inicio' },
               { label: 'Sobre la Doctora', hash: '#sobre-la-doctora' },
@@ -232,9 +234,10 @@ export default function ArtistLogin({
           {/* CTA */}
           <motion.button
             onClick={onBackToHome}
-            whileHover={{ scale: 1.03, boxShadow: `0 8px 24px rgba(139,92,246,0.35)` }}
+            whileHover={{ scale: 1.03, boxShadow: `0 8px 24px rgba(13,148,136,0.35)` }}
             whileTap={{ scale: 0.97 }}
-            style={{ background: `linear-gradient(135deg, ${C.brand}, ${C.brandSecondary})`, color: C.white, border: 'none', padding: '12px 28px', fontSize: 12, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: 6, transition: 'box-shadow 0.25s ease' }}
+            className="login-header-cta"
+            style={{ background: `linear-gradient(135deg, ${C.brand}, ${C.brandSecondary})`, color: C.white, border: 'none', padding: '12px 28px', fontSize: 12, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: 6, transition: 'box-shadow 0.25s ease', flexShrink: 0 }}
           >
             Agendar Cita
           </motion.button>
@@ -242,17 +245,18 @@ export default function ArtistLogin({
       </motion.header>
 
       {/* ─── Hero Background Section ──────────────────────────────── */}
-      <div style={{ flex: 1, background: `linear-gradient(146deg, ${C.brand} 0%, ${C.brandSecondary} 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px 24px' }}>
+      <div className="login-hero-wrap" style={{ flex: 1, background: `linear-gradient(146deg, ${C.brand} 0%, ${C.brandSecondary} 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px 24px' }}>
 
         {/* ─── Main Card ─────────────────────────────────────────── */}
         <motion.div
           initial={{ y: 32, opacity: 0, scale: 0.98 }}
           animate={{ y: 0, opacity: 1, scale: 1 }}
           transition={{ duration: 0.75, ease: EASE }}
+          className="login-card"
           style={{ width: '100%', maxWidth: 1024, minHeight: 600, background: C.white, borderRadius: 12, boxShadow: '0px 25px 50px -12px rgba(0,0,0,0.25)', display: 'flex', overflow: 'hidden' }}
         >
           {/* ── Left: Form Panel ─────────────────────────────────── */}
-          <div style={{ width: 450, flexShrink: 0, padding: '64px', background: C.white, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <div className="login-form-panel" style={{ width: 450, flexShrink: 0, padding: '64px', background: C.white, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
 
             {/* Title */}
             <motion.div
@@ -261,7 +265,7 @@ export default function ArtistLogin({
               transition={{ duration: 0.6, delay: 0.25, ease: EASE }}
               style={{ marginBottom: 32 }}
             >
-              <h1 style={{ fontSize: 28, fontWeight: 700, color: C.textPrimary, lineHeight: 1.2, margin: '0 0 8px 0', letterSpacing: '-0.01em' }}>
+              <h1 style={{ fontSize: 28, fontWeight: 800, fontFamily: 'Manrope, Inter, sans-serif', color: C.textPrimary, lineHeight: 1.2, margin: '0 0 8px 0', letterSpacing: '-0.01em' }}>
                 {mode === 'register' ? 'Crea tu Cuenta' : 'Iniciar Sesión'}
               </h1>
               <p style={{ fontSize: 15, color: C.textMedium, fontWeight: 400, lineHeight: 1.5, margin: 0 }}>
@@ -294,7 +298,7 @@ export default function ArtistLogin({
                       onFocus={() => setFirstNameFocused(true)}
                       onBlur={() => setFirstNameFocused(false)}
                       placeholder="Tu nombre"
-                      style={{ width: '100%', padding: '17px 16px', border: `1.5px solid ${firstNameFocused ? C.brand : C.border}`, borderRadius: 6, fontSize: 15, fontFamily: '"Hanken Grotesk", Inter, sans-serif', fontWeight: 400, color: C.textPrimary, background: 'transparent', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s ease' }}
+                      style={{ width: '100%', padding: '17px 16px', border: `1.5px solid ${firstNameFocused ? C.brand : C.border}`, borderRadius: 6, fontSize: 15, fontFamily: 'Inter, sans-serif', fontWeight: 400, color: C.textPrimary, background: 'transparent', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s ease' }}
                     />
                   </motion.div>
 
@@ -317,7 +321,7 @@ export default function ArtistLogin({
                       onFocus={() => setLastNameFocused(true)}
                       onBlur={() => setLastNameFocused(false)}
                       placeholder="Tu apellido"
-                      style={{ width: '100%', padding: '17px 16px', border: `1.5px solid ${lastNameFocused ? C.brand : C.border}`, borderRadius: 6, fontSize: 15, fontFamily: '"Hanken Grotesk", Inter, sans-serif', fontWeight: 400, color: C.textPrimary, background: 'transparent', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s ease' }}
+                      style={{ width: '100%', padding: '17px 16px', border: `1.5px solid ${lastNameFocused ? C.brand : C.border}`, borderRadius: 6, fontSize: 15, fontFamily: 'Inter, sans-serif', fontWeight: 400, color: C.textPrimary, background: 'transparent', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s ease' }}
                     />
                   </motion.div>
 
@@ -340,7 +344,7 @@ export default function ArtistLogin({
                       onFocus={() => setPhoneFocused(true)}
                       onBlur={() => setPhoneFocused(false)}
                       placeholder="300 000 0000"
-                      style={{ width: '100%', padding: '17px 16px', border: `1.5px solid ${phoneFocused ? C.brand : C.border}`, borderRadius: 6, fontSize: 15, fontFamily: '"Hanken Grotesk", Inter, sans-serif', fontWeight: 400, color: C.textPrimary, background: 'transparent', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s ease' }}
+                      style={{ width: '100%', padding: '17px 16px', border: `1.5px solid ${phoneFocused ? C.brand : C.border}`, borderRadius: 6, fontSize: 15, fontFamily: 'Inter, sans-serif', fontWeight: 400, color: C.textPrimary, background: 'transparent', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s ease' }}
                     />
                   </motion.div>
                 </>
@@ -365,7 +369,7 @@ export default function ArtistLogin({
                   onFocus={() => setEmailFocused(true)}
                   onBlur={() => setEmailFocused(false)}
                   placeholder="correo@ejemplo.com"
-                  style={{ width: '100%', padding: '17px 16px', border: `1.5px solid ${emailFocused ? C.brand : C.border}`, borderRadius: 6, fontSize: 15, fontFamily: '"Hanken Grotesk", Inter, sans-serif', fontWeight: 400, color: C.textPrimary, background: 'transparent', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s ease' }}
+                  style={{ width: '100%', padding: '17px 16px', border: `1.5px solid ${emailFocused ? C.brand : C.border}`, borderRadius: 6, fontSize: 15, fontFamily: 'Inter, sans-serif', fontWeight: 400, color: C.textPrimary, background: 'transparent', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s ease' }}
                 />
               </motion.div>
 
@@ -390,7 +394,7 @@ export default function ArtistLogin({
                     onBlur={() => setPassFocused(false)}
                     placeholder="••••••••"
                     autoComplete="current-password"
-                    style={{ width: '100%', padding: '17px 56px 17px 16px', border: `1.5px solid ${passFocused ? C.brand : C.border}`, borderRadius: 6, fontSize: 15, fontFamily: '"Hanken Grotesk", Inter, sans-serif', fontWeight: 400, color: C.textPrimary, background: 'transparent', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s ease' }}
+                    style={{ width: '100%', padding: '17px 56px 17px 16px', border: `1.5px solid ${passFocused ? C.brand : C.border}`, borderRadius: 6, fontSize: 15, fontFamily: 'Inter, sans-serif', fontWeight: 400, color: C.textPrimary, background: 'transparent', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s ease' }}
                   />
                   <button
                     type="button"
@@ -420,9 +424,9 @@ export default function ArtistLogin({
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.55, ease: EASE }}
-                whileHover={{ scale: 1.02, boxShadow: '0px 14px 20px -4px rgba(139,92,246,0.40)' }}
+                whileHover={{ scale: 1.02, boxShadow: '0px 14px 20px -4px rgba(13,148,136,0.40)' }}
                 whileTap={{ scale: 0.97 }}
-                style={{ width: '100%', padding: '20px', background: `linear-gradient(135deg, ${C.brand}, ${C.brandSecondary})`, color: C.white, border: 'none', borderRadius: 6, fontSize: 13, fontWeight: 600, fontFamily: '"Hanken Grotesk", Inter, sans-serif', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: isSubmitting ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0px 10px 15px -3px rgba(139,92,246,0.25)', transition: 'box-shadow 0.25s ease' }}
+                style={{ width: '100%', padding: '20px', background: `linear-gradient(135deg, ${C.brand}, ${C.brandSecondary})`, color: C.white, border: 'none', borderRadius: 6, fontSize: 13, fontWeight: 600, fontFamily: 'Inter, sans-serif', letterSpacing: '0.1em', textTransform: 'uppercase', cursor: isSubmitting ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0px 10px 15px -3px rgba(13,148,136,0.25)', transition: 'box-shadow 0.25s ease' }}
               >
                 {isSubmitting ? (
                   <div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
@@ -462,11 +466,11 @@ export default function ArtistLogin({
           </div>
 
           {/* ── Right: Brand Panel ────────────────────────────────── */}
-          <div style={{ flex: 1, background: C.bgPanel, padding: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+          <div className="login-brand-panel" style={{ flex: 1, background: C.bgPanel, padding: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
             {/* Ambient glows */}
             <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(131deg, ${C.brand} 0%, ${C.brandSecondary} 100%)`, opacity: 0.05, pointerEvents: 'none' }} />
-            <div style={{ position: 'absolute', width: 256, height: 256, right: -128, top: -128, background: 'rgba(139,92,246,0.15)', filter: 'blur(64px)', borderRadius: '50%', pointerEvents: 'none' }} />
-            <div style={{ position: 'absolute', width: 256, height: 256, left: -128, bottom: -128, background: 'rgba(59,130,246,0.12)', filter: 'blur(64px)', borderRadius: '50%', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', width: 256, height: 256, right: -128, top: -128, background: 'rgba(68,207,203,0.15)', filter: 'blur(64px)', borderRadius: '50%', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', width: 256, height: 256, left: -128, bottom: -128, background: 'rgba(13,148,136,0.12)', filter: 'blur(64px)', borderRadius: '50%', pointerEvents: 'none' }} />
 
             {/* Content */}
             <div style={{ maxWidth: 400, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', zIndex: 1 }}>
@@ -480,8 +484,8 @@ export default function ArtistLogin({
               >
                 <div style={{ width: 280, height: 280, background: '#FFFFFF', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                   <img
-                    src="/Logo_Medis.jpeg"
-                    alt="Dra. Diana Cristina Medina Camargo"
+                    src="/logo-opimed.svg"
+                    alt="Dra. OpiMed"
                     style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 8 }}
                   />
                 </div>
@@ -492,7 +496,7 @@ export default function ArtistLogin({
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.5, ease: EASE }}
-                style={{ fontSize: 28, fontWeight: 700, color: C.textPrimary, lineHeight: 1.2, margin: '0 0 12px 0', letterSpacing: '-0.01em' }}
+                style={{ fontSize: 28, fontWeight: 800, fontFamily: 'Manrope, Inter, sans-serif', color: C.textPrimary, lineHeight: 1.2, margin: '0 0 12px 0', letterSpacing: '-0.01em' }}
               >
                 Bienvenido/a
               </motion.h2>
@@ -528,10 +532,10 @@ export default function ArtistLogin({
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '32px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 24 }}>
           <div>
             <div style={{ fontSize: 15, fontWeight: 700, color: C.textPrimary, lineHeight: 1.3, marginBottom: 4 }}>
-              Dra. Diana Cristina Medina Camargo
+              Dra. OpiMed
             </div>
             <div style={{ fontSize: 12, color: C.textMedium, fontWeight: 500 }}>
-              © 2026 · Especialista en Medicina Familiar y Comunitaria
+              © 2026 · Atención médica de confianza
             </div>
           </div>
           <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
@@ -554,7 +558,28 @@ export default function ArtistLogin({
         </div>
       </motion.footer>
 
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 960px) {
+          .login-nav-links { display: none !important; }
+          .login-header-cta { display: none !important; }
+        }
+        @media (max-width: 860px) {
+          .login-hero-wrap { padding: 40px 20px !important; }
+          .login-card { flex-direction: column !important; min-height: 0 !important; }
+          .login-form-panel { width: 100% !important; padding: 40px !important; }
+          .login-brand-panel { padding: 40px !important; }
+        }
+        @media (max-width: 640px) {
+          .login-header-inner { height: 72px !important; padding: 0 16px !important; }
+          .login-logo { height: 40px !important; }
+          .login-back-divider { display: none !important; }
+          .login-hero-wrap { padding: 32px 16px !important; }
+          .login-form-panel { padding: 32px 24px !important; }
+          .login-brand-panel { padding: 32px 24px !important; }
+        }
+      `}</style>
     </div>
   )
 }

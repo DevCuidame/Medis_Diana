@@ -1,6 +1,6 @@
 # UI Components Library
 
-Reusable React component library for medisdiana project.
+Reusable React component library for medisopimed project.
 
 ## Purpose
 
@@ -21,7 +21,7 @@ src/
 ## Usage
 
 ```typescript
-import { Button, Card } from '@medisdiana/ui-components';
+import { Button, Card } from '@medisopimed/ui-components';
 ```
 
 ## Future Enhancements

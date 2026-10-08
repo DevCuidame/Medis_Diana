@@ -1,8 +1,8 @@
-# medisdiana Architecture Guide
+# medisopimed Architecture Guide
 
 ## Overview
 
-medisdiana is a modern, modular monorepo built with a client/server architecture, emphasizing clean separation of concerns, scalability, and maintainability.
+medisopimed is a modern, modular monorepo built with a client/server architecture, emphasizing clean separation of concerns, scalability, and maintainability.
 
 ## Technology Stack
 
@@ -16,7 +16,7 @@ medisdiana is a modern, modular monorepo built with a client/server architecture
 ## Directory Structure
 
 ```
-medisdiana/
+medisopimed/
 ├── apps/
 │   ├── frontend/    # React + Vite SPA
 │   └── backend/     # Express API server
@@ -110,7 +110,7 @@ PostgreSQL Database
 
 4. **Run migrations**
    ```bash
-   pnpm -F @medisdiana/backend migrate
+   pnpm -F @medisopimed/backend migrate
    ```
 
 5. **Start dev servers**

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The medisdiana API is a RESTful service that communicates with JSON payloads. All requests should include `Content-Type: application/json`.
+The medisopimed API is a RESTful service that communicates with JSON payloads. All requests should include `Content-Type: application/json`.
 
 ## Base URL
 

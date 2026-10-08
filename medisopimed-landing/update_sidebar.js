@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
-const dir = 'c:/Users/julie/Downloads/Proyectos_Trabajo/medisdiana/medisdiana-landing/src/components/admin';
-const userDir = 'c:/Users/julie/Downloads/Proyectos_Trabajo/medisdiana/medisdiana-landing/src/components/user';
+const dir = 'c:/Users/julie/Downloads/Proyectos_Trabajo/medisopimed/medisopimed-landing/src/components/admin';
+const userDir = 'c:/Users/julie/Downloads/Proyectos_Trabajo/medisopimed/medisopimed-landing/src/components/user';
 
 function processFile(filePath) {
   let content = fs.readFileSync(filePath, 'utf8');

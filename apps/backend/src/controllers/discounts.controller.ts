@@ -7,7 +7,7 @@ import type { Request, Response } from 'express';
 import { pool } from '@config/database.js';
 import { DiscountRepository } from '@repositories/discount.repository.js';
 import { ServiceOfferRepository } from '@repositories/services.repository.js';
-import type { CreateDiscountPayload, UpdateDiscountPayload } from '@medisdiana/shared-types';
+import type { CreateDiscountPayload, UpdateDiscountPayload } from '@medisopimed/shared-types';
 
 // ─── SPECIALTIES (para el selector de restricción de descuentos) ─────
 export async function listSpecialties(_req: Request, res: Response): Promise<void> {

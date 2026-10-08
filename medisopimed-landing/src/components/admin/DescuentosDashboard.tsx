@@ -5,15 +5,15 @@ import { AdminSidebar } from './AdminSidebar';
 import './MainDashboard.css';
 
 const C = {
-  gold: '#8B5CF6',
-  goldLight: '#3B82F6',
-  bgPanel: '#F3F0FB',
+  gold: '#0D9488',
+  goldLight: '#44CFCB',
+  bgPanel: '#F0FDFA',
   white: '#FFFFFF',
-  text: '#1B1C1C',
+  text: '#0F172A',
   textBrown: '#475569',
   textMedium: '#5E5E5E',
   textMuted: '#94A3B8',
-  borderLight: '#DDD6FE',
+  borderLight: '#CCFBF1',
 };
 
 
@@ -71,7 +71,7 @@ const fmtCOP = (n: number) =>
   new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(n);
 
 function typeBadge(d: DiscountPublic): { label: string; color: string } {
-  if (d.type === 'percentage')  return { label: `${d.value}% de descuento`, color: '#7C3AED' };
+  if (d.type === 'percentage')  return { label: `${d.value}% de descuento`, color: '#0D9488' };
   if (d.type === 'fixed_amount') return { label: `${fmtCOP(Number(d.value ?? 0))} de descuento`, color: '#0EA5E9' };
   return { label: `Agenda ${d.buyQty}, paga ${d.payQty}`, color: '#16A34A' };
 }
@@ -221,27 +221,27 @@ export function DescuentosDashboard() {
             }}>
               <Menu size={20} />
             </button>
-            <h2 style={{ fontFamily: '"Bodoni Moda", Georgia, serif', fontSize: 24, fontWeight: 600, color: C.gold, margin: 0, letterSpacing: '-0.01em', display: 'flex', alignItems: 'center', gap: 8 }}>
-              MEDIS <span style={{ fontSize: 12, fontFamily: '"Hanken Grotesk", sans-serif', color: C.textMuted, fontWeight: 500, letterSpacing: '0.1em', marginTop: 4, textTransform: 'uppercase' }}>/ Descuentos</span>
+            <h2 style={{ fontFamily: '"Manrope", Georgia, serif', fontSize: 24, fontWeight: 600, color: C.gold, margin: 0, letterSpacing: '-0.01em', display: 'flex', alignItems: 'center', gap: 8 }}>
+              OPIEKA <span style={{ fontSize: 12, fontFamily: '"Inter", sans-serif', color: C.textMuted, fontWeight: 500, letterSpacing: '0.1em', marginTop: 4, textTransform: 'uppercase' }}>/ Descuentos</span>
             </h2>
           </div>
         </header>
 
-        <main style={{ flex: 1, overflowY: 'auto', padding: '2rem 1.5rem', background: 'radial-gradient(circle at top right, rgba(139,92,246,0.03), transparent 400px)' }}>
+        <main style={{ flex: 1, overflowY: 'auto', padding: '2rem 1.5rem', background: 'radial-gradient(circle at top right, rgba(13,148,136,0.03), transparent 400px)' }}>
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
               style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20, flexWrap: 'wrap' }}>
               <div>
-                <p style={{ fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.18em', textTransform: 'uppercase', margin: '0 0 6px', fontFamily: '"Hanken Grotesk", sans-serif' }}>Promociones</p>
-                <h1 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: '2.5rem', color: C.text, marginBottom: '0.3rem', lineHeight: 1.1 }}>Descuentos</h1>
+                <p style={{ fontSize: 11, fontWeight: 700, color: C.gold, letterSpacing: '0.18em', textTransform: 'uppercase', margin: '0 0 6px', fontFamily: '"Inter", sans-serif' }}>Promociones</p>
+                <h1 style={{ fontFamily: '"Manrope", serif', fontSize: '2.5rem', color: C.text, marginBottom: '0.3rem', lineHeight: 1.1 }}>Descuentos</h1>
                 <p style={{ color: C.textMuted, fontSize: '1rem', margin: 0 }}>
                   Porcentajes, 2x1 y códigos de descuento para tus pacientes.
                 </p>
               </div>
               <button
                 onClick={openCreate}
-                style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 22px', borderRadius: 99, border: 'none', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, fontSize: 13, fontWeight: 700, cursor: 'pointer', boxShadow: '0 6px 20px rgba(139,92,246,0.3)' }}
+                style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 22px', borderRadius: 99, border: 'none', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, fontSize: 13, fontWeight: 700, cursor: 'pointer', boxShadow: '0 6px 20px rgba(13,148,136,0.3)' }}
               >
                 <Plus size={16} /> Nuevo Descuento
               </button>
@@ -333,7 +333,7 @@ export function DescuentosDashboard() {
               onClick={e => e.stopPropagation()}
               style={{ background: C.white, borderRadius: 20, width: '100%', maxWidth: 520, maxHeight: '90vh', overflowY: 'auto', padding: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-                <h2 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: '1.4rem', color: C.text, margin: 0 }}>
+                <h2 style={{ fontFamily: '"Manrope", serif', fontSize: '1.4rem', color: C.text, margin: 0 }}>
                   {editingId ? 'Editar Descuento' : 'Nuevo Descuento'}
                 </h2>
                 <button onClick={() => setShowForm(false)} style={{ width: 32, height: 32, borderRadius: 99, border: 'none', background: C.bgPanel, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

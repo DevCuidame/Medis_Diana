@@ -3,11 +3,11 @@ import { env } from '@config/env.js';
 let accessToken: string | null = null;
 let refreshToken: string | null = null;
 
-async function loginDiana(): Promise<void> {
+async function loginOpiMed(): Promise<void> {
   const res = await fetch(`${env.DOC_API_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: env.DOC_DIANA_EMAIL, password: env.DOC_DIANA_PASSWORD }),
+    body: JSON.stringify({ email: env.DOC_OPI_MED_EMAIL, password: env.DOC_OPI_MED_PASSWORD }),
     signal: AbortSignal.timeout(8000),
   });
 
@@ -47,13 +47,13 @@ async function tryRefresh(): Promise<void> {
     accessToken = json.data.access_token;
     refreshToken = json.data.refresh_token;
   } catch {
-    await loginDiana();
+    await loginOpiMed();
   }
 }
 
 export async function getDocToken(): Promise<string> {
   if (!accessToken) {
-    await loginDiana();
+    await loginOpiMed();
   }
   return accessToken!;
 }

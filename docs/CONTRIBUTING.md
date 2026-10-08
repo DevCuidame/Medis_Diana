@@ -275,4 +275,4 @@ Contributors will be recognized in:
 
 ---
 
-**Thank you for contributing to medisdiana! 🚀**
+**Thank you for contributing to medisopimed! 🚀**

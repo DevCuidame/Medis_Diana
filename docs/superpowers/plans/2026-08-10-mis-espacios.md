@@ -22,7 +22,7 @@
 ## Task 1: Create the `Spaces` component
 
 **Files:**
-- Create: `medisdiana-landing/src/components/Spaces.tsx`
+- Create: `medisopimed-landing/src/components/Spaces.tsx`
 
 **Interfaces:**
 - Consumes: `framer-motion` (`motion`, `useInView`), `react` (`useRef`) — both already project dependencies.
@@ -264,13 +264,13 @@ export default function Spaces() {
 
 - [ ] **Step 2: Type-check the new file**
 
-Run: `cd medisdiana-landing && npx tsc -b --noEmit`
+Run: `cd medisopimed-landing && npx tsc -b --noEmit`
 Expected: no errors reported for `src/components/Spaces.tsx`. (The command may report pre-existing errors elsewhere in the repo if any exist — only confirm nothing new comes from `Spaces.tsx`.)
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add medisdiana-landing/src/components/Spaces.tsx
+git add medisopimed-landing/src/components/Spaces.tsx
 git commit -m "feat(landing): add Spaces component for Mis Espacios gallery"
 ```
 
@@ -279,8 +279,8 @@ git commit -m "feat(landing): add Spaces component for Mis Espacios gallery"
 ## Task 2: Wire `Spaces` into the landing page
 
 **Files:**
-- Modify: `medisdiana-landing/src/App.tsx:10` (imports block)
-- Modify: `medisdiana-landing/src/App.tsx:76-83` (`LandingPage()` JSX)
+- Modify: `medisopimed-landing/src/App.tsx:10` (imports block)
+- Modify: `medisopimed-landing/src/App.tsx:76-83` (`LandingPage()` JSX)
 
 **Interfaces:**
 - Consumes: `Spaces` default export from `./components/Spaces` (produced by Task 1).
@@ -288,7 +288,7 @@ git commit -m "feat(landing): add Spaces component for Mis Espacios gallery"
 
 - [ ] **Step 1: Add the import**
 
-In `medisdiana-landing/src/App.tsx`, add this line immediately after the existing `Testimonials` import (currently line 10):
+In `medisopimed-landing/src/App.tsx`, add this line immediately after the existing `Testimonials` import (currently line 10):
 
 ```tsx
 import Testimonials from './components/Testimonials'
@@ -326,12 +326,12 @@ to:
 
 - [ ] **Step 3: Build to confirm no type/compile errors**
 
-Run: `cd medisdiana-landing && npm run build`
+Run: `cd medisopimed-landing && npm run build`
 Expected: build completes successfully (exit code 0), no TypeScript errors referencing `App.tsx` or `Spaces.tsx`.
 
 - [ ] **Step 4: Manual visual verification**
 
-Run: `cd medisdiana-landing && npm run dev`
+Run: `cd medisopimed-landing && npm run dev`
 
 Open the printed local URL in a browser and check:
 - The "Mis Espacios" section appears between "Sobre la Doctora" and "Testimonios de Pacientes".
@@ -345,7 +345,7 @@ Stop the dev server after verifying (Ctrl+C).
 - [ ] **Step 5: Commit**
 
 ```bash
-git add medisdiana-landing/src/App.tsx
+git add medisopimed-landing/src/App.tsx
 git commit -m "feat(landing): insert Mis Espacios section into the page"
 ```
 

@@ -21,7 +21,7 @@ export const SedeCard: React.FC<SedeCardProps> = ({ sede, onView, onEdit, onDele
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       whileHover={{ y: -2 }}
-      className={`bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)] relative transition-opacity duration-300 ${!sede.isActive ? 'opacity-60' : ''}`}
+      className={`bg-white rounded-[1.25rem] p-6 border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)] relative transition-opacity duration-300 ${!sede.isActive ? 'opacity-60' : ''}`}
     >
       {/* MENU DESPLEGABLE */}
       <div className="absolute top-4 right-4 z-10">
@@ -45,13 +45,13 @@ export const SedeCard: React.FC<SedeCardProps> = ({ sede, onView, onEdit, onDele
               >
                 <button 
                   onClick={() => { setShowMenu(false); onView(sede); }}
-                  className="w-full px-4 py-2 text-left text-sm text-slate-600 hover:bg-slate-50 hover:text-[#9B7B22] flex items-center gap-2 transition-colors"
+                  className="w-full px-4 py-2 text-left text-sm text-slate-600 hover:bg-slate-50 hover:text-[#0D9488] flex items-center gap-2 transition-colors"
                 >
                   <Eye size={14} /> Ver Detalles
                 </button>
                 <button 
                   onClick={() => { setShowMenu(false); onEdit(sede); }}
-                  className="w-full px-4 py-2 text-left text-sm text-slate-600 hover:bg-slate-50 hover:text-[#9B7B22] flex items-center gap-2 transition-colors"
+                  className="w-full px-4 py-2 text-left text-sm text-slate-600 hover:bg-slate-50 hover:text-[#0D9488] flex items-center gap-2 transition-colors"
                 >
                   <Edit3 size={14} /> Editar
                 </button>
@@ -70,7 +70,7 @@ export const SedeCard: React.FC<SedeCardProps> = ({ sede, onView, onEdit, onDele
 
       {/* CONTENIDO */}
       <div className="pr-8 mb-4">
-        <h3 className="text-xl font-serif font-bold text-slate-900 mb-1 tracking-tight">
+        <h3 className="text-xl font-['Manrope'] font-extrabold text-slate-900 mb-1 tracking-tight">
           {sede.name}
         </h3>
         <div className="flex items-center gap-1.5 text-slate-500 text-sm">
@@ -100,7 +100,7 @@ export const SedeCard: React.FC<SedeCardProps> = ({ sede, onView, onEdit, onDele
 
         <button 
           onClick={() => onToggleStatus(sede.id, !sede.isActive)}
-          className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none ${sede.isActive ? 'bg-[#9B7B22]' : 'bg-slate-200'}`}
+          className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none ${sede.isActive ? 'bg-[#0D9488]' : 'bg-slate-200'}`}
         >
           <motion.span
             layout

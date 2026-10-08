@@ -12,16 +12,16 @@ interface UsuarioCardProps {
 
 const ROLE_CONFIG: Record<string, { bg: string; border: string; color: string; icon: React.ElementType; label: string }> = {
   Administrador: {
-    bg: 'linear-gradient(135deg, rgba(139,92,246,0.12), rgba(59,130,246,0.08))',
-    border: 'rgba(139,92,246,0.2)',
-    color: '#8B5CF6',
+    bg: 'linear-gradient(135deg, rgba(13,148,136,0.12), rgba(68,207,203,0.08))',
+    border: 'rgba(13,148,136,0.2)',
+    color: '#0D9488',
     icon: Shield,
     label: 'Admin',
   },
   Profesional: {
-    bg: 'linear-gradient(135deg, rgba(59,130,246,0.1), rgba(99,102,241,0.08))',
-    border: 'rgba(59,130,246,0.2)',
-    color: '#2563EB',
+    bg: 'linear-gradient(135deg, rgba(68,207,203,0.1), rgba(13,148,136,0.08))',
+    border: 'rgba(68,207,203,0.2)',
+    color: '#0F766E',
     icon: Briefcase,
     label: 'Profesional',
   },
@@ -65,7 +65,7 @@ const ActionBtn: React.FC<ActionBtnProps> = ({ icon: Icon, label, onClick, color
         fontWeight: 700,
         letterSpacing: '0.04em',
         textTransform: 'uppercase' as const,
-        fontFamily: '"Hanken Grotesk", Inter, system-ui, sans-serif',
+        fontFamily: '"Inter", Inter, system-ui, sans-serif',
       }}
     >
       <Icon size={13} strokeWidth={2.2} />
@@ -87,9 +87,9 @@ export const UsuarioCard: React.FC<UsuarioCardProps> = ({ user, onView, onEdit, 
       style={{
         background: '#FFFFFF',
         borderRadius: '1.25rem',
-        border: `1px solid ${hovered ? 'rgba(139,92,246,0.2)' : '#F0EDE8'}`,
+        border: `1px solid ${hovered ? 'rgba(13,148,136,0.2)' : '#F0EDE8'}`,
         boxShadow: hovered
-          ? '0 20px 50px rgba(139,92,246,0.1), 0 4px 12px rgba(0,0,0,0.04)'
+          ? '0 20px 50px rgba(13,148,136,0.1), 0 4px 12px rgba(0,0,0,0.04)'
           : '0 4px 16px rgba(0,0,0,0.04)',
         transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -116,8 +116,8 @@ export const UsuarioCard: React.FC<UsuarioCardProps> = ({ user, onView, onEdit, 
           <div style={{
             width: 72, height: 72,
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, #F3F0FB, #E9E8E7)',
-            border: `3px solid ${hovered ? 'rgba(139,92,246,0.25)' : '#F0EDE8'}`,
+            background: 'linear-gradient(135deg, #F0FDFA, #E9E8E7)',
+            border: `3px solid ${hovered ? 'rgba(13,148,136,0.25)' : '#F0EDE8'}`,
             overflow: 'hidden',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             transition: 'border-color 0.3s ease',
@@ -143,8 +143,8 @@ export const UsuarioCard: React.FC<UsuarioCardProps> = ({ user, onView, onEdit, 
 
         {/* Name */}
         <h3 style={{
-          fontFamily: '"Bodoni Moda", Georgia, serif',
-          fontSize: '1rem', fontWeight: 600, color: '#1B1C1C',
+          fontFamily: '"Manrope", Georgia, serif',
+          fontSize: '1rem', fontWeight: 600, color: '#0F172A',
           margin: '0 0 0.15rem', lineHeight: 1.3,
         }}>{user.nombre}</h3>
 
@@ -170,7 +170,7 @@ export const UsuarioCard: React.FC<UsuarioCardProps> = ({ user, onView, onEdit, 
       {/* Specialties */}
       {user.especialidades && user.especialidades.length > 0 && (
         <div style={{
-          borderTop: '1px solid #F3F0FB',
+          borderTop: '1px solid #F0FDFA',
           padding: '0.65rem 1rem',
           background: 'rgba(250,249,248,0.5)',
         }}>
@@ -178,15 +178,15 @@ export const UsuarioCard: React.FC<UsuarioCardProps> = ({ user, onView, onEdit, 
             {user.especialidades.slice(0, 3).map((esp, idx) => (
               <span key={idx} style={{
                 fontSize: '0.65rem', color: '#94A3B8', background: '#FFF',
-                padding: '2px 7px', borderRadius: 5, border: '1px solid #E9E8E7',
+                padding: '3px 9px', borderRadius: 9999, border: '1px solid #E9E8E7',
                 fontWeight: 600, letterSpacing: '0.02em',
               }}>{esp}</span>
             ))}
             {user.especialidades.length > 3 && (
               <span style={{
-                fontSize: '0.65rem', color: '#3B82F6',
-                background: 'rgba(59,130,246,0.08)', padding: '2px 7px',
-                borderRadius: 5, border: '1px solid rgba(59,130,246,0.2)', fontWeight: 600,
+                fontSize: '0.65rem', color: '#44CFCB',
+                background: 'rgba(68,207,203,0.12)', padding: '3px 9px',
+                borderRadius: 9999, border: '1px solid rgba(13,148,136,0.2)', fontWeight: 600,
               }}>+{user.especialidades.length - 3}</span>
             )}
           </div>
@@ -202,11 +202,11 @@ export const UsuarioCard: React.FC<UsuarioCardProps> = ({ user, onView, onEdit, 
         background: '#FAFAFA',
       }}>
         <ActionBtn
-          icon={Eye} label="Ver" color="#94A3B8" hoverBg="rgba(139,92,246,0.08)" hoverColor="#8B5CF6"
+          icon={Eye} label="Ver" color="#94A3B8" hoverBg="rgba(13,148,136,0.08)" hoverColor="#0D9488"
           onClick={(e) => { e.stopPropagation(); onView?.(); }}
         />
         <ActionBtn
-          icon={Edit3} label="Editar" color="#94A3B8" hoverBg="rgba(59,130,246,0.08)" hoverColor="#2563EB"
+          icon={Edit3} label="Editar" color="#94A3B8" hoverBg="rgba(68,207,203,0.08)" hoverColor="#0F766E"
           onClick={(e) => { e.stopPropagation(); onEdit?.(); }}
         />
         <ActionBtn

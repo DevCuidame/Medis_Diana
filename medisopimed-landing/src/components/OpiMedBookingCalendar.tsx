@@ -4,16 +4,16 @@ import { motion, AnimatePresence } from 'framer-motion'
 // ─── Config ────────────────────────────────────────────────────────────────
 // En dev pasa por el proxy de Vite (evita CORS de doc-api contra localhost).
 const DOC_API = import.meta.env.DEV ? '/doc-api/api' : 'https://doc-api.cuidame.tech/api'
-const DIANA_PROFESSIONAL_ID = 12
-const DIANA_DISPLAY_NAME = 'Dra. Diana Cristina Medina Camargo'
+const OPI_MED_PROFESSIONAL_ID = 12
+const OPI_MED_DISPLAY_NAME = 'Dra. OpiMed'
 
-// El servicio elegido puede pertenecer a Diana o a cualquier médico de su
-// equipo (professionals.head_professional_id = DIANA_PROFESSIONAL_ID) — la
+// El servicio elegido puede pertenecer a OpiMed o a cualquier médico de su
+// equipo (professionals.head_professional_id = OPI_MED_PROFESSIONAL_ID) — la
 // cita debe agendarse y mostrarse a nombre de quien realmente atiende ese
-// servicio, no siempre de Diana.
+// servicio, no siempre de OpiMed.
 function doctorLabel(professionalId: number, professionalName: string): string {
-  if (professionalId === DIANA_PROFESSIONAL_ID) return DIANA_DISPLAY_NAME
-  return professionalName || DIANA_DISPLAY_NAME
+  if (professionalId === OPI_MED_PROFESSIONAL_ID) return OPI_MED_DISPLAY_NAME
+  return professionalName || OPI_MED_DISPLAY_NAME
 }
 
 // ─── Types ─────────────────────────────────────────────────────────────────
@@ -81,28 +81,29 @@ const MONTHS_ES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio
 
 // ─── Palette ───────────────────────────────────────────────────────────────
 const C = {
-  primary: '#1D4ED8',
-  primaryLight: '#2563EB',
-  primaryMuted: '#EFF6FF',
-  accent: '#0EA5E9',
+  primary: '#0D9488',
+  primaryLight: '#0F766E',
+  primaryMuted: '#F0FDFA',
+  accent: '#44CFCB',
   text: '#0F172A',
   textMuted: '#475569',
   textFaint: '#94A3B8',
-  border: '#E2E8F0',
+  border: '#CCFBF1',
   white: '#FFFFFF',
-  bg: '#F5F7FA',
+  bg: '#F0FDFA',
   success: '#16A34A',
   successBg: '#F0FDF4',
   danger: '#DC2626',
 }
-const FONT = '"Hanken Grotesk", Inter, system-ui, sans-serif'
+const FONT = '"Inter", Inter, system-ui, sans-serif'
+const FONT_DISPLAY = '"Manrope", Inter, system-ui, sans-serif'
 
 // ─── Component ─────────────────────────────────────────────────────────────
-interface DianaBookingCalendarProps {
+interface OpiMedBookingCalendarProps {
   onBackToHome?: () => void
 }
 
-export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalendarProps) {
+export default function OpiMedBookingCalendar({ onBackToHome }: OpiMedBookingCalendarProps) {
   const today = new Date()
   const [viewYear, setViewYear] = useState(today.getFullYear())
   const [viewMonth, setViewMonth] = useState(today.getMonth())
@@ -115,8 +116,8 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
   const [loadingServices, setLoadingServices] = useState(true)
   const [selectedServiceId, setSelectedServiceId] = useState<number | null>(null)
   const [selectedServiceName, setSelectedServiceName] = useState<string>('')
-  const [selectedProfessionalId, setSelectedProfessionalId] = useState<number>(DIANA_PROFESSIONAL_ID)
-  const [selectedProfessionalName, setSelectedProfessionalName] = useState<string>(DIANA_DISPLAY_NAME)
+  const [selectedProfessionalId, setSelectedProfessionalId] = useState<number>(OPI_MED_PROFESSIONAL_ID)
+  const [selectedProfessionalName, setSelectedProfessionalName] = useState<string>(OPI_MED_DISPLAY_NAME)
   const [form, setForm] = useState<BookingForm>({
     identification_number: '', notes: '',
     isNewPatient: false,
@@ -130,7 +131,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
 
   // Load professional services once
   useEffect(() => {
-    fetch(`${DOC_API}/booking/professionals/${DIANA_PROFESSIONAL_ID}/services`)
+    fetch(`${DOC_API}/booking/professionals/${OPI_MED_PROFESSIONAL_ID}/services`)
       .then(r => r.json())
       .then(data => { setServices(Array.isArray(data?.data) ? data.data : []) })
       .catch(() => { setServices([]) })
@@ -149,7 +150,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
 
     for (let d = 1; d <= daysCount; d++) {
       const date = new Date(year, month, d)
-      // Skip past days and Sundays (Diana doesn't work Sundays — adjust if needed)
+      // Skip past days and Sundays (OpiMed doesn't work Sundays — adjust if needed)
       if (date < today || date.getDay() === 0) continue
       const dateStr = toLocalDateStr(date)
       if (availability[dateStr] !== undefined) continue
@@ -274,8 +275,8 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
       setSelectedSlot(null)
       setSelectedServiceId(null)
       setSelectedServiceName('')
-      setSelectedProfessionalId(DIANA_PROFESSIONAL_ID)
-      setSelectedProfessionalName(DIANA_DISPLAY_NAME)
+      setSelectedProfessionalId(OPI_MED_PROFESSIONAL_ID)
+      setSelectedProfessionalName(OPI_MED_DISPLAY_NAME)
       setForm({ identification_number: '', notes: '', isNewPatient: false, first_name: '', last_name: '', identification_type: '', email: '', phone: '' })
       setBookedAppointment(null)
     } else if (step === 'form') {
@@ -356,7 +357,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
               </span>
               <div>
                 <p style={{ margin: 0, fontSize: '0.75rem', color: C.textFaint, fontWeight: 500 }}>Agendar cita con</p>
-                <p style={{ margin: 0, fontSize: '0.88rem', fontWeight: 700, color: C.text }}>Dra. Diana Cristina Medina Camargo</p>
+                <p style={{ margin: 0, fontSize: '0.88rem', fontWeight: 700, color: C.text }}>Dra. OpiMed</p>
               </div>
             </div>
           </div>
@@ -384,11 +385,11 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
               transition={{ duration: 0.28 }}
             >
               <div style={{ marginBottom: '1.75rem' }}>
-                <h1 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', fontWeight: 700, color: C.text, margin: 0 }}>
+                <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', fontWeight: 700, color: C.text, margin: 0 }}>
                   ¿Qué tipo de consulta necesitas?
                 </h1>
                 <p style={{ color: C.textMuted, fontSize: '0.9rem', marginTop: 6 }}>
-                  Selecciona el servicio con el que deseas agendar tu cita con la Dra. Diana.
+                  Selecciona el servicio con el que deseas agendar tu cita con la Dra. OpiMed.
                 </p>
               </div>
 
@@ -412,7 +413,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
                       padding: '0.9rem 2rem', borderRadius: 10, border: 'none',
                       background: `linear-gradient(135deg, ${C.primary}, ${C.accent})`,
                       color: C.white, fontFamily: FONT, fontSize: '0.9rem', fontWeight: 700,
-                      cursor: 'pointer', boxShadow: '0 6px 20px rgba(29,78,216,0.28)',
+                      cursor: 'pointer', boxShadow: '0 6px 20px rgba(13,148,136,0.28)',
                     }}
                   >
                     Seleccionar fecha →
@@ -436,7 +437,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
                         border: `2px solid ${selectedServiceId === svc.prof_service_id ? C.primary : C.border}`,
                         padding: '1.25rem 1.5rem', textAlign: 'left',
                         cursor: 'pointer', fontFamily: FONT,
-                        boxShadow: '0 2px 12px rgba(29,78,216,0.06)',
+                        boxShadow: '0 2px 12px rgba(13,148,136,0.06)',
                         transition: 'all 0.18s',
                         display: 'flex', flexDirection: 'column', gap: '0.5rem',
                       }}
@@ -496,7 +497,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
               transition={{ duration: 0.28 }}
             >
               <div style={{ marginBottom: '1.75rem' }}>
-                <h1 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', fontWeight: 700, color: C.text, margin: 0 }}>
+                <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', fontWeight: 700, color: C.text, margin: 0 }}>
                   Selecciona una fecha
                 </h1>
                 <p style={{ color: C.textMuted, fontSize: '0.9rem', marginTop: 6 }}>
@@ -506,7 +507,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
 
               <div style={{
                 background: C.white, borderRadius: 20, border: `1px solid ${C.border}`,
-                padding: '1.75rem', boxShadow: '0 4px 24px rgba(29,78,216,0.07)',
+                padding: '1.75rem', boxShadow: '0 4px 24px rgba(13,148,136,0.07)',
               }}>
                 {/* Month navigation */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
@@ -524,7 +525,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
                     </svg>
                   </button>
 
-                  <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: C.text, margin: 0 }}>
+                  <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: '1.1rem', fontWeight: 700, color: C.text, margin: 0 }}>
                     {MONTHS_ES[viewMonth]} {viewYear}
                   </h2>
 
@@ -627,7 +628,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
               transition={{ duration: 0.28 }}
             >
               <div style={{ marginBottom: '1.75rem' }}>
-                <h1 style={{ fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: 700, color: C.text, margin: 0 }}>
+                <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: 700, color: C.text, margin: 0 }}>
                   Elige un horario
                 </h1>
                 <p style={{ color: C.textMuted, fontSize: '0.9rem', marginTop: 6, textTransform: 'capitalize' }}>
@@ -696,7 +697,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
               transition={{ duration: 0.28 }}
             >
               <div style={{ marginBottom: '1.75rem' }}>
-                <h1 style={{ fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: 700, color: C.text, margin: 0 }}>
+                <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: 700, color: C.text, margin: 0 }}>
                   Confirmar cita
                 </h1>
                 <p style={{ color: C.textMuted, fontSize: '0.9rem', marginTop: 6 }}>
@@ -729,7 +730,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
                   <p style={{ margin: '2px 0 0', fontSize: '0.9rem', fontWeight: 600, color: C.text }}>
                     {selectedProfessionalName}
                   </p>
-                  {selectedProfessionalId === DIANA_PROFESSIONAL_ID && (
+                  {selectedProfessionalId === OPI_MED_PROFESSIONAL_ID && (
                     <p style={{ margin: 0, fontSize: '0.78rem', color: C.textMuted }}>Especialista en Medicina Familiar</p>
                   )}
                 </div>
@@ -806,7 +807,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
                     style={inputStyle} onFocus={e => e.target.style.borderColor = C.primary} onBlur={e => e.target.style.borderColor = C.border} />
                   {!form.isNewPatient && (
                     <p style={{ margin: '5px 0 0', fontSize: '0.75rem', color: C.textMuted }}>
-                      Ingresa el número de cédula con el que te registraste con la Dra. Diana.
+                      Ingresa el número de cédula con el que te registraste con la Dra. OpiMed.
                     </p>
                   )}
                 </div>
@@ -871,7 +872,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
                       background: submitting ? C.border : `linear-gradient(135deg, ${C.primary}, ${C.accent})`,
                       color: submitting ? C.textMuted : C.white,
                       fontFamily: FONT, fontSize: '0.88rem', fontWeight: 700, cursor: submitting ? 'wait' : 'pointer',
-                      boxShadow: submitting ? 'none' : '0 6px 20px rgba(29,78,216,0.28)',
+                      boxShadow: submitting ? 'none' : '0 6px 20px rgba(13,148,136,0.28)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                     }}
                   >
@@ -906,7 +907,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
                 </svg>
               </div>
 
-              <h1 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 700, color: C.text, margin: '0 0 0.5rem' }}>
+              <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 700, color: C.text, margin: '0 0 0.5rem' }}>
                 ¡Cita solicitada!
               </h1>
               <p style={{ color: C.textMuted, fontSize: '0.95rem', maxWidth: 420, margin: '0 auto 2rem' }}>
@@ -935,7 +936,7 @@ export default function DianaBookingCalendar({ onBackToHome }: DianaBookingCalen
                     padding: '0.9rem', borderRadius: 10, border: 'none',
                     background: `linear-gradient(135deg, ${C.primary}, ${C.accent})`,
                     color: C.white, fontFamily: FONT, fontSize: '0.88rem', fontWeight: 700,
-                    cursor: 'pointer', boxShadow: '0 6px 20px rgba(29,78,216,0.28)',
+                    cursor: 'pointer', boxShadow: '0 6px 20px rgba(13,148,136,0.28)',
                   }}
                 >
                   Agendar otra cita
@@ -972,8 +973,8 @@ const labelStyle: React.CSSProperties = {
 
 const inputStyle: React.CSSProperties = {
   width: '100%', boxSizing: 'border-box', padding: '0.85rem 1rem',
-  borderRadius: 10, border: '1.5px solid #E2E8F0',
-  fontFamily: '"Hanken Grotesk", Inter, system-ui, sans-serif',
+  borderRadius: 10, border: '1.5px solid #CCFBF1',
+  fontFamily: '"Inter", Inter, system-ui, sans-serif',
   fontSize: '0.9rem', color: '#0F172A', outline: 'none', transition: 'border-color 0.15s',
   background: '#fff',
 }

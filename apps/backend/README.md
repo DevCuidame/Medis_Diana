@@ -1,6 +1,6 @@
-# medisdiana Backend
+# medisopimed Backend
 
-Express.js backend server for medisdiana project with PostgreSQL database.
+Express.js backend server for medisopimed project with PostgreSQL database.
 
 ## Features
 
@@ -85,7 +85,7 @@ pnpm migrate
 Copy `.env.example` to `.env.local` and configure:
 
 ```
-DATABASE_URL=postgresql://user:password@localhost:5432/medisdiana_dev
+DATABASE_URL=postgresql://user:password@localhost:5432/medisopimed_dev
 NODE_ENV=development
 PORT=3007
 JWT_SECRET=your-secret-key

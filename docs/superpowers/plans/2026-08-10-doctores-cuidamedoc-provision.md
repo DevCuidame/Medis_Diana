@@ -8,16 +8,16 @@
 > tests con mocks) en
 > [arquitectura.md](../../../arquitectura.md#aprovisionamiento-automático-de-doctores-en-cuidamedoc--vínculo-cabeza-trabajador-2026-08-10)
 > y [errores-conocidos.md](../../../errores-conocidos.md).
-> `cuidame_doc_backend` main: commit `15bb6d5` (merge). `diana/medis` main:
+> `cuidame_doc_backend` main: commit `15bb6d5` (merge). `opimed/medis` main:
 > commit `eb4f65a` (fast-forward).
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Cuando un admin crea un profesional (doctor) en Medis, se le aprovisiona automáticamente una cuenta activa en CuidameDoc con las mismas credenciales, enlazada como "trabajador" del profesional cabeza del sitio (hoy Diana en `cuidame_doc_backend`, `professional_id=12`).
+**Goal:** Cuando un admin crea un profesional (doctor) en Medis, se le aprovisiona automáticamente una cuenta activa en CuidameDoc con las mismas credenciales, enlazada como "trabajador" del profesional cabeza del sitio (hoy OpiMed en `cuidame_doc_backend`, `professional_id=12`).
 
 **Architecture:** Dos repos, cambio aditivo en cada uno. CuidameDoc gana una columna `professionals.head_professional_id` y un endpoint nuevo `POST /professionals/team-members` (autenticado como la cabeza) que crea User+rol+Professional ya activos. Medis gana una columna `users.doc_professional_id` y un servicio best-effort (`docProfessionalProvision.service.ts`, mismo patrón que `docServiceSync.service.ts`) que llama a ese endpoint justo después de crear el profesional localmente, sin bloquear la creación si falla.
 
-**Tech Stack:** CuidameDoc: Express + TypeORM + Postgres + Jest. Medis backend: Express + `pg` (SQL crudo) + Postgres + Node `node:test`. Medis frontend: React + Vite (`medisdiana-landing`).
+**Tech Stack:** CuidameDoc: Express + TypeORM + Postgres + Jest. Medis backend: Express + `pg` (SQL crudo) + Postgres + Node `node:test`. Medis frontend: React + Vite (`medisopimed-landing`).
 
 ## Global Constraints
 
@@ -948,7 +948,7 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 ## Task 7: Medis frontend — pasar `docSync` desde `CreateProfessionalModal`
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/admin/CreateProfessionalModal.tsx`
+- Modify: `medisopimed-landing/src/components/admin/CreateProfessionalModal.tsx`
 
 **Interfaces:**
 - Consumes: respuesta de `POST /api/professionals` ahora incluye `docSync?: { ok: boolean; error?: string }` (Task 6).
@@ -979,13 +979,13 @@ por:
 
 - [x] **Step 3: Verificar que compila**
 
-Run: `cd medisdiana-landing && npx tsc --noEmit`
+Run: `cd medisopimed-landing && npx tsc --noEmit`
 Expected: sin errores (los dos consumidores se actualizan en el Task 8, antes de este paso ya deberían tipar bien porque `docSync` es opcional).
 
 - [x] **Step 4: Commit**
 
 ```bash
-git add medisdiana-landing/src/components/admin/CreateProfessionalModal.tsx
+git add medisopimed-landing/src/components/admin/CreateProfessionalModal.tsx
 git commit -m "feat(professionals): pass docSync through onSuccess callback
 
 Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
@@ -996,8 +996,8 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 ## Task 8: Medis frontend — toast de advertencia en los dos paneles admin
 
 **Files:**
-- Modify: `medisdiana-landing/src/components/admin/UsuariosDashboard.tsx`
-- Modify: `medisdiana-landing/src/components/admin/AdminProfessionals.tsx`
+- Modify: `medisopimed-landing/src/components/admin/UsuariosDashboard.tsx`
+- Modify: `medisopimed-landing/src/components/admin/AdminProfessionals.tsx`
 
 **Interfaces:**
 - Consumes: `onSuccess(pro, docSync)` (Task 7).
@@ -1064,16 +1064,16 @@ por:
 
 - [x] **Step 3: Verificar que compila**
 
-Run: `cd medisdiana-landing && npx tsc --noEmit`
+Run: `cd medisopimed-landing && npx tsc --noEmit`
 Expected: sin errores.
 
 - [x] **Step 4: Verificación manual**
 
-Levantar `apps/backend` y `medisdiana-landing` en dev, crear un profesional
+Levantar `apps/backend` y `medisopimed-landing` en dev, crear un profesional
 nuevo desde el panel de Usuarios con datos de prueba, y confirmar:
 1. Se crea localmente en Medis (aparece en la lista) sin importar si
    CuidameDoc responde o no.
-2. Si `DOC_API_URL`/`DOC_DIANA_EMAIL`/`DOC_DIANA_PASSWORD` apuntan a un
+2. Si `DOC_API_URL`/`DOC_OPI_MED_EMAIL`/`DOC_OPI_MED_PASSWORD` apuntan a un
    CuidameDoc real y accesible, el toast de éxito no menciona ningún error, y
    el nuevo profesional puede iniciar sesión en `doc.cuidame.tech` con el
    mismo email/password.
@@ -1084,7 +1084,7 @@ nuevo desde el panel de Usuarios con datos de prueba, y confirmar:
 - [x] **Step 5: Commit**
 
 ```bash
-git add medisdiana-landing/src/components/admin/UsuariosDashboard.tsx medisdiana-landing/src/components/admin/AdminProfessionals.tsx
+git add medisopimed-landing/src/components/admin/UsuariosDashboard.tsx medisopimed-landing/src/components/admin/AdminProfessionals.tsx
 git commit -m "feat(professionals): show CuidameDoc provisioning warning toast
 
 Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"

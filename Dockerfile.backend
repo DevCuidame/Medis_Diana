@@ -6,7 +6,7 @@ RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
 
 COPY . .
 RUN pnpm install --frozen-lockfile
-# @medisdiana/shared-types exporta directo el .ts (sin build) — tsx lo resuelve en runtime
+# @medisopimed/shared-types exporta directo el .ts (sin build) — tsx lo resuelve en runtime
 
 WORKDIR /app/apps/backend
 ENV NODE_ENV=production

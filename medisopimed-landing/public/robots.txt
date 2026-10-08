@@ -5,4 +5,4 @@ Disallow: /login
 Disallow: /admin/
 Disallow: /user/
 Disallow: /professional/
-Sitemap: https://dianamedic.cuidame.tech/sitemap.xml
+Sitemap: https://opimedmedic.cuidame.tech/sitemap.xml

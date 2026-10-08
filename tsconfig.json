@@ -12,7 +12,7 @@
 
     "baseUrl": ".",
     "paths": {
-      "@medisdiana/*": ["./packages/*/src"],
+      "@medisopimed/*": ["./packages/*/src"],
       "@/*": ["./src/*"]
     }
   }

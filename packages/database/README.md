@@ -1,6 +1,6 @@
 # Database Package
 
-Database schemas, migrations, and seed data for medisdiana.
+Database schemas, migrations, and seed data for medisopimed.
 
 ## Structure
 

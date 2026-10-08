@@ -1,91 +1,80 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { useDocServices, categoryLabel } from '../hooks/useDocServices'
 
-// Paleta presentacional: se rota por índice para los servicios que vienen de la API.
-const CARD_STYLES = [
-  { accent: '#A78BFA', gradient: 'linear-gradient(160deg, #1e1b4b 0%, #4c1d95 50%, #1e3a8a 100%)' },
-  { accent: '#38BDF8', gradient: 'linear-gradient(160deg, #0f172a 0%, #1e3a8a 50%, #0c4a6e 100%)' },
-  { accent: '#A78BFA', gradient: 'linear-gradient(160deg, #1e1b4b 0%, #312e81 50%, #1e3a8a 100%)' },
-  { accent: '#38BDF8', gradient: 'linear-gradient(160deg, #0c1445 0%, #1e3a8a 50%, #164e63 100%)' },
-  { accent: '#A78BFA', gradient: 'linear-gradient(160deg, #1e1b4b 0%, #4c1d95 50%, #0f172a 100%)' },
-  { accent: '#38BDF8', gradient: 'linear-gradient(160deg, #0f172a 0%, #0c4a6e 50%, #1e3a8a 100%)' },
-]
-
-// Fallback estático: se muestra mientras carga o si la API falla / viene vacía.
+// Catálogo propio de OpiMed — independiente del catálogo real de CuidameDoc.
 const CLASSES = [
   {
-    title: 'Promoción y Prevención',
+    title: 'Consulta General',
     level: 'Todas las edades',
-    duration: '45 min',
-    description: 'Tamizajes y orientación integral para identificar factores de riesgo y fomentar hábitos saludables a largo plazo.',
-    accent: '#38BDF8',
-    tag: 'Preventivo',
-    gradient: 'linear-gradient(160deg, #0f172a 0%, #1e3a8a 50%, #0c4a6e 100%)',
+    duration: '30 min',
+    description: 'Valoración médica integral para identificar, orientar y dar seguimiento a tu estado de salud.',
+    accent: '#14B8A6',
+    tag: 'Consulta',
+    gradient: 'linear-gradient(160deg, #0F172A 0%, #134E4A 50%, #042F2E 100%)',
   },
   {
-    title: 'Enf. No Transmisibles',
+    title: 'Control de Enfermedades Crónicas',
     level: 'Adultos',
     duration: '30 min',
-    description: 'Atención y control especializado de Hipertensión (HTA), Diabetes (DM), Riesgo Cardiovascular (RCV) y Síndrome Metabólico.',
-    accent: '#A78BFA',
-    tag: 'Crónicos',
-    gradient: 'linear-gradient(160deg, #1e1b4b 0%, #312e81 50%, #1e3a8a 100%)',
+    description: 'Seguimiento y manejo de hipertensión, diabetes y otras condiciones crónicas para mantener tu salud bajo control.',
+    accent: '#2DD4BF',
+    tag: 'Seguimiento',
+    gradient: 'linear-gradient(160deg, #0B2B29 0%, #134E4A 50%, #0D9488 100%)',
   },
   {
-    title: 'Sobrepeso y Obesidad',
+    title: 'Chequeo Preventivo Anual',
     level: 'Jóvenes y Adultos',
-    duration: '40 min',
-    description: 'Evaluación integral y biopsicosocial para el abordaje y tratamiento de sobrepeso y obesidad, con plan intervencionista y terapéutico.',
-    accent: '#38BDF8',
-    tag: 'Medicina Familiar',
-    gradient: 'linear-gradient(160deg, #0c1445 0%, #1e3a8a 50%, #164e63 100%)',
-  },
-  {
-    title: 'Salud de la Mujer',
-    level: 'Mujeres',
-    duration: '30 min',
-    description: 'Atención integral para la mujer en todas sus etapas, incluyendo asesoría en planificación, prevención y bienestar femenino.',
-    accent: '#A78BFA',
-    tag: 'Bienestar',
-    gradient: 'linear-gradient(160deg, #1e1b4b 0%, #4c1d95 50%, #0f172a 100%)',
-  },
-  {
-    title: 'Salud Mental',
-    level: 'Adolescentes y Adultos',
     duration: '45 min',
-    description: 'Espacio de escucha activa y orientación profesional para fortalecer el bienestar emocional, promover el autoconocimiento y favorecer una mejor calidad de vida.',
-    accent: '#38BDF8',
-    tag: 'Cuidado Integral',
-    gradient: 'linear-gradient(160deg, #0f172a 0%, #1e3a8a 50%, #0c4a6e 100%)',
+    description: 'Evaluación completa y tamizajes para detectar a tiempo factores de riesgo y cuidar tu salud a largo plazo.',
+    accent: '#14B8A6',
+    tag: 'Preventivo',
+    gradient: 'linear-gradient(160deg, #0F172A 0%, #115E59 50%, #042F2E 100%)',
   },
   {
-    title: 'Certificado Médico Escolar',
-    level: 'Niños y Adolescentes',
+    title: 'Vacunación e Inmunización',
+    level: 'Todas las edades',
+    duration: '20 min',
+    description: 'Aplicación y orientación sobre el esquema de vacunación según edad y necesidades de cada paciente.',
+    accent: '#2DD4BF',
+    tag: 'Prevención',
+    gradient: 'linear-gradient(160deg, #0B2B29 0%, #134E4A 50%, #0F172A 100%)',
+  },
+  {
+    title: 'Valoración Pediátrica',
+    level: 'Niños',
+    duration: '30 min',
+    description: 'Control de crecimiento y desarrollo, con orientación a madres y padres sobre el cuidado de sus hijos.',
+    accent: '#14B8A6',
+    tag: 'Pediatría',
+    gradient: 'linear-gradient(160deg, #0F172A 0%, #134E4A 50%, #042F2E 100%)',
+  },
+  {
+    title: 'Control Prenatal',
+    level: 'Mujeres gestantes',
+    duration: '30 min',
+    description: 'Acompañamiento médico durante el embarazo, con seguimiento periódico de la salud materna y fetal.',
+    accent: '#2DD4BF',
+    tag: 'Materno',
+    gradient: 'linear-gradient(160deg, #0B2B29 0%, #134E4A 50%, #0F172A 100%)',
+  },
+  {
+    title: 'Certificados Médicos',
+    level: 'Todas las edades',
     duration: '15 min',
-    description: 'Valoración rápida y expedición de certificados de aptitud física y escolar para instituciones educativas y actividades deportivas.',
-    accent: '#A78BFA',
+    description: 'Expedición de certificados médicos laborales, deportivos y escolares con valoración rápida.',
+    accent: '#14B8A6',
     tag: 'Trámite Rápido',
-    gradient: 'linear-gradient(160deg, #1e1b4b 0%, #312e81 50%, #0f172a 100%)',
+    gradient: 'linear-gradient(160deg, #0F172A 0%, #042F2E 50%, #134E4A 100%)',
   },
   {
-    title: 'Terapia Neuropática Especializada',
-    level: 'Adultos y Adultos Mayores',
-    duration: '45 min',
-    description: 'Tratamiento especializado del dolor neuropático mediante técnicas terapéuticas dirigidas a mejorar la función nerviosa y la calidad de vida.',
-    accent: '#38BDF8',
-    tag: 'Manejo del Dolor',
-    gradient: 'linear-gradient(160deg, #0f172a 0%, #0c4a6e 50%, #1e3a8a 100%)',
-  },
-  {
-    title: 'Terapias Complementarias',
-    level: 'Jóvenes y Adultos',
-    duration: '30 min',
-    description: 'Terapias complementarias orientadas al alivio de la tensión muscular, la mejora de la circulación y la relajación integral.',
-    accent: '#A78BFA',
-    tag: 'Bienestar Físico',
-    gradient: 'linear-gradient(160deg, #1e1b4b 0%, #4c1d95 50%, #1e3a8a 100%)',
+    title: 'Consulta Virtual',
+    level: 'Todas las edades',
+    duration: '20 min',
+    description: 'Atención médica a distancia para orientación, seguimiento y resolución de dudas sin salir de casa.',
+    accent: '#2DD4BF',
+    tag: 'Telemedicina',
+    gradient: 'linear-gradient(160deg, #0B2B29 0%, #134E4A 50%, #0D9488 100%)',
   },
 ]
 
@@ -93,6 +82,7 @@ function ClassCard({ title, level, duration, description, accent, tag, gradient,
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-50px' })
   const navigate = useNavigate()
+  const isBlue = accent === '#2DD4BF'
 
   return (
     <motion.div
@@ -119,7 +109,7 @@ function ClassCard({ title, level, duration, description, accent, tag, gradient,
         {/* Inner glow */}
         <div style={{
           position: 'absolute', inset: 0,
-          background: `radial-gradient(ellipse 70% 50% at 20% 20%, rgba(139,92,246,0.18) 0%, transparent 70%)`,
+          background: `radial-gradient(ellipse 70% 50% at 20% 20%, rgba(68,207,203,0.18) 0%, transparent 70%)`,
           pointerEvents: 'none',
         }} />
 
@@ -140,13 +130,13 @@ function ClassCard({ title, level, duration, description, accent, tag, gradient,
               padding: '0.3rem 0.8rem',
               marginBottom: '1.5rem',
               borderRadius: '9999px',
-              background: `rgba(${accent === '#A78BFA' ? '167,139,250' : '56,189,248'},0.20)`,
+              background: isBlue ? 'rgba(96,165,250,0.20)' : 'rgba(56,189,248,0.20)',
               border: `1px solid ${accent}40`,
               fontFamily: 'Inter, sans-serif',
               fontSize: '0.62rem',
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
-              color: accent === '#A78BFA' ? '#C4B5FD' : '#7DD3FC',
+              color: isBlue ? '#5EEAD4' : '#5EEAD4',
               backdropFilter: 'blur(6px)',
             }}>
               {tag}
@@ -168,15 +158,15 @@ function ClassCard({ title, level, duration, description, accent, tag, gradient,
           </div>
 
           <h3
-            className="font-cormorant"
-            style={{ fontSize: '2rem', fontWeight: 500, color: '#FFFFFF', lineHeight: 1.1, marginBottom: '0.75rem' }}
+            className="font-manrope"
+            style={{ fontSize: '1.6rem', fontWeight: 700, color: '#FFFFFF', lineHeight: 1.2, marginBottom: '0.75rem' }}
           >
             {title}
           </h3>
 
           {description && (
             <p
-              style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.82rem', lineHeight: 1.7, color: 'rgba(251,249,248,0.62)', fontWeight: 300, marginBottom: '1.25rem' }}
+              style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.82rem', lineHeight: 1.7, color: 'rgba(255,255,255,0.65)', fontWeight: 400, marginBottom: '1.25rem' }}
             >
               {description}
             </p>
@@ -198,7 +188,7 @@ function ClassCard({ title, level, duration, description, accent, tag, gradient,
               fontSize: '0.7rem',
               letterSpacing: '0.14em',
               textTransform: 'uppercase',
-              color: accent === '#A78BFA' ? '#C4B5FD' : '#7DD3FC',
+              color: isBlue ? '#5EEAD4' : '#5EEAD4',
               fontWeight: 500,
               cursor: 'pointer',
             }}
@@ -218,24 +208,12 @@ export default function Classes() {
   const navigate = useNavigate()
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-100px' })
-  const { services } = useDocServices()
 
-  // Servicios del catálogo CuidameDoc (creados desde admin o desde la app de la
-  // doctora); si la API falla o viene vacía se muestra el fallback estático.
-  const cards = services.length > 0
-    ? services.map((s, i) => ({
-        key: `svc-${s.prof_service_id}`,
-        title: s.name.trim(),
-        level: undefined as string | undefined,
-        duration: `${s.duration_minutes} min`,
-        description: s.description?.trim() || undefined,
-        tag: categoryLabel(s.category),
-        ...CARD_STYLES[i % CARD_STYLES.length],
-      }))
-    : CLASSES.map(c => ({ key: c.title, ...c, level: c.level as string | undefined, description: c.description as string | undefined }))
+  // Catálogo propio de OpiMed, independiente del catálogo real en CuidameDoc.
+  const cards = CLASSES.map(c => ({ key: c.title, ...c }))
 
   return (
-    <section id="servicios" style={{ background: '#F3F0FB', padding: 'clamp(4rem, 12vw, 9rem) 1.5rem' }}>
+    <section id="servicios" style={{ background: '#F0FDFA', padding: 'clamp(4rem, 12vw, 9rem) 1.5rem' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         {/* Header */}
         <div ref={ref} style={{ marginBottom: '4rem', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-end', gap: '2rem' }}>
@@ -245,12 +223,10 @@ export default function Classes() {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
               style={{
-                fontFamily: 'Inter, sans-serif', fontSize: '0.72rem', letterSpacing: '0.35em',
-                textTransform: 'uppercase', color: '#8B5CF6', marginBottom: '1rem',
-                display: 'flex', alignItems: 'center', gap: '0.75rem',
+                fontFamily: 'Inter, sans-serif', fontSize: '0.78rem', letterSpacing: '0.08em',
+                textTransform: 'uppercase', color: '#0D9488', fontWeight: 600, marginBottom: '1rem',
               }}
             >
-              <span style={{ display: 'inline-block', width: 28, height: 1, background: 'linear-gradient(90deg,#8B5CF6,#3B82F6)' }} />
               Nuestros Servicios
             </motion.p>
 
@@ -258,10 +234,10 @@ export default function Classes() {
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="font-cormorant"
-              style={{ fontSize: 'clamp(2.8rem, 5vw, 4.5rem)', fontWeight: 300, lineHeight: 1.05, color: '#1B1C1C' }}
+              className="font-manrope"
+              style={{ fontSize: 'clamp(2.4rem, 4.5vw, 3.6rem)', fontWeight: 800, lineHeight: 1.08, letterSpacing: '-0.02em', color: '#0F172A' }}
             >
-              Servicios <em style={{ fontStyle: 'italic', color: '#8B5CF6' }}>Médicos</em>
+              Servicios Médicos
             </motion.h2>
           </div>
 
@@ -271,7 +247,8 @@ export default function Classes() {
             transition={{ duration: 0.7, delay: 0.3 }}
             href="/agendar"
             onClick={(e) => { e.preventDefault(); navigate('/agendar'); }}
-            whileHover={{ scale: 1.04, boxShadow: '0 8px 32px rgba(139,92,246,0.30)' }}
+            whileHover={{ scale: 1.04, boxShadow: '0 8px 32px rgba(13,148,136,0.30)' }}
+            whileTap={{ scale: 0.97 }}
             className="brand-gradient"
             style={{
               padding: '0.85rem 2rem',
@@ -284,7 +261,8 @@ export default function Classes() {
               textTransform: 'uppercase',
               fontWeight: 600,
               whiteSpace: 'nowrap',
-              boxShadow: '0 6px 24px rgba(139,92,246,0.25)',
+              boxShadow: '0 6px 24px rgba(13,148,136,0.22)',
+              transition: 'box-shadow 0.3s ease',
             }}
           >
             Agendar Cita

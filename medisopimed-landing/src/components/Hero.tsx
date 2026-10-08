@@ -27,7 +27,7 @@ function BrandOrb({ size, top, left, delay, blur }: { size: number; top: string;
         width: size,
         height: size,
         borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(139,92,246,0.55) 0%, rgba(59,130,246,0.15) 60%, transparent 100%)',
+        background: 'radial-gradient(circle, rgba(13,148,136,0.50) 0%, rgba(68,207,203,0.18) 60%, transparent 100%)',
         filter: `blur(${blur}px)`,
         pointerEvents: 'none',
         zIndex: 2,
@@ -52,8 +52,8 @@ export default function Hero() {
       {/* ── Video Layer ─────────────────────────────── */}
       <motion.div style={{ y: videoY, position: 'absolute', inset: 0, zIndex: 0 }}>
         <iframe
-          src="https://player.cloudinary.com/embed/?cloud_name=swuufn3p&public_id=IMG_8687&autoplay=true&loop=true&muted=true&controls=false"
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none', pointerEvents: 'none', transform: 'scale(1.18)', transformOrigin: 'center center' }}
+          src="https://player.cloudinary.com/embed/?cloud_name=swuufn3p&public_id=gemini_generated_video_0e08b801&autoplay=true&loop=true&muted=true&controls=false"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none', pointerEvents: 'none', transform: 'scale(1.05)', transformOrigin: 'center center' }}
           allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
           title="Hero Video"
         />
@@ -75,10 +75,10 @@ export default function Hero() {
           position: 'absolute', inset: 0, zIndex: 1,
           background: 'linear-gradient(to top, rgba(27,28,28,0.55) 0%, transparent 55%)',
         }} />
-        {/* Warm top-left vignette — editorial light leak */}
+        {/* Top-left vignette — editorial light leak */}
         <div style={{
           position: 'absolute', inset: 0, zIndex: 1,
-          background: 'radial-gradient(ellipse 80% 60% at 10% 10%, rgba(139,92,246,0.15) 0%, transparent 65%)',
+          background: 'radial-gradient(ellipse 80% 60% at 10% 10%, rgba(68,207,203,0.16) 0%, transparent 65%)',
         }} />
       </motion.div>
 
@@ -106,7 +106,7 @@ export default function Hero() {
             width: 3,
             height: 3,
             borderRadius: '50%',
-            background: '#38BDF8',
+            background: '#14B8A6',
             boxShadow: '0 0 6px 2px rgba(56,189,248,0.7)',
             zIndex: 3,
             pointerEvents: 'none',
@@ -131,76 +131,42 @@ export default function Hero() {
           animate="show"
           variants={{ show: { transition: { staggerChildren: 0.1 } } }}
         >
-          {/* Eyebrow */}
+          {/* Eyebrow — frase célebre de medicina */}
           <motion.p
             variants={FADE_UP}
             custom={0}
             style={{
               fontFamily: 'Inter, sans-serif',
-              fontSize: '0.72rem',
-              letterSpacing: '0.35em',
-              textTransform: 'uppercase',
-              color: '#8B5CF6',
-              marginBottom: '1.6rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.75rem',
-            }}
-          >
-            <span style={{ display: 'block', width: 32, height: 1, background: 'linear-gradient(90deg, #8B5CF6, #3B82F6)' }} />
-            Medicina Familiar · Atención Integral · Cercanía
-          </motion.p>
-
-          {/* Main Headline */}
-          <motion.h1
-            variants={FADE_UP}
-            custom={1}
-            className="font-cormorant"
-            style={{
-              fontSize: 'clamp(2.4rem, 4.5vw, 5rem)',
-              lineHeight: 0.88,
-              letterSpacing: '-0.04em',
-              color: '#FFFFFF',
-              fontWeight: 300,
-              marginBottom: '2rem',
-              maxWidth: '700px',
-            }}
-          >
-            CUIDAMOS<br />
-            DE TI Y<br />
-            DE TU<br />
-            <em style={{ fontStyle: 'italic', fontWeight: 300 }}>FAMILIA</em>
-          </motion.h1>
-
-          {/* Subtext */}
-          <motion.p
-            variants={FADE_UP}
-            custom={2}
-            style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: 'clamp(0.92rem, 1.4vw, 1.05rem)',
-              lineHeight: 1.75,
-              color: 'rgba(251,249,248,0.78)',
-              maxWidth: '540px',
+              fontSize: 'clamp(1.1rem, 2.2vw, 1.6rem)',
+              fontStyle: 'italic',
+              color: 'rgba(255,255,255,0.9)',
               marginBottom: '3rem',
-              fontWeight: 300,
+              display: 'flex',
+              alignItems: 'baseline',
+              gap: '1rem',
+              maxWidth: '620px',
             }}
           >
-            La Dra. Diana Cristina Medina Camargo te ofrece atención médica familiar
-            personalizada, cercana y profesional, para ti y los tuyos.
+            <span style={{ display: 'inline-block', width: 28, height: 1, background: 'linear-gradient(90deg, #0D9488, #44CFCB)', flexShrink: 0, alignSelf: 'center' }} />
+            <span>
+              "Donde se ama la medicina, se ama también a la humanidad."
+              <span style={{ display: 'block', fontStyle: 'normal', fontSize: '0.78rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#5EEAD4', marginTop: '0.6rem' }}>
+                — Hipócrates
+              </span>
+            </span>
           </motion.p>
 
           {/* CTA Buttons */}
           <motion.div
             variants={FADE_UP}
-            custom={3}
+            custom={1}
             style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}
           >
             {/* Primary */}
             <motion.a
               href="/agendar"
               onClick={(e) => { e.preventDefault(); navigate('/agendar'); }}
-              whileHover={{ scale: 1.05, boxShadow: '0 16px 48px rgba(139,92,246,0.50)' }}
+              whileHover={{ scale: 1.05, boxShadow: '0 16px 48px rgba(68,207,203,0.45)' }}
               whileTap={{ scale: 0.97 }}
               className="brand-gradient"
               style={{
@@ -213,7 +179,7 @@ export default function Hero() {
                 letterSpacing: '0.12em',
                 textTransform: 'uppercase',
                 fontWeight: 600,
-                boxShadow: '0 8px 32px rgba(139,92,246,0.35)',
+                boxShadow: '0 8px 32px rgba(13,148,136,0.40)',
                 transition: 'box-shadow 0.4s ease',
               }}
             >
@@ -225,7 +191,7 @@ export default function Hero() {
               href="#servicios"
               whileHover={{
                 scale: 1.05,
-                boxShadow: '0 8px 32px rgba(139,92,246,0.25)',
+                boxShadow: '0 8px 32px rgba(68,207,203,0.20)',
                 backgroundColor: 'rgba(255,255,255,0.18)',
               }}
               whileTap={{ scale: 0.97 }}
@@ -240,7 +206,7 @@ export default function Hero() {
                 textTransform: 'uppercase',
                 fontWeight: 500,
                 background: 'rgba(255,255,255,0.10)',
-                border: '1px solid rgba(139,92,246,0.45)',
+                border: '1px solid rgba(255,255,255,0.35)',
                 backdropFilter: 'blur(8px)',
                 transition: 'background-color 0.25s ease, box-shadow 0.25s ease',
               }}
@@ -274,7 +240,7 @@ export default function Hero() {
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-          style={{ width: 1, height: 40, background: 'linear-gradient(180deg, rgba(139,92,246,0.8), transparent)' }}
+          style={{ width: 1, height: 40, background: 'linear-gradient(180deg, rgba(68,207,203,0.8), transparent)' }}
         />
       </motion.div>
     </section>

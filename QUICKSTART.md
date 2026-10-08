@@ -1,11 +1,11 @@
-# 🚀 medisdiana Project - Quick Start
+# 🚀 medisopimed Project - Quick Start
 
-El proyecto **medisdiana** ha sido creado exitosamente con una arquitectura moderna, modular y escalable.
+El proyecto **medisopimed** ha sido creado exitosamente con una arquitectura moderna, modular y escalable.
 
 ## 📁 Estructura Creada
 
 ```
-medisdiana/
+medisopimed/
 ├── apps/
 │   ├── frontend/          ✅ React + Vite (Puerto 5173)
 │   └── backend/           ✅ Express.js + Node.js (Puerto 3000)
@@ -23,7 +23,7 @@ medisdiana/
 
 ### 1. Abrir en VS Code
 ```bash
-cd "c:\Users\julia\Dropbox\My PC (LAPTOP-LKGFJOOJ)\Downloads\medisdiana"
+cd "c:\Users\julia\Dropbox\My PC (LAPTOP-LKGFJOOJ)\Downloads\medisopimed"
 code .
 ```
 
@@ -38,7 +38,7 @@ pnpm install
 cp apps/backend/.env.example apps/backend/.env.local
 
 # Editar con credenciales de PostgreSQL
-# DATABASE_URL=postgresql://usuario:contraseña@localhost:5432/medisdiana_dev
+# DATABASE_URL=postgresql://usuario:contraseña@localhost:5432/medisopimed_dev
 ```
 
 ### 4. Iniciar Servidores (después de configurar BD)
@@ -80,8 +80,8 @@ API Health: http://localhost:3007/api/health
 ```bash
 # Desarrollo
 pnpm dev                           # Inicia todos los servidores
-pnpm -F medisdiana-landing dev      # Solo frontend
-pnpm -F @medisdiana/backend dev    # Solo backend
+pnpm -F medisopimed-landing dev      # Solo frontend
+pnpm -F @medisopimed/backend dev    # Solo backend
 
 # Build
 pnpm build                         # Construye todo
@@ -93,7 +93,7 @@ pnpm lint                          # Ejecuta ESLint
 pnpm format                        # Formatea con Prettier
 
 # Base de datos
-pnpm -F @medisdiana/backend migrate # Corre migraciones
+pnpm -F @medisopimed/backend migrate # Corre migraciones
 
 # Tests
 pnpm test                          # Ejecuta tests

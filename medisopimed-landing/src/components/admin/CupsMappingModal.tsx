@@ -1,4 +1,4 @@
-// medisdiana-landing/src/components/admin/CupsMappingModal.tsx
+// medisopimed-landing/src/components/admin/CupsMappingModal.tsx
 import React, { useEffect, useState } from 'react';
 import { X, Search, Loader2 } from 'lucide-react';
 
@@ -79,7 +79,7 @@ export const CupsMappingModal: React.FC<Props> = ({ serviceGroup, serviceSubgrou
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Buscar por código o nombre del procedimiento..."
-                style={{ width: '100%', padding: '10px 12px 10px 36px', borderRadius: 10, border: '1.5px solid #DDD6FE', fontSize: 14, boxSizing: 'border-box' }}
+                style={{ width: '100%', padding: '10px 12px 10px 36px', borderRadius: 10, border: '1.5px solid #CCFBF1', fontSize: 14, boxSizing: 'border-box' }}
               />
             </div>
             <div style={{ overflowY: 'auto', flex: 1 }}>
@@ -94,7 +94,7 @@ export const CupsMappingModal: React.FC<Props> = ({ serviceGroup, serviceSubgrou
                     disabled={saving}
                     onClick={() => selectCandidate(c)}
                     style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 12px', borderRadius: 8, border: 'none', background: 'transparent', cursor: saving ? 'not-allowed' : 'pointer', fontSize: 13 }}
-                    onMouseEnter={e => (e.currentTarget.style.background = '#F3F0FB')}
+                    onMouseEnter={e => (e.currentTarget.style.background = '#F0FDFA')}
                     onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                   >
                     <strong>{c.cupsCode}</strong> — {c.procedureName}

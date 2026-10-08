@@ -3,9 +3,9 @@ import { Menu } from 'lucide-react';
 import { AdminSidebar } from './AdminSidebar';
 import './MainDashboard.css';
 
-const C = { gold: '#8B5CF6', bg: '#FFFFFF', white: '#FFFFFF', text: '#1B1C1C', textMedium: '#5E5E5E', border: '#DDD6FE' };
-const FONT_BODONI = '"Bodoni Moda", Georgia, serif';
-const FONT_INTER = '"Hanken Grotesk", Inter, system-ui, sans-serif';
+const C = { gold: '#0D9488', bg: '#FFFFFF', white: '#FFFFFF', text: '#0F172A', textMedium: '#5E5E5E', border: '#CCFBF1' };
+const FONT_BODONI = '"Manrope", Georgia, serif';
+const FONT_INTER = '"Inter", Inter, system-ui, sans-serif';
 
 export const CreateLocation: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)

@@ -1,4 +1,4 @@
-// medisdiana-landing/src/components/admin/serviciosCatalogo.ts
+// medisopimed-landing/src/components/admin/serviciosCatalogo.ts
 
 export interface Grupo {
   code: string;

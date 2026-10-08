@@ -16,9 +16,9 @@ interface Env {
   EMAIL_FROM: string;
   ADMIN_EMAIL: string;
   DOC_API_URL: string;
-  DOC_DIANA_EMAIL: string;
-  DOC_DIANA_PASSWORD: string;
-  DIANA_INTERNAL_API_KEY: string;
+  DOC_OPI_MED_EMAIL: string;
+  DOC_OPI_MED_PASSWORD: string;
+  OPI_MED_INTERNAL_API_KEY: string;
 }
 
 const requiredEnvVars = ['DATABASE_URL', 'JWT_SECRET'];
@@ -45,7 +45,7 @@ export const env: Env = {
   EMAIL_FROM: process.env.EMAIL_USER || '',
   ADMIN_EMAIL: process.env.ADMIN_EMAIL || process.env.EMAIL_USER || '',
   DOC_API_URL: process.env.DOC_API_URL || 'https://doc-api.cuidame.tech/api',
-  DOC_DIANA_EMAIL: process.env.DOC_DIANA_EMAIL || '',
-  DOC_DIANA_PASSWORD: process.env.DOC_DIANA_PASSWORD || '',
-  DIANA_INTERNAL_API_KEY: process.env.DIANA_INTERNAL_API_KEY || '',
+  DOC_OPI_MED_EMAIL: process.env.DOC_OPI_MED_EMAIL || '',
+  DOC_OPI_MED_PASSWORD: process.env.DOC_OPI_MED_PASSWORD || '',
+  OPI_MED_INTERNAL_API_KEY: process.env.OPI_MED_INTERNAL_API_KEY || '',
 };

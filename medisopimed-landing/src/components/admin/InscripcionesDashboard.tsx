@@ -6,14 +6,14 @@ import { AdminSidebar } from './AdminSidebar'
 import './MainDashboard.css'
 
 const C = {
-  gold: '#8B5CF6', goldLight: '#3B82F6',
-  bgPanel: '#F3F0FB', white: '#FFFFFF',
-  text: '#1B1C1C', textBrown: '#475569',
+  gold: '#0D9488', goldLight: '#44CFCB',
+  bgPanel: '#F0FDFA', white: '#FFFFFF',
+  text: '#0F172A', textBrown: '#475569',
   textMedium: '#5E5E5E', textMuted: '#94A3B8',
-  border: '#DDD6FE', borderLight: '#DDD6FE',
+  border: '#CCFBF1', borderLight: '#CCFBF1',
 }
-const FONT_BODONI = '"Bodoni Moda", Georgia, serif'
-const FONT_INTER  = '"Hanken Grotesk", Inter, system-ui, sans-serif'
+const FONT_BODONI = '"Manrope", Georgia, serif'
+const FONT_INTER  = '"Inter", Inter, system-ui, sans-serif'
 
 type Status = 'pending' | 'approved' | 'rejected' | 'cancelled'
 
@@ -162,7 +162,7 @@ export const InscripcionesDashboard: React.FC = () => {
         {/* TOPBAR */}
         <header style={{ height: 72, background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.borderLight}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', flexShrink: 0, position: 'sticky', top: 0, zIndex: 30 }}>
           <h2 style={{ fontFamily: FONT_BODONI, fontSize: 24, fontWeight: 600, color: C.gold, margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
-            MEDIS <span style={{ fontSize: 12, fontFamily: FONT_INTER, color: C.textMuted, fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase' }}>/ Inscripciones</span>
+            OPIEKA <span style={{ fontSize: 12, fontFamily: FONT_INTER, color: C.textMuted, fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase' }}>/ Inscripciones</span>
           </h2>
           <button onClick={load} style={{ width: 38, height: 38, borderRadius: 10, background: C.bgPanel, border: `1px solid ${C.borderLight}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: C.gold }}>
             <RefreshCw size={15} className={loading ? 'spin' : ''} />
@@ -188,7 +188,7 @@ export const InscripcionesDashboard: React.FC = () => {
             {/* Stats */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 24 }}>
               {([
-                { label: 'Total',      value: counts.all,      color: C.gold,    bg: 'rgba(139,92,246,0.07)' },
+                { label: 'Total',      value: counts.all,      color: C.gold,    bg: 'rgba(13,148,136,0.07)' },
                 { label: 'Pendientes', value: counts.pending,   color: '#B45309', bg: 'rgba(234,179,8,0.08)' },
                 { label: 'Aprobadas',  value: counts.approved,  color: '#16A34A', bg: 'rgba(34,197,94,0.07)' },
                 { label: 'Rechazadas', value: counts.rejected,  color: '#DC2626', bg: 'rgba(239,68,68,0.07)' },
@@ -349,7 +349,7 @@ export const InscripcionesDashboard: React.FC = () => {
         {rejectModal && (
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setRejectModal(null)}
-              style={{ position: 'fixed', inset: 0, background: 'rgba(27,28,28,0.45)', backdropFilter: 'blur(6px)', zIndex: 100 }} />
+              style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.45)', backdropFilter: 'blur(6px)', zIndex: 100 }} />
             <motion.div initial={{ opacity: 0, scale: 0.96, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96 }}
               style={{ position: 'fixed', inset: 0, zIndex: 101, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', pointerEvents: 'none' }}>
               <div style={{ background: C.white, borderRadius: 18, width: '100%', maxWidth: 420, padding: '28px', boxShadow: '0 24px 80px rgba(0,0,0,0.16)', pointerEvents: 'all' }}>
@@ -387,7 +387,7 @@ export const InscripcionesDashboard: React.FC = () => {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => { setChargeModal(null); setChargeAmount('') }}
-              style={{ position: 'fixed', inset: 0, background: 'rgba(27,28,28,0.45)', backdropFilter: 'blur(6px)', zIndex: 110 }} />
+              style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.45)', backdropFilter: 'blur(6px)', zIndex: 110 }} />
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
               style={{ position: 'fixed', inset: 0, zIndex: 111, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', pointerEvents: 'none' }}>
               <div style={{ background: C.white, borderRadius: 18, padding: '28px', maxWidth: 380, width: '100%', boxShadow: '0 20px 60px rgba(0,0,0,0.15)', pointerEvents: 'all' }}>

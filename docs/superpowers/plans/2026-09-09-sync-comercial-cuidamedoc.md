@@ -59,7 +59,7 @@ Reemplazar el contenido completo del archivo por:
 // ============================================================
 // apps/backend/src/services/docServiceSync.service.ts
 // Motor genérico de sincronización con CuidameDoc (professional_id=12,
-// Diana). Publica/despublica un servicio a partir de una fila local cuya
+// OpiMed). Publica/despublica un servicio a partir de una fila local cuya
 // columna `doc_prof_service_id` trackea el `prof_service_id` de
 // CuidameDoc — hoy esa fila es un comercial (`service_commercial`), antes
 // (fase anterior, ya no se llama así) era el operativo (`service_catalog`);
@@ -783,7 +783,7 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 - Create: `apps/backend/src/services/commercialDocSync.service.test.ts`
 
 **Interfaces:**
-- Consumes: `ensureDocSync`, `EnsureDocSyncResult` (Task 1); `ServiceCatalogRepository.findWithRepresentativeOffer` (Task 2); `ServiceCommercialRepository.findPublishedByOperativoId` (Task 2); `ServiceCommercialPublic` (`@medisdiana/shared-types`, ya existe: `{ id, name, description, imageUrl, operativoId, operativoName, isActive, docProfServiceId, createdAt, updatedAt }`).
+- Consumes: `ensureDocSync`, `EnsureDocSyncResult` (Task 1); `ServiceCatalogRepository.findWithRepresentativeOffer` (Task 2); `ServiceCommercialRepository.findPublishedByOperativoId` (Task 2); `ServiceCommercialPublic` (`@medisopimed/shared-types`, ya existe: `{ id, name, description, imageUrl, operativoId, operativoName, isActive, docProfServiceId, createdAt, updatedAt }`).
 - Produces: `export async function syncCommercialToDoc(commercial: ServiceCommercialPublic, active: boolean): Promise<EnsureDocSyncResult>`; `export async function resyncPublishedCommercialsForOperativo(operativoId: string): Promise<Array<{ id: string; ok: boolean; error?: string }>>` — ambos consumidos por Task 4 y Task 5.
 
 - [ ] **Step 1: Write the failing tests**
@@ -949,7 +949,7 @@ Create `apps/backend/src/services/commercialDocSync.service.ts`:
 import { ServiceCatalogRepository } from '@repositories/services.repository.js';
 import { ServiceCommercialRepository } from '@repositories/serviceCommercial.repository.js';
 import { ensureDocSync, type EnsureDocSyncResult } from './docServiceSync.service.js';
-import type { ServiceCommercialPublic } from '@medisdiana/shared-types';
+import type { ServiceCommercialPublic } from '@medisopimed/shared-types';
 
 /**
  * Publica (active=true) o despublica (active=false) un comercial en
@@ -1189,7 +1189,7 @@ import type { Request, Response } from 'express';
 import { ServiceCommercialRepository } from '@repositories/serviceCommercial.repository.js';
 import { ServiceCatalogRepository } from '@repositories/services.repository.js';
 import { syncCommercialToDoc } from '@services/commercialDocSync.service.js';
-import type { ServiceCommercialPublic } from '@medisdiana/shared-types';
+import type { ServiceCommercialPublic } from '@medisopimed/shared-types';
 
 function isForeignKeyViolation(err: unknown): boolean {
   return (err as { code?: string })?.code === '23503';

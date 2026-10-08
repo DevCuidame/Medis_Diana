@@ -12,7 +12,7 @@ Extend from this package's ESLint config:
 
 ```json
 {
-  "extends": ["@medisdiana/config/eslint"]
+  "extends": ["@medisopimed/config/eslint"]
 }
 ```
 
@@ -22,7 +22,7 @@ Extend from the base TypeScript config:
 
 ```json
 {
-  "extends": "@medisdiana/config/tsconfig"
+  "extends": "@medisopimed/config/tsconfig"
 }
 ```
 
@@ -32,7 +32,7 @@ Use the shared Prettier config:
 
 ```json
 {
-  "prettier": "@medisdiana/config/prettier"
+  "prettier": "@medisopimed/config/prettier"
 }
 ```
 

@@ -1,4 +1,4 @@
--- Schema initialization for medisdiana
+-- Schema initialization for medisopimed
 -- This is a placeholder for the complete schema
 
 -- Users table

@@ -5,14 +5,14 @@ import { AnimatePresence, motion } from 'framer-motion'
 
 // ─── Design tokens (same as AdminProfessionals) ───────────────────────────────
 const C = {
-  gold: '#8B5CF6', goldLight: '#3B82F6',
-  bg: '#FFFFFF', bgPanel: '#F3F0FB', bgSecondary: '#F3F0FB',
-  white: '#FFFFFF', text: '#1B1C1C', textBrown: '#475569',
+  gold: '#0D9488', goldLight: '#44CFCB',
+  bg: '#FFFFFF', bgPanel: '#F0FDFA', bgSecondary: '#F0FDFA',
+  white: '#FFFFFF', text: '#0F172A', textBrown: '#475569',
   textMedium: '#5E5E5E', textMuted: '#94A3B8',
-  border: '#DDD6FE', borderLight: '#DDD6FE',
+  border: '#CCFBF1', borderLight: '#CCFBF1',
 }
-const FONT_BODONI = '"Bodoni Moda", Georgia, serif'
-const FONT_INTER  = '"Hanken Grotesk", Inter, system-ui, sans-serif'
+const FONT_BODONI = '"Manrope", Georgia, serif'
+const FONT_INTER  = '"Inter", Inter, system-ui, sans-serif'
 
 const STEPS = [
   { n: 1, label: 'Identidad' },
@@ -412,7 +412,7 @@ export function CreateProfessionalModal({ onClose, onSuccess }: Props) {
                         <button
                           key={t} type="button"
                           onClick={() => { setProfType(t); if (t === 'dependiente') setSchedule([]) }}
-                          style={{ flex: 1, padding: '12px 16px', borderRadius: 10, border: `2px solid ${professionalType === t ? C.gold : C.border}`, background: professionalType === t ? 'rgba(139,92,246,0.07)' : 'transparent', color: professionalType === t ? C.gold : C.textBrown, fontWeight: 700, fontSize: 13, cursor: 'pointer', transition: 'all 0.18s', fontFamily: FONT_INTER }}
+                          style={{ flex: 1, padding: '12px 16px', borderRadius: 10, border: `2px solid ${professionalType === t ? C.gold : C.border}`, background: professionalType === t ? 'rgba(13,148,136,0.07)' : 'transparent', color: professionalType === t ? C.gold : C.textBrown, fontWeight: 700, fontSize: 13, cursor: 'pointer', transition: 'all 0.18s', fontFamily: FONT_INTER }}
                         >
                           <div style={{ fontSize: 14, fontWeight: 800, marginBottom: 3 }}>
                             {t === 'dependiente' ? '🏢 Dependiente' : '🕒 Independiente'}
@@ -444,7 +444,7 @@ export function CreateProfessionalModal({ onClose, onSuccess }: Props) {
                             </div>
 
                             {/* Add slot form */}
-                            <div style={{ background: 'rgba(139,92,246,0.04)', border: `1.5px solid ${C.borderLight}`, borderRadius: 12, padding: '14px', marginBottom: 12 }}>
+                            <div style={{ background: 'rgba(13,148,136,0.04)', border: `1.5px solid ${C.borderLight}`, borderRadius: 12, padding: '14px', marginBottom: 12 }}>
                               {/* Day chips */}
                               <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
                                 {DIAS.map(d => (
@@ -491,7 +491,7 @@ export function CreateProfessionalModal({ onClose, onSuccess }: Props) {
                                     return (
                                       <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: C.white, border: `1px solid ${C.borderLight}`, borderRadius: 9, padding: '8px 12px' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                          <span style={{ fontSize: 11, fontWeight: 800, color: C.gold, background: 'rgba(139,92,246,0.08)', padding: '3px 8px', borderRadius: 6 }}>{day?.name}</span>
+                                          <span style={{ fontSize: 11, fontWeight: 800, color: C.gold, background: 'rgba(13,148,136,0.08)', padding: '3px 8px', borderRadius: 6 }}>{day?.name}</span>
                                           <Clock size={12} color={C.textMuted} />
                                           <span style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{s.startTime} – {s.endTime}</span>
                                         </div>
@@ -553,7 +553,7 @@ export function CreateProfessionalModal({ onClose, onSuccess }: Props) {
                   <div style={{ position: 'relative' }}>
                     <Mail size={14} color={C.textMuted} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                     <input
-                      type="email" value={form.email} placeholder="maria@MEDIS.com"
+                      type="email" value={form.email} placeholder="maria@opimed.com"
                       onChange={e => { set('email', e.target.value); clearErr('email') }}
                       onFocus={e => (e.target.style.borderColor = C.gold)}
                       onBlur={e => (e.target.style.borderColor = errors.email ? '#ef4444' : C.border)}
@@ -630,14 +630,14 @@ export function CreateProfessionalModal({ onClose, onSuccess }: Props) {
                             setForm(f => ({ ...f, specialties: on ? f.specialties.filter(x => x !== d) : [...f.specialties, d] }))
                             clearErr('specialties')
                           }}
-                          style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '8px 8px 8px 16px', borderRadius: 9999, border: `1.5px solid ${on ? C.gold : C.border}`, background: on ? 'rgba(139,92,246,0.09)' : 'transparent', fontFamily: FONT_INTER, fontSize: 12, fontWeight: 600, color: on ? C.gold : C.textBrown, cursor: 'pointer', letterSpacing: '0.04em', transition: 'all 0.15s ease' }}
+                          style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '8px 8px 8px 16px', borderRadius: 9999, border: `1.5px solid ${on ? C.gold : C.border}`, background: on ? 'rgba(13,148,136,0.09)' : 'transparent', fontFamily: FONT_INTER, fontSize: 12, fontWeight: 600, color: on ? C.gold : C.textBrown, cursor: 'pointer', letterSpacing: '0.04em', transition: 'all 0.15s ease' }}
                         >
                           {on && <Check size={11} strokeWidth={3} />}
                           {d}
                           <button type="button"
                             onClick={e => { e.stopPropagation(); handleDeleteSpecialty(d) }}
                             title="Eliminar especialidad"
-                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 18, height: 18, borderRadius: '50%', border: 'none', background: on ? 'rgba(139,92,246,0.15)' : 'rgba(0,0,0,0.06)', color: on ? C.gold : C.textMuted, cursor: 'pointer', padding: 0, flexShrink: 0 }}>
+                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 18, height: 18, borderRadius: '50%', border: 'none', background: on ? 'rgba(13,148,136,0.15)' : 'rgba(0,0,0,0.06)', color: on ? C.gold : C.textMuted, cursor: 'pointer', padding: 0, flexShrink: 0 }}>
                             <X size={10} />
                           </button>
                         </div>
@@ -645,7 +645,7 @@ export function CreateProfessionalModal({ onClose, onSuccess }: Props) {
                     })}
                     {!showAddSpecialty && (
                       <button type="button" onClick={() => setShowAddSpecialty(true)}
-                        style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '8px 16px', borderRadius: 9999, border: `1.5px dashed ${C.gold}`, background: 'rgba(139,92,246,0.04)', color: C.gold, cursor: 'pointer', fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700 }}>
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '8px 16px', borderRadius: 9999, border: `1.5px dashed ${C.gold}`, background: 'rgba(13,148,136,0.04)', color: C.gold, cursor: 'pointer', fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700 }}>
                         <Plus size={13} /> Nueva especialidad
                       </button>
                     )}
@@ -867,7 +867,7 @@ export function CreateProfessionalModal({ onClose, onSuccess }: Props) {
               {step < 4 ? (
                 <button
                   onClick={next}
-                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '11px 22px', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, border: 'none', borderRadius: 9, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer', boxShadow: `0 4px 14px rgba(139,92,246,0.30)` }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '11px 22px', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, border: 'none', borderRadius: 9, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer', boxShadow: `0 4px 14px rgba(13,148,136,0.30)` }}
                 >
                   Continuar
                   <ChevronRight size={14} strokeWidth={2.5} />
@@ -875,7 +875,7 @@ export function CreateProfessionalModal({ onClose, onSuccess }: Props) {
               ) : (
                 <button
                   onClick={submit} disabled={loading}
-                  style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '11px 22px', background: loading ? C.border : `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, border: 'none', borderRadius: 9, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: loading ? 'not-allowed' : 'pointer', boxShadow: loading ? 'none' : `0 4px 14px rgba(139,92,246,0.30)`, transition: 'all 0.2s ease', minWidth: 170 }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '11px 22px', background: loading ? C.border : `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, border: 'none', borderRadius: 9, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: loading ? 'not-allowed' : 'pointer', boxShadow: loading ? 'none' : `0 4px 14px rgba(13,148,136,0.30)`, transition: 'all 0.2s ease', minWidth: 170 }}
                 >
                   {loading
                     ? <><span style={{ width: 14, height: 14, border: `2px solid rgba(255,255,255,0.4)`, borderTopColor: C.white, borderRadius: '50%', display: 'inline-block', animation: 'spin 0.7s linear infinite' }} /> Creando...</>

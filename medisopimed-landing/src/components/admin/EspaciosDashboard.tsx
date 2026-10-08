@@ -7,29 +7,29 @@ import { FormularioEspacio } from './FormularioEspacio';
 import type { Espacio, ModalEspacioState } from './EspacioTypes';
 
 const C = {
-  gold: '#8B5CF6',
-  goldLight: '#3B82F6',
+  gold: '#0D9488',
+  goldLight: '#44CFCB',
   bg: '#FFFFFF',
-  bgPanel: '#F3F0FB',
-  bgSecondary: '#F3F0FB',
+  bgPanel: '#F0FDFA',
+  bgSecondary: '#F0FDFA',
   white: '#FFFFFF',
-  text: '#1B1C1C',
+  text: '#0F172A',
   textBrown: '#475569',
   textMedium: '#5E5E5E',
   textMuted: '#94A3B8',
-  border: '#DDD6FE',
-  borderLight: '#DDD6FE',
+  border: '#CCFBF1',
+  borderLight: '#CCFBF1',
 };
 
-const FONT_BODONI = '"Bodoni Moda", Georgia, serif';
-const FONT_INTER = '"Hanken Grotesk", Inter, system-ui, sans-serif';
+const FONT_DISPLAY = 'Manrope, Inter, sans-serif';
+const FONT_INTER = '"Inter", Inter, system-ui, sans-serif';
 
 
 // ── Animación: Stickman médico señalando un consultorio (espacio) ──────────────
 const EspaciosStickmanAnimation = () => (
   <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', padding: '1.5rem 2rem', background: C.white, borderRadius: '1.25rem', border: `1px solid ${C.borderLight}`, marginBottom: '2rem', boxShadow: '0 4px 16px rgba(0,0,0,0.03)' }}>
     <div style={{ flex: 1 }}>
-      <div style={{ fontFamily: FONT_BODONI, fontSize: '1.6rem', color: C.gold, fontWeight: 700, marginBottom: '0.25rem' }}>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: '1.6rem', color: C.gold, fontWeight: 700, marginBottom: '0.25rem' }}>
         Consultorios y Espacios 🚪
       </div>
       <div style={{ fontSize: '1rem', color: C.textBrown }}>
@@ -37,19 +37,19 @@ const EspaciosStickmanAnimation = () => (
       </div>
     </div>
     <div style={{ flexShrink: 0 }}>
-      <svg width="150" height="120" viewBox="0 0 150 120" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(139,92,246,0.12))' }}>
+      <svg width="150" height="120" viewBox="0 0 150 120" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(13,148,136,0.12))' }}>
         <defs>
           <linearGradient id="espSkin" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="100%" stopColor="#f3f0fb" />
+            <stop offset="100%" stopColor="#F0FDFA" />
           </linearGradient>
           <linearGradient id="espCoat" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="rgba(255,255,255,0.8)" />
-            <stop offset="100%" stopColor="rgba(139,92,246,0.15)" />
+            <stop offset="100%" stopColor="rgba(13,148,136,0.15)" />
           </linearGradient>
           <linearGradient id="espRoom" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="rgba(59,130,246,0.12)" />
-            <stop offset="100%" stopColor="rgba(139,92,246,0.05)" />
+            <stop offset="0%" stopColor="rgba(68,207,203,0.12)" />
+            <stop offset="100%" stopColor="rgba(13,148,136,0.05)" />
           </linearGradient>
         </defs>
 
@@ -63,7 +63,7 @@ const EspaciosStickmanAnimation = () => (
 
         {/* Camilla / mesa de examen */}
         <rect x="86" y="58" width="40" height="18" rx="4" fill={C.white} stroke={C.goldLight} strokeWidth="2" />
-        <rect x="86" y="58" width="11" height="18" rx="3" fill="rgba(139,92,246,0.15)" stroke={C.goldLight} strokeWidth="1.5" />
+        <rect x="86" y="58" width="11" height="18" rx="3" fill="rgba(13,148,136,0.15)" stroke={C.goldLight} strokeWidth="1.5" />
 
         {/* Puerta abierta (animada) */}
         <g transform="translate(134, 98)">
@@ -111,16 +111,16 @@ const EspaciosStickmanAnimation = () => (
           <path d="M 1 -17 Q 3.5 -14.5 6 -17" fill="none" stroke={C.goldLight} strokeWidth="1.2" strokeLinecap="round" />
 
           {/* Estetoscopio */}
-          <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#1B1C1C" strokeWidth="1.2" />
-          <circle cx="5" cy="-10" r="1.8" fill="#1B1C1C" />
+          <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#0F172A" strokeWidth="1.2" />
+          <circle cx="5" cy="-10" r="1.8" fill="#0F172A" />
           <circle cx="5" cy="-10" r="0.8" fill="#fff" />
 
           {/* Brazo izquierdo (maletín) */}
           <g>
             <path d="M 0 -5 Q -6 0 -8 7" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
-            <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#1B1C1C" strokeWidth="1.5" />
-            <line x1="-10" y1="7" x2="-6" y2="7" stroke="#1B1C1C" strokeWidth="1.5" strokeLinecap="round" />
-            <circle cx="-8" cy="10.5" r="1" fill="#1B1C1C" />
+            <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#0F172A" strokeWidth="1.5" />
+            <line x1="-10" y1="7" x2="-6" y2="7" stroke="#0F172A" strokeWidth="1.5" strokeLinecap="round" />
+            <circle cx="-8" cy="10.5" r="1" fill="#0F172A" />
           </g>
 
           {/* Brazo derecho: señala el consultorio (animado) */}
@@ -240,20 +240,20 @@ export const EspaciosDashboard: React.FC = () => {
       <main className="main-content" style={{ background: C.bg }}>
 
         {/* TOPBAR */}
-        <header style={{ height: 68, background: C.white, borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', flexShrink: 0, zIndex: 10 }}>
+        <header style={{ minHeight: 68, background: C.white, borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', rowGap: 10, padding: '12px 16px', flexShrink: 0, zIndex: 10 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <button className="menu-toggle" onClick={() => setIsMobileMenuOpen(v => !v)}><Menu size={20} /></button>
-            <h1 style={{ fontFamily: FONT_BODONI, fontSize: 22, fontWeight: 700, color: C.text, margin: 0 }}>Gestión de Espacios</h1>
+            <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, fontWeight: 700, color: C.text, margin: 0 }}>Gestión de Espacios</h1>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <div style={{ position: 'relative' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, flex: '1 1 auto', minWidth: 0, justifyContent: 'flex-end' }}>
+            <div style={{ position: 'relative', flex: '1 1 200px', minWidth: 0, maxWidth: 320 }}>
               <Search size={16} color={C.textMuted} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} />
-              <input 
-                type="text" 
+              <input
+                type="text"
                 placeholder="Buscar espacio..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                style={{ background: C.bgPanel, border: `1px solid ${C.borderLight}`, borderRadius: 20, padding: '8px 16px 8px 36px', fontSize: 13, color: C.text, width: 240, outline: 'none', transition: 'border-color 0.2s' }}
+                style={{ background: C.bgPanel, border: `1px solid ${C.borderLight}`, borderRadius: 20, padding: '8px 16px 8px 36px', fontSize: 13, color: C.text, width: '100%', outline: 'none', transition: 'border-color 0.2s' }}
               />
             </div>
           </div>
@@ -299,13 +299,13 @@ export const EspaciosDashboard: React.FC = () => {
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                 cursor: 'pointer', minHeight: 220, transition: 'all 0.2s ease', gap: 12
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.goldLight; e.currentTarget.style.background = 'rgba(139,92,246,0.02)'; }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.goldLight; e.currentTarget.style.background = 'rgba(13,148,136,0.02)'; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.borderLight; e.currentTarget.style.background = 'transparent'; }}
             >
-              <div style={{ width: 48, height: 48, borderRadius: '50%', background: C.bgPanel, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.goldLight }}>
+              <div style={{ width: 48, height: 48, borderRadius: '1rem', background: C.bgPanel, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.goldLight }}>
                 <Plus size={24} strokeWidth={2.5} />
               </div>
-              <span style={{ fontFamily: FONT_BODONI, fontSize: 18, fontWeight: 700, color: C.gold }}>Nuevo Espacio</span>
+              <span style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 700, color: C.gold }}>Nuevo Espacio</span>
             </motion.div>
 
             {filteredEspacios.map(espacio => (
@@ -329,11 +329,11 @@ export const EspaciosDashboard: React.FC = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-                      <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: C.goldLight, background: 'rgba(59, 130, 246, 0.1)', padding: '2px 8px', borderRadius: 12 }}>
+                      <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: C.goldLight, background: 'rgba(68,207,203, 0.1)', padding: '2px 8px', borderRadius: 12 }}>
                         {getSedeName(espacio.locationId)}
                       </span>
                     </div>
-                    <h3 style={{ fontFamily: FONT_BODONI, fontSize: 20, fontWeight: 700, color: C.text, margin: '0 0 10px 0', lineHeight: 1.2, wordBreak: 'break-word' }}>{espacio.name}</h3>
+                    <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: C.text, margin: '0 0 10px 0', lineHeight: 1.2, wordBreak: 'break-word' }}>{espacio.name}</h3>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: C.textMuted, fontSize: 13, marginBottom: 6 }}>
                       <Users size={14} style={{ flexShrink: 0 }} /> <span>Capacidad: <strong>{espacio.capacity} personas</strong></span>
                     </div>
@@ -411,7 +411,7 @@ export const EspaciosDashboard: React.FC = () => {
             <>
               <motion.div 
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} 
-                style={{ position: 'fixed', inset: 0, background: 'rgba(27,28,28,0.2)', backdropFilter: 'blur(2px)', zIndex: 40 }}
+                style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.2)', backdropFilter: 'blur(2px)', zIndex: 40 }}
                 onClick={() => setModalState({ type: 'none' })}
               />
               <motion.div 
@@ -436,7 +436,7 @@ export const EspaciosDashboard: React.FC = () => {
             <>
               <motion.div 
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} 
-                style={{ position: 'fixed', inset: 0, background: 'rgba(27,28,28,0.2)', backdropFilter: 'blur(2px)', zIndex: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.2)', backdropFilter: 'blur(2px)', zIndex: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 onClick={() => setModalState({ type: 'none' })}
               >
                 <motion.div 
@@ -447,7 +447,7 @@ export const EspaciosDashboard: React.FC = () => {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}>
                     <div>
                       <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: C.goldLight, marginBottom: 8, display: 'inline-block' }}>{getSedeName(modalState.espacio.locationId)}</span>
-                      <h3 style={{ fontFamily: FONT_BODONI, fontSize: 24, fontWeight: 700, color: C.text, margin: 0 }}>{modalState.espacio.name}</h3>
+                      <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 24, fontWeight: 700, color: C.text, margin: 0 }}>{modalState.espacio.name}</h3>
                     </div>
                     <button onClick={() => setModalState({ type: 'none' })} style={{ background: 'none', border: 'none', cursor: 'pointer', color: C.textMuted }}><X size={20} /></button>
                   </div>
@@ -484,7 +484,7 @@ export const EspaciosDashboard: React.FC = () => {
             <>
               <motion.div
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                style={{ position: 'fixed', inset: 0, background: 'rgba(27,28,28,0.2)', backdropFilter: 'blur(2px)', zIndex: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.2)', backdropFilter: 'blur(2px)', zIndex: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 onClick={() => { setDeleteError(null); setModalState({ type: 'none' }); }}
               >
                 <motion.div
@@ -495,14 +495,14 @@ export const EspaciosDashboard: React.FC = () => {
                   <div style={{ width: 64, height: 64, background: '#fef2f2', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: '#ef4444' }}>
                     <Trash2 size={24} />
                   </div>
-                  <h3 style={{ fontFamily: FONT_BODONI, fontSize: 20, fontWeight: 700, color: C.text, margin: '0 0 8px 0' }}>Eliminar Espacio</h3>
+                  <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 700, color: C.text, margin: '0 0 8px 0' }}>Eliminar Espacio</h3>
                   <p style={{ fontSize: 14, color: C.textMedium, margin: '0 0 16px 0' }}>¿Estás seguro de eliminar <strong>{modalState.espacio.name}</strong>? Esta acción no se puede deshacer.</p>
                   {deleteError && (
                     <p style={{ fontSize: 13, color: '#ef4444', background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 10, padding: '10px 12px', margin: '0 0 16px 0', textAlign: 'left' }}>{deleteError}</p>
                   )}
                   <div style={{ display: 'flex', gap: 12 }}>
-                    <button onClick={() => { setDeleteError(null); setModalState({ type: 'none' }); }} style={{ flex: 1, padding: '10px 0', background: C.bgPanel, border: 'none', borderRadius: 12, fontWeight: 700, fontSize: 12, textTransform: 'uppercase', color: C.textMedium, cursor: 'pointer' }}>Cancelar</button>
-                    <button onClick={handleDelete} style={{ flex: 1, padding: '10px 0', background: '#ef4444', border: 'none', borderRadius: 12, fontWeight: 700, fontSize: 12, textTransform: 'uppercase', color: C.white, cursor: 'pointer' }}>Sí, Eliminar</button>
+                    <button onClick={() => { setDeleteError(null); setModalState({ type: 'none' }); }} style={{ flex: 1, padding: '10px 0', background: C.bgPanel, border: 'none', borderRadius: 9999, fontWeight: 700, fontSize: 12, textTransform: 'uppercase', color: C.textMedium, cursor: 'pointer' }}>Cancelar</button>
+                    <button onClick={handleDelete} style={{ flex: 1, padding: '10px 0', background: '#ef4444', border: 'none', borderRadius: 9999, fontWeight: 700, fontSize: 12, textTransform: 'uppercase', color: C.white, cursor: 'pointer' }}>Sí, Eliminar</button>
                   </div>
                 </motion.div>
               </motion.div>

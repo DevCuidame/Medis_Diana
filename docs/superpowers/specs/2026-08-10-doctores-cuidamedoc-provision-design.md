@@ -18,10 +18,10 @@ panel interno de respaldo (o ve "credenciales inválidas"), porque nadie
 aprovisionó su acceso en CuidameDoc.
 
 Además, el usuario quiere que los doctores que se dan de alta en un sitio
-(Diana hoy; a futuro Ximena y otros que compren el mismo plan) queden
+(OpiMed hoy; a futuro Ximena y otros que compren el mismo plan) queden
 registrados en CuidameDoc como "trabajadores" de esa cabeza — dato puramente
 organizacional por ahora, decidido explícitamente con el usuario: *"por
-ahora solo es que tanto en doc como en diana se sepa que son trabajadores
+ahora solo es que tanto en doc como en opimed se sepa que son trabajadores
 profesionales de \[la cabeza]"*, sin cambios de comportamiento en HC, agenda
 o permisos.
 
@@ -46,7 +46,7 @@ Cuando se crea un profesional con `role='PROFESSIONAL'` en Medis, se debe:
    verificación) con el mismo email/password en CuidameDoc.
 2. Dejar registrado en ambos lados que ese profesional es "trabajador" de la
    cabeza del sitio (la cuenta que Medis usa para autenticarse contra
-   CuidameDoc — hoy Diana, `professional_id=12`).
+   CuidameDoc — hoy OpiMed, `professional_id=12`).
 3. No afectar en nada a profesionales que no pasan por este flujo
    (auto-registro público en CuidameDoc, o dados de alta manualmente ahí) —
    deben seguir funcionando exactamente igual que hoy.
@@ -60,7 +60,7 @@ Cuando se crea un profesional con `role='PROFESSIONAL'` en Medis, se debe:
   se toca Finanzas/cotizaciones consolidadas ni límites de plan en este
   trabajo — quedan documentados como posibles usos futuros, fuera de
   alcance.
-- **Multi-tenant desde el diseño:** la "cabeza" nunca se hardcodea a Diana.
+- **Multi-tenant desde el diseño:** la "cabeza" nunca se hardcodea a OpiMed.
   Es, en cada deployment de Medis, quien sea que autentique `docAuth.ts`
   (sus propias credenciales de entorno). El mismo mecanismo sirve tal cual
   para el sitio de Ximena o futuros clientes del plan, sin cambios de

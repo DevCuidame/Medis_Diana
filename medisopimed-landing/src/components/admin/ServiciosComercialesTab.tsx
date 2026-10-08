@@ -4,14 +4,14 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { FormularioServicioComercial, type ServicioComercialFormValues } from './FormularioServicioComercial';
 
 const C = {
-  gold: '#8B5CF6', goldLight: '#3B82F6',
-  bg: '#FFFFFF', bgPanel: '#F3F0FB', white: '#FFFFFF',
-  text: '#1B1C1C', textBrown: '#475569', textMuted: '#94A3B8',
-  border: '#DDD6FE', borderLight: '#DDD6FE',
+  gold: '#0D9488', goldLight: '#44CFCB',
+  bg: '#FFFFFF', bgPanel: '#F0FDFA', white: '#FFFFFF',
+  text: '#0F172A', textBrown: '#475569', textMuted: '#94A3B8',
+  border: '#CCFBF1', borderLight: '#CCFBF1',
   success: '#16A34A', danger: '#DC2626',
 };
-const FONT_BODONI = '"Bodoni Moda", Georgia, serif';
-const FONT_INTER  = '"Hanken Grotesk", Inter, system-ui, sans-serif';
+const FONT_DISPLAY = 'Manrope, Inter, sans-serif';
+const FONT_INTER  = '"Inter", Inter, system-ui, sans-serif';
 
 interface ComercialItem {
   id: string;
@@ -141,7 +141,7 @@ export const ServiciosComercialesTab: React.FC<Props> = ({ onToast, initialFormO
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
         <button
           onClick={() => { setEditing(null); setIsFormOpen(true); }}
-          style={{ background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, padding: '12px 24px', borderRadius: 12, border: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', boxShadow: '0 4px 16px rgba(139,92,246,0.2)', fontFamily: FONT_INTER }}
+          style={{ background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, padding: '12px 24px', borderRadius: 12, border: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', boxShadow: '0 4px 16px rgba(13,148,136,0.2)', fontFamily: FONT_INTER }}
         >
           <Plus size={18} strokeWidth={3} /> Nuevo Comercial
         </button>
@@ -168,7 +168,7 @@ export const ServiciosComercialesTab: React.FC<Props> = ({ onToast, initialFormO
                   )}
                 </div>
                 <div style={{ padding: 16 }}>
-                  <h4 style={{ fontFamily: FONT_BODONI, fontSize: 18, margin: '0 0 4px', color: C.text }}>{item.name}</h4>
+                  <h4 style={{ fontFamily: FONT_DISPLAY, fontSize: 18, margin: '0 0 4px', color: C.text }}>{item.name}</h4>
                   <p style={{ fontSize: 12, color: C.textMuted, margin: '0 0 12px', fontFamily: FONT_INTER }}>
                     Operativo: {item.operativoName}
                   </p>

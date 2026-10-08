@@ -1,11 +1,30 @@
-# CLAUDE.md — Proyecto "Medis Diana" / dianamedic.cuidame.tech
+# CLAUDE.md — Proyecto "Medis OpiMed" / opimedmedic.cuidame.tech
+
+> **Clon demo** — este repo es un clon de `Medis_Diana` (2026-10-08), con todo
+> rastro de "diana" renombrado mecánicamente a "opi_med"/"OpiMed" (identificadores
+> técnicos y contenido visible: nombre de la doctora, SEO, dominio, nombres de
+> paquete, BD). Dos puntos a tener en cuenta:
+> 1. **El booking sigue golpeando el backend real de CuidameDoc con
+>    `professional_id 12`** — ese es el calendario real de la profesional que
+>    registra ese `professional_id` en producción (no "OpiMed": ese nombre es
+>    solo el placeholder de este clon). Fue una decisión explícita al clonar (no
+>    se mockeó), así que cualquier cita creada desde este clon cae en su agenda
+>    real. Si este clon se usa para demos con usuarios reales, hay que desactivar
+>    o mockear ese flujo primero.
+> 2. **BD propia local nueva**: `opi_med_db` en Postgres local
+>    (`127.0.0.1:5432`, usuario `postgres`), ya migrada (`pnpm run migrate` desde
+>    `apps/backend/`). Credenciales en `apps/backend/.env` (gitignored) —
+>    `DOC_OPI_MED_EMAIL`/`DOC_OPI_MED_PASSWORD` mantienen las credenciales reales
+>    de CuidameDoc a propósito (punto 1); `JWT_SECRET`/`OPI_MED_INTERNAL_API_KEY`
+>    son nuevos y propios de este clon; `EMAIL_*` quedaron vacíos (sin credenciales
+>    reales de correo en este clon).
 
 ## Visión general
 
-Landing + portal de la **Dra. Diana Cristina Medina Camargo**, en producción en
-`https://dianamedic.cuidame.tech`. Es una adaptación a **clínica general** de la
-plataforma medisdiana; el agendamiento de citas clínicas se delega al backend
-externo de **CuidameDoc** (Diana = `professional_id 12`).
+Landing + portal de la **Dra. OpiMed**, en producción en
+`https://opimedmedic.cuidame.tech`. Es una adaptación a **clínica general** de la
+plataforma medisopimed; el agendamiento de citas clínicas se delega al backend
+externo de **CuidameDoc** (OpiMed = `professional_id 12`).
 
 Stack confirmado: monorepo con frontend **React + Vite** y backend propio
 **TypeScript + Express**, con **base de datos PostgreSQL propia** accedida por
@@ -21,7 +40,7 @@ el documento correspondiente.
 1. Una tarea solo se considera **totalmente terminada** cuando queda documentada en este `CLAUDE.md` y en los demás archivos `.md` correspondientes del proyecto.
 2. Ver la **regla de oro** más abajo antes de escribir o modificar cualquier texto, estilo o UI visible.
 3. **Sin Prisma ni otro ORM en el backend propio** — todas las queries y migraciones contra la BD propia son SQL directo vía el pool `pg`.
-4. Al consumir el backend externo de **CuidameDoc** para el agendamiento (`professional_id 12`), no inventar campos ni endpoints que no existan ahí — confirmar contra [arquitectura.md → DianaBookingCalendar](arquitectura.md#dianabookingcalendar-medisdiana-landing) antes de construir o corregir ese flujo.
+4. Al consumir el backend externo de **CuidameDoc** para el agendamiento (`professional_id 12`), no inventar campos ni endpoints que no existan ahí — confirmar contra [arquitectura.md → OpiMedBookingCalendar](arquitectura.md#opimedbookingcalendar-medisopimed-landing) antes de construir o corregir ese flujo.
 
 ## Skills instaladas — cuándo usar cada una
 
@@ -41,7 +60,7 @@ el documento correspondiente.
 - Solo estilos utilitarios → `tailwind`
 
 ### Verificación contra el backend externo (CuidameDoc)
-- `api-review` → usar **siempre** al tocar `DianaBookingCalendar` o cualquier flujo de agendamiento, para verificar que el frontend/backend propio consumen campos y endpoints que realmente existen en CuidameDoc (regla crítica #4).
+- `api-review` → usar **siempre** al tocar `OpiMedBookingCalendar` o cualquier flujo de agendamiento, para verificar que el frontend/backend propio consumen campos y endpoints que realmente existen en CuidameDoc (regla crítica #4).
 
 ### Backend propio (TypeScript + Express + SQL directo)
 - `express-production` → patrones de Express listos para producción. Usar al crear/refactorizar endpoints propios.
@@ -86,18 +105,18 @@ el documento correspondiente.
 6. Tests → `vitest` + `playwright` si hay flujo de usuario o de booking.
 7. Seguridad → `security-scanning` (siempre) + `threat-modeling` (si hay superficie de ataque nueva).
 8. Revisión → `code-review-standards` + `pre-merge`.
-9. Deploy → según [flujo-de-trabajo.md](flujo-de-trabajo.md) (`deploy-Dianamedic.ps1`).
+9. Deploy → según [flujo-de-trabajo.md](flujo-de-trabajo.md) (`deploy-OpiMedmedic.ps1`).
 10. Documentar en el `.md` dueño del tema (regla crítica #1).
 
 ## Índice de documentación
 
 | Documento | Qué contiene | Consultar cuando… |
 |-----------|--------------|-------------------|
-| [arquitectura.md](arquitectura.md) | Stack, estructura del monorepo, mapa de pantallas/rutas, componente `DianaBookingCalendar` (flujo, endpoints, estado, constantes) | Vas a tocar código, rutas, el booking o integraciones con CuidameDoc |
+| [arquitectura.md](arquitectura.md) | Stack, estructura del monorepo, mapa de pantallas/rutas, componente `OpiMedBookingCalendar` (flujo, endpoints, estado, constantes) | Vas a tocar código, rutas, el booking o integraciones con CuidameDoc |
 | [convenciones.md](convenciones.md) | Reglas críticas de tematización, paleta de colores, tono de los textos | Vas a escribir o modificar CUALQUIER texto, estilo o UI visible |
 | [glosario.md](glosario.md) | Mapeo de conceptos (pole dance → clínica) y términos técnicos (`prof_service_id`, `clinical_service_id`, slots…) | Dudas de nomenclatura o al renombrar entidades durante la migración |
 | [decisiones.md](decisiones.md) | Decisiones de arquitectura vigentes con su justificación + historial de cambios | Antes de cambiar el enfoque de algo que ya funciona, o para registrar un cambio |
-| [flujo-de-trabajo.md](flujo-de-trabajo.md) | Desarrollo local, proceso de migración de pantallas, despliegue (`deploy-Dianamedic.ps1`), gestión de servicios en CuidameDoc | Vas a migrar una pantalla, desplegar o configurar servicios clínicos |
+| [flujo-de-trabajo.md](flujo-de-trabajo.md) | Desarrollo local, proceso de migración de pantallas, despliegue (`deploy-OpiMedmedic.ps1`), gestión de servicios en CuidameDoc | Vas a migrar una pantalla, desplegar o configurar servicios clínicos |
 | [errores-conocidos.md](errores-conocidos.md) | Bugs conocidos, limitaciones y comportamientos que no son bugs | Algo falla o se comporta raro, antes de diagnosticar desde cero |
 
 ## Regla de oro

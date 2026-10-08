@@ -6,15 +6,15 @@ import { AdminSidebar } from './AdminSidebar';
 import './MainDashboard.css';
 
 const C = {
-  gold: '#8B5CF6',
-  goldLight: '#3B82F6',
-  bgPanel: '#F3F0FB',
+  gold: '#0D9488',
+  goldLight: '#44CFCB',
+  bgPanel: '#F0FDFA',
   white: '#FFFFFF',
-  text: '#1B1C1C',
+  text: '#0F172A',
   textBrown: '#475569',
   textMedium: '#5E5E5E',
   textMuted: '#94A3B8',
-  borderLight: '#DDD6FE',
+  borderLight: '#CCFBF1',
 };
 
 interface TodayService {
@@ -91,7 +91,7 @@ export const MainDashboard: React.FC = () => {
       <div style={{ position: 'relative', width: '90px', height: '90px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <svg width="90" height="90" viewBox="0 0 90 90" style={{ position: 'absolute' }}>
           {/* Background circle */}
-          <circle cx="45" cy="45" r={radius} fill="none" stroke="#F3F0FB" strokeWidth="8" />
+          <circle cx="45" cy="45" r={radius} fill="none" stroke="#F0FDFA" strokeWidth="8" />
           {/* Progress circle */}
           <circle 
             className="progress-ring__circle"
@@ -104,8 +104,8 @@ export const MainDashboard: React.FC = () => {
           />
           <defs>
             <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#3B82F6" />
-              <stop offset="100%" stopColor="#8B5CF6" />
+              <stop offset="0%" stopColor="#44CFCB" />
+              <stop offset="100%" stopColor="#0D9488" />
             </linearGradient>
           </defs>
         </svg>
@@ -134,22 +134,22 @@ export const MainDashboard: React.FC = () => {
             <button className="menu-toggle" onClick={toggleMobileMenu}>
               <Menu size={20} />
             </button>
-            <h2 style={{ fontFamily: '"Bodoni Moda", Georgia, serif', fontSize: 24, fontWeight: 600, color: C.gold, margin: 0, letterSpacing: '-0.01em', display: 'flex', alignItems: 'center', gap: 8 }}>
-              MEDIS <span className="overview-label" style={{ fontSize: 12, fontFamily: '"Hanken Grotesk", sans-serif', color: C.textMuted, fontWeight: 500, letterSpacing: '0.1em', marginTop: 4, textTransform: 'uppercase' }}>/ Overview</span>
+            <h2 style={{ fontFamily: 'Manrope, Inter, sans-serif', fontSize: 22, fontWeight: 800, color: C.gold, margin: 0, letterSpacing: '-0.01em', display: 'flex', alignItems: 'center', gap: 8 }}>
+              OPIEKA <span className="overview-label" style={{ fontSize: 12, fontFamily: 'Inter, sans-serif', color: C.textMuted, fontWeight: 500, letterSpacing: '0.1em', marginTop: 4, textTransform: 'uppercase' }}>/ Overview</span>
             </h2>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <button style={{ width: 40, height: 40, borderRadius: 12, background: C.bgPanel, border: `1px solid ${C.borderLight}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: C.gold, transition: 'all 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = C.white} onMouseLeave={(e) => e.currentTarget.style.background = C.bgPanel}>
               <Bell size={18} />
             </button>
-            <div style={{ width: 40, height: 40, borderRadius: 12, border: `2px solid ${C.gold}`, overflow: 'hidden', cursor: 'pointer', flexShrink: 0, boxShadow: '0 4px 10px rgba(139, 92, 246, 0.2)' }}>
+            <div style={{ width: 40, height: 40, borderRadius: '50%', border: `2px solid ${C.gold}`, overflow: 'hidden', cursor: 'pointer', flexShrink: 0, boxShadow: '0 4px 10px rgba(13, 148, 136, 0.2)' }}>
               <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100&h=100" alt="Admin" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
           </div>
         </header>
 
         {/* DASHBOARD CONTENT */}
-        <main style={{ flex: 1, overflowY: 'auto', padding: '2rem 1.5rem', background: 'radial-gradient(circle at top right, rgba(139, 92, 246, 0.03), transparent 400px)' }}>
+        <main style={{ flex: 1, overflowY: 'auto', padding: '2rem 1.5rem', background: 'radial-gradient(circle at top right, rgba(13, 148, 136, 0.03), transparent 400px)' }}>
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
             
             {/* Header */}
@@ -160,7 +160,7 @@ export const MainDashboard: React.FC = () => {
               style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24 }}
             >
               <div>
-                <h1 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: '2.5rem', color: '#1B1C1C', marginBottom: '0.5rem', lineHeight: 1.2 }}>Panel Principal</h1>
+                <h1 style={{ fontFamily: 'Manrope, Inter, sans-serif', fontWeight: 800, fontSize: '2.5rem', letterSpacing: '-0.02em', color: '#0F172A', marginBottom: '0.5rem', lineHeight: 1.15 }}>Panel Principal</h1>
                 <p style={{ color: C.textMuted, fontSize: '1.1rem' }}>Bienvenido/a al panel de administración del consultorio.</p>
               </div>
 
@@ -171,23 +171,23 @@ export const MainDashboard: React.FC = () => {
                 transition={{ duration: 0.6, delay: 0.3 }}
                 style={{ flexShrink: 0 }}
               >
-                <svg width="250" height="100" viewBox="0 0 250 100" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(139,92,246,0.12))' }}>
+                <svg width="250" height="100" viewBox="0 0 250 100" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(13,148,136,0.12))' }}>
                   <defs>
                     <linearGradient id="skin" x1="0%" y1="0%" x2="100%" y2="100%">
                       <stop offset="0%" stopColor="#ffffff" />
-                      <stop offset="100%" stopColor="#f3f0fb" />
+                      <stop offset="100%" stopColor="#f0fdfa" />
                     </linearGradient>
                     <linearGradient id="coat" x1="0%" y1="0%" x2="0%" y2="100%">
                       <stop offset="0%" stopColor="rgba(255,255,255,0.8)" />
-                      <stop offset="100%" stopColor="rgba(139,92,246,0.15)" />
+                      <stop offset="100%" stopColor="rgba(13,148,136,0.15)" />
                     </linearGradient>
                   </defs>
 
                   {/* CASA - Capa única */}
-                  <path d="M 170 90 L 170 40 L 205 15 L 240 40 L 240 90 Z" fill="rgba(139,92,246,0.03)" stroke={C.gold} strokeWidth="2.5" strokeLinejoin="round" />
+                  <path d="M 170 90 L 170 40 L 205 15 L 240 40 L 240 90 Z" fill="rgba(13,148,136,0.03)" stroke={C.gold} strokeWidth="2.5" strokeLinejoin="round" />
                   <path d="M 165 43 L 205 15 L 245 43" fill="none" stroke={C.gold} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                   {/* Puerta */}
-                  <path d="M 190 90 L 190 55 L 220 55 L 220 90" fill="rgba(139,92,246,0.12)" stroke={C.gold} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M 190 90 L 190 55 L 220 55 L 220 90" fill="rgba(13,148,136,0.12)" stroke={C.gold} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                   <circle cx="214" cy="75" r="2" fill={C.gold} />
 
                   {/* DOCTORA STICKMAN */}
@@ -238,16 +238,16 @@ export const MainDashboard: React.FC = () => {
                       <path d="M 1 -17 Q 3.5 -14.5 6 -17" fill="none" stroke={C.goldLight} strokeWidth="1.2" strokeLinecap="round" />
 
                       {/* Estetoscopio */}
-                      <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#1B1C1C" strokeWidth="1.2" />
-                      <circle cx="5" cy="-10" r="1.8" fill="#1B1C1C" />
+                      <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#0F172A" strokeWidth="1.2" />
+                      <circle cx="5" cy="-10" r="1.8" fill="#0F172A" />
                       <circle cx="5" cy="-10" r="0.8" fill="#fff" />
 
                       {/* Brazo izquierdo (con maletín elegante) */}
                       <g>
                         <path d="M 0 -5 Q -6 0 -8 7" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
-                        <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#1B1C1C" strokeWidth="1.5" />
-                        <line x1="-10" y1="7" x2="-6" y2="7" stroke="#1B1C1C" strokeWidth="1.5" strokeLinecap="round" />
-                        <circle cx="-8" cy="10.5" r="1" fill="#1B1C1C" />
+                        <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#0F172A" strokeWidth="1.5" />
+                        <line x1="-10" y1="7" x2="-6" y2="7" stroke="#0F172A" strokeWidth="1.5" strokeLinecap="round" />
+                        <circle cx="-8" cy="10.5" r="1" fill="#0F172A" />
                       </g>
 
                       {/* Brazo derecho animado (Golpea la casa) */}
@@ -274,10 +274,10 @@ export const MainDashboard: React.FC = () => {
               >
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '2rem' }}>
-                    <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(139, 92, 246, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.gold }}>
+                    <div style={{ width: 48, height: 48, borderRadius: '1rem', background: 'rgba(13, 148, 136, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.gold }}>
                       <Activity size={24} />
                     </div>
-                    <h2 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: '1.5rem', color: C.text, margin: 0 }}>Actividad del Día</h2>
+                    <h2 style={{ fontFamily: 'Manrope, Inter, sans-serif', fontWeight: 800, fontSize: '1.4rem', color: C.text, margin: 0 }}>Actividad del Día</h2>
                   </div>
                   
                   {/* Occupancy ring + count */}
@@ -285,7 +285,7 @@ export const MainDashboard: React.FC = () => {
                     <CircularProgress percentage={occupancy} />
                     <div>
                       <p style={{ fontSize: '0.8rem', fontWeight: 600, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 4px' }}>Ocupación Actual</p>
-                      <p style={{ fontSize: '1.4rem', fontWeight: 700, color: C.text, margin: 0, fontFamily: '"Bodoni Moda", serif' }}>
+                      <p style={{ fontSize: '1.4rem', fontWeight: 700, color: C.text, margin: 0, fontFamily: 'Manrope, Inter, sans-serif' }}>
                         {loadingToday ? '—' : `${todayServices.reduce((s, o) => s + (o.enrolledCount ?? 0), 0)} / ${todayServices.reduce((s, o) => s + (o.capacity ?? 0), 0)}`}
                       </p>
                       <p style={{ fontSize: '0.8rem', color: C.textMuted, margin: '2px 0 0' }}>
@@ -296,9 +296,9 @@ export const MainDashboard: React.FC = () => {
 
                   {/* Today's services list */}
                   {loadingToday ? (
-                    <div style={{ background: 'rgba(245,243,243,0.6)', borderRadius: '1rem', padding: '1rem 1.2rem', border: '1px solid #DDD6FE', fontSize: 13, color: C.textMuted }}>Cargando…</div>
+                    <div style={{ background: 'rgba(245,243,243,0.6)', borderRadius: '1rem', padding: '1rem 1.2rem', border: '1px solid #CCFBF1', fontSize: 13, color: C.textMuted }}>Cargando…</div>
                   ) : todayServices.length === 0 ? (
-                    <div style={{ background: 'rgba(245,243,243,0.6)', borderRadius: '1rem', padding: '1rem 1.2rem', border: '1px solid #DDD6FE', display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <div style={{ background: 'rgba(245,243,243,0.6)', borderRadius: '1rem', padding: '1rem 1.2rem', border: '1px solid #CCFBF1', display: 'flex', alignItems: 'center', gap: 12 }}>
                       <Calendar size={18} color={C.textMuted} />
                       <p style={{ fontSize: '0.9rem', color: C.textMuted, margin: 0 }}>Sin servicios activos hoy</p>
                     </div>
@@ -347,14 +347,14 @@ export const MainDashboard: React.FC = () => {
               >
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '2rem' }}>
-                    <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(139, 92, 246, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.gold }}>
+                    <div style={{ width: 48, height: 48, borderRadius: '1rem', background: 'rgba(13, 148, 136, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.gold }}>
                       <Users size={24} />
                     </div>
-                    <h2 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: '1.5rem', color: C.text, margin: 0 }}>Usuarios Registrados</h2>
+                    <h2 style={{ fontFamily: 'Manrope, Inter, sans-serif', fontWeight: 800, fontSize: '1.4rem', color: C.text, margin: 0 }}>Usuarios Registrados</h2>
                   </div>
                   
                   <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginBottom: '2.5rem' }}>
-                    <div style={{ width: 80, height: 80, borderRadius: '1.2rem', background: '#F3F0FB', display: 'flex', alignItems: 'center', justifyItems: 'center', border: '1px solid #DDD6FE' }}>
+                    <div style={{ width: 80, height: 80, borderRadius: '1.2rem', background: '#F0FDFA', display: 'flex', alignItems: 'center', justifyItems: 'center', border: '1px solid #CCFBF1' }}>
                       <Users size={32} color={C.textMuted} style={{ margin: 'auto' }}/>
                     </div>
                     <div>
@@ -374,14 +374,14 @@ export const MainDashboard: React.FC = () => {
                         <CheckCircle2 size={16} />
                         <span style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Activos</span>
                       </div>
-                      <span style={{ fontSize: '2rem', fontFamily: '"Bodoni Moda", serif', color: '#15803D', fontWeight: 600 }}>{activeUsers}</span>
+                      <span style={{ fontSize: '2rem', fontFamily: 'Manrope, Inter, sans-serif', color: '#15803D', fontWeight: 700 }}>{activeUsers}</span>
                     </div>
                     <div style={{ background: 'rgba(239, 68, 68, 0.05)', borderRadius: '1rem', padding: '1.2rem', border: '1px solid rgba(239, 68, 68, 0.15)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#DC2626' }}>
                         <XCircle size={16} />
                         <span style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Inactivos</span>
                       </div>
-                      <span style={{ fontSize: '2rem', fontFamily: '"Bodoni Moda", serif', color: '#B91C1C', fontWeight: 600 }}>{totalUsers - activeUsers}</span>
+                      <span style={{ fontSize: '2rem', fontFamily: 'Manrope, Inter, sans-serif', color: '#B91C1C', fontWeight: 700 }}>{totalUsers - activeUsers}</span>
                     </div>
                   </div>
                 </div>
@@ -400,10 +400,10 @@ export const MainDashboard: React.FC = () => {
                 className="glass-card"
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: '1.5rem' }}>
-                  <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(139, 92, 246, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.gold }}>
+                  <div style={{ width: 48, height: 48, borderRadius: '1rem', background: 'rgba(13, 148, 136, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.gold }}>
                     <Calendar size={24} />
                   </div>
-                  <h2 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: '1.5rem', color: C.text, margin: 0 }}>Gestión de Reservas</h2>
+                  <h2 style={{ fontFamily: 'Manrope, Inter, sans-serif', fontWeight: 800, fontSize: '1.4rem', color: C.text, margin: 0 }}>Gestión de Reservas</h2>
                 </div>
                 
                 <p style={{ fontSize: '1.1rem', color: C.textMuted, marginBottom: '2rem', lineHeight: 1.6 }}>
@@ -413,7 +413,7 @@ export const MainDashboard: React.FC = () => {
                 <button 
                   onClick={() => navigate('/admin/classes')}
                   className="dark-button"
-                  style={{ width: '100%', padding: '1rem', borderRadius: '1rem', fontSize: '1rem', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, border: 'none', cursor: 'pointer' }}
+                  style={{ width: '100%', padding: '1rem', borderRadius: '9999px', fontSize: '1rem', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, border: 'none', cursor: 'pointer' }}
                 >
                   <Calendar size={18} />
                   Ver Calendario General
@@ -435,17 +435,17 @@ export const MainDashboard: React.FC = () => {
                     Consultorio Médico
                   </div>
 
-                  <h3 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: '2rem', fontStyle: 'italic', color: '#FFF', margin: '0 0 2rem 0', lineHeight: 1.3, textShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
+                  <h3 style={{ fontFamily: 'Manrope, Inter, sans-serif', fontWeight: 800, fontSize: '2rem', color: '#FFF', margin: '0 0 2rem 0', lineHeight: 1.25, letterSpacing: '-0.01em' }}>
                     "La salud de tu familia, nuestra mayor prioridad."
                   </h3>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                    <div style={{ width: 56, height: 56, borderRadius: '50%', border: '2px solid rgba(255,255,255,0.4)', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.4)', background: 'linear-gradient(135deg, #8B5CF6, #3B82F6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <span style={{ color: '#FFF', fontSize: '1.1rem', fontWeight: 800 }}>DM</span>
+                    <div style={{ width: 56, height: 56, borderRadius: '1rem', border: '2px solid rgba(255,255,255,0.4)', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.25)', background: 'linear-gradient(135deg, #0D9488, #44CFCB)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <span style={{ color: '#FFF', fontSize: '1.1rem', fontWeight: 800 }}>OP</span>
                     </div>
                     <div>
-                      <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.9rem', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', display: 'block' }}>Dra. Diana Medina</span>
-                      <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem', fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Medicina Familiar y Comunitaria</span>
+                      <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.9rem', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', display: 'block' }}>Dra. OpiMed</span>
+                      <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem', fontWeight: 500, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Atención médica de confianza</span>
                     </div>
                   </div>
                 </div>

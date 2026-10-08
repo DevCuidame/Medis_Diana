@@ -2,7 +2,7 @@
 
 Plan: docs/superpowers/plans/2026-07-17-inventario-cotizaciones.md
 Worktree branch: feature/inventario-cotizaciones
-DB target: medisdiana_prod on VM cuidame-app via SSH tunnel 127.0.0.1:5433 (per user instruction — real test server, not local Postgres)
+DB target: medisopimed_prod on VM cuidame-app via SSH tunnel 127.0.0.1:5433 (per user instruction — real test server, not local Postgres)
 
 Task 1: complete (commits 1c8aca1..42d1cbd, review clean)
 Task 2: complete (commits b6a0b5d..3b5d7f2, review clean)
@@ -22,4 +22,4 @@ Assessment: Ready to merge with fixes (all non-blocking). No Critical issues.
 - Minor (accepted, not fixed): "Ingresos del mes" has no month filtering anywhere in this dashboard (pre-existing, inherited pattern, out of scope for this feature).
 - Minor (accepted, not fixed): external-quote.repository.test.ts leaves rows behind on re-run (inherited from plan-mandated test code).
 
-Branch feature/inventario-cotizaciones is feature-complete: all 9 tasks done, migrations applied to medisdiana_prod, all endpoints verified live via curl, both frontend files build clean.
+Branch feature/inventario-cotizaciones is feature-complete: all 9 tasks done, migrations applied to medisopimed_prod, all endpoints verified live via curl, both frontend files build clean.

@@ -1,12 +1,11 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { useDocServices } from '../hooks/useDocServices'
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
-// Fallback si el catálogo de CuidameDoc falla o viene vacío.
-const FALLBACK_SERVICES = ['Promoción y Prevención', 'Enfermedades No Transmisibles', 'Sobrepeso y Obesidad', 'Salud de la Mujer', 'Salud Mental']
+// Catálogo propio de OpiMed (igual que en la sección Servicios), independiente de CuidameDoc.
+const FOOTER_SERVICES = ['Consulta General', 'Control de Enfermedades Crónicas', 'Chequeo Preventivo Anual', 'Vacunación e Inmunización', 'Valoración Pediátrica', 'Control Prenatal']
 
 const SOCIAL = [
   {
@@ -45,15 +44,12 @@ export default function Footer() {
   const inView = useInView(ref, { once: true, margin: '-50px' })
   const navigate = useNavigate()
   const year = new Date().getFullYear()
-  const { services } = useDocServices()
-  const serviceNames = services.length > 0
-    ? services.slice(0, 6).map(s => s.name.trim())
-    : FALLBACK_SERVICES
+  const serviceNames = FOOTER_SERVICES
 
   return (
     <footer
       id="contacto"
-      style={{ background: '#EEF2FF', borderTop: '1px solid rgba(139,92,246,0.10)' }}
+      style={{ background: '#E6FFFA', borderTop: '1px solid #CCFBF1' }}
     >
       {/* Main footer content */}
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '5rem 1.5rem 3rem' }}>
@@ -72,27 +68,16 @@ export default function Footer() {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.75, delay: 0, ease: EASE }}
           >
-            {/* Logo mark + text */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.25rem' }}>
+            {/* Logo */}
+            <div style={{ marginBottom: '1.25rem' }}>
               <img
-                src="/logo-icon.svg"
-                alt="Logo"
-                style={{ height: '54px', width: '54px', display: 'block', flexShrink: 0 }}
+                src="/logo-opimed.svg"
+                alt="OpiMed"
+                style={{ height: '36px', width: 'auto', display: 'block' }}
               />
-              <div>
-                <span
-                  className="font-cormorant brand-text-gradient"
-                  style={{ fontSize: '1.1rem', fontWeight: 600, letterSpacing: '0.04em', display: 'block', lineHeight: 1.2 }}
-                >
-                  Dra. Diana Cristina<br />Medina Camargo
-                </span>
-                <span style={{ fontSize: '0.56rem', color: '#8B5CF6', fontFamily: 'Inter, sans-serif', letterSpacing: '0.08em', textTransform: 'uppercase', opacity: 0.85 }}>
-                  Medicina Familiar &amp; Comunitaria
-                </span>
-              </div>
             </div>
-            <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.85rem', lineHeight: 1.8, color: '#475569', fontWeight: 300, marginBottom: '1.5rem', maxWidth: '260px' }}>
-              Especialista en Medicina Familiar y Comunitaria. Atención cercana, profesional y de confianza.
+            <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.88rem', lineHeight: 1.8, color: '#475569', fontWeight: 400, marginBottom: '1.5rem', maxWidth: '260px' }}>
+              Atención médica cercana, profesional y de confianza.
             </p>
             {/* Social icons */}
             <div style={{ display: 'flex', gap: '0.75rem' }}>
@@ -106,16 +91,15 @@ export default function Footer() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={inView ? { opacity: 1, scale: 1 } : {}}
                   transition={{ duration: 0.4, delay: 0.3 + i * 0.08, ease: EASE }}
-                  whileHover={{ y: -3, color: '#8B5CF6' }}
+                  whileHover={{ y: -3, color: '#0D9488' }}
                   whileTap={{ scale: 0.93 }}
                   style={{
                     width: 40, height: 40, borderRadius: '50%',
-                    background: 'rgba(255,255,255,0.70)',
-                    border: '1px solid rgba(139,92,246,0.15)',
+                    background: '#FFFFFF',
+                    border: '1px solid #CCFBF1',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     color: '#94A3B8',
                     textDecoration: 'none',
-                    backdropFilter: 'blur(8px)',
                     transition: 'color 0.25s ease',
                   }}
                 >
@@ -132,8 +116,8 @@ export default function Footer() {
             transition={{ duration: 0.75, delay: 0.1, ease: EASE }}
           >
             <h4
-              className="font-cormorant"
-              style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1B1C1C', marginBottom: '1.25rem', letterSpacing: '0.05em' }}
+              className="font-manrope"
+              style={{ fontSize: '1rem', fontWeight: 700, color: '#0F172A', marginBottom: '1.25rem' }}
             >
               Consultorio
             </h4>
@@ -161,11 +145,11 @@ export default function Footer() {
                     }}
                     className="luxury-link"
                     style={{
-                      fontFamily: 'Inter, sans-serif', fontSize: '0.84rem',
-                      color: '#475569', textDecoration: 'none', fontWeight: 300,
+                      fontFamily: 'Inter, sans-serif', fontSize: '0.86rem',
+                      color: '#475569', textDecoration: 'none', fontWeight: 400,
                       transition: 'color 0.25s ease',
                     }}
-                    onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#8B5CF6')}
+                    onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#0D9488')}
                     onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#475569')}
                   >
                     {label}
@@ -182,8 +166,8 @@ export default function Footer() {
             transition={{ duration: 0.75, delay: 0.2, ease: EASE }}
           >
             <h4
-              className="font-cormorant"
-              style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1B1C1C', marginBottom: '1.25rem', letterSpacing: '0.05em' }}
+              className="font-manrope"
+              style={{ fontSize: '1rem', fontWeight: 700, color: '#0F172A', marginBottom: '1.25rem' }}
             >
               Servicios
             </h4>
@@ -199,11 +183,11 @@ export default function Footer() {
                     href="#servicios"
                     className="luxury-link"
                     style={{
-                      fontFamily: 'Inter, sans-serif', fontSize: '0.84rem',
-                      color: '#475569', textDecoration: 'none', fontWeight: 300,
+                      fontFamily: 'Inter, sans-serif', fontSize: '0.86rem',
+                      color: '#475569', textDecoration: 'none', fontWeight: 400,
                       transition: 'color 0.25s ease',
                     }}
-                    onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#8B5CF6')}
+                    onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#0D9488')}
                     onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#475569')}
                   >
                     {item}
@@ -220,8 +204,8 @@ export default function Footer() {
             transition={{ duration: 0.75, delay: 0.3, ease: EASE }}
           >
             <h4
-              className="font-cormorant"
-              style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1B1C1C', marginBottom: '1.25rem', letterSpacing: '0.05em' }}
+              className="font-manrope"
+              style={{ fontSize: '1rem', fontWeight: 700, color: '#0F172A', marginBottom: '1.25rem' }}
             >
               Contacto
             </h4>
@@ -229,7 +213,7 @@ export default function Footer() {
               {[
                 { label: 'Dirección', value: 'Diagonal al #52 - 102 Local 307, Tunja, Boyacá' },
                 { label: 'WhatsApp', value: '+57 312 587 3244', href: 'https://wa.me/573125873244' },
-                { label: 'Email', value: 'dradianamedfamiliar@gmail.com', href: 'mailto:dradianamedfamiliar@gmail.com' },
+                { label: 'Email', value: 'draopimedmedfamiliar@gmail.com', href: 'mailto:draopimedmedfamiliar@gmail.com' },
               ].map(({ label, value, href }, i) => (
                 <motion.div
                   key={label}
@@ -237,7 +221,7 @@ export default function Footer() {
                   animate={inView ? { opacity: 1 } : {}}
                   transition={{ duration: 0.5, delay: 0.35 + i * 0.08, ease: EASE }}
                 >
-                  <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#8B5CF6', marginBottom: '0.2rem' }}>
+                  <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.68rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: '#0D9488', fontWeight: 600, marginBottom: '0.2rem' }}>
                     {label}
                   </p>
                   {href ? (
@@ -245,14 +229,14 @@ export default function Footer() {
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.84rem', color: '#475569', fontWeight: 300, textDecoration: 'none' }}
-                      onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#8B5CF6')}
+                      style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.86rem', color: '#475569', fontWeight: 400, textDecoration: 'none' }}
+                      onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#0D9488')}
                       onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#475569')}
                     >
                       {value}
                     </a>
                   ) : (
-                    <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.84rem', color: '#475569', fontWeight: 300 }}>
+                    <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.86rem', color: '#475569', fontWeight: 400 }}>
                       {value}
                     </p>
                   )}
@@ -267,7 +251,7 @@ export default function Footer() {
               initial={{ opacity: 0, y: 12 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.55, delay: 0.65, ease: EASE }}
-              whileHover={{ scale: 1.04, boxShadow: '0 8px 28px rgba(139,92,246,0.30)' }}
+              whileHover={{ scale: 1.04, boxShadow: '0 8px 28px rgba(13,148,136,0.28)' }}
               whileTap={{ scale: 0.97 }}
               className="brand-gradient"
               style={{
@@ -277,11 +261,11 @@ export default function Footer() {
                 color: '#fff',
                 textDecoration: 'none',
                 fontFamily: 'Inter, sans-serif',
-                fontSize: '0.72rem',
-                letterSpacing: '0.12em',
+                fontSize: '0.78rem',
+                letterSpacing: '0.08em',
                 textTransform: 'uppercase',
                 fontWeight: 600,
-                boxShadow: '0 5px 20px rgba(139,92,246,0.25)',
+                boxShadow: '0 5px 20px rgba(13,148,136,0.22)',
                 transition: 'box-shadow 0.25s ease',
               }}
             >
@@ -297,7 +281,7 @@ export default function Footer() {
           transition={{ duration: 0.7, delay: 0.6, ease: EASE }}
           style={{
             paddingTop: '2rem',
-            borderTop: '1px solid rgba(139,92,246,0.10)',
+            borderTop: '1px solid #CCFBF1',
             display: 'flex',
             flexWrap: 'wrap',
             justifyContent: 'space-between',
@@ -305,8 +289,8 @@ export default function Footer() {
             gap: '1rem',
           }}
         >
-          <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.72rem', color: '#94A3B8', letterSpacing: '0.05em', fontWeight: 300 }}>
-            © {year} Dra. Diana Cristina Medina Camargo · Todos los derechos reservados
+          <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '0.75rem', color: '#94A3B8', fontWeight: 400 }}>
+            © {year} Dra. OpiMed · Todos los derechos reservados
           </p>
           <div style={{ display: 'flex', gap: '2rem' }}>
             {['Privacidad', 'Términos', 'Cookies'].map((item) => (
@@ -314,11 +298,11 @@ export default function Footer() {
                 key={item}
                 href="#"
                 style={{
-                  fontFamily: 'Inter, sans-serif', fontSize: '0.72rem',
-                  color: '#94A3B8', textDecoration: 'none', letterSpacing: '0.05em',
+                  fontFamily: 'Inter, sans-serif', fontSize: '0.75rem',
+                  color: '#94A3B8', textDecoration: 'none',
                   transition: 'color 0.25s ease',
                 }}
-                onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#8B5CF6')}
+                onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#0D9488')}
                 onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#94A3B8')}
               >
                 {item}
@@ -326,10 +310,10 @@ export default function Footer() {
             ))}
           </div>
           <p
-            className="font-cormorant"
-            style={{ fontSize: '0.85rem', fontStyle: 'italic', color: '#8B5CF6', letterSpacing: '0.05em' }}
+            className="font-manrope"
+            style={{ fontSize: '0.82rem', fontWeight: 600, color: '#0D9488' }}
           >
-            Especialista en Medicina Familiar y Comunitaria
+            Atención médica de confianza
           </p>
         </motion.div>
       </div>

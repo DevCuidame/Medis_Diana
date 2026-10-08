@@ -8,7 +8,7 @@ import type {
   ServiceCommercialPublic,
   CreateServiceCommercialPayload,
   UpdateServiceCommercialPayload,
-} from '@medisdiana/shared-types';
+} from '@medisopimed/shared-types';
 
 const SELECT = `
   SELECT

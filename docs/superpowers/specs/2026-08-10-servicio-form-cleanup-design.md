@@ -23,7 +23,7 @@ revisión visual del formulario y del listado de tarjetas de
 ## Alcance
 
 **Incluido**: los tres cambios de arriba, 100% en
-`medisdiana-landing/src/components/admin/{servicioSchema.ts,
+`medisopimed-landing/src/components/admin/{servicioSchema.ts,
 FormularioServicio.tsx, ServiciosDashboard.tsx}`.
 
 **Fuera de alcance**: cualquier cambio de backend/BD (regla explícita del
@@ -120,7 +120,7 @@ En `ServiciosDashboard.tsx`:
 
 ## Testing / verificación
 
-- `pnpm -F medisdiana-landing exec tsc --noEmit` sin errores nuevos (debe
+- `pnpm -F medisopimed-landing exec tsc --noEmit` sin errores nuevos (debe
   confirmar en particular que no queda ningún uso colgante de `Plus`,
   `customMod`, `addCustomModality` ni `controlPrice`).
 - Prueba manual: crear un servicio nuevo → la tarjeta resultante muestra

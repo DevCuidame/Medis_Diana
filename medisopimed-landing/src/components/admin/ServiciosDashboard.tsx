@@ -6,14 +6,14 @@ import { ServiciosComercialesTab } from './ServiciosComercialesTab';
 import { generateOccurrences, DIA_NOMBRES } from './servicioSchema';
 
 const C = {
-  gold: '#8B5CF6', goldLight: '#3B82F6',
-  bg: '#FFFFFF', bgPanel: '#F3F0FB', white: '#FFFFFF',
-  text: '#1B1C1C', textBrown: '#475569',
+  gold: '#0D9488', goldLight: '#44CFCB',
+  bg: '#FFFFFF', bgPanel: '#F0FDFA', white: '#FFFFFF',
+  text: '#0F172A', textBrown: '#475569',
   textMedium: '#5E5E5E', textMuted: '#94A3B8',
-  border: '#DDD6FE', borderLight: '#DDD6FE',
+  border: '#CCFBF1', borderLight: '#CCFBF1',
 };
-const FONT_BODONI = '"Bodoni Moda", Georgia, serif';
-const FONT_INTER  = '"Hanken Grotesk", Inter, system-ui, sans-serif';
+const FONT_DISPLAY = 'Manrope, Inter, sans-serif';
+const FONT_INTER  = '"Inter", Inter, system-ui, sans-serif';
 
 const DAY_NAMES_SHORT = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 const DAY_ORDER = [1, 2, 3, 4, 5, 6, 0]; // Mon→Sun display order
@@ -22,10 +22,10 @@ const OFFER_TYPE_LABEL: Record<string, string> = {
   appointment: 'Cita Individual', open_consultation: 'Consulta Abierta', workshop: 'Sesión Grupal', event: 'Evento',
 };
 const OFFER_TYPE_COLOR: Record<string, { bg: string; color: string }> = {
-  appointment:       { bg: 'rgba(37,99,235,0.1)',  color: '#2563EB' },
-  open_consultation: { bg: 'rgba(14,165,233,0.1)', color: '#0EA5E9' },
-  workshop:          { bg: 'rgba(139,92,246,0.1)', color: '#8B5CF6' },
-  event:             { bg: 'rgba(59,130,246,0.1)', color: '#3B82F6' },
+  appointment:       { bg: 'rgba(15,118,110,0.1)',  color: '#0F766E' },
+  open_consultation: { bg: 'rgba(68,207,203,0.1)', color: '#0EA5E9' },
+  workshop:          { bg: 'rgba(13,148,136,0.1)', color: '#0D9488' },
+  event:             { bg: 'rgba(68,207,203,0.1)', color: '#44CFCB' },
 };
 
 interface ServiceGroup {
@@ -123,7 +123,7 @@ function fmtDate(d: Date) {
 const ServiciosStickmanAnimation = () => (
   <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', padding: '1.5rem 2rem', background: C.white, borderRadius: '1.25rem', border: `1px solid ${C.borderLight}`, marginBottom: '2rem', boxShadow: '0 4px 16px rgba(0,0,0,0.03)' }}>
     <div style={{ flex: 1 }}>
-      <div style={{ fontFamily: FONT_BODONI, fontSize: '1.6rem', color: C.gold, fontWeight: 700, marginBottom: '0.25rem' }}>
+      <div style={{ fontFamily: FONT_DISPLAY, fontSize: '1.6rem', color: C.gold, fontWeight: 700, marginBottom: '0.25rem' }}>
         Catálogo de Servicios 🩺
       </div>
       <div style={{ fontSize: '1rem', color: C.textBrown }}>
@@ -131,30 +131,30 @@ const ServiciosStickmanAnimation = () => (
       </div>
     </div>
     <div style={{ flexShrink: 0 }}>
-      <svg width="150" height="120" viewBox="0 0 150 120" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(139,92,246,0.12))' }}>
+      <svg width="150" height="120" viewBox="0 0 150 120" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 6px 12px rgba(13,148,136,0.12))' }}>
         <defs>
           <linearGradient id="svcSkin" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="100%" stopColor="#f3f0fb" />
+            <stop offset="100%" stopColor="#F0FDFA" />
           </linearGradient>
           <linearGradient id="svcCoat" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="rgba(255,255,255,0.8)" />
-            <stop offset="100%" stopColor="rgba(139,92,246,0.15)" />
+            <stop offset="100%" stopColor="rgba(13,148,136,0.15)" />
           </linearGradient>
         </defs>
 
         {/* Tablero del catálogo */}
-        <rect x="68" y="14" width="58" height="92" rx="8" fill="rgba(139,92,246,0.05)" stroke={C.gold} strokeWidth="3" />
+        <rect x="68" y="14" width="58" height="92" rx="8" fill="rgba(13,148,136,0.05)" stroke={C.gold} strokeWidth="3" />
         <rect x="87" y="8" width="20" height="10" rx="3" fill={C.white} stroke={C.gold} strokeWidth="2" />
 
         {/* Filas del catálogo de servicios */}
-        <rect x="78" y="28" width="38" height="6" rx="3" fill="rgba(139,92,246,0.15)" />
-        <rect x="78" y="42" width="30" height="6" rx="3" fill="rgba(139,92,246,0.1)" />
-        <rect x="78" y="56" width="38" height="6" rx="3" fill="rgba(139,92,246,0.15)" />
-        <rect x="78" y="70" width="30" height="6" rx="3" fill="rgba(139,92,246,0.1)" />
+        <rect x="78" y="28" width="38" height="6" rx="3" fill="rgba(13,148,136,0.15)" />
+        <rect x="78" y="42" width="30" height="6" rx="3" fill="rgba(13,148,136,0.1)" />
+        <rect x="78" y="56" width="38" height="6" rx="3" fill="rgba(13,148,136,0.15)" />
+        <rect x="78" y="70" width="30" height="6" rx="3" fill="rgba(13,148,136,0.1)" />
 
         {/* Fila destacada hacia donde señala el stickman */}
-        <rect x="78" y="84" width="38" height="6" rx="3" fill="rgba(139,92,246,0.25)" />
+        <rect x="78" y="84" width="38" height="6" rx="3" fill="rgba(13,148,136,0.25)" />
 
         {/* Badge "+" animado: nuevo servicio agregado */}
         <g>
@@ -195,16 +195,16 @@ const ServiciosStickmanAnimation = () => (
           <path d="M 1 -17 Q 3.5 -14.5 6 -17" fill="none" stroke={C.goldLight} strokeWidth="1.2" strokeLinecap="round" />
 
           {/* Estetoscopio */}
-          <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#1B1C1C" strokeWidth="1.2" />
-          <circle cx="5" cy="-10" r="1.8" fill="#1B1C1C" />
+          <path d="M -3 -10 C -5 6 7 6 5 -10" fill="none" stroke="#0F172A" strokeWidth="1.2" />
+          <circle cx="5" cy="-10" r="1.8" fill="#0F172A" />
           <circle cx="5" cy="-10" r="0.8" fill="#fff" />
 
           {/* Brazo izquierdo (maletín) */}
           <g>
             <path d="M 0 -5 Q -6 0 -8 7" fill="none" stroke={C.goldLight} strokeWidth="2.5" strokeLinecap="round" />
-            <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#1B1C1C" strokeWidth="1.5" />
-            <line x1="-10" y1="7" x2="-6" y2="7" stroke="#1B1C1C" strokeWidth="1.5" strokeLinecap="round" />
-            <circle cx="-8" cy="10.5" r="1" fill="#1B1C1C" />
+            <rect x="-13" y="7" width="10" height="7" rx="1.5" fill={C.white} stroke="#0F172A" strokeWidth="1.5" />
+            <line x1="-10" y1="7" x2="-6" y2="7" stroke="#0F172A" strokeWidth="1.5" strokeLinecap="round" />
+            <circle cx="-8" cy="10.5" r="1" fill="#0F172A" />
           </g>
 
           {/* Brazo derecho: señala el catálogo (animado) */}
@@ -526,17 +526,17 @@ export const ServiciosDashboard: React.FC = () => {
 
             {/* ── HEADER ── */}
             <div style={{ marginBottom: 28, paddingBottom: 24, borderBottom: `1px solid ${C.borderLight}` }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 20 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 20, flexWrap: 'wrap', gap: 16 }}>
                 <div>
-                  <h1 style={{ fontFamily: FONT_BODONI, fontSize: 42, fontWeight: 700, color: C.text, margin: 0, lineHeight: 1 }}>Gestión de Servicios</h1>
+                  <h1 style={{ fontFamily: FONT_DISPLAY, fontSize: 'clamp(28px, 6vw, 42px)', fontWeight: 700, color: C.text, margin: 0, lineHeight: 1.05 }}>Gestión de Servicios</h1>
                   <p style={{ fontFamily: FONT_INTER, color: C.textMedium, marginTop: 8, fontWeight: 500 }}>
-                    Administra el catálogo, horarios y disponibilidad de la academia.
+                    Administra el catálogo, horarios y disponibilidad de la clínica.
                   </p>
                 </div>
                 <div style={{ position: 'relative' }}>
                   <button
                     onClick={() => setShowTypePicker(v => !v)}
-                    style={{ background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, padding: '12px 24px', borderRadius: 12, border: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', boxShadow: `0 4px 16px rgba(139,92,246,0.2)`, fontFamily: FONT_INTER, flexShrink: 0 }}
+                    style={{ background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, padding: '12px 26px', borderRadius: 9999, border: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', boxShadow: `0 4px 16px rgba(13,148,136,0.2)`, fontFamily: FONT_INTER, flexShrink: 0 }}
                   >
                     <Plus size={18} strokeWidth={3} /> Nuevo Servicio
                   </button>
@@ -576,7 +576,7 @@ export const ServiciosDashboard: React.FC = () => {
                   { v: 'comerciales' as const, label: 'Comerciales' },
                 ]).map(t => (
                   <button key={t.v} onClick={() => setActiveTab(t.v)}
-                    style={{ padding: '8px 16px', borderRadius: 10, fontSize: 13, fontWeight: 700, border: `1.5px solid ${activeTab === t.v ? C.gold : C.borderLight}`, background: activeTab === t.v ? 'rgba(139,92,246,0.08)' : 'transparent', color: activeTab === t.v ? C.gold : C.textBrown, cursor: 'pointer', fontFamily: FONT_INTER }}>
+                    style={{ padding: '8px 16px', borderRadius: 10, fontSize: 13, fontWeight: 700, border: `1.5px solid ${activeTab === t.v ? C.gold : C.borderLight}`, background: activeTab === t.v ? 'rgba(13,148,136,0.08)' : 'transparent', color: activeTab === t.v ? C.gold : C.textBrown, cursor: 'pointer', fontFamily: FONT_INTER }}>
                     {t.label}
                   </button>
                 ))}
@@ -613,7 +613,7 @@ export const ServiciosDashboard: React.FC = () => {
                       display: 'flex', alignItems: 'center', gap: 7,
                       padding: '10px 16px', borderRadius: 11,
                       border: `1.5px solid ${showFilters || activeFilterCount > 0 ? C.gold : C.borderLight}`,
-                      background: showFilters ? `rgba(139,92,246,0.06)` : C.white,
+                      background: showFilters ? `rgba(13,148,136,0.06)` : C.white,
                       color: showFilters || activeFilterCount > 0 ? C.gold : C.textBrown,
                       fontSize: 13, fontWeight: 700, cursor: 'pointer',
                       fontFamily: FONT_INTER, transition: 'all 0.18s', whiteSpace: 'nowrap',
@@ -667,7 +667,7 @@ export const ServiciosDashboard: React.FC = () => {
                             const sel = filterType === opt.v;
                             return (
                               <button key={opt.v} onClick={() => setFilterType(opt.v)}
-                                style={{ padding: '6px 14px', borderRadius: 99, fontSize: 12, fontWeight: 700, border: `1.5px solid ${sel ? (tc?.color ?? C.gold) : C.borderLight}`, background: sel ? (tc?.bg ?? `rgba(139,92,246,0.08)`) : 'transparent', color: sel ? (tc?.color ?? C.gold) : C.textBrown, cursor: 'pointer', transition: 'all 0.18s', fontFamily: FONT_INTER }}>
+                                style={{ padding: '6px 14px', borderRadius: 99, fontSize: 12, fontWeight: 700, border: `1.5px solid ${sel ? (tc?.color ?? C.gold) : C.borderLight}`, background: sel ? (tc?.bg ?? `rgba(13,148,136,0.08)`) : 'transparent', color: sel ? (tc?.color ?? C.gold) : C.textBrown, cursor: 'pointer', transition: 'all 0.18s', fontFamily: FONT_INTER }}>
                                 {opt.label}
                               </button>
                             );
@@ -693,17 +693,17 @@ export const ServiciosDashboard: React.FC = () => {
                       {groups.length} resultado{groups.length !== 1 ? 's' : ''}
                     </span>
                     {search && (
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '3px 10px', borderRadius: 99, background: 'rgba(139,92,246,0.08)', color: C.gold, fontSize: 11, fontWeight: 700 }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '3px 10px', borderRadius: 99, background: 'rgba(13,148,136,0.08)', color: C.gold, fontSize: 11, fontWeight: 700 }}>
                         "{search}" <X size={10} style={{ cursor: 'pointer' }} onClick={() => setSearch('')} />
                       </span>
                     )}
                     {filterStatus !== 'all' && (
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '3px 10px', borderRadius: 99, background: 'rgba(139,92,246,0.08)', color: C.gold, fontSize: 11, fontWeight: 700 }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '3px 10px', borderRadius: 99, background: 'rgba(13,148,136,0.08)', color: C.gold, fontSize: 11, fontWeight: 700 }}>
                         {filterStatus === 'published' ? 'Activo' : 'Inactivo'} <X size={10} style={{ cursor: 'pointer' }} onClick={() => setFilterStatus('all')} />
                       </span>
                     )}
                     {filterType !== 'all' && (
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '3px 10px', borderRadius: 99, background: 'rgba(139,92,246,0.08)', color: C.gold, fontSize: 11, fontWeight: 700 }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '3px 10px', borderRadius: 99, background: 'rgba(13,148,136,0.08)', color: C.gold, fontSize: 11, fontWeight: 700 }}>
                         {OFFER_TYPE_LABEL[filterType] ?? filterType} <X size={10} style={{ cursor: 'pointer' }} onClick={() => setFilterType('all')} />
                       </span>
                     )}
@@ -725,12 +725,12 @@ export const ServiciosDashboard: React.FC = () => {
             {/* ── SESIONES PROGRAMADAS ── */}
             {groups.length === 0 ? (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.white, borderRadius: 24, border: `1px solid ${C.borderLight}`, padding: '80px 32px' }}>
-                <div style={{ width: 64, height: 64, background: 'rgba(139,92,246,0.08)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                <div style={{ width: 64, height: 64, background: 'rgba(13,148,136,0.08)', borderRadius: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
                   {search || activeFilterCount > 0 ? <Search size={28} color={C.gold} /> : <Calendar size={28} color={C.gold} />}
                 </div>
                 {search || activeFilterCount > 0 ? (
                   <>
-                    <h3 style={{ fontFamily: FONT_BODONI, fontSize: 22, fontWeight: 700, color: C.text, marginBottom: 8 }}>Sin resultados</h3>
+                    <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, fontWeight: 700, color: C.text, marginBottom: 8 }}>Sin resultados</h3>
                     <p style={{ color: C.textMedium, textAlign: 'center', maxWidth: 360, marginBottom: 20, lineHeight: 1.5 }}>Ningún servicio coincide con los filtros aplicados.</p>
                     <button onClick={() => { setSearch(''); setFilterStatus('all'); setFilterType('all'); }} style={{ padding: '10px 22px', borderRadius: 10, border: `1.5px solid ${C.borderLight}`, background: 'transparent', color: C.textBrown, fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: FONT_INTER }}>
                       Limpiar filtros
@@ -738,7 +738,7 @@ export const ServiciosDashboard: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <h3 style={{ fontFamily: FONT_BODONI, fontSize: 24, fontWeight: 700, color: C.text, marginBottom: 8 }}>No hay servicios programados</h3>
+                    <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 24, fontWeight: 700, color: C.text, marginBottom: 8 }}>No hay servicios programados</h3>
                     <p style={{ color: C.textMedium, textAlign: 'center', maxWidth: 400, marginBottom: 24, lineHeight: 1.5 }}>Comienza a construir el catálogo de consultas y servicios de la clínica.</p>
                     <button onClick={() => { setEditingGroup(null); setIsFormOpen(true); }} style={{ color: C.gold, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4, background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 15, fontFamily: FONT_INTER }}>
                       Crear primer servicio <ChevronRight size={16} />
@@ -780,9 +780,9 @@ export const ServiciosDashboard: React.FC = () => {
                               <button
                                 onClick={() => { setEditingGroup(g); setIsFormOpen(true); }}
                                 title="Editar todas las sesiones"
-                                style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(139,92,246,0.07)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.gold, transition: 'background 0.2s' }}
-                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(139,92,246,0.14)'}
-                                onMouseLeave={e => e.currentTarget.style.background = 'rgba(139,92,246,0.07)'}
+                                style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(13,148,136,0.07)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.gold, transition: 'background 0.2s' }}
+                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(13,148,136,0.14)'}
+                                onMouseLeave={e => e.currentTarget.style.background = 'rgba(13,148,136,0.07)'}
                               >
                                 <Edit2 size={13} />
                               </button>
@@ -815,7 +815,7 @@ export const ServiciosDashboard: React.FC = () => {
                           </button>
 
                           {/* Title */}
-                          <h3 style={{ fontFamily: FONT_BODONI, fontSize: 19, fontWeight: 700, color: C.text, margin: '0 0 4px', lineHeight: 1.2 }}>
+                          <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 19, fontWeight: 700, color: C.text, margin: '0 0 4px', lineHeight: 1.2 }}>
                             {g.title}
                           </h3>
                           {g.description && (
@@ -830,7 +830,7 @@ export const ServiciosDashboard: React.FC = () => {
 
                             {/* Sessions count + date range */}
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                              <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(139,92,246,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                              <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(13,148,136,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                 <Repeat size={13} color={C.gold} />
                               </div>
                               <div>
@@ -845,19 +845,19 @@ export const ServiciosDashboard: React.FC = () => {
 
                             {/* Days */}
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                              <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(139,92,246,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                              <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(13,148,136,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                 <Calendar size={13} color={C.gold} />
                               </div>
                               <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
                                 {g.days.map(d => (
-                                  <span key={d} style={{ fontSize: 11, fontWeight: 700, color: C.gold, background: 'rgba(139,92,246,0.08)', padding: '2px 7px', borderRadius: 6 }}>{d}</span>
+                                  <span key={d} style={{ fontSize: 11, fontWeight: 700, color: C.gold, background: 'rgba(13,148,136,0.08)', padding: '2px 7px', borderRadius: 6 }}>{d}</span>
                                 ))}
                               </div>
                             </div>
 
                             {/* Time */}
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                              <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(139,92,246,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                              <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(13,148,136,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                 <Clock size={13} color={C.gold} />
                               </div>
                               <span style={{ fontSize: 13, color: C.textBrown, fontWeight: 600 }}>
@@ -868,7 +868,7 @@ export const ServiciosDashboard: React.FC = () => {
 
                             {/* Location + room */}
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                              <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(139,92,246,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                              <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(13,148,136,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                 <MapPin size={13} color={C.gold} />
                               </div>
                               <span style={{ fontSize: 13, color: C.textBrown, fontWeight: 600 }}>
@@ -880,7 +880,7 @@ export const ServiciosDashboard: React.FC = () => {
                             {/* Professional */}
                             {profName && (
                               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(139,92,246,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(13,148,136,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                   <User size={13} color={C.gold} />
                                 </div>
                                 <span style={{ fontSize: 13, color: C.textBrown, fontWeight: 600 }}>{profName}</span>
@@ -890,7 +890,7 @@ export const ServiciosDashboard: React.FC = () => {
                             {/* CUPS code */}
                             {g.cupsCode && (
                               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(139,92,246,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(13,148,136,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                   <Hash size={13} color={C.gold} />
                                 </div>
                                 <span style={{ fontSize: 13, color: C.textBrown, fontWeight: 600 }}>
@@ -902,7 +902,7 @@ export const ServiciosDashboard: React.FC = () => {
                             {/* REPS service code */}
                             {g.repsServiceCode && (
                               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(139,92,246,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(13,148,136,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                   <Tag size={13} color={C.gold} />
                                 </div>
                                 <span style={{ fontSize: 13, color: C.textBrown, fontWeight: 600 }}>
@@ -915,7 +915,7 @@ export const ServiciosDashboard: React.FC = () => {
                             {g.price > 0 && (
                               <div style={{ marginTop: 4, paddingTop: 10, borderTop: `1px dashed ${C.borderLight}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <span style={{ fontSize: 11, color: C.textMuted, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Precio por sesión</span>
-                                <span style={{ fontSize: 15, fontWeight: 800, color: C.gold, fontFamily: FONT_BODONI }}>
+                                <span style={{ fontSize: 15, fontWeight: 800, color: C.gold, fontFamily: FONT_DISPLAY }}>
                                   {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(g.price)}
                                 </span>
                               </div>

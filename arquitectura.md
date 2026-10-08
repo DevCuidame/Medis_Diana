@@ -1,78 +1,78 @@
-# Arquitectura — Medis Diana / dianamedic.cuidame.tech
+# Arquitectura — Medis OpiMed / opimedmedic.cuidame.tech
 
 > Volver al índice: [CLAUDE.md](CLAUDE.md)
 
 ## Visión general del sistema
 
-Este proyecto es la **landing + portal** de la **Dra. Diana Cristina Medina Camargo**,
-desplegado en producción en `https://dianamedic.cuidame.tech`.
+Este proyecto es la **landing + portal** de la **Dra. OpiMed**,
+desplegado en producción en `https://opimedmedic.cuidame.tech`.
 
-El código vive en `diana/medis/medisdiana-landing/` (monorepo en `diana/medis/`).
-Parte de una copia de la plataforma **medisdiana** (estudio de pole dance)
+El código vive en `opimed/medis/medisopimed-landing/` (monorepo en `opimed/medis/`).
+Parte de una copia de la plataforma **medisopimed** (estudio de pole dance)
 adaptada para uso médico. El backend propio del proyecto corre en el monorepo
-(`diana/medis/apps/backend/`), pero el **agendamiento de citas clínicas** se
+(`opimed/medis/apps/backend/`), pero el **agendamiento de citas clínicas** se
 delega completamente al backend de CuidameDoc (`https://doc-api.cuidame.tech/api`).
 
-**Diana en CuidameDoc:** `professional_id = 12`.
+**OpiMed en CuidameDoc:** `professional_id = 12`.
 
-## Stack (medisdiana-landing)
+## Stack (medisopimed-landing)
 
 - Vite + React + TypeScript
 - Tailwind CSS
 - Framer Motion (animaciones de pasos del booking)
-- Deploy: VM `cuidame-app` (zona `us-central1-a`, proyecto `esmart-health`), script `deploy-Dianamedic.ps1`
+- Deploy: VM `cuidame-app` (zona `us-central1-a`, proyecto `esmart-health`), script `deploy-OpiMedmedic.ps1`
 
 ## Estructura de pantallas / rutas
 
 ### Landing pública (`/`)
-- medisdiana-landing/src/components/Hero.tsx
-- medisdiana-landing/src/components/About.tsx
-- medisdiana-landing/src/components/Classes.tsx
-- medisdiana-landing/src/components/Instructors.tsx — sección "Sobre la Doctora"; retrato real (`medisdiana-landing/public/doctora/diana-medina.jpg`) en vez del placeholder de iniciales "DM".
-- medisdiana-landing/src/components/Spaces.tsx — sección "Mis Espacios", `id="espacios"`, galería bento (1 tile grande + 3 pequeños) de las instalaciones del consultorio (Recepción, Sala de espera, Consultorio, Fachada). Fotos reales servidas desde `medisdiana-landing/public/espacios/` (sin optimizar, 3.7–6.6 MB cada una — pendiente comprimir).
-- medisdiana-landing/src/components/Testimonials.tsx
-- medisdiana-landing/src/components/FinalCTA.tsx
-- medisdiana-landing/src/components/Navbar.tsx
-- medisdiana-landing/src/components/Footer.tsx — WhatsApp real (`+57 312 587 3244`, ícono social + bloque Contacto, ambos enlazan a `wa.me/573125873244`) y email real (`dradianamedfamiliar@gmail.com`) en vez de placeholders; "Horarios" removido (pendiente de definir).
+- medisopimed-landing/src/components/Hero.tsx
+- medisopimed-landing/src/components/About.tsx
+- medisopimed-landing/src/components/Classes.tsx
+- medisopimed-landing/src/components/Instructors.tsx — sección "Sobre la Doctora"; retrato real (`medisopimed-landing/public/doctora/opimed-doctora.jpg`) en vez del placeholder de iniciales "DM".
+- medisopimed-landing/src/components/Spaces.tsx — sección "Mis Espacios", `id="espacios"`, galería bento (1 tile grande + 3 pequeños) de las instalaciones del consultorio (Recepción, Sala de espera, Consultorio, Fachada). Fotos reales servidas desde `medisopimed-landing/public/espacios/` (sin optimizar, 3.7–6.6 MB cada una — pendiente comprimir).
+- medisopimed-landing/src/components/Testimonials.tsx
+- medisopimed-landing/src/components/FinalCTA.tsx
+- medisopimed-landing/src/components/Navbar.tsx
+- medisopimed-landing/src/components/Footer.tsx — WhatsApp real (`+57 312 587 3244`, ícono social + bloque Contacto, ambos enlazan a `wa.me/573125873244`) y email real (`draopimedmedfamiliar@gmail.com`) en vez de placeholders; "Horarios" removido (pendiente de definir).
 
 ### Autenticación (`/login`)
-- medisdiana-landing/src/components/ArtistLogin.tsx
+- medisopimed-landing/src/components/ArtistLogin.tsx
 
 ### Panel Admin (`/admin/*`)
-- medisdiana-landing/src/components/admin/MainDashboard.tsx
-- medisdiana-landing/src/components/admin/UsuariosDashboard.tsx
-- medisdiana-landing/src/components/admin/AdminClasses.tsx
-- medisdiana-landing/src/components/admin/CreateService.tsx
-- medisdiana-landing/src/components/admin/SedesDashboard.tsx — sección "Inspiración de Espacios" con fotos reales del consultorio (recepción, sala de espera, consultorio); antes tenía 3 fotos de stock de Pinterest con alt text "Pole Dance" (última infracción de la regla de oro que quedaba en el código).
-- medisdiana-landing/src/components/admin/EspaciosDashboard.tsx
-- medisdiana-landing/src/components/admin/FinanzasDashboard.tsx
-- medisdiana-landing/src/components/admin/MembresiasDashboard.tsx
-- medisdiana-landing/src/components/admin/BeneficiosDashboard.tsx
-- medisdiana-landing/src/components/admin/InscripcionesDashboard.tsx
+- medisopimed-landing/src/components/admin/MainDashboard.tsx
+- medisopimed-landing/src/components/admin/UsuariosDashboard.tsx
+- medisopimed-landing/src/components/admin/AdminClasses.tsx
+- medisopimed-landing/src/components/admin/CreateService.tsx
+- medisopimed-landing/src/components/admin/SedesDashboard.tsx — sección "Inspiración de Espacios" con fotos reales del consultorio (recepción, sala de espera, consultorio); antes tenía 3 fotos de stock de Pinterest con alt text "Pole Dance" (última infracción de la regla de oro que quedaba en el código).
+- medisopimed-landing/src/components/admin/EspaciosDashboard.tsx
+- medisopimed-landing/src/components/admin/FinanzasDashboard.tsx
+- medisopimed-landing/src/components/admin/MembresiasDashboard.tsx
+- medisopimed-landing/src/components/admin/BeneficiosDashboard.tsx
+- medisopimed-landing/src/components/admin/InscripcionesDashboard.tsx
 
 ### Portal Paciente (`/user/*`)
-- medisdiana-landing/src/components/user/UserLayout.tsx
-- medisdiana-landing/src/components/user/UserCalendario.tsx
-- medisdiana-landing/src/components/user/UserServicios.tsx
-- medisdiana-landing/src/components/user/UserMisServicios.tsx
-- medisdiana-landing/src/components/user/UserMembresias.tsx
-- medisdiana-landing/src/components/user/UserProfesionales.tsx
+- medisopimed-landing/src/components/user/UserLayout.tsx
+- medisopimed-landing/src/components/user/UserCalendario.tsx
+- medisopimed-landing/src/components/user/UserServicios.tsx
+- medisopimed-landing/src/components/user/UserMisServicios.tsx
+- medisopimed-landing/src/components/user/UserMembresias.tsx
+- medisopimed-landing/src/components/user/UserProfesionales.tsx
 
 ### Portal Profesional/Médico (`/professional/*`)
-- medisdiana-landing/src/components/professional/ProfessionalDashboard.tsx
-- medisdiana-landing/src/components/professional/ProfessionalClasses.tsx
-- medisdiana-landing/src/components/professional/ProfessionalProfile.tsx
+- medisopimed-landing/src/components/professional/ProfessionalDashboard.tsx
+- medisopimed-landing/src/components/professional/ProfessionalClasses.tsx
+- medisopimed-landing/src/components/professional/ProfessionalProfile.tsx
 
 ### Componentes legacy / no enrutados (revisar si eliminar)
-- medisdiana-landing/src/components/user/UserClasses.tsx
-- medisdiana-landing/src/components/user/UserDashboard.tsx
-- medisdiana-landing/src/components/user/UserMemberships.tsx
+- medisopimed-landing/src/components/user/UserClasses.tsx
+- medisopimed-landing/src/components/user/UserDashboard.tsx
+- medisopimed-landing/src/components/user/UserMemberships.tsx
 
 ---
 
-## DianaBookingCalendar — Agendamiento de citas con la Dra. Diana
+## OpiMedBookingCalendar — Agendamiento de citas con la Dra. OpiMed
 
-**Archivo:** `medisdiana-landing/src/components/DianaBookingCalendar.tsx`
+**Archivo:** `medisopimed-landing/src/components/OpiMedBookingCalendar.tsx`
 
 Componente standalone (no depende del backend propio del monorepo). Consume
 directamente la API de **CuidameDoc** (`https://doc-api.cuidame.tech/api`).
@@ -95,7 +95,7 @@ service → calendar → slots → form → success
 
 | Método | URL | Uso |
 |--------|-----|-----|
-| `GET` | `/api/booking/professionals/12/services` | Carga los servicios de Diana en el paso 0 |
+| `GET` | `/api/booking/professionals/12/services` | Carga los servicios de OpiMed en el paso 0 |
 | `GET` | `/api/booking/professionals/12/slots/:date` | Verifica disponibilidad por día (preloaded + al seleccionar) |
 | `POST` | `/api/booking/request` | Agenda cita para paciente **existente** (por número de documento) |
 | `POST` | `/api/booking/register-and-book` | Registra paciente **nuevo** y agenda la cita en una sola llamada |
@@ -125,10 +125,10 @@ step: 'service'|'calendar'|'slots'|'form'|'success'
 - `calendar` → vuelve a `service`
 - `service` → llama `onBackToHome()` (vuelve a la landing)
 
-### Servicios de Diana en CuidameDoc
+### Servicios de OpiMed en CuidameDoc
 
 **Desactualizado desde el 2026-08-05** — ya NO se crean desde `doc.cuidame.tech`
-→ Mis Servicios; ese formulario quedó deshabilitado para Diana a propósito (ver
+→ Mis Servicios; ese formulario quedó deshabilitado para OpiMed a propósito (ver
 "Sincronización de Servicios Medis → CuidameDoc" más abajo). Ahora se crean
 desde el formulario "Nuevo Servicio" de este panel admin (Medis) y se
 sincronizan automáticamente hacia CuidameDoc. Cada servicio tiene
@@ -141,7 +141,7 @@ para ir al calendario.
 **Qué resuelve**: el formulario "Nuevo Servicio" del panel admin (Sede, CUPS,
 Modalidad, Precio) guardaba solo en la base local de Medis (`service_offers`/
 `service_catalog`) — nunca llegaba a CuidameDoc, así que ni el catálogo público
-de citas de Diana ni la cotización de sus historias clínicas veían el precio
+de citas de OpiMed ni la cotización de sus historias clínicas veían el precio
 real. Ver spec/plan completos en
 `docs/superpowers/specs/2026-08-05-sync-servicios-cuidamedoc-design.md` y
 `docs/superpowers/plans/2026-08-05-sync-servicios-cuidamedoc.md`.
@@ -152,7 +152,7 @@ real. Ver spec/plan completos en
   en CuidameDoc.
 - **Motor** (`apps/backend/src/services/docServiceSync.service.ts`,
   `ensureDocSync`): dado un catálogo y si debe estar `active` o no, crea/borra
-  el servicio en CuidameDoc vía el proxy existente (login como Diana,
+  el servicio en CuidameDoc vía el proxy existente (login como OpiMed,
   `docAuth.ts`). CuidameDoc no tiene endpoint de edición — "actualizar" es
   siempre borrar + crear, así que cada edición real deja un huérfano en el
   catálogo global de CuidameDoc (limitación aceptada, no resuelta — requeriría
@@ -187,7 +187,7 @@ real. Ver spec/plan completos en
 
 ```ts
 const DOC_API = 'https://doc-api.cuidame.tech/api'
-const DIANA_PROFESSIONAL_ID = 12
+const OPI_MED_PROFESSIONAL_ID = 12
 ```
 
 ### Código de servicio REPS (habilitación) — Panel Admin (2026-08-10)
@@ -284,7 +284,7 @@ y `docs/superpowers/plans/2026-09-08-servicios-comerciales-operativos.md`.
     `targetId`, y lee/escribe `doc_prof_service_id` en la tabla que le
     indiquen — mismo motor borrar+crear, sin duplicar lógica entre operativo y
     comercial.
-- **Frontend** (`medisdiana-landing/src/components/admin/`):
+- **Frontend** (`medisopimed-landing/src/components/admin/`):
   `FormularioServicioComercial.tsx` (formulario de un solo paso — nombre,
   descripción, imagen con el mismo límite de 5MB que el resto del admin,
   selector de operativo, toggle activo/inactivo; no llama a la API
@@ -309,7 +309,7 @@ y `docs/superpowers/plans/2026-09-08-servicios-comerciales-operativos.md`.
 - **Antes**: `InventarioDashboard.tsx` (`/admin/inventario`) era 100% frontend, persistía en `localStorage` (`MEDIS_inventory`), sin backend y sin campo de precio.
 - **Ahora**: tabla real `inventory_items` (migración `019_create_inventory_items.sql`) — `id, name, category, unit, price (INTEGER, COP), quantity, min_stock, notes, is_active, created_at, updated_at`. `is_active` permite "descontinuar" un ítem sin borrarlo (para no romper cotizaciones históricas que lo referencian por id).
 - **Backend** (`apps/backend/src/{repositories,controllers,routes}/inventory.*`, mismo patrón que `memberships`):
-  - `GET /api/inventory/search?search=&category=&isActive=true` — **público** (sin auth), proyecta solo `{id, name, category, unit, price}` (no expone `quantity`/`minStock`/`notes` a llamadas externas). Consumido por CuidameDoc (proxy `diana-inventory-search`, ver `CuidameDoc/cuidame_doc_frontend_react/arquitectura.md`).
+  - `GET /api/inventory/search?search=&category=&isActive=true` — **público** (sin auth), proyecta solo `{id, name, category, unit, price}` (no expone `quantity`/`minStock`/`notes` a llamadas externas). Consumido por CuidameDoc (proxy `opimed-inventory-search`, ver `CuidameDoc/cuidame_doc_frontend_react/arquitectura.md`).
   - `GET /api/inventory` (admin, incluye inactivos), `POST/PATCH/DELETE /api/inventory[/:id]` (admin, `DELETE` es soft-delete → `is_active=false`).
 - **Frontend**: `InventarioDashboard.tsx` ya no usa `localStorage`, consume la API real; formulario ganó el campo **Precio** (COP).
 
@@ -318,13 +318,13 @@ y `docs/superpowers/plans/2026-09-08-servicios-comerciales-operativos.md`.
 - **Qué es**: cuando CuidameDoc cierra una historia clínica con medicamentos/procedimientos/plan de seguimiento vinculados a ítems reales de este Inventario o a un Plan, arma una cotización y la registra aquí como ingreso **pendiente** por confirmar — igual que ya pasa con compras de Planes y Servicios Adicionales.
 - **Tabla**: `external_quotes` (migración `020_create_external_quotes.sql`) — `id, source ('cuidamedoc'), external_reference (número de HC), patient_name, patient_email, professional_name, items (JSONB: [{type: 'inventory'|'plan', refId, name, unit_price, quantity, subtotal}]), total_amount, status ('pending'|'confirmed'|'rejected'), resolved_by, resolved_at, created_at, updated_at`. El precio se congela en `items` al momento de cotizar — si el precio del ítem/plan cambia después, las cotizaciones ya emitidas no se alteran.
 - **Backend** (`apps/backend/src/{repositories,controllers,routes}/external-quotes.*`):
-  - `POST /api/external-quotes` — **protegido con API key compartida** (header `x-internal-api-key`, comparación con `crypto.timingSafeEqual` para evitar timing attacks, contra `DIANA_INTERNAL_API_KEY` en `.env`). Lo llama el backend de CuidameDoc, server-to-server, nunca el navegador.
+  - `POST /api/external-quotes` — **protegido con API key compartida** (header `x-internal-api-key`, comparación con `crypto.timingSafeEqual` para evitar timing attacks, contra `OPI_MED_INTERNAL_API_KEY` en `.env`). Lo llama el backend de CuidameDoc, server-to-server, nunca el navegador.
   - `GET /api/external-quotes?status=` (admin), `PATCH /:id/confirm`, `PATCH /:id/reject` (admin) — el `resolve()` del repositorio tiene guard `WHERE status = 'pending'`, así que una doble-confirmación devuelve 409 en vez de re-confirmar en silencio.
-- **Frontend — visible en DOS pantallas** (2026-08-05: antes solo en Finanzas): el panel se extrajo a un componente compartido, `medisdiana-landing/src/components/admin/shared/CotizacionesCuidameDocPanel.tsx` (recibe `showToast` y los callbacks opcionales `onQuoteConfirmed`/`onPendingCountChange` del host), y se monta en:
+- **Frontend — visible en DOS pantallas** (2026-08-05: antes solo en Finanzas): el panel se extrajo a un componente compartido, `medisopimed-landing/src/components/admin/shared/CotizacionesCuidameDocPanel.tsx` (recibe `showToast` y los callbacks opcionales `onQuoteConfirmed`/`onPendingCountChange` del host), y se monta en:
   - **`FinanzasDashboard.tsx`** (`/admin/finanzas`), pestaña "Cotizaciones CuidameDoc" — comportamiento sin cambios: confirmar suma a "Ingresos del mes"/"Balance neto" vía un acumulador local (`confirmedQuotesTotal`) inicializado sumando `GET /api/external-quotes?status=confirmed` al montar, y el badge de la pestaña (`cotizacionesPendingCount`) se alimenta tanto de un fetch propio en el `useEffect` de montaje (para que muestre el conteo correcto ni bien se abre el dashboard, sin esperar a que se abra esa pestaña) como del callback `onPendingCountChange` del panel (que lo mantiene actualizado mientras esa pestaña está abierta).
   - **`MembresiasDashboard.tsx`** (`/admin/planes`, "Planes y Membresías") — sección nueva "Cotizaciones de pacientes", separada visualmente del catálogo de planes reutilizables (Plan Mensual, etc.) de abajo, con su propio texto explicativo. Mismo componente, mismos endpoints — confirmar/rechazar desde cualquiera de las dos pantallas actualiza el mismo registro en `external_quotes`, sin duplicar datos.
 - Planes (`GET /api/memberships/active`, ya existente) se reutiliza tal cual para el selector de "Plan asociado" del lado de CuidameDoc — no se creó ningún endpoint nuevo para eso.
-- **Incidente 2026-08-05** — `DIANA_INTERNAL_API_KEY` nunca se configuró en el `.env` de producción, así que `requireInternalApiKey` rechazaba con 401 *toda* petición a `POST /external-quotes` sin importar la clave enviada, y del lado de CuidameDoc `submitExternalQuote` no revisaba `response.ok` — la cotización simplemente desaparecía, sin cerrar la HC con error ni loguear nada en ningún lado. Detalle completo, causa raíz y fix en [errores-conocidos.md](errores-conocidos.md).
+- **Incidente 2026-08-05** — `OPI_MED_INTERNAL_API_KEY` nunca se configuró en el `.env` de producción, así que `requireInternalApiKey` rechazaba con 401 *toda* petición a `POST /external-quotes` sin importar la clave enviada, y del lado de CuidameDoc `submitExternalQuote` no revisaba `response.ok` — la cotización simplemente desaparecía, sin cerrar la HC con error ni loguear nada en ningún lado. Detalle completo, causa raíz y fix en [errores-conocidos.md](errores-conocidos.md).
 
 ## Aprovisionamiento automático de doctores en CuidameDoc + vínculo cabeza-trabajador (2026-08-10)
 
@@ -377,7 +377,7 @@ plan en `docs/superpowers/plans/2026-08-10-doctores-cuidamedoc-provision.md`.
   `AdminProfessionals.tsx` muestran un toast de advertencia (ícono/color
   diferenciado, no solo texto) si `docSync.ok === false`, sin cambiar el
   flujo de éxito local.
-- **Multi-tenant por diseño**: la "cabeza" nunca se hardcodea a Diana — es,
+- **Multi-tenant por diseño**: la "cabeza" nunca se hardcodea a OpiMed — es,
   en cada deployment de Medis, quien sea que autentique `docAuth.ts` (sus
   propias credenciales de `.env`). El mismo mecanismo sirve tal cual para
   Ximena (`professional_id 2` en CuidameDoc) o futuros clientes del plan.
@@ -389,7 +389,7 @@ plan en `docs/superpowers/plans/2026-08-10-doctores-cuidamedoc-provision.md`.
 
 ## Precios escalonados de control (2026-08-05)
 
-**Qué resuelve**: Diana cobra un precio fijo por "Consulta de primera vez",
+**Qué resuelve**: OpiMed cobra un precio fijo por "Consulta de primera vez",
 pero quiere que el 1er control/seguimiento de un tratamiento no tenga costo, y
 que del 2do control en adelante se cobre un precio fijo o promocional —
 calculado automáticamente, sin que el profesional tenga que acordarse de
@@ -480,7 +480,7 @@ spec/plan completos en
   verificación manual de esta feature (no estaba cubierto por el
   typecheck, que no detecta el tipo real en tiempo de ejecución).
 - **Frontend**: `GastosDashboard.tsx` + `FormularioGasto.tsx`
-  (`medisdiana-landing/src/components/admin/`), mismo esqueleto que
+  (`medisopimed-landing/src/components/admin/`), mismo esqueleto que
   `EspaciosDashboard.tsx`/`FormularioEspacio.tsx` (sin la relación a sede
   ni el toggle activo/inactivo, que no aplican a un gasto). Filtros:
   descripción, categoría, mes (`<input type="month">`).

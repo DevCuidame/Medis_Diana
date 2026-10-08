@@ -2,15 +2,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AlertTriangle, CheckCircle, FileText, Image as ImageIcon, Loader2, Tag, X } from 'lucide-react';
 
 const C = {
-  gold: '#8B5CF6', goldLight: '#3B82F6',
-  bg: '#FFFFFF', bgPanel: '#F3F0FB',
-  white: '#FFFFFF', text: '#1B1C1C', textBrown: '#475569',
-  textMuted: '#94A3B8', border: '#DDD6FE', borderLight: '#DDD6FE',
+  gold: '#0D9488', goldLight: '#44CFCB',
+  bg: '#FFFFFF', bgPanel: '#F0FDFA',
+  white: '#FFFFFF', text: '#0F172A', textBrown: '#475569',
+  textMuted: '#94A3B8', border: '#CCFBF1', borderLight: '#CCFBF1',
   red: '#EF4444', success: '#16A34A',
 };
-const FONT_SERIF = '"Bodoni Moda", Georgia, serif';
-const FONT_SANS  = '"Hanken Grotesk", Inter, system-ui, sans-serif';
-const FOCUS_RING = 'focus:outline-none focus:ring-2 focus:ring-[#8B5CF6] focus:border-transparent';
+const FONT_SERIF = '"Manrope", Georgia, serif';
+const FONT_SANS  = '"Inter", Inter, system-ui, sans-serif';
+const FOCUS_RING = 'focus:outline-none focus:ring-2 focus:ring-[#0D9488] focus:border-transparent';
 
 export interface ServicioComercialFormValues {
   name: string;
@@ -186,7 +186,7 @@ export const FormularioServicioComercial: React.FC<Props> = ({ initialData, onSu
           <button type="button" onClick={onCancel} style={{ padding: '14px 24px', borderRadius: 12, border: `1px solid ${C.borderLight}`, background: C.white, color: C.textBrown, fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
             Cancelar
           </button>
-          <button type="submit" disabled={isSubmitting} style={{ padding: '14px 32px', borderRadius: 12, border: 'none', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, fontSize: 15, fontWeight: 700, cursor: isSubmitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 8px 16px rgba(139,92,246,0.2)' }}>
+          <button type="submit" disabled={isSubmitting} style={{ padding: '14px 32px', borderRadius: 12, border: 'none', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, fontSize: 15, fontWeight: 700, cursor: isSubmitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 8, boxShadow: '0 8px 16px rgba(13,148,136,0.2)' }}>
             {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <CheckCircle size={18} />}
             {initialData ? 'Actualizar' : 'Guardar Comercial'}
           </button>

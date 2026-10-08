@@ -15,7 +15,7 @@ import type {
   UpdateRoomPayload,
   ServiceOffersFilter,
   UpsertOperatingHourPayload,
-} from '@medisdiana/shared-types';
+} from '@medisopimed/shared-types';
 
 // ─── OPERATING HOURS ─────────────────────────────────────────
 

@@ -135,7 +135,7 @@ Sin CRUD completo de catálogo/mapeos ni auditoría (pospuesto, ver Alcance).
 
 ## D. Frontend
 
-**Nuevo `medisdiana-landing/src/components/admin/serviciosCatalogo.ts`**:
+**Nuevo `medisopimed-landing/src/components/admin/serviciosCatalogo.ts`**:
 - `GRUPOS`: los 6 grupos, `{ code, name }`.
 - `CATALOGO`: árbol estático (`Record<string, CatalogoNivel[]>`), solo para
   el grupo `01` (subgrupos con `children` = especialidades reales del Excel).

@@ -7,14 +7,14 @@ import {
 import { AdminSidebar } from './AdminSidebar'
 
 const C = {
-  gold: '#8B5CF6', goldLight: '#3B82F6',
-  bg: '#FAFAFA', bgPanel: '#F3F0FB',
-  white: '#FFFFFF', text: '#1B1C1C', textBrown: '#475569',
+  gold: '#0D9488', goldLight: '#44CFCB',
+  bg: '#FAFAFA', bgPanel: '#F0FDFA',
+  white: '#FFFFFF', text: '#0F172A', textBrown: '#475569',
   textMedium: '#5E5E5E', textMuted: '#94A3B8',
-  border: '#DDD6FE', borderLight: '#DDD6FE',
+  border: '#CCFBF1', borderLight: '#CCFBF1',
 }
-const FONT_BODONI = '"Bodoni Moda", Georgia, serif'
-const FONT_INTER  = '"Hanken Grotesk", Inter, system-ui, sans-serif'
+const FONT_DISPLAY = 'Manrope, Inter, sans-serif'
+const FONT_INTER  = '"Inter", Inter, system-ui, sans-serif'
 
 const CATEGORIES = ['Medicamentos', 'Insumos médicos', 'Equipos', 'Papelería', 'Aseo y desinfección']
 const UNITS = ['unidades', 'cajas', 'frascos', 'paquetes', 'litros']
@@ -213,7 +213,7 @@ export const InventarioDashboard: React.FC = () => {
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
             <div>
-              <h2 style={{ fontFamily: FONT_BODONI, fontSize: 22, fontWeight: 700, color: C.text, margin: 0, lineHeight: 1 }}>Inventario</h2>
+              <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 22, fontWeight: 700, color: C.text, margin: 0, lineHeight: 1 }}>Inventario</h2>
               <p style={{ fontSize: 12, color: C.textMuted, margin: 0, marginTop: 3, fontWeight: 500 }}>Controla insumos, medicamentos y equipos del consultorio</p>
             </div>
           </div>
@@ -221,7 +221,7 @@ export const InventarioDashboard: React.FC = () => {
             <button style={{ width: 40, height: 40, borderRadius: 12, background: C.bgPanel, border: `1px solid ${C.borderLight}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: C.gold }}>
               <Bell size={17} />
             </button>
-            <div style={{ width: 40, height: 40, borderRadius: 12, border: `2.5px solid ${C.gold}`, overflow: 'hidden', flexShrink: 0, boxShadow: '0 4px 10px rgba(139,92,246,0.2)' }}>
+            <div style={{ width: 40, height: 40, borderRadius: '50%', border: `2.5px solid ${C.gold}`, overflow: 'hidden', flexShrink: 0, boxShadow: '0 4px 10px rgba(13,148,136,0.2)' }}>
               <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100&h=100" alt="Admin" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
           </div>
@@ -241,7 +241,7 @@ export const InventarioDashboard: React.FC = () => {
                   </div>
                   <div>
                     <div style={{ fontSize: 12, fontWeight: 600, color: C.textMuted }}>{k.label}</div>
-                    <div style={{ fontFamily: FONT_BODONI, fontSize: 24, fontWeight: 700, color: C.text, lineHeight: 1.2 }}>{k.value}</div>
+                    <div style={{ fontFamily: FONT_DISPLAY, fontSize: 24, fontWeight: 700, color: C.text, lineHeight: 1.2 }}>{k.value}</div>
                   </div>
                 </div>
               )
@@ -269,7 +269,7 @@ export const InventarioDashboard: React.FC = () => {
             </select>
             <button
               onClick={openCreate}
-              style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 20px', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, border: 'none', borderRadius: 10, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', cursor: 'pointer', boxShadow: '0 4px 16px rgba(139,92,246,0.3)' }}
+              style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 22px', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, border: 'none', borderRadius: 9999, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', cursor: 'pointer', boxShadow: '0 4px 16px rgba(13,148,136,0.3)' }}
             >
               <Plus size={15} strokeWidth={3} />
               Nuevo Ítem
@@ -289,7 +289,7 @@ export const InventarioDashboard: React.FC = () => {
           ) : filtered.length === 0 ? (
             <div style={{ background: C.white, border: `1px dashed ${C.border}`, borderRadius: 16, padding: '56px 24px', textAlign: 'center' }}>
               <Package size={36} color={C.textMuted} style={{ marginBottom: 12 }} />
-              <p style={{ fontFamily: FONT_BODONI, fontSize: 18, fontWeight: 600, color: C.text, margin: '0 0 6px' }}>
+              <p style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 600, color: C.text, margin: '0 0 6px' }}>
                 {items.length === 0 ? 'Inventario vacío' : 'Sin resultados'}
               </p>
               <p style={{ fontSize: 13, color: C.textMuted, margin: 0 }}>
@@ -369,7 +369,7 @@ export const InventarioDashboard: React.FC = () => {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
                 <div>
                   <p style={{ fontFamily: FONT_INTER, fontSize: 10, fontWeight: 700, color: C.gold, letterSpacing: '0.18em', textTransform: 'uppercase', margin: '0 0 4px' }}>Inventario</p>
-                  <h2 style={{ fontFamily: FONT_BODONI, fontSize: 20, fontWeight: 600, color: C.text, margin: 0 }}>
+                  <h2 style={{ fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: 600, color: C.text, margin: 0 }}>
                     {editingId ? 'Editar Ítem' : 'Nuevo Ítem'}
                   </h2>
                 </div>
@@ -432,11 +432,11 @@ export const InventarioDashboard: React.FC = () => {
 
                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 4 }}>
                   <button onClick={() => setShowForm(false)}
-                    style={{ padding: '11px 18px', background: 'transparent', border: `1.5px solid ${C.border}`, borderRadius: 9, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.textBrown, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer' }}>
+                    style={{ padding: '11px 18px', background: 'transparent', border: `1.5px solid ${C.border}`, borderRadius: 9999, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.textBrown, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer' }}>
                     Cancelar
                   </button>
                   <button onClick={saveForm} disabled={saving}
-                    style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '11px 22px', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, border: 'none', borderRadius: 9, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, boxShadow: '0 4px 14px rgba(139,92,246,0.30)' }}>
+                    style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '11px 22px', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, border: 'none', borderRadius: 9999, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.6 : 1, boxShadow: '0 4px 14px rgba(13,148,136,0.30)' }}>
                     <Check size={14} strokeWidth={2.5} />
                     {saving ? 'Guardando…' : editingId ? 'Guardar Cambios' : 'Crear Ítem'}
                   </button>
@@ -459,13 +459,13 @@ export const InventarioDashboard: React.FC = () => {
               <div style={{ width: 48, height: 48, borderRadius: 14, background: 'rgba(239,68,68,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
                 <Trash2 size={20} color="#DC2626" />
               </div>
-              <h3 style={{ fontFamily: FONT_BODONI, fontSize: 18, fontWeight: 600, color: C.text, margin: '0 0 6px' }}>¿Eliminar ítem?</h3>
+              <h3 style={{ fontFamily: FONT_DISPLAY, fontSize: 18, fontWeight: 600, color: C.text, margin: '0 0 6px' }}>¿Eliminar ítem?</h3>
               <p style={{ fontSize: 13, color: C.textMuted, margin: '0 0 20px' }}>
                 Se eliminará <strong>{items.find(i => i.id === deletingId)?.name}</strong> del inventario. Esta acción no se puede deshacer.
               </p>
               <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
                 <button onClick={() => setDeletingId(null)}
-                  style={{ padding: '11px 18px', background: 'transparent', border: `1.5px solid ${C.border}`, borderRadius: 9, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.textBrown, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer' }}>
+                  style={{ padding: '11px 18px', background: 'transparent', border: `1.5px solid ${C.border}`, borderRadius: 9999, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.textBrown, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer' }}>
                   Cancelar
                 </button>
                 <button onClick={async () => {
@@ -476,7 +476,7 @@ export const InventarioDashboard: React.FC = () => {
                     await fetchItems()
                   } catch { /* ignore */ }
                 }}
-                  style={{ padding: '11px 22px', background: '#DC2626', border: 'none', borderRadius: 9, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer' }}>
+                  style={{ padding: '11px 22px', background: '#DC2626', border: 'none', borderRadius: 9999, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, color: C.white, letterSpacing: '0.06em', textTransform: 'uppercase', cursor: 'pointer' }}>
                   Eliminar
                 </button>
               </div>

@@ -11,14 +11,14 @@ import {
 // deben renderizar este componente (nunca copiar el markup) para que estilos
 // y tamaños no diverjan entre rutas.
 const C = {
-  gold: '#8B5CF6', goldLight: '#3B82F6',
-  bgPanel: '#F3F0FB', white: '#FFFFFF',
-  text: '#1B1C1C', textBrown: '#475569',
+  gold: '#0D9488', goldLight: '#44CFCB',
+  bgPanel: '#F0FDFA', white: '#FFFFFF',
+  text: '#0F172A', textBrown: '#475569',
   textMedium: '#5E5E5E', textMuted: '#94A3B8',
-  border: '#DDD6FE', borderLight: '#DDD6FE',
+  border: '#CCFBF1', borderLight: '#CCFBF1',
 }
-const FONT_BODONI = '"Bodoni Moda", Georgia, serif'
-const FONT_INTER  = '"Hanken Grotesk", Inter, system-ui, sans-serif'
+const FONT_MANROPE = 'Manrope, Inter, sans-serif'
+const FONT_INTER   = 'Inter, system-ui, sans-serif'
 
 interface NavItem {
   icon: React.ComponentType<{ size?: number; color?: string; strokeWidth?: number; style?: React.CSSProperties }>
@@ -99,7 +99,7 @@ export function AdminSidebar({ isMobileOpen = false, onCloseMobile, onNewUser }:
       {isMobileOpen && (
         <div
           onClick={onCloseMobile}
-          style={{ position: 'fixed', inset: 0, background: 'rgba(27,28,28,0.45)', backdropFilter: 'blur(4px)', zIndex: 40 }}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.45)', backdropFilter: 'blur(4px)', zIndex: 40 }}
         />
       )}
 
@@ -115,16 +115,13 @@ export function AdminSidebar({ isMobileOpen = false, onCloseMobile, onNewUser }:
         }}
       >
         {/* Logo */}
-        <div style={{ padding: '28px 20px 22px', borderBottom: `1px solid ${C.borderLight}` }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 40, height: 48, background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 4px 12px rgba(139,92,246,0.3)' }}>
-              <span style={{ fontFamily: FONT_BODONI, fontSize: 22, fontStyle: 'italic', fontWeight: 700, color: C.white }}>A</span>
-            </div>
-            <div>
-              <div style={{ fontFamily: FONT_BODONI, fontSize: 18, fontWeight: 700, color: C.gold, lineHeight: 1.2 }}>MEDIS</div>
-              <div style={{ fontSize: 10, fontWeight: 700, color: C.textMuted, letterSpacing: '0.14em', textTransform: 'uppercase', marginTop: 2 }}>Panel Admin</div>
-            </div>
-          </div>
+        <div style={{ padding: '24px 20px 20px', borderBottom: `1px solid ${C.borderLight}` }}>
+          <img
+            src="/logo-opimed.svg"
+            alt="OpiMed"
+            style={{ height: 28, width: 'auto', display: 'block', marginBottom: 6 }}
+          />
+          <div style={{ fontSize: 10, fontWeight: 700, color: C.textMuted, letterSpacing: '0.14em', textTransform: 'uppercase' }}>Panel Admin</div>
         </div>
 
         {/* Nav */}
@@ -144,10 +141,10 @@ export function AdminSidebar({ isMobileOpen = false, onCloseMobile, onNewUser }:
                   onMouseLeave={() => setHoveredNav(null)}
                   style={{
                     width: '100%', display: 'flex', alignItems: 'center', gap: 12,
-                    padding: '11px 14px', borderRadius: 10,
+                    padding: '11px 14px', borderRadius: 9999,
                     background: isActive
                       ? `linear-gradient(90deg, ${C.gold}, ${C.goldLight})`
-                      : isHov ? 'rgba(139,92,246,0.07)' : 'transparent',
+                      : isHov ? 'rgba(13,148,136,0.07)' : 'transparent',
                     border: 'none',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
@@ -195,7 +192,7 @@ export function AdminSidebar({ isMobileOpen = false, onCloseMobile, onNewUser }:
               if (onNewUser) onNewUser()
               else go('/admin/users?new=1')
             }}
-            style={{ width: '100%', padding: '12px 0', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, border: 'none', borderRadius: 10, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0 4px 16px rgba(139,92,246,0.3)' }}
+            style={{ width: '100%', padding: '12px 0', background: `linear-gradient(135deg, ${C.gold}, ${C.goldLight})`, color: C.white, border: 'none', borderRadius: 9999, fontFamily: FONT_INTER, fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0 4px 16px rgba(13,148,136,0.3)' }}
           >
             <Plus size={15} strokeWidth={3} />
             Nuevo Usuario
@@ -208,7 +205,7 @@ export function AdminSidebar({ isMobileOpen = false, onCloseMobile, onNewUser }:
             href="#"
             onClick={e => e.preventDefault()}
             style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', borderRadius: 10, textDecoration: 'none', color: C.textMedium, transition: 'background 0.2s' }}
-            onMouseEnter={e => (e.currentTarget.style.background = '#EDE9FA')}
+            onMouseEnter={e => (e.currentTarget.style.background = '#E6FFFA')}
             onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
           >
             <CircleHelp size={17} strokeWidth={2} />
@@ -217,7 +214,7 @@ export function AdminSidebar({ isMobileOpen = false, onCloseMobile, onNewUser }:
           <button
             onClick={() => { localStorage.removeItem('accessToken'); localStorage.removeItem('refreshToken'); navigate('/login') }}
             style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', borderRadius: 10, background: 'none', border: 'none', cursor: 'pointer', color: C.textMedium, transition: 'background 0.2s', fontFamily: FONT_INTER }}
-            onMouseEnter={e => (e.currentTarget.style.background = '#EDE9FA')}
+            onMouseEnter={e => (e.currentTarget.style.background = '#E6FFFA')}
             onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
           >
             <LogOut size={17} strokeWidth={2} />
